@@ -8,9 +8,6 @@ import (
 )
 
 func main() {
-	chartdraw.DefaultBackgroundColor = chartdraw.ColorTransparent
-	chartdraw.DefaultCanvasColor = chartdraw.ColorTransparent
-
 	barWidth := 120
 
 	var (
