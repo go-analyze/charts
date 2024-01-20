@@ -259,7 +259,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 		return opt.TextAligns[index]
 	}
 
-	// 表格单元的处理
+	// processing of the table cells
 	renderTableCells := func(
 		currentStyle Style,
 		rowIndex int,
@@ -287,7 +287,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 			x += cellPadding.Left
 			width -= paddingWidth
 			box := p.TextFit(text, x, y+int(fontSize), width, getTextAlign(index))
-			// 计算最高的高度
+			// calculate the highest height
 			if box.Height()+paddingHeight > cellMaxHeight {
 				cellMaxHeight = box.Height() + paddingHeight
 			}
@@ -295,12 +295,12 @@ func (t *tableChart) render() (*renderInfo, error) {
 		return cellMaxHeight
 	}
 
-	// 表头的处理
+	// processing of the table headers
 	headerHeight = renderTableCells(textStyle, 0, opt.Header, height, padding)
 	height += headerHeight
 	info.HeaderHeight = headerHeight
 
-	// 表格内容的处理
+	// processing of the table contents
 	textStyle.FontColor = fontColor
 	textStyle.FillColor = fontColor
 	for index, textList := range opt.Data {
@@ -325,7 +325,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 		headerBGColor = tableDefaultSetting.HeaderColor
 	}
 
-	// 如果设置表头背景色
+	// if the header background colors is set
 	p.SetBackground(info.Width, info.HeaderHeight, headerBGColor, true)
 	currentHeight := info.HeaderHeight
 	rowColors := opt.RowBackgroundColors
@@ -340,7 +340,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 		child.SetBackground(p.Width(), h, color, true)
 		currentHeight += h
 	}
-	// 根据是否有设置表格样式调整背景色
+	// adjust the background color according to the set table style
 	getCellStyle := opt.CellStyle
 	if getCellStyle != nil {
 		arr := [][]string{
@@ -352,7 +352,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			info.HeaderHeight,
 		}
 		heights = append(heights, info.RowHeights...)
-		// 循环所有表格单元，生成背景色
+		// loop through all table cells to generate background color
 		for i, textList := range arr {
 			left := 0
 			for j, v := range textList {

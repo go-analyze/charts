@@ -281,8 +281,8 @@ type EChartsSeries struct {
 	Radius     string              `json:"radius"`
 	YAxisIndex int                 `json:"yAxisIndex"`
 	ItemStyle  EChartStyle         `json:"itemStyle"`
-	// label的配置
-	Label     EChartsLabelOption `json:"label"`
+	// label configuration
+  Label     EChartsLabelOption `json:"label"`
 	MarkPoint EChartsMarkPoint   `json:"markPoint"`
 	MarkLine  EChartsMarkLine    `json:"markLine"`
 	Max       *float64           `json:"max"`
@@ -293,7 +293,7 @@ type EChartsSeriesList []EChartsSeries
 func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 	seriesList := make(SeriesList, 0, len(esList))
 	for _, item := range esList {
-		// 如果是pie，则每个子荐生成一个series
+		// if pie, each sub-recommendation generates a series
 		if item.Type == ChartTypePie {
 			for _, dataItem := range item.Data {
 				seriesList = append(seriesList, Series{
@@ -312,7 +312,6 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 			}
 			continue
 		}
-		// 如果是radar或funnel
 		if item.Type == ChartTypeRadar ||
 			item.Type == ChartTypeFunnel {
 			for _, dataItem := range item.Data {

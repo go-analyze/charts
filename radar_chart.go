@@ -131,7 +131,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		Font:      opt.Font,
 	})
 	offset := 5
-	// 文本生成
+	// text generation
 	for index, p := range points {
 		name := indicators[index].Name
 		b := seriesPainter.MeasureText(name)
@@ -164,12 +164,12 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			x += offset
 		}
 		if isLeft {
-			x -= (b.Width() + offset)
+			x -= b.Width() + offset
 		}
 		seriesPainter.Text(name, x, y)
 	}
 
-	// 雷达图
+	// radar chart
 	angles := getPolygonPointAngles(sides)
 	maxCount := len(indicators)
 	for _, series := range seriesList {

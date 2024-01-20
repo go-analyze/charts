@@ -110,7 +110,7 @@ func (l *legendPainter) Render() (Box, error) {
 		measureList[index] = b
 	}
 
-	// 计算展示的宽高
+	// calculate the width and height of the display
 	width := 0
 	height := 0
 	offset := 20
@@ -128,7 +128,7 @@ func (l *legendPainter) Render() (Box, error) {
 			width += item.Width()
 		}
 	}
-	// 增加padding
+	// add padding
 	itemMaxHeight += 10
 	if opt.Orient == OrientVertical {
 		width = maxTextWidth + textOffset + legendWidth
@@ -137,10 +137,10 @@ func (l *legendPainter) Render() (Box, error) {
 		height = legendHeight
 		offsetValue := (len(opt.Data) - 1) * (offset + textOffset)
 		allLegendWidth := len(opt.Data) * legendWidth
-		width += (offsetValue + allLegendWidth)
+		width += offsetValue + allLegendWidth
 	}
 
-	// 计算开始的位置
+	// calculate starting position
 	left := 0
 	switch opt.Left {
 	case PositionRight:

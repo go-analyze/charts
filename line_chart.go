@@ -121,8 +121,8 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 			points = append(points, p)
 
-			// 如果label不需要展示，则返回
-			if labelPainter == nil {
+			// if the label does not need to be displayed, return
+      if labelPainter == nil {
 				continue
 			}
 			labelPainter.Add(LabelValue{
@@ -130,11 +130,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				Value: item.Value,
 				X:     p.X,
 				Y:     p.Y,
-				// 字体大小
 				FontSize: series.Label.FontSize,
 			})
 		}
-		// 如果需要填充区域
 		if opt.FillArea {
 			areaPoints := make([]Point, len(points))
 			copy(areaPoints, points)
@@ -157,10 +155,10 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		}
 		seriesPainter.SetDrawingStyle(drawingStyle)
 
-		// 画线
+		// draw line
 		seriesPainter.LineStroke(points)
 
-		// 画点
+		// draw dots
 		if opt.Theme.IsDark() {
 			drawingStyle.FillColor = drawingStyle.StrokeColor
 		} else {
@@ -186,7 +184,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			Range:       yRange,
 		})
 	}
-	// 最大、最小的mark point
+	// the largest and smallest mark point
 	err := doRender(rendererList...)
 	if err != nil {
 		return BoxZero, err

@@ -10,7 +10,7 @@ type labelRenderValue struct {
 	Style Style
 	X     int
 	Y     int
-	// 旋转
+	// rotate
 	Radians float64
 }
 
@@ -19,11 +19,9 @@ type LabelValue struct {
 	Value float64
 	X     int
 	Y     int
-	// 旋转
+	// rotate
 	Radians float64
-	// 字体颜色
 	FontColor Color
-	// 字体大小
 	FontSize float64
 	Orient   string
 	Offset   Box

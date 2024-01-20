@@ -251,7 +251,6 @@ func (o *ChartOption) fillDefault() {
 	if o.font == nil {
 		o.font, _ = GetDefaultFont()
 	} else {
-		// 如果指定了字体，则设置主题的字体
 		t.SetFont(o.font)
 	}
 	if o.BackgroundColor.IsZero() {
@@ -265,7 +264,7 @@ func (o *ChartOption) fillDefault() {
 			Left:   20,
 		}
 	}
-	// legend与series name的关联
+	// association between legend and series name
 	if len(o.Legend.Data) == 0 {
 		o.Legend.Data = o.SeriesList.Names()
 	} else {
@@ -280,7 +279,7 @@ func (o *ChartOption) fillDefault() {
 		for index, name := range o.Legend.Data {
 			nameIndexDict[name] = index
 		}
-		// 保证series的顺序与legend一致
+		// ensure order of of series is consistent with legend
 		sort.Slice(o.SeriesList, func(i, j int) bool {
 			return nameIndexDict[o.SeriesList[i].Name] < nameIndexDict[o.SeriesList[j].Name]
 		})
@@ -373,7 +372,7 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 	p, err := NewPainter(PainterOptions{
 		Type:  opt.Type,
 		Width: opt.Width,
-		// 仅用于计算表格高度，因此随便设置即可
+		// is only used to calculate the hight of the table
 		Height: 100,
 		Font:   opt.Font,
 	})

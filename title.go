@@ -101,7 +101,7 @@ func (t *titlePainter) Render() (Box, error) {
 		FontSize:  opt.FontSize,
 		FontColor: opt.FontColor,
 	}
-	// 主标题
+	// main title
 	for _, v := range splitTitleText(opt.Text) {
 		measureOptions = append(measureOptions, titleMeasureOption{
 			text:  v,
@@ -113,7 +113,7 @@ func (t *titlePainter) Render() (Box, error) {
 		FontSize:  opt.SubtextFontSize,
 		FontColor: opt.SubtextFontColor,
 	}
-	// 副标题
+	// subtitle
 	for _, v := range splitTitleText(opt.Subtext) {
 		measureOptions = append(measureOptions, titleMeasureOption{
 			text:  v,
@@ -155,7 +155,7 @@ func (t *titlePainter) Render() (Box, error) {
 		}
 	}
 	titleY := 0
-	// TODO TOP 暂只支持数值
+	// TODO - top only supports numerical values
 	if opt.Top != "" {
 		value, _ := strconv.Atoi(opt.Top)
 		titleY += value

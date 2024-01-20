@@ -56,7 +56,7 @@ func (m *markLinePainter) Render() (Box, error) {
 		}
 		summary := s.Summary()
 		for _, markLine := range s.MarkLine.Data {
-			// 由于mark line会修改style，因此每次重新设置
+			// since the mark line will modify the style, it must be reset every time
 			painter.OverrideDrawingStyle(Style{
 				FillColor:   opt.FillColor,
 				StrokeColor: opt.StrokeColor,

@@ -24,7 +24,7 @@ func writeFile(buf []byte) error {
 }
 
 func main() {
-	// 字体文件需要自行下载
+	// Download font files from:
 	// https://github.com/googlefonts/noto-cjk
 	buf, err := ioutil.ReadFile("./NotoSansSC.ttf")
 	if err != nil {

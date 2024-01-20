@@ -27,11 +27,12 @@ More examples can be found in the [./examples/](./examples/) directory.
 
 
 ### Line Chart
+
 ```go
 package main
 
 import (
-	charts "github.com/go-analyze/charts"
+	"github.com/go-analyze/charts"
 )
 
 func main() {

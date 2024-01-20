@@ -28,7 +28,7 @@ func TestTableChart(t *testing.T) {
 						1,
 						2,
 						1,
-						// span和header不匹配，最后自动设置为1
+						// span and header do not match, and are automatically set to 1 at the end
 						// 1,
 					},
 					Data: [][]string{

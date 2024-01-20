@@ -86,8 +86,8 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			if math.Abs(float64(p.Y-y)) > labelFontSize {
 				continue
 			}
-			// label可能较多内容，不好计算横向占用空间
-			// 因此x的位置需要中间位置两侧，否则认为override
+			// the label may have a lot of content, and it is hard to calculate horizontal space occupied
+			// so the position of 'x' needs to be on both sides of the middle position, otherwise it is considered an override
 			if (p.X <= cx && x <= cx) ||
 				(p.X > cx && x > cx) {
 				return true
@@ -105,7 +105,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		seriesPainter.MoveTo(cx, cy)
 		start := chart.PercentToRadians(currentValue/total) - math.Pi/2
 		currentValue += v
-		percent := (v / total)
+		percent := v / total
 		delta := chart.PercentToRadians(percent)
 		seriesPainter.ArcTo(cx, cy, radius, radius, start, delta).
 			LineTo(cx, cy).
@@ -113,26 +113,26 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			FillStroke()
 
 		series := seriesList[index]
-		// 是否显示label
+		// where to display label
 		showLabel := series.Label.Show
 		if !showLabel {
 			continue
 		}
 
-		// label的角度为饼块中间
+		// the angle of the label in the middle of the pie piece
 		angle := start + delta/2
 		startx := cx + int(radius*math.Cos(angle))
 		starty := cy + int(radius*math.Sin(angle))
 
 		endx := cx + int(labelRadius*math.Cos(angle))
 		endy := cy + int(labelRadius*math.Sin(angle))
-		// 计算是否有重叠，如果有则调整y坐标位置
-		// 最多只尝试5次
+		// calculate if there is overlap, if so adjust y coordinate position
+		// only try at most 5 times
 		for i := 0; i < 5; i++ {
 			if !isOverride(endx, endy) {
 				break
 			}
-			endy -= (labelFontSize << 1)
+			endy -= labelFontSize << 1
 		}
 		prevPoints = append(prevPoints, Point{
 			X: endx,

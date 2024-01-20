@@ -12,13 +12,12 @@ import (
 type ValueFormatter func(float64) string
 
 type Painter struct {
-	render chart.Renderer
-	box    Box
-	font   *truetype.Font
-	parent *Painter
-	style  Style
-	theme  ColorPalette
-	// 类型
+	render         chart.Renderer
+	box            Box
+	font           *truetype.Font
+	parent         *Painter
+	style          Style
+	theme          ColorPalette
 	outputType     string
 	valueFormatter ValueFormatter
 }
@@ -62,9 +61,9 @@ type GridOption struct {
 	Column      int
 	Row         int
 	ColumnSpans []int
-	// 忽略不展示的column
+	// ignore columns that are not displayed
 	IgnoreColumnLines []int
-	// 忽略不展示的row
+	// ignore rows that are not displayed
 	IgnoreRowLines []int
 }
 
@@ -158,8 +157,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 			Right:  opts.Width,
 			Bottom: opts.Height,
 		},
-		font: font,
-		// 类型
+		font:       font,
 		outputType: opts.Type,
 	}
 	p.setOptions(opt...)
@@ -176,15 +174,13 @@ func (p *Painter) setOptions(opts ...PainterOption) {
 
 func (p *Painter) Child(opt ...PainterOption) *Painter {
 	child := &Painter{
-		// 格式化
 		valueFormatter: p.valueFormatter,
-		// render
-		render: p.render,
-		box:    p.box.Clone(),
-		font:   p.font,
-		parent: p,
-		style:  p.style,
-		theme:  p.theme,
+		render:         p.render,
+		box:            p.box.Clone(),
+		font:           p.font,
+		parent:         p,
+		style:          p.style,
+		theme:          p.theme,
 	}
 	child.setOptions(opt...)
 	return child
@@ -452,7 +448,7 @@ func (p *Painter) LineStroke(points []Point) *Painter {
 func (p *Painter) SmoothLineStroke(points []Point) *Painter {
 	prevX := 0
 	prevY := 0
-	// TODO 如何生成平滑的折线
+	// TODO - generate smooth polylines
 	for index, point := range points {
 		x := point.X
 		y := point.Y
@@ -475,7 +471,7 @@ func (p *Painter) SetBackground(width, height int, color Color, inside ...bool) 
 	s := chart.Style{
 		FillColor: color,
 	}
-	// 背景色
+	// background color
 	p.SetDrawingStyle(s)
 	defer p.ResetStyle()
 	if len(inside) != 0 && inside[0] {
@@ -485,7 +481,7 @@ func (p *Painter) SetBackground(width, height int, color Color, inside ...bool) 
 		p.LineTo(0, height)
 		p.LineTo(0, 0)
 	} else {
-		// 设置背景色不使用box，因此不直接使用Painter
+		// setting the background color does not use boxes
 		r.MoveTo(0, 0)
 		r.LineTo(width, 0)
 		r.LineTo(width, height)

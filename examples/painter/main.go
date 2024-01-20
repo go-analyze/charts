@@ -5,8 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/go-analyze/charts"
 	"github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/go-analyze/charts"
 )
 
 func writeFile(buf []byte) error {
@@ -33,12 +34,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// 背景色
 	p.SetBackground(p.Width(), p.Height(), drawing.ColorWhite)
 
 	top := 0
 
-	// 画线
+	// draw line
 	p.SetDrawingStyle(charts.Style{
 		StrokeColor: drawing.ColorBlack,
 		FillColor:   drawing.ColorBlack,
@@ -63,7 +63,7 @@ func main() {
 		},
 	})
 
-	// 圆滑曲线
+	// smooth curve
 	// top += 50
 	// p.Child(charts.PainterPaddingOption(charts.Box{
 	// 	Top: top,
@@ -90,7 +90,7 @@ func main() {
 	// 	},
 	// })
 
-	// 标线
+	// marker
 	top += 50
 	p.Child(charts.PainterPaddingOption(charts.Box{
 		Top: top,
@@ -146,7 +146,7 @@ func main() {
 		},
 	})
 
-	// 坐标轴的点
+	// point of coordinate axis
 	top += 50
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
@@ -164,7 +164,7 @@ func main() {
 		Length: 5,
 	})
 
-	// 坐标轴的点，每2格显示一个
+	// points on the coordinate axis, displayed every 2 grids
 	top += 20
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
@@ -183,7 +183,7 @@ func main() {
 		Length: 5,
 	})
 
-	// 坐标轴的点，纵向
+	// the point of the coordinate axis, verticle
 	top += 20
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
@@ -202,7 +202,7 @@ func main() {
 		Length: 5,
 	})
 
-	// 横向展示文本
+	// display text horizontally
 	top += 120
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
@@ -226,7 +226,7 @@ func main() {
 		},
 	})
 
-	// 横向显示文本，靠左
+	// display text horizontally, left
 	top += 20
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
@@ -251,7 +251,7 @@ func main() {
 		},
 	})
 
-	// 纵向显示文本
+	// display text vertically
 	top += 20
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
@@ -276,7 +276,8 @@ func main() {
 			"Sun",
 		},
 	})
-	// 纵向 文本居中
+
+	// center vertical text
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
 			Top:    top,
@@ -300,7 +301,8 @@ func main() {
 			"Sun",
 		},
 	})
-	// 纵向 文本置顶
+
+	// vertical text on top
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
 			Top:    top,
@@ -391,6 +393,7 @@ func main() {
 		Right:  110,
 		Bottom: 20,
 	})
+
 	// legend line dot
 	p.Child(
 		charts.PainterBoxOption(charts.Box{
@@ -551,6 +554,7 @@ func main() {
 		FontSize:    12,
 		FontColor:   drawing.ColorBlack,
 	}).Render()
+
 	// axis right
 	charts.NewAxisPainter(p.Child(charts.PainterBoxOption(charts.Box{
 		Top:    top,

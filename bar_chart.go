@@ -55,9 +55,9 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	})
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
-	// 每一块之间的margin
+	// margin between each block
 	margin := 10
-	// 每一个bar之间的margin
+	// margin between each bar
 	barMargin := 5
 	if width < 20 {
 		margin = 2
@@ -67,11 +67,10 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		barMargin = 3
 	}
 	seriesCount := len(seriesList)
-	// 总的宽度-两个margin-(总数-1)的barMargin
 	barWidth := (width - 2*margin - barMargin*(seriesCount-1)) / seriesCount
 	if opt.BarWidth > 0 && opt.BarWidth < barWidth {
 		barWidth = opt.BarWidth
-		// 重新计算margin
+		// recalculate margin
 		margin = (width - seriesCount*barWidth - barMargin*(seriesCount-1)) / 2
 	}
 	barMaxHeight := seriesPainter.Height()
@@ -128,19 +127,13 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				Right:  x + barWidth,
 				Bottom: barMaxHeight - 1,
 			})
-			// 用于生成marker point
+			// generate marker point by hand
 			points[j] = Point{
-				// 居中的位置
+				// centered position
 				X: x + barWidth>>1,
 				Y: top,
 			}
-			// 用于生成marker point
-			points[j] = Point{
-				// 居中的位置
-				X: x + barWidth>>1,
-				Y: top,
-			}
-			// 如果label不需要展示，则返回
+			// return if the label does not need to be displayed
 			if labelPainter == nil {
 				continue
 			}
@@ -163,7 +156,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				Value: item.Value,
 				X:     x + barWidth>>1,
 				Y:     y,
-				// 旋转
+				// rotate
 				Radians:   radians,
 				FontColor: fontColor,
 				Offset:    series.Label.Offset,
@@ -186,7 +179,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			Range:       yRange,
 		})
 	}
-	// 最大、最小的mark point
+	// the largest and smallest mark point
 	err := doRender(rendererList...)
 	if err != nil {
 		return BoxZero, err

@@ -74,14 +74,14 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	offset := max - min
 	for index, item := range seriesList {
 		value := item.Data[0].Value
-		// 最大最小值一致则为100%
+		// if the maximum and minimum are consistent it's 100%
 		widthPercent := 100.0
 		if offset != 0 {
 			widthPercent = (value - min) / offset
 		}
 		w := int(widthPercent * float64(width))
 		widthList[index] = w
-		// 如果最大值为0，则占比100%
+		// if the maximum value is 0, the proportion is 100%
 		percent := 1.0
 		if max != 0 {
 			percent = value / max
@@ -127,7 +127,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 			FillColor: color,
 		}).FillArea(points)
 
-		// 文本
+		// text
 		text := textList[index]
 		seriesPainter.OverrideTextStyle(Style{
 			FontColor: theme.GetTextColor(),
@@ -138,7 +138,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 		textX := width>>1 - textBox.Width()>>1
 		textY := y + h>>1
 		seriesPainter.Text(text, textX, textY)
-		y += (h + gap)
+		y += h + gap
 	}
 
 	return f.p.box, nil

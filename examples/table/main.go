@@ -7,8 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-analyze/charts"
 	"github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/go-analyze/charts"
 )
 
 func writeFile(buf []byte, filename string) error {
@@ -62,7 +63,7 @@ func main() {
 	spans := map[int]int{
 		0: 2,
 		1: 1,
-		// 设置第三列的span
+		// set the span of the third column
 		2: 3,
 		3: 2,
 		4: 2,

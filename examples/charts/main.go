@@ -210,7 +210,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				}),
 			},
 		},
-		// 温度折线图
+		// temperature line chart
 		{
 			Title: charts.TitleOption{
 				Text: "Temperature Change in the Coming Week",
@@ -291,7 +291,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			FillArea: true,
 		},
-		// 柱状图
+		// histogram
 		{
 			Title: charts.TitleOption{
 				Text: "Bar",
@@ -362,7 +362,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 		},
-		// 水平柱状图
+		// horizontal bar chart
 		{
 			Title: charts.TitleOption{
 				Text: "World Population",
@@ -410,7 +410,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 		},
-		// 柱状图+标记
+		// histogram+marker
 		{
 			Title: charts.TitleOption{
 				Text:    "Rainfall vs Evaporation",
@@ -491,7 +491,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 		},
-		// 双Y轴示例
+		// dual y-axis
 		{
 			Title: charts.TitleOption{
 				Text: "Temperature",
@@ -589,7 +589,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 		},
-		// 饼图
+		// pie chart
 		{
 			Title: charts.TitleOption{
 				Text:    "Referer of a Website",
@@ -620,7 +620,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Radius: "35%",
 			}),
 		},
-		// 雷达图
+		// radar chart
 		{
 			Title: charts.TitleOption{
 				Text: "Basic Radar Chart",
@@ -680,7 +680,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 		},
-		// 漏斗图
+		// funnel chart
 		{
 			Title: charts.TitleOption{
 				Text: "Funnel",
@@ -730,7 +730,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 		},
-		// 多图展示
+		// multiple picture
 		{
 			Legend: charts.LegendOption{
 				Top: "-90",

@@ -39,7 +39,7 @@ func NewRange(opt AxisRangeOption) axisRange {
 	divideCount := opt.DivideCount
 	r := math.Abs(max - min)
 
-	// 最小单位计算
+	// minimum unit calculation
 	unit := 1
 	if r > 5 {
 		unit = 2
@@ -61,7 +61,7 @@ func NewRange(opt AxisRangeOption) axisRange {
 	if min != 0 {
 		isLessThanZero := min < 0
 		min = float64(int(min/float64(unit)) * unit)
-		// 如果是小于0，int的时候向上取整了，因此调整
+		// if less than zero, int is rounded up, so adjust
 		if min < 0 ||
 			(isLessThanZero && min == 0) {
 			min -= float64(unit)

@@ -124,7 +124,7 @@ func (a *axisPainter) Render() (Box, error) {
 		labelPosition = PositionCenter
 	}
 
-	// 如果小于0，则表示不处理
+	// if less than zero, it means not processing
 	tickLength := getDefaultInt(opt.TickLength, 5)
 	labelMargin := getDefaultInt(opt.LabelMargin, 5)
 
@@ -147,16 +147,16 @@ func (a *axisPainter) Render() (Box, error) {
 		top.ClearTextRotation()
 	}
 
-	// 增加30px来计算文本展示区域
+	// Add 30px to calculate text display area
 	textFillWidth := float64(textMaxWidth + 20)
-	// 根据文本宽度计算较为符合的展示项
+	// Calculate more suitable display item based on text width
 	fitTextCount := ceilFloatToInt(float64(top.Width()) / textFillWidth)
 
 	unit := opt.Unit
 	if unit <= 0 {
 		unit = ceilFloatToInt(float64(dataCount) / float64(fitTextCount))
 		unit = chart.MaxInt(unit, opt.SplitNumber)
-		// 偶数
+		// even number
 		if unit%2 == 0 && dataCount%(unit+1) == 0 {
 			unit++
 		}
@@ -164,7 +164,7 @@ func (a *axisPainter) Render() (Box, error) {
 
 	width := 0
 	height := 0
-	// 垂直
+	// vertical
 	if isVertical {
 		width = textMaxWidth + tickLength<<1
 		height = top.Height()
@@ -262,7 +262,7 @@ func (a *axisPainter) Render() (Box, error) {
 		TextRotation: opt.TextRotation,
 		Offset:       opt.LabelOffset,
 	})
-	// 显示辅助线
+	// show auxilary lines
 	if opt.SplitLineShow {
 		style.StrokeColor = opt.SplitLineColor
 		style.StrokeWidth = 1

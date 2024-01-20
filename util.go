@@ -70,7 +70,7 @@ func autoDivide(max, size int) []int {
 
 func autoDivideSpans(max, size int, spans []int) []int {
 	values := autoDivide(max, size)
-	// 重新合并
+	// re-merge
 	if len(spans) != 0 {
 		newValues := make([]int, len(spans)+1)
 		newValues[0] = 0
@@ -178,7 +178,7 @@ func parseColor(color string) Color {
 	if len(arr) < 3 {
 		return c
 	}
-	// 设置默认为255
+	// set the default value to 255
 	c.A = 255
 	for index, v := range arr {
 		value, _ := strconv.Atoi(strings.TrimSpace(v))

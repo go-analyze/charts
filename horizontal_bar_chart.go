@@ -48,9 +48,9 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	yRange := result.axisRanges[0]
 	y0, y1 := yRange.GetRange(0)
 	height := int(y1 - y0)
-	// 每一块之间的margin
+	// margin between each block
 	margin := 10
-	// 每一个bar之间的margin
+	// margin between each bar
 	barMargin := 5
 	if height < 20 {
 		margin = 2
@@ -60,7 +60,6 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 		barMargin = 3
 	}
 	seriesCount := len(seriesList)
-	// 总的高度-两个margin-(总数-1)的barMargin
 	barHeight := (height - 2*margin - barMargin*(seriesCount-1)) / seriesCount
 	if opt.BarHeight > 0 && opt.BarHeight < barHeight {
 		barHeight = opt.BarHeight
@@ -100,7 +99,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			if j >= yRange.divideCount {
 				continue
 			}
-			// 显示位置切换
+			// display position switch
 			j = yRange.divideCount - j - 1
 			y := divideValues[j]
 			y += margin
@@ -122,7 +121,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				Right:  right,
 				Bottom: y + barHeight,
 			})
-			// 如果label不需要展示，则返回
+			// if the label does not need to be displayed, return
 			if labelPainter == nil {
 				continue
 			}

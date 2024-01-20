@@ -88,7 +88,7 @@ type defaultRenderOption struct {
 
 type defaultRenderResult struct {
 	axisRanges map[int]axisRange
-	// 图例区域
+	// legend area
 	seriesPainter *Painter
 }
 
@@ -115,7 +115,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		legendHeight = legendResult.Height()
 	}
 
-	// 如果有标题
 	if opt.TitleOption.Text != "" {
 		if opt.TitleOption.Theme == nil {
 			opt.TitleOption.Theme = opt.Theme
@@ -128,12 +127,12 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 
 		top := chart.MaxInt(legendHeight, titleBox.Height())
-		// 如果是垂直方式，则不计算legend高度
+		// if in verticle mode, the legend height is not calculated
 		if opt.LegendOption.Orient == OrientVertical {
 			top = titleBox.Height()
 		}
 		p = p.Child(PainterPaddingOption(Box{
-			// 标题下留白
+			// leave space under the title
 			Top: top + 20,
 		}))
 	}
@@ -142,7 +141,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		axisRanges: make(map[int]axisRange),
 	}
 
-	// 计算图表对应的轴有哪些
 	axisIndexList := make([]int, 0)
 	for _, series := range opt.SeriesList {
 		if containsInt(axisIndexList, series.AxisIndex) {
@@ -150,15 +148,14 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 		axisIndexList = append(axisIndexList, series.AxisIndex)
 	}
-	// 高度需要减去x轴的高度
+	// the height needs to be subtracted from the height of the x-axis
 	rangeHeight := p.Height() - defaultXAxisHeight
 	rangeWidthLeft := 0
 	rangeWidthRight := 0
 
-	// 倒序
 	sort.Sort(sort.Reverse(sort.IntSlice(axisIndexList)))
 
-	// 计算对应的axis range
+	// calculate the axis range
 	for _, index := range axisIndexList {
 		yAxisOption := YAxisOption{}
 		if len(opt.YAxisOptions) > index {
@@ -173,9 +170,9 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			Painter: p,
 			Min:     min,
 			Max:     max,
-			// 高度需要减去x轴的高度
+			// the height needs to be subtracted from the height of the x-axis
 			Size: rangeHeight,
-			// 分隔数量
+			// serparate quantity
 			DivideCount: divideCount,
 		})
 		if yAxisOption.Min != nil && *yAxisOption.Min <= min {
@@ -193,20 +190,20 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			yAxisOption.Data = r.Values()
 		} else {
 			yAxisOption.isCategoryAxis = true
-			// 由于x轴为value部分，因此计算其label单独处理
+			// since the x-axis is the value part, it's label is calculated and processed seperately
 			opt.XAxis.Data = NewRange(AxisRangeOption{
 				Painter: p,
 				Min:     min,
 				Max:     max,
-				// 高度需要减去x轴的高度
+				// the height needs to be subtracted from the height of the x-axis
 				Size: rangeHeight,
-				// 分隔数量
+				// seperate quantities
 				DivideCount: defaultAxisDivideCount,
 			}).Values()
 			opt.XAxis.isValueAxis = true
 		}
 		reverseStringSlice(yAxisOption.Data)
-		// TODO生成其它位置既yAxis
+		// TODO - generate other positions and y-axis
 		var yAxis *axisPainter
 		child := p.Child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
@@ -324,7 +321,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		TitleOption:  opt.Title,
 		LegendOption: opt.Legend,
 		axisReversed: axisReversed,
-		// 前置已设置背景色
+		// the background color has been set
 		backgroundIsFilled: true,
 	}
 	if len(pieSeriesList) != 0 ||
