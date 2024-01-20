@@ -122,14 +122,14 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			points = append(points, p)
 
 			// if the label does not need to be displayed, return
-      if labelPainter == nil {
+			if labelPainter == nil {
 				continue
 			}
 			labelPainter.Add(LabelValue{
-				Index: index,
-				Value: item.Value,
-				X:     p.X,
-				Y:     p.Y,
+				Index:    index,
+				Value:    item.Value,
+				X:        p.X,
+				Y:        p.Y,
 				FontSize: series.Label.FontSize,
 			})
 		}
@@ -185,8 +185,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		})
 	}
 	// the largest and smallest mark point
-	err := doRender(rendererList...)
-	if err != nil {
+	if err := doRender(rendererList...); err != nil {
 		return BoxZero, err
 	}
 

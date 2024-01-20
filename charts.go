@@ -60,8 +60,7 @@ func (rh *renderHandler) Add(fn func() error) {
 
 func (rh *renderHandler) Do() error {
 	for _, fn := range rh.list {
-		err := fn()
-		if err != nil {
+		if err := fn(); err != nil {
 			return err
 		}
 	}
@@ -232,8 +231,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
 	})), opt.XAxis)
-	_, err := xAxis.Render()
-	if err != nil {
+	if _, err := xAxis.Render(); err != nil {
 		return nil, err
 	}
 
@@ -247,8 +245,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 func doRender(renderers ...Renderer) error {
 	for _, r := range renderers {
-		_, err := r.Render()
-		if err != nil {
+		if _, err := r.Render(); err != nil {
 			return err
 		}
 	}
@@ -423,11 +420,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		})
 	}
 
-	err = handler.Do()
-
-	if err != nil {
+	if err = handler.Do(); err != nil {
 		return nil, err
 	}
+
 	for _, item := range opt.Children {
 		item.Parent = p
 		if item.Theme == "" {
@@ -436,8 +432,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		if item.FontFamily == "" {
 			item.FontFamily = opt.FontFamily
 		}
-		_, err = Render(item)
-		if err != nil {
+		if _, err = Render(item); err != nil {
 			return nil, err
 		}
 	}

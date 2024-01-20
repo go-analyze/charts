@@ -94,8 +94,7 @@ func (es *EChartsSeriesData) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 	v := _EChartsSeriesData{}
-	err := json.Unmarshal(data, &v)
-	if err != nil {
+	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
 	es.Name = v.Name
@@ -158,8 +157,7 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 	arr := make([]int, 0)
-	err := json.Unmarshal(data, &arr)
-	if err != nil {
+	if err := json.Unmarshal(data, &arr); err != nil {
 		return err
 	}
 	if len(arr) == 0 {
@@ -225,8 +223,7 @@ func (emd *EChartsMarkData) UnmarshalJSON(data []byte) error {
 	}
 	data = convertToArray(data)
 	ds := make([]*_EChartsMarkData, 0)
-	err := json.Unmarshal(data, &ds)
-	if err != nil {
+	if err := json.Unmarshal(data, &ds); err != nil {
 		return err
 	}
 	for _, d := range ds {
@@ -282,7 +279,7 @@ type EChartsSeries struct {
 	YAxisIndex int                 `json:"yAxisIndex"`
 	ItemStyle  EChartStyle         `json:"itemStyle"`
 	// label configuration
-  Label     EChartsLabelOption `json:"label"`
+	Label     EChartsLabelOption `json:"label"`
 	MarkPoint EChartsMarkPoint   `json:"markPoint"`
 	MarkLine  EChartsMarkLine    `json:"markLine"`
 	Max       *float64           `json:"max"`
@@ -483,17 +480,16 @@ func (eo *EChartsOption) ToOption() ChartOption {
 
 func renderEcharts(options, outputType string) ([]byte, error) {
 	o := EChartsOption{}
-	err := json.Unmarshal([]byte(options), &o)
-	if err != nil {
+	if err := json.Unmarshal([]byte(options), &o); err != nil {
 		return nil, err
 	}
 	opt := o.ToOption()
 	opt.Type = outputType
-	d, err := Render(opt)
-	if err != nil {
+	if d, err := Render(opt); err != nil {
 		return nil, err
+	} else {
+		return d.Bytes()
 	}
-	return d.Bytes()
 }
 
 func RenderEChartsToPNG(options string) ([]byte, error) {

@@ -180,8 +180,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		})
 	}
 	// the largest and smallest mark point
-	err := doRender(rendererList...)
-	if err != nil {
+	if err := doRender(rendererList...); err != nil {
 		return BoxZero, err
 	}
 

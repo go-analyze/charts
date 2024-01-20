@@ -393,8 +393,7 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 	if err != nil {
 		return nil, err
 	}
-	_, err = NewTableChart(p, opt).renderWithInfo(info)
-	if err != nil {
+	if _, err = NewTableChart(p, opt).renderWithInfo(info); err != nil {
 		return nil, err
 	}
 	return p, nil

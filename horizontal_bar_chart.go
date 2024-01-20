@@ -148,8 +148,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			labelPainter.Add(labelValue)
 		}
 	}
-	err := doRender(rendererList...)
-	if err != nil {
+	if err := doRender(rendererList...); err != nil {
 		return BoxZero, err
 	}
 	return p.box, nil
