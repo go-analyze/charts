@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	charts "github.com/vicanso/go-charts/v2"
+	"github.com/go-analyze/charts"
 )
 
 var html = `<!DOCTYPE html>
