@@ -106,15 +106,12 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 				},
 			},
 		}
-		d, err := Render(opt)
-		if err != nil {
+
+		if d, err := Render(opt); err != nil {
 			panic(err)
-		}
-		buf, err := d.Bytes()
-		if err != nil {
+		} else if buf, err := d.Bytes(); err != nil {
 			panic(err)
-		}
-		if len(buf) == 0 {
+		} else if len(buf) == 0 {
 			panic(errors.New("data is nil"))
 		}
 	}
@@ -218,15 +215,11 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 				},
 			},
 		}
-		d, err := Render(opt)
-		if err != nil {
+		if d, err := Render(opt); err != nil {
 			panic(err)
-		}
-		buf, err := d.Bytes()
-		if err != nil {
+		} else if buf, err := d.Bytes(); err != nil {
 			panic(err)
-		}
-		if len(buf) == 0 {
+		} else if len(buf) == 0 {
 			panic(errors.New("data is nil"))
 		}
 	}

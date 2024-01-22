@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -54,14 +55,12 @@ func NewLegendOption(labels []string, left ...string) LegendOption {
 
 // IsEmpty checks legend is empty
 func (opt *LegendOption) IsEmpty() bool {
-	isEmpty := true
 	for _, v := range opt.Data {
 		if v != "" {
-			isEmpty = false
-			break
+			return false
 		}
 	}
-	return isEmpty
+	return true
 }
 
 // NewLegendPainter returns a legend renderer
@@ -156,7 +155,10 @@ func (l *legendPainter) Render() (Box, error) {
 			left = value
 		}
 	}
-	top, _ := strconv.Atoi(opt.Top)
+	top, err := strconv.Atoi(opt.Top)
+	if opt.Top != "" && err != nil {
+		return BoxZero, fmt.Errorf("unexpected parsing error: %v", err)
+	}
 
 	if left < 0 {
 		left = 0

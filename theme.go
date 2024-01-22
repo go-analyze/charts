@@ -266,6 +266,7 @@ func (t *themeColorPalette) GetSeriesColor(index int) Color {
 	colors := t.seriesColors
 	return colors[index%len(colors)]
 }
+
 func (t *themeColorPalette) SetSeriesColor(colors []Color) {
 	t.seriesColors = colors
 }

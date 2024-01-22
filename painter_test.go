@@ -2,17 +2,17 @@ package charts
 
 import (
 	"math"
+	"strconv"
 	"testing"
 
 	"github.com/golang/freetype/truetype"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
 func TestPainterOption(t *testing.T) {
-	assert := assert.New(t)
-
 	font := &truetype.Font{}
 	d, err := NewPainter(PainterOptions{
 		Width:  800,
@@ -34,20 +34,18 @@ func TestPainterOption(t *testing.T) {
 			ClassName: "test",
 		}),
 	)
-	assert.Nil(err)
-	assert.Equal(Box{
+	require.NoError(t, err)
+	assert.Equal(t, Box{
 		Left:   1,
 		Top:    2,
 		Right:  397,
 		Bottom: 296,
 	}, d.box)
-	assert.Equal(font, d.font)
-	assert.Equal("test", d.style.ClassName)
+	assert.Equal(t, font, d.font)
+	assert.Equal(t, "test", d.style.ClassName)
 }
 
 func TestPainter(t *testing.T) {
-	assert := assert.New(t)
-
 	tests := []struct {
 		fn     func(*Painter)
 		result string
@@ -304,31 +302,32 @@ func TestPainter(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<path  d=\"M 5 10\nL 5 110\nL 105 110\nL 5 10\" style=\"stroke-width:0;stroke:none;fill:rgba(84,112,198,1.0)\"/></svg>",
 		},
 	}
-	for _, tt := range tests {
-		d, err := NewPainter(PainterOptions{
-			Width:  400,
-			Height: 300,
-			Type:   ChartOutputSVG,
-		}, PainterPaddingOption(chart.Box{
-			Left: 5,
-			Top:  10,
-		}))
-		assert.Nil(err)
-		tt.fn(d)
-		data, err := d.Bytes()
-		assert.Nil(err)
-		assert.Equal(tt.result, string(data))
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			d, err := NewPainter(PainterOptions{
+				Width:  400,
+				Height: 300,
+				Type:   ChartOutputSVG,
+			}, PainterPaddingOption(chart.Box{
+				Left: 5,
+				Top:  10,
+			}))
+			require.NoError(t, err)
+			tt.fn(d)
+			data, err := d.Bytes()
+			require.NoError(t, err)
+			assert.Equal(t, tt.result, string(data))
+		})
 	}
 }
 
 func TestPainterTextFit(t *testing.T) {
-	assert := assert.New(t)
 	p, err := NewPainter(PainterOptions{
 		Width:  400,
 		Height: 300,
 		Type:   ChartOutputSVG,
 	})
-	assert.Nil(err)
+	require.NoError(t, err)
 	f, _ := GetDefaultFont()
 	style := Style{
 		FontSize:  12,
@@ -337,18 +336,18 @@ func TestPainterTextFit(t *testing.T) {
 	}
 	p.SetStyle(style)
 	box := p.TextFit("Hello World!", 0, 20, 80)
-	assert.Equal(chart.Box{
+	assert.Equal(t, chart.Box{
 		Right:  45,
 		Bottom: 35,
 	}, box)
 
 	box = p.TextFit("Hello World!", 0, 100, 200)
-	assert.Equal(chart.Box{
+	assert.Equal(t, chart.Box{
 		Right:  84,
 		Bottom: 15,
 	}, box)
 
 	buf, err := p.Bytes()
-	assert.Nil(err)
-	assert.Equal(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="300">\n<text x="0" y="20" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Hello</text><text x="0" y="40" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">World!</text><text x="0" y="100" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Hello World!</text></svg>`, string(buf))
+	require.NoError(t, err)
+	assert.Equal(t, `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="300">\n<text x="0" y="20" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Hello</text><text x="0" y="40" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">World!</text><text x="0" y="100" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Hello World!</text></svg>`, string(buf))
 }

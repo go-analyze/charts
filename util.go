@@ -21,6 +21,13 @@ func FalseFlag() *bool {
 	return &f
 }
 
+func isFalse(flag *bool) bool {
+	if flag != nil && !*flag {
+		return true
+	}
+	return false
+}
+
 func containsInt(values []int, value int) bool {
 	for _, v := range values {
 		if v == value {
@@ -40,6 +47,8 @@ func containsString(values []string, value string) bool {
 }
 
 func ceilFloatToInt(value float64) int {
+	// TODO - why not use math.Ceil?
+	// TODO - check usage for overflow risks
 	i := int(value)
 	if value == float64(i) {
 		return i
@@ -85,6 +94,7 @@ func autoDivideSpans(max, size int, spans []int) []int {
 }
 
 func sumInt(values []int) int {
+	// TODO - overflow risks?
 	sum := 0
 	for _, v := range values {
 		sum += v
@@ -125,13 +135,6 @@ func convertPercent(value string) float64 {
 		return -1
 	}
 	return float64(v) / 100
-}
-
-func isFalse(flag *bool) bool {
-	if flag != nil && !*flag {
-		return true
-	}
-	return false
 }
 
 func NewFloatPoint(f float64) *float64 {

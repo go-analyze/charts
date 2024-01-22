@@ -262,7 +262,7 @@ func (a *axisPainter) Render() (Box, error) {
 		TextRotation: opt.TextRotation,
 		Offset:       opt.LabelOffset,
 	})
-	// show auxilary lines
+	// show auxiliary lines
 	if opt.SplitLineShow {
 		style.StrokeColor = opt.SplitLineColor
 		style.StrokeWidth = 1

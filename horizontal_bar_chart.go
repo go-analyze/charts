@@ -107,7 +107,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				y += index * (barHeight + barMargin)
 			}
 
-			w := int(xRange.getHeight(item.Value))
+			w := xRange.getHeight(item.Value)
 			fillColor := seriesColor
 			if !item.Style.FillColor.IsZero() {
 				fillColor = item.Style.FillColor

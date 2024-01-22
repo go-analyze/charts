@@ -4,39 +4,32 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
 func TestGetDefaultInt(t *testing.T) {
-	assert := assert.New(t)
-
-	assert.Equal(1, getDefaultInt(0, 1))
-	assert.Equal(10, getDefaultInt(10, 1))
+	require.Equal(t, 1, getDefaultInt(0, 1))
+	require.Equal(t, 10, getDefaultInt(10, 1))
 }
 
 func TestCeilFloatToInt(t *testing.T) {
-	assert := assert.New(t)
-
-	assert.Equal(1, ceilFloatToInt(0.8))
-	assert.Equal(1, ceilFloatToInt(1.0))
-	assert.Equal(2, ceilFloatToInt(1.2))
+	require.Equal(t, 1, ceilFloatToInt(0.8))
+	require.Equal(t, 1, ceilFloatToInt(1.0))
+	require.Equal(t, 2, ceilFloatToInt(1.2))
 }
 
 func TestCommafWithDigits(t *testing.T) {
-	assert := assert.New(t)
+	require.Equal(t, "1.2", commafWithDigits(1.2))
+	require.Equal(t, "1.21", commafWithDigits(1.21231))
 
-	assert.Equal("1.2", commafWithDigits(1.2))
-	assert.Equal("1.21", commafWithDigits(1.21231))
-
-	assert.Equal("1.20k", commafWithDigits(1200.121))
-	assert.Equal("1.20M", commafWithDigits(1200000.121))
+	require.Equal(t, "1.20k", commafWithDigits(1200.121))
+	require.Equal(t, "1.20M", commafWithDigits(1200000.121))
 }
 
 func TestAutoDivide(t *testing.T) {
-	assert := assert.New(t)
-
-	assert.Equal([]int{
+	require.Equal(t, []int{
 		0,
 		85,
 		171,
@@ -49,20 +42,17 @@ func TestAutoDivide(t *testing.T) {
 }
 
 func TestGetRadius(t *testing.T) {
-	assert := assert.New(t)
-
-	assert.Equal(50.0, getRadius(100, "50%"))
-	assert.Equal(30.0, getRadius(100, "30"))
-	assert.Equal(40.0, getRadius(100, ""))
+	assert.Equal(t, 50.0, getRadius(100, "50%"))
+	assert.Equal(t, 30.0, getRadius(100, "30"))
+	assert.Equal(t, 40.0, getRadius(100, ""))
 }
 
 func TestMeasureTextMaxWidthHeight(t *testing.T) {
-	assert := assert.New(t)
 	p, err := NewPainter(PainterOptions{
 		Width:  400,
 		Height: 300,
 	})
-	assert.Nil(err)
+	require.NoError(t, err)
 	style := chart.Style{
 		FontSize: 10,
 	}
@@ -77,13 +67,11 @@ func TestMeasureTextMaxWidthHeight(t *testing.T) {
 		"Sat",
 		"Sun",
 	}, p)
-	assert.Equal(31, maxWidth)
-	assert.Equal(12, maxHeight)
+	assert.Equal(t, 31, maxWidth)
+	assert.Equal(t, 12, maxHeight)
 }
 
 func TestReverseSlice(t *testing.T) {
-	assert := assert.New(t)
-
 	arr := []string{
 		"Mon",
 		"Tue",
@@ -94,7 +82,7 @@ func TestReverseSlice(t *testing.T) {
 		"Sun",
 	}
 	reverseStringSlice(arr)
-	assert.Equal([]string{
+	assert.Equal(t, []string{
 		"Sun",
 		"Sat",
 		"Fri",
@@ -112,7 +100,7 @@ func TestReverseSlice(t *testing.T) {
 		9,
 	}
 	reverseIntSlice(numbers)
-	assert.Equal([]int{
+	assert.Equal(t, []int{
 		9,
 		7,
 		5,
@@ -122,21 +110,17 @@ func TestReverseSlice(t *testing.T) {
 }
 
 func TestConvertPercent(t *testing.T) {
-	assert := assert.New(t)
-
-	assert.Equal(-1.0, convertPercent("1"))
-	assert.Equal(-1.0, convertPercent("a%"))
-	assert.Equal(0.1, convertPercent("10%"))
+	assert.Equal(t, -1.0, convertPercent("1"))
+	assert.Equal(t, -1.0, convertPercent("a%"))
+	assert.Equal(t, 0.1, convertPercent("10%"))
 }
 
 func TestParseColor(t *testing.T) {
-	assert := assert.New(t)
-
 	c := parseColor("")
-	assert.True(c.IsZero())
+	assert.True(t, c.IsZero())
 
 	c = parseColor("#333")
-	assert.Equal(drawing.Color{
+	assert.Equal(t, drawing.Color{
 		R: 51,
 		G: 51,
 		B: 51,
@@ -144,7 +128,7 @@ func TestParseColor(t *testing.T) {
 	}, c)
 
 	c = parseColor("#313233")
-	assert.Equal(drawing.Color{
+	assert.Equal(t, drawing.Color{
 		R: 49,
 		G: 50,
 		B: 51,
@@ -152,7 +136,7 @@ func TestParseColor(t *testing.T) {
 	}, c)
 
 	c = parseColor("rgb(31,32,33)")
-	assert.Equal(drawing.Color{
+	assert.Equal(t, drawing.Color{
 		R: 31,
 		G: 32,
 		B: 33,
@@ -160,7 +144,7 @@ func TestParseColor(t *testing.T) {
 	}, c)
 
 	c = parseColor("rgba(50,51,52,250)")
-	assert.Equal(drawing.Color{
+	assert.Equal(t, drawing.Color{
 		R: 50,
 		G: 51,
 		B: 52,
@@ -169,31 +153,29 @@ func TestParseColor(t *testing.T) {
 }
 
 func TestIsLightColor(t *testing.T) {
-	assert := assert.New(t)
-
-	assert.True(isLightColor(drawing.Color{
+	assert.True(t, isLightColor(drawing.Color{
 		R: 255,
 		G: 255,
 		B: 255,
 	}))
-	assert.True(isLightColor(drawing.Color{
+	assert.True(t, isLightColor(drawing.Color{
 		R: 145,
 		G: 204,
 		B: 117,
 	}))
 
-	assert.False(isLightColor(drawing.Color{
+	assert.False(t, isLightColor(drawing.Color{
 		R: 88,
 		G: 112,
 		B: 198,
 	}))
 
-	assert.False(isLightColor(drawing.Color{
+	assert.False(t, isLightColor(drawing.Color{
 		R: 0,
 		G: 0,
 		B: 0,
 	}))
-	assert.False(isLightColor(drawing.Color{
+	assert.False(t, isLightColor(drawing.Color{
 		R: 16,
 		G: 12,
 		B: 42,

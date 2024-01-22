@@ -150,7 +150,6 @@ func (sl SeriesList) GetMaxMin(axisIndex int) (float64, float64) {
 			continue
 		}
 		for _, item := range series.Data {
-			// 如果为空值，忽略
 			if item.Value == nullValue {
 				continue
 			}
@@ -274,10 +273,9 @@ func NewValueLabelFormatter(seriesNames []string, layout string) LabelFormatter 
 	return NewLabelFormatter(seriesNames, layout)
 }
 
-// NewLabelFormatter returns a label formaatter
+// NewLabelFormatter returns a label formatter
 func NewLabelFormatter(seriesNames []string, layout string) LabelFormatter {
 	return func(index int, value, percent float64) string {
-		// 如果无percent的则设置为<0
 		percentText := ""
 		if percent >= 0 {
 			percentText = humanize.FtoaWithDigits(percent*100, 2) + "%"

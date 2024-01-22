@@ -1,14 +1,14 @@
 package charts
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestLineChart(t *testing.T) {
-	assert := assert.New(t)
-
 	tests := []struct {
 		render func(*Painter) ([]byte, error)
 		result string
@@ -183,15 +183,17 @@ func TestLineChart(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		p, err := NewPainter(PainterOptions{
-			Type:   ChartOutputSVG,
-			Width:  600,
-			Height: 400,
-		}, PainterThemeOption(defaultTheme))
-		assert.Nil(err)
-		data, err := tt.render(p)
-		assert.Nil(err)
-		assert.Equal(tt.result, string(data))
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			p, err := NewPainter(PainterOptions{
+				Type:   ChartOutputSVG,
+				Width:  600,
+				Height: 400,
+			}, PainterThemeOption(defaultTheme))
+			require.NoError(t, err)
+			data, err := tt.render(p)
+			require.NoError(t, err)
+			assert.Equal(t, tt.result, string(data))
+		})
 	}
 }

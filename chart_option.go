@@ -234,7 +234,6 @@ func MarkPointOptionFunc(seriesIndex int, markPointTypes ...string) OptionFunc {
 func (o *ChartOption) fillDefault() {
 	t := NewTheme(o.Theme)
 	o.theme = t
-	// 如果为空，初始化
 	axisCount := 1
 	for _, series := range o.SeriesList {
 		if series.AxisIndex >= axisCount {
@@ -279,7 +278,7 @@ func (o *ChartOption) fillDefault() {
 		for index, name := range o.Legend.Data {
 			nameIndexDict[name] = index
 		}
-		// ensure order of of series is consistent with legend
+		// ensure order of series is consistent with legend
 		sort.Slice(o.SeriesList, func(i, j int) bool {
 			return nameIndexDict[o.SeriesList[i].Name] < nameIndexDict[o.SeriesList[j].Name]
 		})

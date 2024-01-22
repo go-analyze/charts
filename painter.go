@@ -133,11 +133,11 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 	}
 	font := opts.Font
 	if font == nil {
-		f, err := GetDefaultFont()
-		if err != nil {
+		if f, err := GetDefaultFont(); err != nil {
 			return nil, err
+		} else {
+			font = f
 		}
-		font = f
 	}
 	fn := chart.PNG
 	if opts.Type == ChartOutputSVG {
@@ -257,11 +257,10 @@ func (p *Painter) ResetStyle() *Painter {
 // Bytes returns the data of draw canvas
 func (p *Painter) Bytes() ([]byte, error) {
 	buffer := bytes.Buffer{}
-	err := p.render.Save(&buffer)
-	if err != nil {
+	if err := p.render.Save(&buffer); err != nil {
 		return nil, err
 	}
-	return buffer.Bytes(), err
+	return buffer.Bytes(), nil
 }
 
 // MoveTo moves the cursor to a given point
@@ -429,7 +428,7 @@ func (p *Painter) LineStroke(points []Point) *Painter {
 	for index, point := range points {
 		x := point.X
 		y := point.Y
-		if y == int(math.MaxInt32) {
+		if y == math.MaxInt32 {
 			p.Stroke()
 			shouldMoveTo = true
 			continue
@@ -625,8 +624,7 @@ func (p *Painter) Ticks(opt TicksOption) *Painter {
 	for index, value := range values {
 		if index < first {
 			continue
-		}
-		if ! isTick(len(values), unit, index) {
+		} else if !isTick(len(values), unit, index) {
 			continue
 		}
 		if isVertical {
@@ -685,8 +683,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 	for index, text := range opt.TextList {
 		if index < opt.First {
 			continue
-		}
-		if opt.Unit != 0 && tickLimit && ! isTick(len(opt.TextList)-opt.First, opt.Unit, index-opt.First) {
+		} else if opt.Unit != 0 && tickLimit && !isTick(len(opt.TextList)-opt.First, opt.Unit, index-opt.First) {
 			continue
 		}
 		if isTextRotation {
@@ -711,7 +708,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 				x = 0
 			}
 		} else {
-			if index == len(opt.TextList) - 1 {
+			if index == len(opt.TextList)-1 {
 				x = start - box.Width() + 10
 			} else {
 				x = start - box.Width()>>1

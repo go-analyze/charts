@@ -6,25 +6,23 @@ import (
 )
 
 type labelRenderValue struct {
-	Text  string
-	Style Style
-	X     int
-	Y     int
-	// rotate
+	Text    string
+	Style   Style
+	X       int
+	Y       int
 	Radians float64
 }
 
 type LabelValue struct {
-	Index int
-	Value float64
-	X     int
-	Y     int
-	// rotate
-	Radians float64
+	Index     int
+	Value     float64
+	X         int
+	Y         int
+	Radians   float64
 	FontColor Color
-	FontSize float64
-	Orient   string
-	Offset   Box
+	FontSize  float64
+	Orient    string
+	Offset    Box
 }
 
 type SeriesLabelPainter struct {
@@ -101,10 +99,8 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 	if rotated {
 		renderValue.X = value.X + textBox.Width()>>1 - 1
 		p.ClearTextRotation()
-	} else {
-		if textBox.Width()%2 != 0 {
-			renderValue.X++
-		}
+	} else if textBox.Width()%2 != 0 {
+		renderValue.X++
 	}
 	renderValue.X += value.Offset.Left
 	renderValue.Y += value.Offset.Top

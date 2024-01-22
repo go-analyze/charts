@@ -200,6 +200,7 @@ type EChartsLabelOption struct {
 	Distance int    `json:"distance"`
 	Color    string `json:"color"`
 }
+
 type EChartsLegend struct {
 	Show      *bool            `json:"show"`
 	Data      []string         `json:"data"`

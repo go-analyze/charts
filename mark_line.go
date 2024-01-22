@@ -52,7 +52,11 @@ func (m *markLinePainter) Render() (Box, error) {
 		}
 		font := opt.Font
 		if font == nil {
-			font, _ = GetDefaultFont()
+			if f, err := GetDefaultFont(); err != nil {
+				return BoxZero, err
+			} else {
+				font = f
+			}
 		}
 		summary := s.Summary()
 		for _, markLine := range s.MarkLine.Data {

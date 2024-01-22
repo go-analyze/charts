@@ -5,16 +5,16 @@ import (
 )
 
 type XAxisOption struct {
-	// The font of x axis
+	// The font of x-axis
 	Font *truetype.Font
 	// The boundary gap on both sides of a coordinate axis.
 	// Nil or *true means the center part of two axis ticks
 	BoundaryGap *bool
-	// The data value of x axis
+	// The data value of x-axis
 	Data []string
 	// The theme of chart
 	Theme ColorPalette
-	// The font size of x axis label
+	// The font size of x-axis label
 	FontSize float64
 	// The flag for show axis, set this to *false will hide axis
 	Show *bool

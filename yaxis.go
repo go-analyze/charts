@@ -7,21 +7,21 @@ type YAxisOption struct {
 	Min *float64
 	// The maximum value of axis.
 	Max *float64
-	// The font of y axis
+	// The font of y-axis
 	Font *truetype.Font
-	// The data value of x axis
+	// The data value of y-axis
 	Data []string
 	// The theme of chart
 	Theme ColorPalette
-	// The font size of x axis label
+	// The font size of y-axis label
 	FontSize float64
 	// The position of axis, it can be 'left' or 'right'
 	Position string
 	// The color of label
 	FontColor Color
-	// Formatter for y axis text value
+	// Formatter for y-axis text value
 	Formatter string
-	// Color for y axis
+	// Color for y-axis
 	Color Color
 	// The flag for show axis, set this to *false will hide axis
 	Show           *bool
@@ -30,7 +30,7 @@ type YAxisOption struct {
 	isCategoryAxis bool
 }
 
-// NewYAxisOptions returns a y axis option
+// NewYAxisOptions returns a y-axis option
 func NewYAxisOptions(data []string, others ...[]string) []YAxisOption {
 	arr := [][]string{
 		data,
