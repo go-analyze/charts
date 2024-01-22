@@ -6,13 +6,14 @@ import (
 	"math"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type ValueFormatter func(float64) string
 
 type Painter struct {
-	render         chart.Renderer
+	render         chartdraw.Renderer
 	box            Box
 	parent         *Painter
 	style          Style
@@ -138,9 +139,9 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 	if font == nil {
 		font = GetDefaultFont()
 	}
-	fn := chart.PNG
+	fn := chartdraw.PNG
 	if opts.OutputFormat == ChartOutputSVG {
-		fn = chart.SVG
+		fn = chartdraw.SVG
 	}
 	width := opts.Width
 	height := opts.Height
@@ -286,7 +287,7 @@ func (p *Painter) QuadCurveTo(cx, cy, x, y int) *Painter {
 func (p *Painter) Pin(x, y, width int) *Painter {
 	r := float64(width) / 2
 	y -= width / 4
-	angle := chart.DegreesToRadians(15)
+	angle := chartdraw.DegreesToRadians(15)
 	box := p.box
 
 	startAngle := math.Pi/2 + angle
@@ -466,7 +467,7 @@ func (p *Painter) SmoothLineStroke(points []Point) *Painter {
 
 func (p *Painter) SetBackground(width, height int, color Color, inside ...bool) *Painter {
 	r := p.render
-	s := chart.Style{
+	s := chartdraw.Style{
 		FillColor: color,
 	}
 	// background color
@@ -550,14 +551,14 @@ func (p *Painter) ClearTextRotation() {
 	p.render.ClearTextRotation()
 }
 
-func (p *Painter) TextFit(body string, x, y, width int, textAligns ...string) chart.Box {
+func (p *Painter) TextFit(body string, x, y, width int, textAligns ...string) chartdraw.Box {
 	style := p.style
 	textWarp := style.TextWrap
-	style.TextWrap = chart.TextWrapWord
+	style.TextWrap = chartdraw.TextWrapWord
 	r := p.render
-	lines := chart.Text.WrapFit(r, body, width, style)
+	lines := chartdraw.Text.WrapFit(r, body, width, style)
 	p.SetTextStyle(style)
-	var output chart.Box
+	var output chartdraw.Box
 
 	textAlign := ""
 	if len(textAligns) != 0 {
@@ -577,7 +578,7 @@ func (p *Painter) TextFit(body string, x, y, width int, textAligns ...string) ch
 			x0 += (width - lineBox.Width()) >> 1
 		}
 		p.Text(line, x0, y0)
-		output.Right = chart.MaxInt(lineBox.Right, output.Right)
+		output.Right = chartdraw.MaxInt(lineBox.Right, output.Right)
 		output.Bottom += lineBox.Height()
 		if index < len(lines)-1 {
 			output.Bottom += +style.GetTextLineSpacing()

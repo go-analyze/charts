@@ -5,7 +5,7 @@ import (
 	"math"
 	"sort"
 
-	"github.com/wcharczuk/go-chart/v2"
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 const labelFontSize = 10
@@ -133,7 +133,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			return nil, err
 		}
 
-		top := chart.MaxInt(legendHeight, titleBox.Height())
+		top := chartdraw.MaxInt(legendHeight, titleBox.Height())
 		// if in vertical mode, the legend height is not calculated
 		if opt.Legend.Orient == OrientVertical {
 			top = titleBox.Height()
@@ -204,7 +204,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 				padLabelCount = defaultYAxisLabelCount(max-min, decimalData)
 			}
 		}
-		padLabelCount = chart.MaxInt(padLabelCount+yAxisOption.LabelCountAdjustment, 2)
+		padLabelCount = chartdraw.MaxInt(padLabelCount+yAxisOption.LabelCountAdjustment, 2)
 		// we call padRange directly because we need to do this padding before we can calculate the final labelCount for the axisRange
 		min, max = padRange(padLabelCount, min, max, minPadRange, maxPadRange)
 		if labelCount <= 0 {
@@ -218,7 +218,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			}
 			yAxisOption.LabelCount = labelCount
 		}
-		labelCount = chart.MaxInt(labelCount+yAxisOption.LabelCountAdjustment, 2)
+		labelCount = chartdraw.MaxInt(labelCount+yAxisOption.LabelCountAdjustment, 2)
 		r := axisRange{
 			p:           p,
 			divideCount: labelCount,

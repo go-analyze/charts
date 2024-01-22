@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestIsLightColor(t *testing.T) {

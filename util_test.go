@@ -6,7 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/wcharczuk/go-chart/v2"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 func TestGetDefaultInt(t *testing.T) {
@@ -72,7 +73,7 @@ func TestMeasureTextMaxWidthHeight(t *testing.T) {
 		Height: 300,
 	})
 	require.NoError(t, err)
-	style := chart.Style{
+	style := chartdraw.Style{
 		FontSize: 10,
 	}
 	p.SetStyle(style)

@@ -4,8 +4,9 @@ import (
 	"errors"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
-	"github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type tableChart struct {
@@ -351,9 +352,9 @@ func (t *tableChart) Render() (Box, error) {
 	}
 
 	r := p.render
-	fn := chart.PNG
+	fn := chartdraw.PNG
 	if p.outputFormat == ChartOutputSVG {
-		fn = chart.SVG
+		fn = chartdraw.SVG
 	}
 	newRender, err := fn(p.Width(), 100)
 	if err != nil {

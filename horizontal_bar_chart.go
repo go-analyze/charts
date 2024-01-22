@@ -2,7 +2,8 @@ package charts
 
 import (
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type horizontalBarChart struct {
@@ -107,7 +108,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			right := w
 			seriesPainter.OverrideDrawingStyle(Style{
 				FillColor: fillColor,
-			}).Rect(chart.Box{
+			}).Rect(chartdraw.Box{
 				Top:    y,
 				Left:   0,
 				Right:  right,

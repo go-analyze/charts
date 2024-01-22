@@ -5,7 +5,8 @@ import (
 	"math"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type pieChart struct {
@@ -79,8 +80,8 @@ func NewSector(cx int, cy int, radius float64, labelRadius float64, value float6
 	} else {
 		s.quadrant = 2
 	}
-	s.start = chart.PercentToRadians(currentValue/totalValue) - math.Pi/2
-	s.delta = chart.PercentToRadians(value / totalValue)
+	s.start = chartdraw.PercentToRadians(currentValue/totalValue) - math.Pi/2
+	s.delta = chartdraw.PercentToRadians(value / totalValue)
 	angle := s.start + s.delta/2
 	s.lineStartX = cx + int(radius*math.Cos(angle))
 	s.lineStartY = cy + int(radius*math.Sin(angle))
@@ -151,7 +152,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	cx := seriesPainter.Width() >> 1
 	cy := seriesPainter.Height() >> 1
 
-	diameter := chart.MinInt(seriesPainter.Width(), seriesPainter.Height())
+	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
 	radius := getRadius(float64(diameter), radiusValue)
 
 	labelLineWidth := 15

@@ -2,7 +2,8 @@ package charts
 
 import (
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type labelRenderValue struct {
@@ -116,5 +117,5 @@ func (o *SeriesLabelPainter) Render() (Box, error) {
 			o.p.Text(item.Text, item.X, item.Y)
 		}
 	}
-	return chart.BoxZero, nil
+	return chartdraw.BoxZero, nil
 }

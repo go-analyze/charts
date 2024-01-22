@@ -4,7 +4,8 @@ import (
 	"math"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type barChart struct {
@@ -119,14 +120,14 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				FillColor: fillColor,
 			})
 			if flagIs(true, opt.RoundedBarCaps) {
-				seriesPainter.RoundedRect(chart.Box{
+				seriesPainter.RoundedRect(chartdraw.Box{
 					Top:    top,
 					Left:   x,
 					Right:  x + barWidth,
 					Bottom: barMaxHeight - 1,
 				}, barWidth, true, false)
 			} else {
-				seriesPainter.Rect(chart.Box{
+				seriesPainter.Rect(chartdraw.Box{
 					Top:    top,
 					Left:   x,
 					Right:  x + barWidth,

@@ -5,7 +5,8 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-	"github.com/wcharczuk/go-chart/v2"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type SeriesData struct {
@@ -76,16 +77,19 @@ type SeriesMarkData struct {
 	// Type is the mark data type, it can be "max", "min", "average". "average" is only for mark line.
 	Type string
 }
+
 type SeriesMarkPoint struct {
 	// SymbolSize is the width of symbol, default value is 30.
 	SymbolSize int
 	// Data is the mark data for the series mark point.
 	Data []SeriesMarkData
 }
+
 type SeriesMarkLine struct {
 	// Data is the mark data for the series mark line.
 	Data []SeriesMarkData
 }
+
 type Series struct {
 	index int
 	// Type is the type of series, it can be "line", "bar" or "pie". Default value is "line".
@@ -95,7 +99,7 @@ type Series struct {
 	// YAxisIndex is the index for the axis, it must be 0 or 1.
 	YAxisIndex int
 	// Style represents the style for the series.
-	Style chart.Style
+	Style chartdraw.Style
 	// Label provides the series labels.
 	Label SeriesLabel
 	// Name specifies a name for the series.

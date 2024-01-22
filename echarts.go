@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/wcharczuk/go-chart/v2"
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 func convertToArray(data []byte) []byte {
@@ -148,7 +148,7 @@ func (ey *EChartsYAxis) UnmarshalJSON(data []byte) error {
 }
 
 type EChartsPadding struct {
-	Box chart.Box
+	Box chartdraw.Box
 }
 
 func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
@@ -165,14 +165,14 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 	}
 	switch len(arr) {
 	case 1:
-		eb.Box = chart.Box{
+		eb.Box = chartdraw.Box{
 			Left:   arr[0],
 			Top:    arr[0],
 			Bottom: arr[0],
 			Right:  arr[0],
 		}
 	case 2:
-		eb.Box = chart.Box{
+		eb.Box = chartdraw.Box{
 			Top:    arr[0],
 			Bottom: arr[0],
 			Left:   arr[1],
@@ -185,7 +185,7 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 			result[3] = result[1]
 		}
 		// top right, bottom left
-		eb.Box = chart.Box{
+		eb.Box = chartdraw.Box{
 			Top:    result[0],
 			Right:  result[1],
 			Bottom: result[2],
@@ -359,8 +359,8 @@ type EChartsTextStyle struct {
 	FontSize   float64 `json:"fontSize"`
 }
 
-func (et *EChartsTextStyle) ToStyle() chart.Style {
-	s := chart.Style{
+func (et *EChartsTextStyle) ToStyle() chartdraw.Style {
+	s := chartdraw.Style{
 		FontSize:  et.FontSize,
 		FontColor: parseColor(et.Color),
 	}
@@ -375,7 +375,7 @@ type EChartsOption struct {
 	Theme      string         `json:"theme"`
 	FontFamily string         `json:"fontFamily"`
 	Padding    EChartsPadding `json:"padding"`
-	Box        chart.Box      `json:"box"`
+	Box        chartdraw.Box  `json:"box"`
 	Width      int            `json:"width"`
 	Height     int            `json:"height"`
 	Title      struct {

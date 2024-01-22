@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/wcharczuk/go-chart/v2"
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 func BenchmarkMultiChartPNGRender(b *testing.B) {
@@ -20,7 +20,7 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 					"Walnut Brownie",
 				},
 			},
-			Padding: chart.Box{
+			Padding: chartdraw.Box{
 				Top:    100,
 				Right:  10,
 				Bottom: 10,
@@ -86,7 +86,7 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 							"Walnut Brownie",
 						},
 					},
-					Box: chart.Box{
+					Box: chartdraw.Box{
 						Top:    20,
 						Left:   400,
 						Right:  500,
@@ -129,7 +129,7 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 					"Walnut Brownie",
 				},
 			},
-			Padding: chart.Box{
+			Padding: chartdraw.Box{
 				Top:    100,
 				Right:  10,
 				Bottom: 10,
@@ -194,7 +194,7 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 							"Walnut Brownie",
 						},
 					},
-					Box: chart.Box{
+					Box: chartdraw.Box{
 						Top:    20,
 						Left:   400,
 						Right:  500,

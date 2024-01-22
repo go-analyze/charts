@@ -1,15 +1,15 @@
 package charts
 
 import (
-	"github.com/wcharczuk/go-chart/v2"
-	"github.com/wcharczuk/go-chart/v2/drawing"
+	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
-type Box = chart.Box
-type Style = chart.Style
+type Box = chartdraw.Box
+type Style = chartdraw.Style
 type Color = drawing.Color
 
-var BoxZero = chart.BoxZero
+var BoxZero = chartdraw.BoxZero
 
 // Offset provides an ability to configure a shift from the top or left alignments.
 type Offset struct {

@@ -5,7 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/wcharczuk/go-chart/v2/roboto"
+
+	"github.com/go-analyze/charts/chartdraw/roboto"
 )
 
 func TestInstallGetFont(t *testing.T) {

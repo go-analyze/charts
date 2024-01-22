@@ -5,7 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestInstallGetTheme(t *testing.T) {

@@ -4,7 +4,8 @@ import (
 	"math"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type lineChart struct {

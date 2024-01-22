@@ -5,8 +5,9 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
-	"github.com/wcharczuk/go-chart/v2/drawing"
+
+	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type radarChart struct {
@@ -98,7 +99,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 
 	cx := seriesPainter.Width() >> 1
 	cy := seriesPainter.Height() >> 1
-	diameter := chart.MinInt(seriesPainter.Width(), seriesPainter.Height())
+	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
 	radius := getRadius(float64(diameter), radiusValue)
 
 	divideCount := 5

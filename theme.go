@@ -5,8 +5,8 @@ import (
 	"hash/crc32"
 	"sync"
 
-	"github.com/wcharczuk/go-chart/v2"
-	"github.com/wcharczuk/go-chart/v2/drawing"
+	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 // ThemeLight is the default theme used, with series colors from echarts.
@@ -312,9 +312,9 @@ func (t *themeColorPalette) GetSeriesColor(index int) Color {
 			}
 		}
 
-		result.R = uint8(chart.MaxInt(chart.MinInt(int(result.R)+adjustment, rMax), rMin))
-		result.G = uint8(chart.MaxInt(chart.MinInt(int(result.G)+adjustment, gMax), gMin))
-		result.B = uint8(chart.MaxInt(chart.MinInt(int(result.B)+adjustment, bMax), bMin))
+		result.R = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.R)+adjustment, rMax), rMin))
+		result.G = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.G)+adjustment, gMax), gMin))
+		result.B = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.B)+adjustment, bMax), bMin))
 
 		return result
 	}

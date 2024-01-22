@@ -6,9 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/wcharczuk/go-chart/v2/drawing"
-
 	"github.com/go-analyze/charts"
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 /*

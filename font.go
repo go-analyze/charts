@@ -5,7 +5,8 @@ import (
 	"sync"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2/roboto"
+
+	"github.com/go-analyze/charts/chartdraw/roboto"
 )
 
 const defaultFontSize = 12.0
