@@ -24,9 +24,11 @@ type YAxisOption struct {
 	// Color for y-axis
 	Color Color
 	// The flag for show axis, set this to *false will hide axis
-	Show           *bool
-	DivideCount    int
-	Unit           int
+	Show *bool
+	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
+	Unit float64
+	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.
+	LabelCount     int
 	isCategoryAxis bool
 }
 
@@ -64,10 +66,11 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 		Font:           opt.Font,
 		FontColor:      opt.FontColor,
 		BoundaryGap:    FalseFlag(),
+		Unit:           opt.Unit,
+		LabelCount:     opt.LabelCount,
 		SplitLineShow:  true,
 		SplitLineColor: theme.GetAxisSplitLineColor(),
 		Show:           opt.Show,
-		Unit:           opt.Unit,
 	}
 	if !opt.Color.IsZero() {
 		axisOpt.FontColor = opt.Color

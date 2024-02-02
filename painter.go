@@ -3,6 +3,7 @@ package charts
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -36,24 +37,24 @@ type PainterOptions struct {
 type PainterOption func(*Painter)
 
 type TicksOption struct {
-	// the first tick
-	First  int
-	Length int
-	Orient string
-	Count  int
-	Unit   int
+	// the first tick index
+	First      int
+	Length     int
+	Orient     string
+	LabelCount int
+	DataCount  int
 }
 
 type MultiTextOption struct {
 	TextList     []string
 	Orient       string
-	Unit         int
 	Position     string
 	Align        string
 	TextRotation float64
 	Offset       Box
 	// The first text index
-	First int
+	First      int
+	LabelCount int
 }
 
 type GridOption struct {
@@ -587,12 +588,19 @@ func (p *Painter) TextFit(body string, x, y, width int, textAligns ...string) ch
 	return output
 }
 
-func isTick(totalRange int, unit int, index int) bool {
-	numTicks := (totalRange / unit) + 1
+func isTick(totalRange int, numTicks int, index int) bool {
+	if numTicks >= totalRange {
+		return true
+	} else if index == 0 || index == totalRange-1 {
+		return true // shortcut to always define tick at start and end of range
+	}
 	step := float64(totalRange-1) / float64(numTicks-1)
 	for i := int(float64(index) / step); i < numTicks; i++ {
 		value := int((float64(i) * step) + 0.5)
 		if value == index {
+			if nextValue := int((float64(i+1) * step) + 0.5); nextValue > totalRange {
+				break // rare rounding condition where we need to just wait for the last index instead
+			}
 			return true
 		} else if value > index {
 			break
@@ -602,28 +610,20 @@ func isTick(totalRange int, unit int, index int) bool {
 }
 
 func (p *Painter) Ticks(opt TicksOption) *Painter {
-	if opt.Count <= 0 || opt.Length <= 0 {
+	if opt.LabelCount <= 0 || opt.Length <= 0 {
 		return p
-	}
-	count := opt.Count
-	first := opt.First
-	width := p.Width()
-	height := p.Height()
-	unit := 1
-	if opt.Unit > 1 {
-		unit = opt.Unit
 	}
 	var values []int
 	isVertical := opt.Orient == OrientVertical
 	if isVertical {
-		values = autoDivide(height, count)
+		values = autoDivide(p.Height(), opt.DataCount)
 	} else {
-		values = autoDivide(width, count)
+		values = autoDivide(p.Width(), opt.DataCount)
 	}
 	for index, value := range values {
-		if index < first {
+		if index < opt.First {
 			continue
-		} else if !isTick(len(values), unit, index) {
+		} else if !isTick(len(values)-opt.First, opt.LabelCount+1, index-opt.First) {
 			continue
 		}
 		if isVertical {
@@ -658,45 +658,49 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 		return p
 	}
 	count := len(opt.TextList)
-	positionCenter := true
-	tickLimit := true
-	if containsString([]string{
+	positionCenter := !containsString([]string{
 		PositionLeft,
 		PositionTop,
-	}, opt.Position) {
-		positionCenter = false
-		count--
-	}
+	}, opt.Position)
+	tickLimit := true
 	width := p.Width()
 	height := p.Height()
-	var values []int
+	var positions []int
 	isVertical := opt.Orient == OrientVertical
 	if isVertical {
-		values = autoDivide(height, count)
+		// TODO - y axis labels appear shifted up, using exact size results in them missing a line
+		positions = autoDivide(height, count)
 		tickLimit = false
+		fmt.Printf("label c: %v, len: %v\n", count, len(positions))
 	} else {
-		values = autoDivide(width, count)
+		positions = autoDivide(width, count)
 	}
 	isTextRotation := opt.TextRotation != 0
-	offset := opt.Offset
-	for index, text := range opt.TextList {
-		if index < opt.First {
+	positionCount := len(positions)
+	fmt.Printf("labl")
+	for index, start := range positions {
+		if index == positionCount-1 {
+			// values has one item more than we can map to text
+			break
+		} else if index < opt.First {
 			continue
-		} else if opt.Unit != 0 && tickLimit && !isTick(len(opt.TextList)-opt.First, opt.Unit, index-opt.First) {
+		} else if tickLimit && index != count-1 /* one off case for last label due to values and label qty difference */ &&
+			!isTick(positionCount-opt.First, opt.LabelCount+1, index-opt.First) {
 			continue
 		}
+		fmt.Printf(" %d - %v", index, start)
 		if isTextRotation {
 			p.ClearTextRotation()
 			p.SetTextRotation(opt.TextRotation)
 		}
+		text := opt.TextList[index]
 		box := p.MeasureText(text)
-		start := values[index]
-		if positionCenter {
-			start = (values[index] + values[index+1]) >> 1
-		}
 		x := 0
 		y := 0
 		if isVertical {
+			if positionCenter {
+				start = (positions[index] + positions[index+1]) >> 1
+			}
 			y = start + box.Height()>>1
 			switch opt.Align {
 			case AlignRight:
@@ -707,16 +711,32 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 				x = 0
 			}
 		} else {
-			if index == len(opt.TextList)-1 {
-				x = start - box.Width() + 10
+			if positionCenter {
+				// graphs with limited data samples generally look better with the samples directly below the label
+				// for that reason we will exactly center these graphs, but graphs with higher sample counts will
+				// attempt to space the labels better rather than line up directly to the graph points
+				exactLabels := count == opt.LabelCount
+				if !exactLabels && index == 0 {
+					x = start // align to the actual start (left side of tick space)
+				} else if !exactLabels && index == count-1 {
+					x = width - box.Width() // align to the right side of tick space
+				} else {
+					start = (positions[index] + positions[index+1]) >> 1
+					x = start - box.Width()>>1 // align to center of tick space
+				}
 			} else {
-				x = start - box.Width()>>1
+				if index == count-1 {
+					x = width - box.Width() // align to the right side of tick space
+				} else {
+					x = start // align to the left side of the tick space
+				}
 			}
 		}
-		x += offset.Left
-		y += offset.Top
+		x += opt.Offset.Left
+		y += opt.Offset.Top
 		p.Text(text, x, y)
 	}
+	fmt.Printf("\n")
 	if isTextRotation {
 		p.ClearTextRotation()
 	}

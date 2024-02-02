@@ -1,10 +1,10 @@
 package charts
 
 import (
+	"math"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
-	"github.com/wcharczuk/go-chart/v2"
 )
 
 type axisPainter struct {
@@ -33,8 +33,6 @@ type AxisOption struct {
 	Show *bool
 	// The position of axis, it can be 'left', 'top', 'right' or 'bottom'
 	Position string
-	// Number of segments that the axis is split into. Note that this number serves only as a recommendation.
-	SplitNumber int
 	// The line color of axis
 	StrokeColor Color
 	// The line width
@@ -59,7 +57,10 @@ type AxisOption struct {
 	TextRotation float64
 	// The offset of label
 	LabelOffset Box
-	Unit        int
+	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
+	Unit float64
+	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions. This value takes priority over Unit.
+	LabelCount int
 }
 
 func (a *axisPainter) Render() (Box, error) {
@@ -106,7 +107,6 @@ func (a *axisPainter) Render() (Box, error) {
 		}
 	}
 	dataCount := len(data)
-	tickCount := dataCount
 
 	boundaryGap := true
 	if isFalse(opt.BoundaryGap) {
@@ -116,12 +116,10 @@ func (a *axisPainter) Render() (Box, error) {
 		opt.Position == PositionRight
 
 	labelPosition := ""
-	if !boundaryGap {
-		tickCount--
-		labelPosition = PositionLeft
-	}
 	if isVertical && boundaryGap {
 		labelPosition = PositionCenter
+	} else if !boundaryGap {
+		labelPosition = PositionLeft
 	}
 
 	// if less than zero, it means not processing
@@ -145,21 +143,6 @@ func (a *axisPainter) Render() (Box, error) {
 	textMaxWidth, textMaxHeight := top.MeasureTextMaxWidthHeight(data)
 	if isTextRotation {
 		top.ClearTextRotation()
-	}
-
-	// Add 30px to calculate text display area
-	textFillWidth := float64(textMaxWidth + 20)
-	// Calculate more suitable display item based on text width
-	fitTextCount := ceilFloatToInt(float64(top.Width()) / textFillWidth)
-
-	unit := opt.Unit
-	if unit <= 0 {
-		unit = ceilFloatToInt(float64(dataCount) / float64(fitTextCount))
-		unit = chart.MaxInt(unit, opt.SplitNumber)
-		// even number
-		if unit%2 == 0 && dataCount%(unit+1) == 0 {
-			unit++
-		}
 	}
 
 	width := 0
@@ -224,16 +207,47 @@ func (a *axisPainter) Render() (Box, error) {
 		orient = OrientHorizontal
 	}
 
+	labelCount := opt.LabelCount
+	if labelCount <= 0 {
+		var maxLabelCount int
+		// Add 20px for some minimal extra padding and calculate more suitable display item count on text width
+		if orient == OrientVertical {
+			maxLabelCount = top.Height() / (textMaxHeight + 20)
+		} else {
+			maxLabelCount = top.Width() / (textMaxWidth + 20)
+		}
+		if opt.Unit > 0 {
+			multiplier := 1.0
+			for {
+				labelCount = int(math.Ceil(float64(dataCount) / (opt.Unit * multiplier)))
+				if labelCount > maxLabelCount {
+					multiplier++
+				} else {
+					break
+				}
+			}
+		} else {
+			labelCount = maxLabelCount
+			if ((dataCount/(labelCount-1))%5 == 0) || ((dataCount/(labelCount-1))%2 == 0) {
+				// prefer %5 or %2 units if reasonable
+				labelCount--
+			}
+		}
+	}
+	if labelCount > dataCount {
+		labelCount = dataCount
+	}
+
 	if strokeWidth > 0 {
 		p.Child(PainterPaddingOption(Box{
 			Top:  ticksPaddingTop,
 			Left: ticksPaddingLeft,
 		})).Ticks(TicksOption{
-			Count:  tickCount,
-			Length: tickLength,
-			Unit:   unit,
-			Orient: orient,
-			First:  opt.FirstAxis,
+			LabelCount: labelCount,
+			DataCount:  dataCount,
+			Length:     tickLength,
+			Orient:     orient,
+			First:      opt.FirstAxis,
 		})
 		p.LineStroke([]Point{
 			{
@@ -256,12 +270,14 @@ func (a *axisPainter) Render() (Box, error) {
 		Align:        textAlign,
 		TextList:     data,
 		Orient:       orient,
-		Unit:         unit,
+		LabelCount:   labelCount,
 		Position:     labelPosition,
 		TextRotation: opt.TextRotation,
 		Offset:       opt.LabelOffset,
 	})
 	if opt.SplitLineShow { // show auxiliary lines
+		// TODO - test if this is working correct
+		tickCount := labelCount + 1 // always one more tick than labels
 		style.StrokeColor = opt.SplitLineColor
 		style.StrokeWidth = 1
 		top.OverrideDrawingStyle(style)
