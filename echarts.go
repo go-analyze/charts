@@ -455,7 +455,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		o.XAxis = XAxisOption{
 			BoundaryGap: xAxisData.BoundaryGap,
 			Data:        xAxisData.Data,
-			SplitNumber: xAxisData.SplitNumber,
+			LabelCount:  xAxisData.SplitNumber,
 		}
 	}
 	yAxisOptions := make([]YAxisOption, len(eo.YAxis.Data))

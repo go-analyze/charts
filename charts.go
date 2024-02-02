@@ -159,11 +159,16 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		if len(opt.YAxisOptions) > index {
 			yAxisOption = opt.YAxisOptions[index]
 		}
-		divideCount := yAxisOption.DivideCount
-		if divideCount <= 0 {
-			divideCount = defaultAxisDivideCount
-		}
 		max, min := opt.SeriesList.GetMaxMin(index)
+		span := max - min
+		divideCount := yAxisOption.LabelCount
+		if divideCount <= 0 {
+			if yAxisOption.Unit > 0 {
+				divideCount = int(span / yAxisOption.Unit)
+			} else {
+				divideCount = int(span / defaultAxisDivideCount)
+			}
+		}
 		r := NewRange(AxisRangeOption{
 			Painter: p,
 			Min:     min,
@@ -188,7 +193,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			yAxisOption.Data = r.Values()
 		} else {
 			yAxisOption.isCategoryAxis = true
-			// since the x-axis is the value part, it's label is calculated and processed seperately
+			// since the x-axis is the value part, it's label is calculated and processed separately
 			opt.XAxis.Data = NewRange(AxisRangeOption{
 				Painter: p,
 				Min:     min,
@@ -327,7 +332,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		}
 	}
 	if len(horizontalBarSeriesList) != 0 {
-		renderOpt.YAxisOptions[0].DivideCount = len(renderOpt.YAxisOptions[0].Data)
 		renderOpt.YAxisOptions[0].Unit = 1
 	}
 
