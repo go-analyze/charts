@@ -37,15 +37,6 @@ func containsInt(values []int, value int) bool {
 	return false
 }
 
-func containsString(values []string, value string) bool {
-	for _, v := range values {
-		if v == value {
-			return true
-		}
-	}
-	return false
-}
-
 func ceilFloatToInt(value float64) int {
 	// TODO - why not use math.Ceil?
 	// TODO - check usage for overflow risks

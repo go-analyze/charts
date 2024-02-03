@@ -69,13 +69,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	theme := opt.Theme
 
 	max, min := seriesList.GetMaxMin(0)
-	xRange := NewRange(AxisRangeOption{
-		Painter:     p,
-		Min:         min,
-		Max:         max,
-		DivideCount: defaultAxisDivideCount,
-		Size:        seriesPainter.Width(),
-	})
+	xRange := NewRange(p, seriesPainter.Width(), defaultAxisDivideCount, min, max, false) // TODO - pad range?
 	seriesNames := seriesList.Names()
 
 	rendererList := []Renderer{}

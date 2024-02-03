@@ -3,7 +3,6 @@ package charts
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -42,13 +41,13 @@ type TicksOption struct {
 	Length     int
 	Orient     string
 	LabelCount int
-	DataCount  int
+	TickSpaces int
 }
 
 type MultiTextOption struct {
 	TextList     []string
 	Orient       string
-	Position     string
+	CenterLabels bool
 	Align        string
 	TextRotation float64
 	Offset       Box
@@ -616,9 +615,9 @@ func (p *Painter) Ticks(opt TicksOption) *Painter {
 	var values []int
 	isVertical := opt.Orient == OrientVertical
 	if isVertical {
-		values = autoDivide(p.Height(), opt.DataCount)
+		values = autoDivide(p.Height(), opt.TickSpaces)
 	} else {
-		values = autoDivide(p.Width(), opt.DataCount)
+		values = autoDivide(p.Width(), opt.TickSpaces)
 	}
 	for index, value := range values {
 		if index < opt.First {
@@ -658,37 +657,35 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 		return p
 	}
 	count := len(opt.TextList)
-	positionCenter := !containsString([]string{
-		PositionLeft,
-		PositionTop,
-	}, opt.Position)
-	tickLimit := true
 	width := p.Width()
 	height := p.Height()
 	var positions []int
 	isVertical := opt.Orient == OrientVertical
 	if isVertical {
-		// TODO - y axis labels appear shifted up, using exact size results in them missing a line
-		positions = autoDivide(height, count)
-		tickLimit = false
-		fmt.Printf("label c: %v, len: %v\n", count, len(positions))
+		if opt.CenterLabels {
+			positions = autoDivide(height, count)
+		} else {
+			positions = autoDivide(height, count-1)
+		}
 	} else {
-		positions = autoDivide(width, count)
+		if opt.CenterLabels {
+			positions = autoDivide(width, count)
+		} else {
+			positions = autoDivide(width, count-1)
+		}
 	}
 	isTextRotation := opt.TextRotation != 0
 	positionCount := len(positions)
-	fmt.Printf("labl")
 	for index, start := range positions {
-		if index == positionCount-1 {
-			// values has one item more than we can map to text
-			break
+		if opt.CenterLabels && index == positionCount-1 {
+			break // positions have one item more than we can map to text, this extra value is used to center against
 		} else if index < opt.First {
 			continue
-		} else if tickLimit && index != count-1 /* one off case for last label due to values and label qty difference */ &&
+		} else if !isVertical &&
+			index != count-1 /* one off case for last label due to values and label qty difference */ &&
 			!isTick(positionCount-opt.First, opt.LabelCount+1, index-opt.First) {
 			continue
 		}
-		fmt.Printf(" %d - %v", index, start)
 		if isTextRotation {
 			p.ClearTextRotation()
 			p.SetTextRotation(opt.TextRotation)
@@ -698,8 +695,10 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 		x := 0
 		y := 0
 		if isVertical {
-			if positionCenter {
+			if opt.CenterLabels {
 				start = (positions[index] + positions[index+1]) >> 1
+			} else {
+				start = positions[index]
 			}
 			y = start + box.Height()>>1
 			switch opt.Align {
@@ -711,7 +710,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 				x = 0
 			}
 		} else {
-			if positionCenter {
+			if opt.CenterLabels {
 				// graphs with limited data samples generally look better with the samples directly below the label
 				// for that reason we will exactly center these graphs, but graphs with higher sample counts will
 				// attempt to space the labels better rather than line up directly to the graph points
@@ -736,7 +735,6 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 		y += opt.Offset.Top
 		p.Text(text, x, y)
 	}
-	fmt.Printf("\n")
 	if isTextRotation {
 		p.ClearTextRotation()
 	}

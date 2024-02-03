@@ -160,8 +160,8 @@ func main() {
 		FillColor:   drawing.ColorBlack,
 		StrokeWidth: 1,
 	}).Ticks(charts.TicksOption{
-		Count:  7,
-		Length: 5,
+		LabelCount: 7,
+		Length:     5,
 	})
 
 	// points on the coordinate axis, displayed every 2 grids
@@ -178,9 +178,8 @@ func main() {
 		FillColor:   drawing.ColorBlack,
 		StrokeWidth: 1,
 	}).Ticks(charts.TicksOption{
-		Unit:   2,
-		Count:  7,
-		Length: 5,
+		LabelCount: 7,
+		Length:     5,
 	})
 
 	// the point of the coordinate axis, verticle
@@ -197,9 +196,9 @@ func main() {
 		FillColor:   drawing.ColorBlack,
 		StrokeWidth: 1,
 	}).Ticks(charts.TicksOption{
-		Orient: charts.OrientVertical,
-		Count:  7,
-		Length: 5,
+		Orient:     charts.OrientVertical,
+		LabelCount: 7,
+		Length:     5,
 	})
 
 	// display text horizontally
@@ -239,7 +238,7 @@ func main() {
 		FontColor: drawing.ColorBlack,
 		FontSize:  10,
 	}).MultiText(charts.MultiTextOption{
-		Position: charts.PositionLeft,
+		CenterLabels: false,
 		TextList: []string{
 			"Mon",
 			"Tue",
@@ -314,9 +313,9 @@ func main() {
 		FontColor: drawing.ColorBlack,
 		FontSize:  10,
 	}).MultiText(charts.MultiTextOption{
-		Orient:   charts.OrientVertical,
-		Position: charts.PositionTop,
-		Align:    charts.AlignCenter,
+		Orient:       charts.OrientVertical,
+		CenterLabels: false,
+		Align:        charts.AlignCenter,
 		TextList: []string{
 			"Mon",
 			"Tue",
