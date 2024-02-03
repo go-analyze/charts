@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -74,7 +73,7 @@ func TestPieChart(t *testing.T) {
 				Bottom: 20,
 			})))
 			require.NoError(t, err)
-			assert.Equal(t, tt.result, string(data))
+			assertEqualSVG(t, tt.result, string(data))
 		})
 	}
 }
