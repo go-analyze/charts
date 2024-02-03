@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -114,7 +113,7 @@ func TestTableChart(t *testing.T) {
 			require.NoError(t, err)
 			data, err := tt.render(p)
 			require.NoError(t, err)
-			assert.Equal(t, tt.result, string(data))
+			assertEqualSVG(t, tt.result, string(data))
 		})
 	}
 }

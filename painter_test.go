@@ -316,7 +316,7 @@ func TestPainter(t *testing.T) {
 			tt.fn(d)
 			data, err := d.Bytes()
 			require.NoError(t, err)
-			assert.Equal(t, tt.result, string(data))
+			assertEqualSVG(t, tt.result, string(data))
 		})
 	}
 }
@@ -349,5 +349,5 @@ func TestPainterTextFit(t *testing.T) {
 
 	buf, err := p.Bytes()
 	require.NoError(t, err)
-	assert.Equal(t, `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="300">\n<text x="0" y="20" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Hello</text><text x="0" y="40" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">World!</text><text x="0" y="100" style="stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Hello World!</text></svg>`, string(buf))
+	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<text x=\"0\" y=\"20\" style=\"stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Hello</text><text x=\"0\" y=\"40\" style=\"stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">World!</text><text x=\"0\" y=\"100\" style=\"stroke-width:0;stroke:none;fill:rgba(51,51,51,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Hello World!</text></svg>", string(buf))
 }
