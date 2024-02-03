@@ -159,31 +159,26 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		if len(opt.YAxisOptions) > index {
 			yAxisOption = opt.YAxisOptions[index]
 		}
+		padRange := true
 		max, min := opt.SeriesList.GetMaxMin(index)
+		if yAxisOption.Min != nil && *yAxisOption.Min < min {
+			padRange = false
+			min = *yAxisOption.Min
+		}
+		if yAxisOption.Max != nil && *yAxisOption.Max > max {
+			padRange = false
+			max = *yAxisOption.Max
+		}
 		span := max - min
 		divideCount := yAxisOption.LabelCount
 		if divideCount <= 0 {
 			if yAxisOption.Unit > 0 {
 				divideCount = int(span / yAxisOption.Unit)
 			} else {
-				divideCount = int(span / defaultAxisDivideCount)
+				divideCount = defaultAxisDivideCount
 			}
 		}
-		r := NewRange(AxisRangeOption{
-			Painter: p,
-			Min:     min,
-			Max:     max,
-			// the height needs to be subtracted from the height of the x-axis
-			Size: rangeHeight,
-			// separate quantity
-			DivideCount: divideCount,
-		})
-		if yAxisOption.Min != nil && *yAxisOption.Min <= min {
-			r.min = *yAxisOption.Min
-		}
-		if yAxisOption.Max != nil && *yAxisOption.Max >= max {
-			r.max = *yAxisOption.Max
-		}
+		r := NewRange(p, rangeHeight, divideCount, min, max, padRange)
 		result.axisRanges[index] = r
 
 		if yAxisOption.Theme == nil {
@@ -194,15 +189,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		} else {
 			yAxisOption.isCategoryAxis = true
 			// since the x-axis is the value part, it's label is calculated and processed separately
-			opt.XAxis.Data = NewRange(AxisRangeOption{
-				Painter: p,
-				Min:     min,
-				Max:     max,
-				// the height needs to be subtracted from the height of the x-axis
-				Size: rangeHeight,
-				// separate quantities
-				DivideCount: defaultAxisDivideCount,
-			}).Values()
+			opt.XAxis.Data = NewRange(p, rangeHeight, defaultAxisDivideCount, min, max, padRange).Values()
 			opt.XAxis.isValueAxis = true
 		}
 		reverseStringSlice(yAxisOption.Data)

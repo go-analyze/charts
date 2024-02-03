@@ -32,13 +32,7 @@ func TestMarkLine(t *testing.T) {
 					FontColor:   drawing.ColorBlack,
 					StrokeColor: drawing.ColorBlack,
 					Series:      series,
-					Range: NewRange(AxisRangeOption{
-						Painter:     p,
-						Min:         0,
-						Max:         5,
-						Size:        p.Height(),
-						DivideCount: 6,
-					}),
+					Range:       NewRange(p, p.Height(), 6, 0.0, 5.0, false),
 				})
 				if _, err := markLine.Render(); err != nil {
 					return nil, err

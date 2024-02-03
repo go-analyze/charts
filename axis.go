@@ -108,19 +108,9 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 	dataCount := len(data)
 
-	boundaryGap := true
-	if isFalse(opt.BoundaryGap) {
-		boundaryGap = false
-	}
+	centerLabels := !isFalse(opt.BoundaryGap)
 	isVertical := opt.Position == PositionLeft ||
 		opt.Position == PositionRight
-
-	labelPosition := ""
-	if isVertical && boundaryGap {
-		labelPosition = PositionCenter
-	} else if !boundaryGap {
-		labelPosition = PositionLeft
-	}
 
 	// if less than zero, it means not processing
 	tickLength := getDefaultInt(opt.TickLength, 5)
@@ -237,6 +227,13 @@ func (a *axisPainter) Render() (Box, error) {
 	if labelCount > dataCount {
 		labelCount = dataCount
 	}
+	tickSpaces := dataCount
+	if !centerLabels {
+		// there is always one more tick than data sample, and if we are centering labels we use that extra tick to
+		// center the label against, if not centering then we need one less tick spacing
+		// passing the tickSpaces reduces the need to copy the logic from painter.go:MultiText
+		tickSpaces--
+	}
 
 	if strokeWidth > 0 {
 		p.Child(PainterPaddingOption(Box{
@@ -244,7 +241,7 @@ func (a *axisPainter) Render() (Box, error) {
 			Left: ticksPaddingLeft,
 		})).Ticks(TicksOption{
 			LabelCount: labelCount,
-			DataCount:  dataCount,
+			TickSpaces: tickSpaces,
 			Length:     tickLength,
 			Orient:     orient,
 			First:      opt.FirstAxis,
@@ -271,13 +268,12 @@ func (a *axisPainter) Render() (Box, error) {
 		TextList:     data,
 		Orient:       orient,
 		LabelCount:   labelCount,
-		Position:     labelPosition,
+		CenterLabels: centerLabels,
 		TextRotation: opt.TextRotation,
 		Offset:       opt.LabelOffset,
 	})
+
 	if opt.SplitLineShow { // show auxiliary lines
-		// TODO - test if this is working correct
-		tickCount := labelCount + 1 // always one more tick than labels
 		style.StrokeColor = opt.SplitLineColor
 		style.StrokeWidth = 1
 		top.OverrideDrawingStyle(style)
@@ -288,7 +284,7 @@ func (a *axisPainter) Render() (Box, error) {
 				x0 = 0
 				x1 = top.Width() - p.Width()
 			}
-			yValues := autoDivide(height, tickCount)
+			yValues := autoDivide(height, tickSpaces)
 			yValues = yValues[0 : len(yValues)-1]
 			for _, y := range yValues {
 				top.LineStroke([]Point{
@@ -305,7 +301,8 @@ func (a *axisPainter) Render() (Box, error) {
 		} else {
 			y0 := p.Height() - defaultXAxisHeight
 			y1 := top.Height() - defaultXAxisHeight
-			for index, x := range autoDivide(width, tickCount) {
+			xValues := autoDivide(width, tickSpaces)
+			for index, x := range xValues {
 				if index == 0 {
 					continue
 				}

@@ -1,6 +1,8 @@
 package charts
 
-import "github.com/golang/freetype/truetype"
+import (
+	"github.com/golang/freetype/truetype"
+)
 
 type YAxisOption struct {
 	// The minimun value of axis.

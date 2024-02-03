@@ -47,8 +47,7 @@ func main() {
 		}, "50"),
 		func(opt *charts.ChartOption) {
 			opt.XAxis.FirstAxis = firstAxis
-			// 必须要比计算得来的最小值更大(每60分钟)
-			opt.XAxis.SplitNumber = 60
+			opt.XAxis.Unit = 10
 			opt.Legend.Padding = charts.Box{
 				Top:    5,
 				Bottom: 10,
