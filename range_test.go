@@ -6,6 +6,69 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestPadRange(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name             string
+		expectedMinValue float64
+		expectedMaxValue float64
+		minValue         float64
+		maxValue         float64
+		labelCount       int
+	}{
+		{
+			name:             "PadMaxOnly",
+			expectedMinValue: 0.0,
+			expectedMaxValue: 10.5,
+			minValue:         0.0,
+			maxValue:         10.0,
+			labelCount:       10,
+		},
+		{
+			name:             "PadMinToZero",
+			expectedMinValue: 0.0,
+			expectedMaxValue: 21.0,
+			minValue:         1.0,
+			maxValue:         20.0,
+			labelCount:       10,
+		},
+		{
+			name:             "PadNegativeMinPositiveMax",
+			expectedMinValue: -5.0,
+			expectedMaxValue: 12.0,
+			minValue:         -3.0,
+			maxValue:         10.0,
+			labelCount:       10,
+		},
+		{
+			name:             "PadNegativeMinNegativeMax",
+			expectedMinValue: -20.0,
+			expectedMaxValue: -9.0,
+			minValue:         -20.0,
+			maxValue:         -10.0,
+			labelCount:       10,
+		},
+		{
+			name:             "PadPositiveMinPositiveMax",
+			expectedMinValue: 100.0,
+			expectedMaxValue: 214.0,
+			minValue:         100.0,
+			maxValue:         200.0,
+			labelCount:       20,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			min, max := padRange(tc.labelCount, tc.minValue, tc.maxValue)
+
+			assert.Equal(t, tc.expectedMinValue, min, "Unexpected value rounding %v", tc.minValue)
+			assert.Equal(t, tc.expectedMaxValue, max, "Unexpected value rounding %v", tc.maxValue)
+		})
+	}
+}
+
 func TestFriendlyRound(t *testing.T) {
 	t.Parallel()
 
