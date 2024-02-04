@@ -5,9 +5,9 @@ import (
 )
 
 const rangeMinPaddingPercentMin = 0.0 // increasing could result in forced negative y-axis minimum
-const rangeMinPaddingPercentMax = 10.0
-const rangeMaxPaddingPercentMin = 5.0  // set minimum spacing at the top of the graph
-const rangeMaxPaddingPercentMax = 20.0 // larger to allow better chances of finding a good interval
+const rangeMinPaddingPercentMax = 20.0
+const rangeMaxPaddingPercentMin = 5.0 // set minimum spacing at the top of the graph
+const rangeMaxPaddingPercentMax = 20.0
 const rangeDefaultPaddingPercent = 5.0
 
 type axisRange struct {
@@ -35,58 +35,51 @@ func NewRange(painter *Painter, size, labelCount int, min, max float64, addPaddi
 func padRange(labelCount int, min, max float64) (float64, float64) {
 	minResult := min
 	maxResult := max
-	span := max - min
-	spanIncrement := span * 0.01 // must be 1% of the span
+	spanIncrement := (max - min) * 0.01 // must be 1% of the span
 	var spanIncrementMultiplier float64
 	// find a min value to start our range from
 	// we prefer (in order, negative if necessary), 0, 1, 10, 100, ..., 2, 20, ..., 5, 50, ...
+	updatedMin := false
 rootLoop:
 	for _, multiple := range []float64{1.0, 2.0, 5.0} {
+		if min < 0 {
+			multiple *= -1 // convert multiple sign to adjust targetVal correctly
+		}
 	expoLoop:
 		for expo := -1.0; expo < 6; expo++ {
+			if expo == -1.0 && multiple != 1.0 {
+				continue expoLoop // we only want to test targetVal 0 once
+			}
 			// use 10^expo so that we prefer 0, 10, 100, etc numbers
-			targetVal := math.Floor(math.Pow(10, expo)) * multiple // Math.Floor so -1 expo will convert 0.1 to 0
-			if targetVal == 0 && multiple != 1 {
-				continue expoLoop // we already tested this value
-			}
-			if min < 0 {
-				targetVal *= -1
-			}
-			// set default and then check if we can even look for this target within our padding range
-			if targetVal > min-(spanIncrement*rangeMinPaddingPercentMin) {
-				continue expoLoop // we need to get further from zero to get into our minimum padding
-			} else if targetVal < min-(spanIncrement*rangeMinPaddingPercentMax) {
-				break expoLoop // no match possible, use the min padding as a default
-			}
-
-			spanIncrementMultiplier = rangeMinPaddingPercentMin
-			for ; spanIncrementMultiplier < rangeMinPaddingPercentMax; spanIncrementMultiplier++ {
-				adjustedMin := min - (spanIncrement * spanIncrementMultiplier)
-				if adjustedMin <= targetVal { // we found our target value between the min and adjustedMin
-					// set the min to the target value and the multiplier so the max can be set
-					spanIncrementMultiplier = (min - targetVal) / spanIncrement
-					minResult = targetVal
-					break rootLoop
-				}
-			}
+			targetVal := math.Floor(math.Pow(10, expo)) * multiple // Math.Floor to convert 0.1 from -1 expo into 0
+			if targetVal < min-(spanIncrement*rangeMinPaddingPercentMax) {
+				break expoLoop // no match possible, target value will only get further from start
+			} else if targetVal <= min-(spanIncrement*rangeMinPaddingPercentMin) {
+				// targetVal can be between our span increment increases, calculate and set result
+				updatedMin = true
+				spanIncrementMultiplier = (min - targetVal) / spanIncrement
+				minResult = targetVal
+				break rootLoop
+			} // else try again to meet minimum padding requirements
 		}
 	}
-	if minResult == min {
+	if !updatedMin {
 		minResult, spanIncrementMultiplier =
-			friendlyRound(min, spanIncrement, rangeDefaultPaddingPercent,
+			friendlyRound(min, spanIncrement, rangeMinPaddingPercentMin,
 				rangeMinPaddingPercentMin, rangeMinPaddingPercentMax, false)
 	}
-	// update max and match based off the ideal padding
-	maxResult, _ =
-		friendlyRound(max, spanIncrement, spanIncrementMultiplier,
-			rangeMaxPaddingPercentMin, rangeMaxPaddingPercentMax, true)
-	// adjust max so that the intervals and labels are also round if possible
-	interval := (maxResult - minResult) / float64(labelCount-1)
-	maxIntervalIncrease := ((rangeMaxPaddingPercentMax * spanIncrement) - (maxResult - max)) / float64(labelCount-1)
-	roundedInterval, _ := friendlyRound(interval, 1.0, 0.0, 0.0, maxIntervalIncrease, true)
+	if minTrunk := math.Trunc(minResult); minTrunk <= min-(spanIncrement*rangeMinPaddingPercentMin) {
+		minResult = minTrunk // remove possible float multiplication inaccuracies
+	}
 
-	if roundedInterval != interval {
-		maxResult = minResult + (roundedInterval * float64(labelCount-1))
+	// update max to provide ideal padding and human friendly intervals
+	interval := (max - minResult) / float64(labelCount-1)
+	roundedInterval, _ := friendlyRound(interval, spanIncrement/float64(labelCount-1),
+		math.Max(spanIncrementMultiplier, rangeMaxPaddingPercentMin),
+		rangeMaxPaddingPercentMin, rangeMaxPaddingPercentMax, true)
+	maxResult = minResult + (roundedInterval * float64(labelCount-1))
+	if maxTrunk := math.Trunc(maxResult); maxTrunk >= max+(spanIncrement*rangeMaxPaddingPercentMin) {
+		maxResult = maxTrunk // remove possible float multiplication inaccuracies
 	}
 
 	return minResult, maxResult
@@ -105,7 +98,7 @@ func friendlyRound(val, increment, defaultMultiplier, minMultiplier, maxMultipli
 				proposedVal = (math.Floor(absVal/roundValue) * roundValue) + (roundValue * roundAdjust)
 			}
 			if val < 0 { // Apply the original sign back to proposedVal
-				proposedVal = -proposedVal
+				proposedVal *= -1
 			}
 			if add {
 				proposedMultiplier = (proposedVal - val) / increment
