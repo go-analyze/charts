@@ -141,8 +141,8 @@ func (sl SeriesList) Filter(chartType string) SeriesList {
 	return arr
 }
 
-// GetMaxMin get max and min value of series list
-func (sl SeriesList) GetMaxMin(axisIndex int) (float64, float64) {
+// GetMinMax get max and min value of series list
+func (sl SeriesList) GetMinMax(axisIndex int) (float64, float64) {
 	min := math.MaxFloat64
 	max := -math.MaxFloat64
 	for _, series := range sl {
@@ -161,7 +161,7 @@ func (sl SeriesList) GetMaxMin(axisIndex int) (float64, float64) {
 			}
 		}
 	}
-	return max, min
+	return min, max
 }
 
 type PieSeriesOption struct {

@@ -17,11 +17,11 @@ type HorizontalBarChartOption struct {
 	Font *truetype.Font
 	// The data series list
 	SeriesList SeriesList
-	// The x-axis option
+	// The x-axis options
 	XAxis XAxisOption
 	// The padding of line chart
 	Padding Box
-	// The y-axis option
+	// The y-axis options
 	YAxisOptions []YAxisOption
 	// The option of title
 	Title TitleOption
@@ -68,8 +68,8 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 
 	theme := opt.Theme
 
-	max, min := seriesList.GetMaxMin(0)
-	xRange := NewRange(p, seriesPainter.Width(), defaultAxisLabelCount, min, max, false)
+	min, max := seriesList.GetMinMax(0)
+	xRange := NewRange(p, seriesPainter.Width(), defaultAxisLabelCount, min, max, 0.0)
 	seriesNames := seriesList.Names()
 
 	rendererList := []Renderer{}

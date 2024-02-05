@@ -44,15 +44,14 @@ func NewMarkPointPainter(p *Painter) *markPointPainter {
 func (m *markPointPainter) Render() (Box, error) {
 	painter := m.p
 	for _, opt := range m.options {
-		s := opt.Series
-		if len(s.MarkPoint.Data) == 0 {
+		if len(opt.Series.MarkPoint.Data) == 0 {
 			continue
 		}
 		points := opt.Points
-		summary := s.Summary()
-		symbolSize := s.MarkPoint.SymbolSize
+		summary := opt.Series.Summary()
+		symbolSize := opt.Series.MarkPoint.SymbolSize
 		if symbolSize == 0 {
-			symbolSize = 30
+			symbolSize = 28
 		}
 		textStyle := Style{
 			FontSize:    labelFontSize,
@@ -67,7 +66,7 @@ func (m *markPointPainter) Render() (Box, error) {
 		painter.OverrideDrawingStyle(Style{
 			FillColor: opt.FillColor,
 		}).OverrideTextStyle(textStyle)
-		for _, markPointData := range s.MarkPoint.Data {
+		for _, markPointData := range opt.Series.MarkPoint.Data {
 			textStyle.FontSize = labelFontSize
 			painter.OverrideTextStyle(textStyle)
 			p := points[summary.MinIndex]

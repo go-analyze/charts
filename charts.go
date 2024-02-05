@@ -160,21 +160,23 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		if len(opt.YAxisOptions) > index {
 			yAxisOption = opt.YAxisOptions[index]
 		}
-		padRange := true
-		max, min := opt.SeriesList.GetMaxMin(index)
+		padRange := 1.0
+		min, max := opt.SeriesList.GetMinMax(index)
 		if yAxisOption.Min != nil && *yAxisOption.Min < min {
-			padRange = false
+			padRange = 0.0
 			min = *yAxisOption.Min
 		}
 		if yAxisOption.Max != nil && *yAxisOption.Max > max {
-			padRange = false
+			padRange = 0.0
 			max = *yAxisOption.Max
 		}
-		span := max - min
+		if yAxisOption.RangeValuePaddingScale != nil {
+			padRange = *yAxisOption.RangeValuePaddingScale
+		}
 		labelCount := yAxisOption.LabelCount
 		if labelCount <= 0 {
 			if yAxisOption.Unit > 0 {
-				labelCount = int(span / yAxisOption.Unit)
+				labelCount = int((max - min) / yAxisOption.Unit)
 			} else {
 				labelCount = defaultAxisLabelCount
 			}
@@ -205,7 +207,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		} else {
 			yAxis = NewRightYAxis(child, yAxisOption)
 		}
-
 		if yAxisBox, err := yAxis.Render(); err != nil {
 			return nil, err
 		} else if index == 0 {
@@ -276,8 +277,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	seriesList := opt.SeriesList
 	seriesList.init()
 
-	seriesCount := len(seriesList)
-
 	// line chart
 	lineSeriesList := seriesList.Filter(ChartTypeLine)
 	barSeriesList := seriesList.Filter(ChartTypeBar)
@@ -286,6 +285,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	radarSeriesList := seriesList.Filter(ChartTypeRadar)
 	funnelSeriesList := seriesList.Filter(ChartTypeFunnel)
 
+	seriesCount := len(seriesList)
 	if len(horizontalBarSeriesList) != 0 && len(horizontalBarSeriesList) != seriesCount {
 		return nil, errors.New("horizontal bar can not mix other charts")
 	} else if len(pieSeriesList) != 0 && len(pieSeriesList) != seriesCount {
