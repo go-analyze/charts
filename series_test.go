@@ -37,7 +37,7 @@ func TestSeriesLists(t *testing.T) {
 	assert.Equal(t, 2, len(seriesList.Filter(ChartTypeBar)))
 	assert.Equal(t, 0, len(seriesList.Filter(ChartTypeLine)))
 
-	max, min := seriesList.GetMaxMin(0)
+	min, max := seriesList.GetMinMax(0)
 	assert.Equal(t, float64(10), max)
 	assert.Equal(t, float64(1), min)
 

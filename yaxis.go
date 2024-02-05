@@ -9,6 +9,8 @@ type YAxisOption struct {
 	Min *float64
 	// The maximum value of axis.
 	Max *float64
+	// RangeValuePaddingScale suggest a scale of padding added to the max and min values
+	RangeValuePaddingScale *float64
 	// The font of y-axis
 	Font *truetype.Font
 	// The data value of y-axis

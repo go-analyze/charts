@@ -8,7 +8,6 @@ const rangeMinPaddingPercentMin = 0.0 // increasing could result in forced negat
 const rangeMinPaddingPercentMax = 20.0
 const rangeMaxPaddingPercentMin = 5.0 // set minimum spacing at the top of the graph
 const rangeMaxPaddingPercentMax = 20.0
-const rangeDefaultPaddingPercent = 5.0
 
 type axisRange struct {
 	p           *Painter
@@ -19,10 +18,8 @@ type axisRange struct {
 }
 
 // NewRange returns a range of data for an axis, this range will have padding to better present the data.
-func NewRange(painter *Painter, size, labelCount int, min, max float64, addPadding bool) axisRange {
-	if addPadding {
-		min, max = padRange(labelCount, min, max)
-	}
+func NewRange(painter *Painter, size, labelCount int, min, max float64, paddingScale float64) axisRange {
+	min, max = padRange(labelCount, min, max, paddingScale)
 	return axisRange{
 		p:           painter,
 		divideCount: labelCount,
@@ -32,7 +29,16 @@ func NewRange(painter *Painter, size, labelCount int, min, max float64, addPaddi
 	}
 }
 
-func padRange(labelCount int, min, max float64) (float64, float64) {
+func padRange(labelCount int, min, max, paddingScale float64) (float64, float64) {
+	if paddingScale <= 0 {
+		return min, max
+	}
+	// scale percents for min value
+	scaledMinPadPercentMin := rangeMinPaddingPercentMin * paddingScale
+	scaledMinPadPercentMax := rangeMinPaddingPercentMax * paddingScale
+	// scale percents for max value
+	scaledMaxPadPercentMin := rangeMaxPaddingPercentMin * paddingScale
+	scaledMaxPadPercentMax := rangeMaxPaddingPercentMax * paddingScale
 	minResult := min
 	maxResult := max
 	spanIncrement := (max - min) * 0.01 // must be 1% of the span
@@ -52,9 +58,9 @@ rootLoop:
 			}
 			// use 10^expo so that we prefer 0, 10, 100, etc numbers
 			targetVal := math.Floor(math.Pow(10, expo)) * multiple // Math.Floor to convert 0.1 from -1 expo into 0
-			if targetVal < min-(spanIncrement*rangeMinPaddingPercentMax) {
+			if targetVal < min-(spanIncrement*scaledMinPadPercentMax) {
 				break expoLoop // no match possible, target value will only get further from start
-			} else if targetVal <= min-(spanIncrement*rangeMinPaddingPercentMin) {
+			} else if targetVal <= min-(spanIncrement*scaledMinPadPercentMin) {
 				// targetVal can be between our span increment increases, calculate and set result
 				updatedMin = true
 				spanIncrementMultiplier = (min - targetVal) / spanIncrement
@@ -65,20 +71,20 @@ rootLoop:
 	}
 	if !updatedMin {
 		minResult, spanIncrementMultiplier =
-			friendlyRound(min, spanIncrement, rangeMinPaddingPercentMin,
-				rangeMinPaddingPercentMin, rangeMinPaddingPercentMax, false)
+			friendlyRound(min, spanIncrement, scaledMinPadPercentMin,
+				scaledMinPadPercentMin, scaledMinPadPercentMax, false)
 	}
-	if minTrunk := math.Trunc(minResult); minTrunk <= min-(spanIncrement*rangeMinPaddingPercentMin) {
+	if minTrunk := math.Trunc(minResult); minTrunk <= min-(spanIncrement*scaledMinPadPercentMin) {
 		minResult = minTrunk // remove possible float multiplication inaccuracies
 	}
 
 	// update max to provide ideal padding and human friendly intervals
 	interval := (max - minResult) / float64(labelCount-1)
 	roundedInterval, _ := friendlyRound(interval, spanIncrement/float64(labelCount-1),
-		math.Max(spanIncrementMultiplier, rangeMaxPaddingPercentMin),
-		rangeMaxPaddingPercentMin, rangeMaxPaddingPercentMax, true)
+		math.Max(spanIncrementMultiplier, scaledMaxPadPercentMin),
+		scaledMaxPadPercentMin, scaledMaxPadPercentMax, true)
 	maxResult = minResult + (roundedInterval * float64(labelCount-1))
-	if maxTrunk := math.Trunc(maxResult); maxTrunk >= max+(spanIncrement*rangeMaxPaddingPercentMin) {
+	if maxTrunk := math.Trunc(maxResult); maxTrunk >= max+(spanIncrement*scaledMaxPadPercentMin) {
 		maxResult = maxTrunk // remove possible float multiplication inaccuracies
 	}
 

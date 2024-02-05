@@ -242,16 +242,35 @@ func (o *ChartOption) fillDefault() {
 	}
 	o.Width = getDefaultInt(o.Width, defaultChartWidth)
 	o.Height = getDefaultInt(o.Height, defaultChartHeight)
+
 	yAxisOptions := make([]YAxisOption, axisCount)
 	copy(yAxisOptions, o.YAxisOptions)
 	o.YAxisOptions = yAxisOptions
-	o.font, _ = GetFont(o.FontFamily)
+	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
+	// TODO - but can't do this earlier due to needing the axis initialized
+	// TODO - we should reconsider the API for configuration
+	hasMarkpoint := false
+	for _, sl := range o.SeriesList {
+		if len(sl.MarkPoint.Data) > 0 {
+			hasMarkpoint = true
+			break
+		}
+	}
+	if hasMarkpoint {
+		for i := range o.YAxisOptions {
+			if o.YAxisOptions[i].RangeValuePaddingScale == nil {
+				defaultPadding := 2.5 // default a larger padding to give space for the mark point
+				o.YAxisOptions[i].RangeValuePaddingScale = &defaultPadding
+			}
+		}
+	}
 
+	o.font, _ = GetFont(o.FontFamily)
 	if o.font == nil {
 		o.font, _ = GetDefaultFont()
-	} else {
-		t.SetFont(o.font)
 	}
+	t.SetFont(o.font)
+
 	if o.BackgroundColor.IsZero() {
 		o.BackgroundColor = t.GetBackgroundColor()
 	}
