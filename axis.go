@@ -200,11 +200,11 @@ func (a *axisPainter) Render() (Box, error) {
 	labelCount := opt.LabelCount
 	if labelCount <= 0 {
 		var maxLabelCount int
-		// Add 20px for some minimal extra padding and calculate more suitable display item count on text width
+		// Add 10px for some minimal extra padding and calculate more suitable display item count on text width
 		if orient == OrientVertical {
-			maxLabelCount = top.Height() / (textMaxHeight + 20)
+			maxLabelCount = top.Height() / (textMaxHeight + 10)
 		} else {
-			maxLabelCount = top.Width() / (textMaxWidth + 20)
+			maxLabelCount = top.Width() / (textMaxWidth + 10)
 		}
 		if opt.Unit > 0 {
 			multiplier := 1.0

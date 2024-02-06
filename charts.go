@@ -12,6 +12,7 @@ const labelFontSize = 10
 const smallLabelFontSize = 8
 const defaultDotWidth = 2.0
 const defaultStrokeWidth = 2.0
+const defaultAxisLabelCount = 10
 
 var defaultChartWidth = 600
 var defaultChartHeight = 400
@@ -170,15 +171,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			max = *yAxisOption.Max
 		}
 		span := max - min
-		divideCount := yAxisOption.LabelCount
-		if divideCount <= 0 {
+		labelCount := yAxisOption.LabelCount
+		if labelCount <= 0 {
 			if yAxisOption.Unit > 0 {
-				divideCount = int(span / yAxisOption.Unit)
+				labelCount = int(span / yAxisOption.Unit)
 			} else {
-				divideCount = defaultAxisDivideCount
+				labelCount = defaultAxisLabelCount
 			}
 		}
-		r := NewRange(p, rangeHeight, divideCount, min, max, padRange)
+		r := NewRange(p, rangeHeight, labelCount, min, max, padRange)
 		result.axisRanges[index] = r
 
 		if yAxisOption.Theme == nil {
@@ -189,7 +190,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		} else {
 			yAxisOption.isCategoryAxis = true
 			// since the x-axis is the value part, it's label is calculated and processed separately
-			opt.XAxis.Data = NewRange(p, rangeHeight, defaultAxisDivideCount, min, max, padRange).Values()
+			opt.XAxis.Data = NewRange(p, rangeHeight, defaultAxisLabelCount, min, max, padRange).Values()
 			opt.XAxis.isValueAxis = true
 		}
 		reverseStringSlice(yAxisOption.Data)
