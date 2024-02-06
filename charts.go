@@ -191,8 +191,11 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			yAxisOption.Data = r.Values()
 		} else {
 			yAxisOption.isCategoryAxis = true
+			// we need to update the range labels or the bars wont be aligned to the Y axis
+			r.divideCount = len(seriesList[0].Data)
+			result.axisRanges[index] = r
 			// since the x-axis is the value part, it's label is calculated and processed separately
-			opt.XAxis.Data = NewRange(p, rangeHeight, defaultAxisLabelCount, min, max, padRange).Values()
+			opt.XAxis.Data = r.Values()
 			opt.XAxis.isValueAxis = true
 		}
 		reverseStringSlice(yAxisOption.Data)
