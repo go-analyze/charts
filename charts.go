@@ -71,9 +71,9 @@ type defaultRenderOption struct {
 	Theme      ColorPalette
 	Padding    Box
 	SeriesList SeriesList
-	// The y axis option
+	// The y-axis options
 	YAxisOptions []YAxisOption
-	// The x axis option
+	// The x-axis options
 	XAxis XAxisOption
 	// The title option
 	TitleOption TitleOption
@@ -118,15 +118,14 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		if opt.TitleOption.Theme == nil {
 			opt.TitleOption.Theme = opt.Theme
 		}
-		titlePainter := NewTitlePainter(p, opt.TitleOption)
 
-		titleBox, err := titlePainter.Render()
+		titleBox, err := NewTitlePainter(p, opt.TitleOption).Render()
 		if err != nil {
 			return nil, err
 		}
 
 		top := chart.MaxInt(legendHeight, titleBox.Height())
-		// if in verticle mode, the legend height is not calculated
+		// if in vertical mode, the legend height is not calculated
 		if opt.LegendOption.Orient == OrientVertical {
 			top = titleBox.Height()
 		}
@@ -203,21 +202,20 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 		reverseStringSlice(yAxisOption.Data)
 		// TODO - generate other positions and y-axis
-		var yAxis *axisPainter
 		child := p.Child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
 			Right: rangeWidthRight,
 		}))
+		var yAxis *axisPainter
 		if index == 0 {
 			yAxis = NewLeftYAxis(child, yAxisOption)
 		} else {
 			yAxis = NewRightYAxis(child, yAxisOption)
 		}
-		yAxisBox, err := yAxis.Render()
-		if err != nil {
+
+		if yAxisBox, err := yAxis.Render(); err != nil {
 			return nil, err
-		}
-		if index == 0 {
+		} else if index == 0 {
 			rangeWidthLeft += yAxisBox.Width()
 		} else {
 			rangeWidthRight += yAxisBox.Width()
@@ -397,9 +395,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(radarSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewRadarChart(p, RadarChartOption{
-				Theme: opt.theme,
-				Font:  opt.font,
-				// 相应值
+				Theme:           opt.theme,
+				Font:            opt.font,
 				RadarIndicators: opt.RadarIndicators,
 			}).render(renderResult, radarSeriesList)
 			return err

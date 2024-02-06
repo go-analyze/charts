@@ -30,11 +30,11 @@ type BarChartOption struct {
 	Font *truetype.Font
 	// The data series list
 	SeriesList SeriesList
-	// The x axis option
+	// The x-axis options
 	XAxis XAxisOption
 	// The padding of line chart
 	Padding Box
-	// The y axis option
+	// The y-axis options
 	YAxisOptions []YAxisOption
 	// The option of title
 	Title TitleOption

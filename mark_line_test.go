@@ -40,8 +40,7 @@ func TestMarkLine(t *testing.T) {
 						DivideCount: 6,
 					}),
 				})
-				_, err := markLine.Render()
-				if err != nil {
+				if _, err := markLine.Render(); err != nil {
 					return nil, err
 				}
 				return p.Bytes()

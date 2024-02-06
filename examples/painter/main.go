@@ -601,12 +601,9 @@ func main() {
 		SplitLineColor: drawing.ColorBlack.WithAlpha(100),
 	}).Render()
 
-	buf, err := p.Bytes()
-	if err != nil {
+	if buf, err := p.Bytes(); err != nil {
 		panic(err)
-	}
-	err = writeFile(buf)
-	if err != nil {
+	} else if err = writeFile(buf); err != nil {
 		panic(err)
 	}
 }

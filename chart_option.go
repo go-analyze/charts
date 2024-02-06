@@ -20,9 +20,9 @@ type ChartOption struct {
 	Title TitleOption
 	// The legend option
 	Legend LegendOption
-	// The x axis option
+	// The x-axis options
 	XAxis XAxisOption
-	// The y axis option list
+	// The y-axis option list
 	YAxisOptions []YAxisOption
 	// The width of chart, default width is 600
 	Width int
@@ -47,7 +47,7 @@ type ChartOption struct {
 	BarWidth int
 	// The bar height of horizontal bar chart
 	BarHeight int
-	// Fill the area of line chart
+	// Fill in the area under the line
 	FillArea bool
 	// background fill (alpha) opacity
 	Opacity uint8
@@ -122,28 +122,28 @@ func LegendLabelsOptionFunc(labels []string, left ...string) OptionFunc {
 	}
 }
 
-// XAxisOptionFunc set x axis of chart
+// XAxisOptionFunc set x-axis of chart
 func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.XAxis = xAxisOption
 	}
 }
 
-// XAxisDataOptionFunc set x axis data of chart
+// XAxisDataOptionFunc set x-axis data of chart
 func XAxisDataOptionFunc(data []string, boundaryGap ...*bool) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.XAxis = NewXAxisOption(data, boundaryGap...)
 	}
 }
 
-// YAxisOptionFunc set y axis of chart, support two y axis
+// YAxisOptionFunc set y-axis of chart, supports up to two y-axis.
 func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxisOptions = yAxisOption
 	}
 }
 
-// YAxisDataOptionFunc set y axis data of chart
+// YAxisDataOptionFunc set y-axis data of chart
 func YAxisDataOptionFunc(data []string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxisOptions = NewYAxisOptions(data)

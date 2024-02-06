@@ -184,7 +184,7 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 		if len(arr) == 3 {
 			result[3] = result[1]
 		}
-		// 上右下左
+		// top right, bottom left
 		eb.Box = chart.Box{
 			Top:    result[0],
 			Right:  result[1],

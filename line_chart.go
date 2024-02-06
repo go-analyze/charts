@@ -30,11 +30,11 @@ type LineChartOption struct {
 	Font *truetype.Font
 	// The data series list
 	SeriesList SeriesList
-	// The x axis option
+	// The x-axis option
 	XAxis XAxisOption
 	// The padding of line chart
 	Padding Box
-	// The y axis option
+	// The y-axis option
 	YAxisOptions []YAxisOption
 	// The option of title
 	Title TitleOption
@@ -44,7 +44,7 @@ type LineChartOption struct {
 	SymbolShow *bool
 	// The stroke width of line
 	StrokeWidth float64
-	// Fill the area of line
+	// Fill the area below the line
 	FillArea bool
 	// background is filled
 	backgroundIsFilled bool
@@ -55,10 +55,7 @@ type LineChartOption struct {
 func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	p := l.p
 	opt := l.opt
-	boundaryGap := true
-	if isFalse(opt.XAxis.BoundaryGap) {
-		boundaryGap = false
-	}
+	boundaryGap := !isFalse(opt.XAxis.BoundaryGap)
 
 	seriesPainter := result.seriesPainter
 

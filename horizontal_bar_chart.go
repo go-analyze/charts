@@ -17,11 +17,11 @@ type HorizontalBarChartOption struct {
 	Font *truetype.Font
 	// The data series list
 	SeriesList SeriesList
-	// The x axis option
+	// The x-axis option
 	XAxis XAxisOption
 	// The padding of line chart
 	Padding Box
-	// The y axis option
+	// The y-axis option
 	YAxisOptions []YAxisOption
 	// The option of title
 	Title TitleOption

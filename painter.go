@@ -45,12 +45,11 @@ type TicksOption struct {
 }
 
 type MultiTextOption struct {
-	TextList []string
-	Orient   string
-	Unit     int
-	Position string
-	Align    string
-	// The text rotation of label
+	TextList     []string
+	Orient       string
+	Unit         int
+	Position     string
+	Align        string
 	TextRotation float64
 	Offset       Box
 	// The first text index

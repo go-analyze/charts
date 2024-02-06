@@ -164,7 +164,6 @@ func (a *axisPainter) Render() (Box, error) {
 
 	width := 0
 	height := 0
-	// vertical
 	if isVertical {
 		width = textMaxWidth + tickLength<<1
 		height = top.Height()
@@ -262,8 +261,7 @@ func (a *axisPainter) Render() (Box, error) {
 		TextRotation: opt.TextRotation,
 		Offset:       opt.LabelOffset,
 	})
-	// show auxiliary lines
-	if opt.SplitLineShow {
+	if opt.SplitLineShow { // show auxiliary lines
 		style.StrokeColor = opt.SplitLineColor
 		style.StrokeWidth = 1
 		top.OverrideDrawingStyle(style)

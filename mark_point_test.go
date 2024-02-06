@@ -41,8 +41,7 @@ func TestMarkPoint(t *testing.T) {
 						},
 					},
 				})
-				_, err := markPoint.Render()
-				if err != nil {
+				if _, err := markPoint.Render(); err != nil {
 					return nil, err
 				}
 				return p.Bytes()
