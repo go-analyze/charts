@@ -61,7 +61,7 @@ func TestPadRange(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			min, max := padRange(tc.labelCount, tc.minValue, tc.maxValue, 1.0)
+			min, max := padRange(tc.labelCount, tc.minValue, tc.maxValue, 1.0, 1.0)
 
 			assert.Equal(t, tc.expectedMinValue, min, "Unexpected value rounding %v", tc.minValue)
 			assert.Equal(t, tc.expectedMaxValue, max, "Unexpected value rounding %v", tc.maxValue)

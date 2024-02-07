@@ -61,17 +61,20 @@ type AxisOption struct {
 	Unit float64
 	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions. This value takes priority over Unit.
 	LabelCount int
+	// LabelSkipCount specifies a number of lines between labels where there will be no label,
+	// but a horizontal line will still be drawn.
+	LabelSkipCount int
 }
 
 func (a *axisPainter) Render() (Box, error) {
 	opt := a.opt
+	if isFalse(opt.Show) {
+		return BoxZero, nil
+	}
 	top := a.p
 	theme := opt.Theme
 	if theme == nil {
 		theme = top.theme
-	}
-	if isFalse(opt.Show) {
-		return BoxZero, nil
 	}
 
 	strokeWidth := opt.StrokeWidth
@@ -99,14 +102,13 @@ func (a *axisPainter) Render() (Box, error) {
 		strokeColor = theme.GetAxisStrokeColor()
 	}
 
-	data := opt.Data
 	formatter := opt.Formatter
 	if len(formatter) != 0 {
-		for index, text := range data {
-			data[index] = strings.ReplaceAll(formatter, "{value}", text)
+		for index, text := range opt.Data {
+			opt.Data[index] = strings.ReplaceAll(formatter, "{value}", text)
 		}
 	}
-	dataCount := len(data)
+	dataCount := len(opt.Data)
 
 	centerLabels := !isFalse(opt.BoundaryGap)
 	isVertical := opt.Position == PositionLeft ||
@@ -130,7 +132,7 @@ func (a *axisPainter) Render() (Box, error) {
 	if isTextRotation {
 		top.SetTextRotation(opt.TextRotation)
 	}
-	textMaxWidth, textMaxHeight := top.MeasureTextMaxWidthHeight(data)
+	textMaxWidth, textMaxHeight := top.MeasureTextMaxWidthHeight(opt.Data)
 	if isTextRotation {
 		top.ClearTextRotation()
 	}
@@ -200,11 +202,11 @@ func (a *axisPainter) Render() (Box, error) {
 	labelCount := opt.LabelCount
 	if labelCount <= 0 {
 		var maxLabelCount int
-		// Add 10px for some minimal extra padding and calculate more suitable display item count on text width
+		// Add 10px and remove one for some minimal extra padding so that letters don't collide
 		if orient == OrientVertical {
-			maxLabelCount = top.Height() / (textMaxHeight + 10)
+			maxLabelCount = (top.Height() / (textMaxHeight + 10)) - 1
 		} else {
-			maxLabelCount = top.Width() / (textMaxWidth + 10)
+			maxLabelCount = (top.Width() / (textMaxWidth + 10)) - 1
 		}
 		if opt.Unit > 0 {
 			multiplier := 1.0
@@ -218,10 +220,6 @@ func (a *axisPainter) Render() (Box, error) {
 			}
 		} else {
 			labelCount = maxLabelCount
-			if ((dataCount/(labelCount-1))%5 == 0) || ((dataCount/(labelCount-1))%2 == 0) {
-				// prefer %5 or %2 units if reasonable
-				labelCount--
-			}
 		}
 	}
 	if labelCount > dataCount {
@@ -263,14 +261,15 @@ func (a *axisPainter) Render() (Box, error) {
 		Top:   labelPaddingTop,
 		Right: labelPaddingRight,
 	})).MultiText(MultiTextOption{
-		First:        opt.FirstAxis,
-		Align:        textAlign,
-		TextList:     data,
-		Orient:       orient,
-		LabelCount:   labelCount,
-		CenterLabels: centerLabels,
-		TextRotation: opt.TextRotation,
-		Offset:       opt.LabelOffset,
+		First:          opt.FirstAxis,
+		Align:          textAlign,
+		TextList:       opt.Data,
+		Orient:         orient,
+		LabelCount:     labelCount,
+		LabelSkipCount: opt.LabelSkipCount,
+		CenterLabels:   centerLabels,
+		TextRotation:   opt.TextRotation,
+		Offset:         opt.LabelOffset,
 	})
 
 	if opt.SplitLineShow { // show auxiliary lines

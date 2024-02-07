@@ -21,6 +21,11 @@ func FalseFlag() *bool {
 	return &f
 }
 
+func ZeroFloat() *float64 {
+	v := 0.0
+	return &v
+}
+
 func isFalse(flag *bool) bool {
 	if flag != nil && !*flag {
 		return true

@@ -48,7 +48,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	opt := b.opt
 	seriesPainter := result.seriesPainter
 
-	xRange := NewRange(b.p, seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0)
+	xRange := NewRange(b.p, seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
 	// margin between each block
