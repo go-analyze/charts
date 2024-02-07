@@ -12,7 +12,7 @@ const labelFontSize = 10
 const smallLabelFontSize = 8
 const defaultDotWidth = 2.0
 const defaultStrokeWidth = 2.0
-const defaultAxisLabelCount = 10
+const defaultYAxisLabelCount = 10
 
 var defaultChartWidth = 600
 var defaultChartHeight = 400
@@ -160,28 +160,61 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		if len(opt.YAxisOptions) > index {
 			yAxisOption = opt.YAxisOptions[index]
 		}
-		padRange := 1.0
+		minPadRange, maxPadRange := 1.0, 1.0
+		if yAxisOption.RangeValuePaddingScale != nil {
+			minPadRange = *yAxisOption.RangeValuePaddingScale
+			maxPadRange = *yAxisOption.RangeValuePaddingScale
+		}
 		min, max := opt.SeriesList.GetMinMax(index)
 		if yAxisOption.Min != nil && *yAxisOption.Min < min {
-			padRange = 0.0
 			min = *yAxisOption.Min
+			minPadRange = 0.0
 		}
 		if yAxisOption.Max != nil && *yAxisOption.Max > max {
-			padRange = 0.0
 			max = *yAxisOption.Max
+			maxPadRange = 0.0
 		}
-		if yAxisOption.RangeValuePaddingScale != nil {
-			padRange = *yAxisOption.RangeValuePaddingScale
-		}
+
+		// Label counts and y-axis padding are linked together to produce a user-friendly graph.
+		// First when considering padding we want to prefer a zero axis start if reasonable, and add a slight
+		// padding to the max so there is a little space at the top of the graph.  In addition, we want to pick
+		// a max value that will result in round intervals on the axis.  These details are in range.go.
+		// But in order to produce round intervals we need to have an idea of how many intervals there are.
+		// In addition, if the user specified a `Unit` value we may need to adjust our label count calculation
+		// based on the padded range.
+		//
+		// In order to accomplish this, we estimate the label count (if necessary), pad the range, then precisely
+		// calculate the label count.
+		// TODO - label counts are also calculated in axis.go, for the X axis, ideally we unify these implementations
 		labelCount := yAxisOption.LabelCount
-		if labelCount <= 0 {
+		padLabelCount := labelCount
+		if padLabelCount < 1 {
 			if yAxisOption.Unit > 0 {
-				labelCount = int((max - min) / yAxisOption.Unit)
+				padLabelCount = int((max-min)/yAxisOption.Unit) + 1
 			} else {
-				labelCount = defaultAxisLabelCount
+				padLabelCount = defaultYAxisLabelCount
 			}
 		}
-		r := NewRange(p, rangeHeight, labelCount, min, max, padRange)
+		// we call padRange directly because we need to do this padding before we can calculate the final labelCount for the axisRange
+		min, max = padRange(padLabelCount, min, max, minPadRange, maxPadRange)
+		if labelCount <= 0 {
+			if yAxisOption.Unit > 0 {
+				if yAxisOption.Max == nil {
+					max = math.Trunc(math.Ceil(max/yAxisOption.Unit) * yAxisOption.Unit)
+				}
+				labelCount = int((max-min)/yAxisOption.Unit) + 1
+			} else {
+				labelCount = defaultYAxisLabelCount
+			}
+			yAxisOption.LabelCount = labelCount
+		}
+		r := axisRange{
+			p:           p,
+			divideCount: labelCount,
+			min:         min,
+			max:         max,
+			size:        rangeHeight,
+		}
 		result.axisRanges[index] = r
 
 		if yAxisOption.Theme == nil {

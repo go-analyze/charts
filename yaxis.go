@@ -32,7 +32,9 @@ type YAxisOption struct {
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.
-	LabelCount     int
+	LabelCount int
+	// LabelSkipCount specifies a number of lines between labels where there will be no label and instead just a horizontal line.
+	LabelSkipCount int
 	isCategoryAxis bool
 }
 
@@ -72,6 +74,7 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 		BoundaryGap:    FalseFlag(),
 		Unit:           opt.Unit,
 		LabelCount:     opt.LabelCount,
+		LabelSkipCount: opt.LabelSkipCount,
 		SplitLineShow:  true,
 		SplitLineColor: theme.GetAxisSplitLineColor(),
 		Show:           opt.Show,

@@ -52,8 +52,9 @@ type MultiTextOption struct {
 	TextRotation float64
 	Offset       Box
 	// The first text index
-	First      int
-	LabelCount int
+	First          int
+	LabelCount     int
+	LabelSkipCount int
 }
 
 type GridOption struct {
@@ -676,16 +677,25 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 	}
 	isTextRotation := opt.TextRotation != 0
 	positionCount := len(positions)
+
+	skippedLabels := opt.LabelSkipCount // specify the skip count to ensure the top value is listed
 	for index, start := range positions {
 		if opt.CenterLabels && index == positionCount-1 {
 			break // positions have one item more than we can map to text, this extra value is used to center against
 		} else if index < opt.First {
 			continue
 		} else if !isVertical &&
-			index != count-1 /* one off case for last label due to values and label qty difference */ &&
+			index != count-1 && // one off case for last label due to values and label qty difference
 			!isTick(positionCount-opt.First, opt.LabelCount+1, index-opt.First) {
 			continue
+		} else if index != count-1 && // ensure the bottom value is always printed
+			skippedLabels < opt.LabelSkipCount {
+			skippedLabels++
+			continue
+		} else {
+			skippedLabels = 0
 		}
+
 		if isTextRotation {
 			p.ClearTextRotation()
 			p.SetTextRotation(opt.TextRotation)

@@ -18,29 +18,28 @@ type axisRange struct {
 }
 
 // NewRange returns a range of data for an axis, this range will have padding to better present the data.
-func NewRange(painter *Painter, size, labelCount int, min, max float64, paddingScale float64) axisRange {
-	min, max = padRange(labelCount, min, max, paddingScale)
+func NewRange(painter *Painter, size, divideCount int, min, max, minPaddingScale, maxPaddingScale float64) axisRange {
+	min, max = padRange(divideCount, min, max, minPaddingScale, maxPaddingScale)
 	return axisRange{
 		p:           painter,
-		divideCount: labelCount,
+		divideCount: divideCount,
 		min:         min,
 		max:         max,
 		size:        size,
 	}
 }
 
-func padRange(labelCount int, min, max, paddingScale float64) (float64, float64) {
-	if paddingScale <= 0 {
+func padRange(divideCount int, min, max, minPaddingScale, maxPaddingScale float64) (float64, float64) {
+	if minPaddingScale <= 0.0 && maxPaddingScale <= 0.0 {
 		return min, max
 	}
 	// scale percents for min value
-	scaledMinPadPercentMin := rangeMinPaddingPercentMin * paddingScale
-	scaledMinPadPercentMax := rangeMinPaddingPercentMax * paddingScale
+	scaledMinPadPercentMin := rangeMinPaddingPercentMin * minPaddingScale
+	scaledMinPadPercentMax := rangeMinPaddingPercentMax * minPaddingScale
 	// scale percents for max value
-	scaledMaxPadPercentMin := rangeMaxPaddingPercentMin * paddingScale
-	scaledMaxPadPercentMax := rangeMaxPaddingPercentMax * paddingScale
+	scaledMaxPadPercentMin := rangeMaxPaddingPercentMin * maxPaddingScale
+	scaledMaxPadPercentMax := rangeMaxPaddingPercentMax * maxPaddingScale
 	minResult := min
-	maxResult := max
 	spanIncrement := (max - min) * 0.01 // must be 1% of the span
 	var spanIncrementMultiplier float64
 	// find a min value to start our range from
@@ -78,12 +77,16 @@ rootLoop:
 		minResult = minTrunk // remove possible float multiplication inaccuracies
 	}
 
+	if maxPaddingScale <= 0.0 {
+		return minResult, max
+	}
+
 	// update max to provide ideal padding and human friendly intervals
-	interval := (max - minResult) / float64(labelCount-1)
-	roundedInterval, _ := friendlyRound(interval, spanIncrement/float64(labelCount-1),
+	interval := (max - minResult) / float64(divideCount-1)
+	roundedInterval, _ := friendlyRound(interval, spanIncrement/float64(divideCount-1),
 		math.Max(spanIncrementMultiplier, scaledMaxPadPercentMin),
 		scaledMaxPadPercentMin, scaledMaxPadPercentMax, true)
-	maxResult = minResult + (roundedInterval * float64(labelCount-1))
+	maxResult := minResult + (roundedInterval * float64(divideCount-1))
 	if maxTrunk := math.Trunc(maxResult); maxTrunk >= max+(spanIncrement*scaledMaxPadPercentMin) {
 		maxResult = maxTrunk // remove possible float multiplication inaccuracies
 	}

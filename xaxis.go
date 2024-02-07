@@ -30,11 +30,11 @@ type XAxisOption struct {
 	FirstAxis int
 	// The offset of label
 	LabelOffset Box
-	isValueAxis bool
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.
-	LabelCount int
+	LabelCount  int
+	isValueAxis bool
 }
 
 const defaultXAxisHeight = 30
