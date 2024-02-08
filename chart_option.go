@@ -232,8 +232,6 @@ func MarkPointOptionFunc(seriesIndex int, markPointTypes ...string) OptionFunc {
 }
 
 func (o *ChartOption) fillDefault() {
-	t := NewTheme(o.Theme)
-	o.theme = t
 	axisCount := 1
 	for _, series := range o.SeriesList {
 		if series.AxisIndex >= axisCount {
@@ -269,7 +267,8 @@ func (o *ChartOption) fillDefault() {
 	if o.font == nil {
 		o.font, _ = GetDefaultFont()
 	}
-	t.SetFont(o.font)
+	t := NewThemeWithFont(o.Theme, o.font)
+	o.theme = t
 
 	if o.BackgroundColor.IsZero() {
 		o.BackgroundColor = t.GetBackgroundColor()
