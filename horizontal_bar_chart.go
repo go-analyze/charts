@@ -32,9 +32,6 @@ type HorizontalBarChartOption struct {
 
 // NewHorizontalBarChart returns a horizontal bar chart renderer
 func NewHorizontalBarChart(p *Painter, opt HorizontalBarChartOption) *horizontalBarChart {
-	if opt.Theme == nil {
-		opt.Theme = getPreferredTheme(p.theme)
-	}
 	return &horizontalBarChart{
 		p:   p,
 		opt: &opt,
@@ -151,6 +148,10 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 func (h *horizontalBarChart) Render() (Box, error) {
 	p := h.p
 	opt := h.opt
+	if opt.Theme == nil {
+		opt.Theme = getPreferredTheme(p.theme)
+	}
+
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		Theme:        opt.Theme,
 		Padding:      opt.Padding,

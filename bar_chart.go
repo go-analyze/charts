@@ -14,9 +14,6 @@ type barChart struct {
 
 // NewBarChart returns a bar chart renderer
 func NewBarChart(p *Painter, opt BarChartOption) *barChart {
-	if opt.Theme == nil {
-		opt.Theme = getPreferredTheme(p.theme)
-	}
 	return &barChart{
 		p:   p,
 		opt: &opt,
@@ -186,6 +183,9 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 func (b *barChart) Render() (Box, error) {
 	p := b.p
 	opt := b.opt
+	if opt.Theme == nil {
+		opt.Theme = getPreferredTheme(p.theme)
+	}
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		Theme:        opt.Theme,
 		Padding:      opt.Padding,

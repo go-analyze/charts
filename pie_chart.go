@@ -32,9 +32,6 @@ type PieChartOption struct {
 
 // NewPieChart returns a pie chart renderer
 func NewPieChart(p *Painter, opt PieChartOption) *pieChart {
-	if opt.Theme == nil {
-		opt.Theme = getPreferredTheme(p.theme)
-	}
 	return &pieChart{
 		p:   p,
 		opt: &opt,
@@ -176,6 +173,9 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 
 func (p *pieChart) Render() (Box, error) {
 	opt := p.opt
+	if opt.Theme == nil {
+		opt.Theme = getPreferredTheme(p.p.theme)
+	}
 
 	renderResult, err := defaultRender(p.p, defaultRenderOption{
 		Theme:      opt.Theme,

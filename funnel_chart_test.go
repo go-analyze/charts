@@ -1,61 +1,94 @@
 package charts
 
 import (
-	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func makeBasicFunnelChartOption() FunnelChartOption {
+	return FunnelChartOption{
+		SeriesList: NewFunnelSeriesList([]float64{
+			100,
+			80,
+			60,
+			40,
+			20,
+		}),
+		Legend: NewLegendOption([]string{
+			"Show",
+			"Click",
+			"Visit",
+			"Inquiry",
+			"Order",
+		}),
+		Title: TitleOption{
+			Text: "Funnel",
+		},
+	}
+}
 
 func TestFunnelChart(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		render func(*Painter) ([]byte, error)
-		result string
+		name         string
+		defaultTheme bool
+		makeOptions  func() FunnelChartOption
+		result       string
 	}{
 		{
-			render: func(p *Painter) ([]byte, error) {
-				_, err := NewFunnelChart(p, FunnelChartOption{
-					SeriesList: NewFunnelSeriesList([]float64{
-						100,
-						80,
-						60,
-						40,
-						20,
-					}),
-					Legend: NewLegendOption([]string{
-						"Show",
-						"Click",
-						"Visit",
-						"Inquiry",
-						"Order",
-					}),
-					Title: TitleOption{
-						Text: "Funnel",
-					},
-				}).Render()
-				if err != nil {
-					return nil, err
-				}
-				return p.Bytes()
-			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"400\">\\n<path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(255,255,255,1.0)\"/><path  d=\"M 86 9\nL 116 9\" style=\"stroke-width:3;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/><circle cx=\"101\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/><text x=\"118\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Show</text><path  d=\"M 176 9\nL 206 9\" style=\"stroke-width:3;stroke:rgba(145,204,117,1.0);fill:rgba(145,204,117,1.0)\"/><circle cx=\"191\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(145,204,117,1.0);fill:rgba(145,204,117,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(145,204,117,1.0);fill:rgba(145,204,117,1.0)\"/><text x=\"208\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Click</text><path  d=\"M 262 9\nL 292 9\" style=\"stroke-width:3;stroke:rgba(250,200,88,1.0);fill:rgba(250,200,88,1.0)\"/><circle cx=\"277\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(250,200,88,1.0);fill:rgba(250,200,88,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(250,200,88,1.0);fill:rgba(250,200,88,1.0)\"/><text x=\"294\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Visit</text><path  d=\"M 345 9\nL 375 9\" style=\"stroke-width:3;stroke:rgba(238,102,102,1.0);fill:rgba(238,102,102,1.0)\"/><circle cx=\"360\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(238,102,102,1.0);fill:rgba(238,102,102,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(238,102,102,1.0);fill:rgba(238,102,102,1.0)\"/><text x=\"377\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Inquiry</text><path  d=\"M 444 9\nL 474 9\" style=\"stroke-width:3;stroke:rgba(115,192,222,1.0);fill:rgba(115,192,222,1.0)\"/><circle cx=\"459\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(115,192,222,1.0);fill:rgba(115,192,222,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(115,192,222,1.0);fill:rgba(115,192,222,1.0)\"/><text x=\"476\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Order</text><text x=\"0\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Funnel</text><path  d=\"M 0 35\nL 600 35\nL 540 100\nL 60 100\nL 0 35\" style=\"stroke-width:0;stroke:none;fill:rgba(84,112,198,1.0)\"/><text x=\"280\" y=\"67\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(100%)</text><path  d=\"M 60 102\nL 540 102\nL 480 167\nL 120 167\nL 60 102\" style=\"stroke-width:0;stroke:none;fill:rgba(145,204,117,1.0)\"/><text x=\"284\" y=\"134\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(80%)</text><path  d=\"M 120 169\nL 480 169\nL 420 234\nL 180 234\nL 120 169\" style=\"stroke-width:0;stroke:none;fill:rgba(250,200,88,1.0)\"/><text x=\"284\" y=\"201\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(60%)</text><path  d=\"M 180 236\nL 420 236\nL 360 301\nL 240 301\nL 180 236\" style=\"stroke-width:0;stroke:none;fill:rgba(238,102,102,1.0)\"/><text x=\"284\" y=\"268\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(40%)</text><path  d=\"M 240 303\nL 360 303\nL 300 368\nL 300 368\nL 240 303\" style=\"stroke-width:0;stroke:none;fill:rgba(115,192,222,1.0)\"/><text x=\"284\" y=\"335\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(20%)</text></svg>",
+			name:         "default",
+			defaultTheme: true,
+			makeOptions:  makeBasicFunnelChartOption,
+			result:       "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"400\">\\n<path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(255,255,255,1.0)\"/><path  d=\"M 86 9\nL 116 9\" style=\"stroke-width:3;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/><circle cx=\"101\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/><text x=\"118\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Show</text><path  d=\"M 176 9\nL 206 9\" style=\"stroke-width:3;stroke:rgba(145,204,117,1.0);fill:rgba(145,204,117,1.0)\"/><circle cx=\"191\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(145,204,117,1.0);fill:rgba(145,204,117,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(145,204,117,1.0);fill:rgba(145,204,117,1.0)\"/><text x=\"208\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Click</text><path  d=\"M 262 9\nL 292 9\" style=\"stroke-width:3;stroke:rgba(250,200,88,1.0);fill:rgba(250,200,88,1.0)\"/><circle cx=\"277\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(250,200,88,1.0);fill:rgba(250,200,88,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(250,200,88,1.0);fill:rgba(250,200,88,1.0)\"/><text x=\"294\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Visit</text><path  d=\"M 345 9\nL 375 9\" style=\"stroke-width:3;stroke:rgba(238,102,102,1.0);fill:rgba(238,102,102,1.0)\"/><circle cx=\"360\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(238,102,102,1.0);fill:rgba(238,102,102,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(238,102,102,1.0);fill:rgba(238,102,102,1.0)\"/><text x=\"377\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Inquiry</text><path  d=\"M 444 9\nL 474 9\" style=\"stroke-width:3;stroke:rgba(115,192,222,1.0);fill:rgba(115,192,222,1.0)\"/><circle cx=\"459\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(115,192,222,1.0);fill:rgba(115,192,222,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(115,192,222,1.0);fill:rgba(115,192,222,1.0)\"/><text x=\"476\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Order</text><text x=\"0\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Funnel</text><path  d=\"M 0 35\nL 600 35\nL 540 100\nL 60 100\nL 0 35\" style=\"stroke-width:0;stroke:none;fill:rgba(84,112,198,1.0)\"/><text x=\"280\" y=\"67\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(100%)</text><path  d=\"M 60 102\nL 540 102\nL 480 167\nL 120 167\nL 60 102\" style=\"stroke-width:0;stroke:none;fill:rgba(145,204,117,1.0)\"/><text x=\"284\" y=\"134\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(80%)</text><path  d=\"M 120 169\nL 480 169\nL 420 234\nL 180 234\nL 120 169\" style=\"stroke-width:0;stroke:none;fill:rgba(250,200,88,1.0)\"/><text x=\"284\" y=\"201\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(60%)</text><path  d=\"M 180 236\nL 420 236\nL 360 301\nL 240 301\nL 180 236\" style=\"stroke-width:0;stroke:none;fill:rgba(238,102,102,1.0)\"/><text x=\"284\" y=\"268\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(40%)</text><path  d=\"M 240 303\nL 360 303\nL 300 368\nL 300 368\nL 240 303\" style=\"stroke-width:0;stroke:none;fill:rgba(115,192,222,1.0)\"/><text x=\"284\" y=\"335\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(20%)</text></svg>",
+		},
+		{
+			name:         "themed",
+			defaultTheme: false,
+			makeOptions:  makeBasicFunnelChartOption,
+			result:       "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"400\">\\n<path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(40,40,40,1.0)\"/><path  d=\"M 86 9\nL 116 9\" style=\"stroke-width:3;stroke:rgba(255,100,100,1.0);fill:rgba(255,100,100,1.0)\"/><circle cx=\"101\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(255,100,100,1.0);fill:rgba(255,100,100,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(255,100,100,1.0);fill:rgba(255,100,100,1.0)\"/><text x=\"118\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Show</text><path  d=\"M 176 9\nL 206 9\" style=\"stroke-width:3;stroke:rgba(255,210,100,1.0);fill:rgba(255,210,100,1.0)\"/><circle cx=\"191\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(255,210,100,1.0);fill:rgba(255,210,100,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(255,210,100,1.0);fill:rgba(255,210,100,1.0)\"/><text x=\"208\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Click</text><path  d=\"M 262 9\nL 292 9\" style=\"stroke-width:3;stroke:rgba(100,180,210,1.0);fill:rgba(100,180,210,1.0)\"/><circle cx=\"277\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(100,180,210,1.0);fill:rgba(100,180,210,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(100,180,210,1.0);fill:rgba(100,180,210,1.0)\"/><text x=\"294\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Visit</text><path  d=\"M 345 9\nL 375 9\" style=\"stroke-width:3;stroke:rgba(64,160,110,1.0);fill:rgba(64,160,110,1.0)\"/><circle cx=\"360\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(64,160,110,1.0);fill:rgba(64,160,110,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(64,160,110,1.0);fill:rgba(64,160,110,1.0)\"/><text x=\"377\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Inquiry</text><path  d=\"M 444 9\nL 474 9\" style=\"stroke-width:3;stroke:rgba(154,100,180,1.0);fill:rgba(154,100,180,1.0)\"/><circle cx=\"459\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgba(154,100,180,1.0);fill:rgba(154,100,180,1.0)\"/><path  d=\"\" style=\"stroke-width:3;stroke:rgba(154,100,180,1.0);fill:rgba(154,100,180,1.0)\"/><text x=\"476\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Order</text><text x=\"0\" y=\"15\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Funnel</text><path  d=\"M 0 35\nL 600 35\nL 540 100\nL 60 100\nL 0 35\" style=\"stroke-width:0;stroke:none;fill:rgba(255,100,100,1.0)\"/><text x=\"280\" y=\"67\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(100%)</text><path  d=\"M 60 102\nL 540 102\nL 480 167\nL 120 167\nL 60 102\" style=\"stroke-width:0;stroke:none;fill:rgba(255,210,100,1.0)\"/><text x=\"284\" y=\"134\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(80%)</text><path  d=\"M 120 169\nL 480 169\nL 420 234\nL 180 234\nL 120 169\" style=\"stroke-width:0;stroke:none;fill:rgba(100,180,210,1.0)\"/><text x=\"284\" y=\"201\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(60%)</text><path  d=\"M 180 236\nL 420 236\nL 360 301\nL 240 301\nL 180 236\" style=\"stroke-width:0;stroke:none;fill:rgba(64,160,110,1.0)\"/><text x=\"284\" y=\"268\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(40%)</text><path  d=\"M 240 303\nL 360 303\nL 300 368\nL 300 368\nL 240 303\" style=\"stroke-width:0;stroke:none;fill:rgba(154,100,180,1.0)\"/><text x=\"284\" y=\"335\" style=\"stroke-width:0;stroke:none;fill:rgba(238,238,238,1.0);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">(20%)</text></svg>",
 		},
 	}
 
-	for i, tt := range tests {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			p, err := NewPainter(PainterOptions{
-				Type:   ChartOutputSVG,
-				Width:  600,
-				Height: 400,
-			}, PainterThemeOption(GetTheme(ThemeLight)))
-			require.NoError(t, err)
-			data, err := tt.render(p)
-			require.NoError(t, err)
-			assert.Equal(t, tt.result, string(data))
-		})
+	for _, tt := range tests {
+		painterOptions := PainterOptions{
+			Type:   ChartOutputSVG,
+			Width:  600,
+			Height: 400,
+		}
+		if tt.defaultTheme {
+			t.Run(tt.name, func(t *testing.T) {
+				p, err := NewPainter(painterOptions)
+				require.NoError(t, err)
+
+				validateFunnelChartRender(t, p, tt.makeOptions(), tt.result)
+			})
+		} else {
+			t.Run(tt.name+"-painter", func(t *testing.T) {
+				p, err := NewPainter(painterOptions, PainterThemeOption(GetTheme(ThemeVividDark)))
+				require.NoError(t, err)
+
+				validateFunnelChartRender(t, p, tt.makeOptions(), tt.result)
+			})
+			t.Run(tt.name+"-options", func(t *testing.T) {
+				p, err := NewPainter(painterOptions)
+				require.NoError(t, err)
+				opt := tt.makeOptions()
+				opt.Theme = GetTheme(ThemeVividDark)
+
+				validateFunnelChartRender(t, p, opt, tt.result)
+			})
+		}
 	}
+}
+
+func validateFunnelChartRender(t *testing.T, p *Painter, opt FunnelChartOption, expectedResult string) {
+	t.Helper()
+
+	_, err := NewFunnelChart(p, opt).Render()
+	require.NoError(t, err)
+	data, err := p.Bytes()
+	require.NoError(t, err)
+	assertEqualSVG(t, expectedResult, string(data))
 }

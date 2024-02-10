@@ -14,9 +14,6 @@ type lineChart struct {
 
 // NewLineChart returns a line chart render
 func NewLineChart(p *Painter, opt LineChartOption) *lineChart {
-	if opt.Theme == nil {
-		opt.Theme = getPreferredTheme(p.theme)
-	}
 	return &lineChart{
 		p:   p,
 		opt: &opt,
@@ -192,6 +189,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 func (l *lineChart) Render() (Box, error) {
 	p := l.p
 	opt := l.opt
+	if opt.Theme == nil {
+		opt.Theme = getPreferredTheme(p.theme)
+	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		Theme:              opt.Theme,
