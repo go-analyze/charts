@@ -22,9 +22,6 @@ func NewFunnelSeriesList(values []float64) SeriesList {
 
 // NewFunnelChart returns a funnel chart renderer
 func NewFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
-	if opt.Theme == nil {
-		opt.Theme = getPreferredTheme(p.theme)
-	}
 	return &funnelChart{
 		p:   p,
 		opt: &opt,
@@ -147,6 +144,10 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 func (f *funnelChart) Render() (Box, error) {
 	p := f.p
 	opt := f.opt
+	if opt.Theme == nil {
+		opt.Theme = getPreferredTheme(p.theme)
+	}
+
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		Theme:      opt.Theme,
 		Padding:    opt.Padding,
