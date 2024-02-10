@@ -15,9 +15,6 @@ type tableChart struct {
 
 // NewTableChart returns a table chart render
 func NewTableChart(p *Painter, opt TableChartOption) *tableChart {
-	if opt.Theme == nil {
-		opt.Theme = getPreferredTheme(p.theme)
-	}
 	return &tableChart{
 		p:   p,
 		opt: &opt,
@@ -162,13 +159,6 @@ var TableDarkThemeSetting = TableSetting{
 	},
 }
 
-var tableDefaultSetting = TableLightThemeSetting
-
-// SetDefaultTableSetting sets the default setting for table
-func SetDefaultTableSetting(setting TableSetting) {
-	tableDefaultSetting = setting
-}
-
 type renderInfo struct {
 	Width        int
 	Height       int
@@ -186,25 +176,25 @@ func (t *tableChart) render() (*renderInfo, error) {
 	if len(opt.Header) == 0 {
 		return nil, errors.New("header can not be nil")
 	}
-	theme := opt.Theme
-	if theme == nil {
-		theme = p.theme
+	if opt.FontSize <= 0 {
+		opt.FontSize = 12
 	}
-	fontSize := opt.FontSize
-	if fontSize == 0 {
-		fontSize = 12
+	if opt.FontColor.IsZero() {
+		if opt.Theme.IsDark() {
+			opt.FontColor = TableDarkThemeSetting.FontColor
+		} else {
+			opt.FontColor = TableLightThemeSetting.FontColor
+		}
 	}
-	fontColor := opt.FontColor
-	if fontColor.IsZero() {
-		fontColor = tableDefaultSetting.FontColor
+	if opt.Font == nil {
+		opt.Font = GetDefaultFont()
 	}
-	font := opt.Font
-	if font == nil {
-		font = GetDefaultFont()
-	}
-	headerFontColor := opt.HeaderFontColor
 	if opt.HeaderFontColor.IsZero() {
-		headerFontColor = tableDefaultSetting.HeaderFontColor
+		if opt.Theme.IsDark() {
+			opt.HeaderFontColor = TableDarkThemeSetting.HeaderFontColor
+		} else {
+			opt.HeaderFontColor = TableLightThemeSetting.HeaderFontColor
+		}
 	}
 
 	spans := opt.Spans
@@ -233,16 +223,19 @@ func (t *tableChart) render() (*renderInfo, error) {
 
 	height := 0
 	textStyle := Style{
-		FontSize:  fontSize,
-		FontColor: headerFontColor,
-		FillColor: headerFontColor,
-		Font:      font,
+		FontSize:  opt.FontSize,
+		FontColor: opt.HeaderFontColor,
+		FillColor: opt.HeaderFontColor,
+		Font:      opt.Font,
 	}
 
 	headerHeight := 0
-	padding := opt.Padding
-	if padding.IsZero() {
-		padding = tableDefaultSetting.Padding
+	if opt.Padding.IsZero() {
+		if opt.Theme.IsDark() {
+			opt.Padding = TableDarkThemeSetting.Padding
+		} else {
+			opt.Padding = TableLightThemeSetting.Padding
+		}
 	}
 	getCellTextStyle := opt.CellTextStyle
 	if getCellTextStyle == nil {
@@ -285,7 +278,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 			width := values[index+1] - x
 			x += cellPadding.Left
 			width -= paddingWidth
-			box := p.TextFit(text, x, y+int(fontSize), width, getTextAlign(index))
+			box := p.TextFit(text, x, y+int(opt.FontSize), width, getTextAlign(index))
 			// calculate the highest height
 			if box.Height()+paddingHeight > cellMaxHeight {
 				cellMaxHeight = box.Height() + paddingHeight
@@ -295,15 +288,15 @@ func (t *tableChart) render() (*renderInfo, error) {
 	}
 
 	// processing of the table headers
-	headerHeight = renderTableCells(textStyle, 0, opt.Header, height, padding)
+	headerHeight = renderTableCells(textStyle, 0, opt.Header, height, opt.Padding)
 	height += headerHeight
 	info.HeaderHeight = headerHeight
 
 	// processing of the table contents
-	textStyle.FontColor = fontColor
-	textStyle.FillColor = fontColor
+	textStyle.FontColor = opt.FontColor
+	textStyle.FillColor = opt.FontColor
 	for index, textList := range opt.Data {
-		cellHeight := renderTableCells(textStyle, index+1, textList, height, padding)
+		cellHeight := renderTableCells(textStyle, index+1, textList, height, opt.Padding)
 		info.RowHeights = append(info.RowHeights, cellHeight)
 		height += cellHeight
 	}
@@ -319,20 +312,26 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 	if !opt.BackgroundColor.IsZero() {
 		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
 	}
-	headerBGColor := opt.HeaderBackgroundColor
-	if headerBGColor.IsZero() {
-		headerBGColor = tableDefaultSetting.HeaderColor
+	if opt.HeaderBackgroundColor.IsZero() {
+		if opt.Theme.IsDark() {
+			opt.HeaderBackgroundColor = TableDarkThemeSetting.HeaderColor
+		} else {
+			opt.HeaderBackgroundColor = TableLightThemeSetting.HeaderColor
+		}
 	}
 
 	// if the header background colors is set
-	p.SetBackground(info.Width, info.HeaderHeight, headerBGColor, true)
+	p.SetBackground(info.Width, info.HeaderHeight, opt.HeaderBackgroundColor, true)
 	currentHeight := info.HeaderHeight
-	rowColors := opt.RowBackgroundColors
-	if rowColors == nil {
-		rowColors = tableDefaultSetting.RowColors
+	if opt.RowBackgroundColors == nil {
+		if opt.Theme.IsDark() {
+			opt.RowBackgroundColors = TableDarkThemeSetting.RowColors
+		} else {
+			opt.RowBackgroundColors = TableLightThemeSetting.RowColors
+		}
 	}
 	for index, h := range info.RowHeights {
-		color := rowColors[index%len(rowColors)]
+		color := opt.RowBackgroundColors[index%len(opt.RowBackgroundColors)]
 		child := p.Child(PainterPaddingOption(Box{
 			Top: currentHeight,
 		}))
@@ -389,6 +388,9 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 func (t *tableChart) Render() (Box, error) {
 	p := t.p
 	opt := t.opt
+	if opt.Theme == nil {
+		opt.Theme = getPreferredTheme(p.theme)
+	}
 	if !opt.BackgroundColor.IsZero() {
 		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
 	}
