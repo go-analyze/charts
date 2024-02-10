@@ -33,7 +33,7 @@ type PieChartOption struct {
 // NewPieChart returns a pie chart renderer
 func NewPieChart(p *Painter, opt PieChartOption) *pieChart {
 	if opt.Theme == nil {
-		opt.Theme = defaultTheme
+		opt.Theme = getPreferredTheme(p.theme)
 	}
 	return &pieChart{
 		p:   p,

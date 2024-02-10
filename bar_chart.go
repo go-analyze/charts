@@ -15,7 +15,7 @@ type barChart struct {
 // NewBarChart returns a bar chart renderer
 func NewBarChart(p *Painter, opt BarChartOption) *barChart {
 	if opt.Theme == nil {
-		opt.Theme = defaultTheme
+		opt.Theme = getPreferredTheme(p.theme)
 	}
 	return &barChart{
 		p:   p,
@@ -26,7 +26,7 @@ func NewBarChart(p *Painter, opt BarChartOption) *barChart {
 type BarChartOption struct {
 	// The theme
 	Theme ColorPalette
-	// The font size
+	// The font to use
 	Font *truetype.Font
 	// The data series list
 	SeriesList SeriesList

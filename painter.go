@@ -14,10 +14,10 @@ type ValueFormatter func(float64) string
 type Painter struct {
 	render         chart.Renderer
 	box            Box
-	font           *truetype.Font
 	parent         *Painter
 	style          Style
 	theme          ColorPalette
+	font           *truetype.Font
 	outputType     string
 	valueFormatter ValueFormatter
 }
@@ -133,11 +133,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 	}
 	font := opts.Font
 	if font == nil {
-		if f, err := GetDefaultFont(); err != nil {
-			return nil, err
-		} else {
-			font = f
-		}
+		font = GetDefaultFont()
 	}
 	fn := chart.PNG
 	if opts.Type == ChartOutputSVG {
@@ -162,7 +158,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 	}
 	p.setOptions(opt...)
 	if p.theme == nil {
-		p.theme = NewTheme(ThemeLight)
+		p.theme = GetDefaultTheme()
 	}
 	return p, nil
 }
@@ -177,10 +173,10 @@ func (p *Painter) Child(opt ...PainterOption) *Painter {
 		valueFormatter: p.valueFormatter,
 		render:         p.render,
 		box:            p.box.Clone(),
-		font:           p.font,
 		parent:         p,
 		style:          p.style,
 		theme:          p.theme,
+		font:           p.font,
 	}
 	child.setOptions(opt...)
 	return child

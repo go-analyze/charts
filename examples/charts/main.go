@@ -73,7 +73,7 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 	charts.SetDefaultWidth(height)
 	bytesList := make([][]byte, 0)
 	for _, opt := range chartOptions {
-		opt.Theme = theme
+		opt.Theme = charts.GetTheme(theme)
 		opt.Type = charts.ChartOutputSVG
 		d, err := charts.Render(opt)
 		if err != nil {

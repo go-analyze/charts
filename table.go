@@ -16,7 +16,7 @@ type tableChart struct {
 // NewTableChart returns a table chart render
 func NewTableChart(p *Painter, opt TableChartOption) *tableChart {
 	if opt.Theme == nil {
-		opt.Theme = defaultTheme
+		opt.Theme = getPreferredTheme(p.theme)
 	}
 	return &tableChart{
 		p:   p,
@@ -54,9 +54,8 @@ type TableChartOption struct {
 	TextAligns []string
 	// The font size of table
 	FontSize float64
-	// The font family, which should be installed first
-	FontFamily string
-	Font       *truetype.Font
+	// The font to render the table with
+	Font *truetype.Font
 	// The font color of table
 	FontColor Color
 	// The background color of header
@@ -76,7 +75,7 @@ type TableChartOption struct {
 type TableSetting struct {
 	// The color of header
 	HeaderColor Color
-	// The color of heder text
+	// The color of header text
 	HeaderFontColor Color
 	// The color of table text
 	FontColor Color
@@ -201,7 +200,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 	}
 	font := opt.Font
 	if font == nil {
-		font = theme.GetFont()
+		font = GetDefaultFont()
 	}
 	headerFontColor := opt.HeaderFontColor
 	if opt.HeaderFontColor.IsZero() {
@@ -392,9 +391,6 @@ func (t *tableChart) Render() (Box, error) {
 	opt := t.opt
 	if !opt.BackgroundColor.IsZero() {
 		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
-	}
-	if opt.Font == nil && opt.FontFamily != "" {
-		opt.Font, _ = GetFont(opt.FontFamily)
 	}
 
 	r := p.render

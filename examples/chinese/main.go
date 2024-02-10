@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -10,32 +9,25 @@ import (
 
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
-	err := os.MkdirAll(tmpPath, 0700)
-	if err != nil {
+	if err := os.MkdirAll(tmpPath, 0700); err != nil {
 		return err
 	}
 
 	file := filepath.Join(tmpPath, "chinese-line-chart.png")
-	err = ioutil.WriteFile(file, buf, 0600)
-	if err != nil {
+	if err := os.WriteFile(file, buf, 0600); err != nil {
 		return err
 	}
 	return nil
 }
 
 func main() {
-	// Download font files from:
-	// https://github.com/googlefonts/noto-cjk
-	buf, err := ioutil.ReadFile("./NotoSansSC.ttf")
-	if err != nil {
+	// Download font files from: https://github.com/googlefonts/noto-cjk
+	if buf, err := os.ReadFile("./NotoSansSC.ttf"); err != nil {
+		panic(err)
+	} else if err = charts.InstallFont("noto", buf); err != nil {
 		panic(err)
 	}
-	err = charts.InstallFont("noto", buf)
-	if err != nil {
-		panic(err)
-	}
-	font, _ := charts.GetFont("noto")
-	charts.SetDefaultFont(font)
+	charts.SetDefaultFont("noto")
 
 	values := [][]float64{
 		{
@@ -104,17 +96,11 @@ func main() {
 			"搜索引擎",
 		}, charts.PositionCenter),
 	)
-
 	if err != nil {
 		panic(err)
-	}
-
-	buf, err = p.Bytes()
-	if err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
-	}
-	err = writeFile(buf)
-	if err != nil {
+	} else if err = writeFile(buf); err != nil {
 		panic(err)
 	}
 }

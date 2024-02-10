@@ -23,7 +23,7 @@ func NewFunnelSeriesList(values []float64) SeriesList {
 // NewFunnelChart returns a funnel chart renderer
 func NewFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
 	if opt.Theme == nil {
-		opt.Theme = defaultTheme
+		opt.Theme = getPreferredTheme(p.theme)
 	}
 	return &funnelChart{
 		p:   p,

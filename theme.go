@@ -1,7 +1,9 @@
 package charts
 
 import (
-	"github.com/golang/freetype/truetype"
+	"fmt"
+	"sync"
+
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
@@ -31,8 +33,6 @@ type ColorPalette interface {
 	GetSeriesColor(int) Color
 	GetBackgroundColor() Color
 	GetTextColor() Color
-	GetFontSize() float64
-	GetFont() *truetype.Font
 }
 
 type themeColorPalette struct {
@@ -42,8 +42,6 @@ type themeColorPalette struct {
 	backgroundColor    Color
 	textColor          Color
 	seriesColors       []Color
-	fontSize           float64
-	font               *truetype.Font
 }
 
 type ThemeOption struct {
@@ -55,11 +53,9 @@ type ThemeOption struct {
 	SeriesColors       []Color
 }
 
-var palettes = map[string]*themeColorPalette{}
+var palettes = sync.Map{}
 
-const defaultFontSize = 12.0
-
-var defaultTheme ColorPalette
+const defaultTheme = "default"
 
 var defaultLightFontColor = drawing.Color{
 	R: 70,
@@ -75,6 +71,12 @@ var defaultDarkFontColor = drawing.Color{
 }
 
 func init() {
+	darkGray := Color{
+		R: 40,
+		G: 40,
+		B: 40,
+		A: 255,
+	}
 	echartSeriesColors := []Color{
 		parseColor("#5470c6"),
 		parseColor("#91cc75"),
@@ -86,7 +88,7 @@ func init() {
 		parseColor("#9a60b4"),
 		parseColor("#ea7ccc"),
 	}
-	AddTheme(
+	InstallTheme(
 		ThemeLight,
 		ThemeOption{
 			IsDarkMode: false,
@@ -112,7 +114,7 @@ func init() {
 			SeriesColors: echartSeriesColors,
 		},
 	)
-	AddTheme(
+	InstallTheme(
 		ThemeDark,
 		ThemeOption{
 			IsDarkMode: true,
@@ -128,12 +130,7 @@ func init() {
 				B: 83,
 				A: 255,
 			},
-			BackgroundColor: Color{
-				R: 16,
-				G: 12,
-				B: 42,
-				A: 255,
-			},
+			BackgroundColor: darkGray,
 			TextColor: Color{
 				R: 238,
 				G: 238,
@@ -144,17 +141,62 @@ func init() {
 		},
 	)
 	vividSeriesColors := []Color{
-		drawing.ColorFromAlphaMixedRGBA(255, 100, 100, 255), // red
-		drawing.ColorFromAlphaMixedRGBA(255, 210, 100, 255), // yellow
-		drawing.ColorFromAlphaMixedRGBA(100, 180, 210, 255), // blue
-		drawing.ColorFromAlphaMixedRGBA(64, 160, 110, 255),  // green
-		drawing.ColorFromAlphaMixedRGBA(154, 100, 180, 255), // purple
-		drawing.ColorFromAlphaMixedRGBA(220, 150, 210, 255), // light purple
-		drawing.ColorFromAlphaMixedRGBA(250, 128, 80, 255),  // light red
-		drawing.ColorFromAlphaMixedRGBA(90, 210, 110, 255),  // light green
-		drawing.ColorFromAlphaMixedRGBA(90, 110, 140, 255),  // dark blue
+		{ // red
+			R: 255,
+			G: 100,
+			B: 100,
+			A: 255,
+		},
+		{ // yellow
+			R: 255,
+			G: 210,
+			B: 100,
+			A: 255,
+		},
+		{ // blue
+			R: 100,
+			G: 180,
+			B: 210,
+			A: 255,
+		},
+		{ // green
+			R: 64,
+			G: 160,
+			B: 110,
+			A: 255,
+		},
+		{ // purple
+			R: 154,
+			G: 100,
+			B: 180,
+			A: 255,
+		},
+		{ // light red
+			R: 250,
+			G: 128,
+			B: 80,
+			A: 255,
+		},
+		{ // light green
+			R: 90,
+			G: 210,
+			B: 110,
+			A: 255,
+		},
+		{ // light purple
+			R: 220,
+			G: 150,
+			B: 210,
+			A: 255,
+		},
+		{ // dark blue
+			R: 90,
+			G: 118,
+			B: 140,
+			A: 255,
+		},
 	}
-	AddTheme(
+	InstallTheme(
 		ThemeVividLight,
 		ThemeOption{
 			IsDarkMode: false,
@@ -180,7 +222,7 @@ func init() {
 			SeriesColors: vividSeriesColors,
 		},
 	)
-	AddTheme(
+	InstallTheme(
 		ThemeVividDark,
 		ThemeOption{
 			IsDarkMode: true,
@@ -196,12 +238,7 @@ func init() {
 				B: 83,
 				A: 255,
 			},
-			BackgroundColor: Color{
-				R: 40,
-				G: 40,
-				B: 40,
-				A: 255,
-			},
+			BackgroundColor: darkGray,
 			TextColor: Color{
 				R: 238,
 				G: 238,
@@ -211,7 +248,7 @@ func init() {
 			SeriesColors: vividSeriesColors,
 		},
 	)
-	AddTheme(
+	InstallTheme(
 		ThemeAnt,
 		ThemeOption{
 			IsDarkMode: false,
@@ -228,7 +265,7 @@ func init() {
 				A: 255,
 			},
 			BackgroundColor: drawing.ColorWhite,
-			TextColor: drawing.Color{
+			TextColor: Color{
 				R: 70,
 				G: 70,
 				B: 70,
@@ -246,7 +283,7 @@ func init() {
 			},
 		},
 	)
-	AddTheme(
+	InstallTheme(
 		ThemeGrafana,
 		ThemeOption{
 			IsDarkMode: true,
@@ -262,7 +299,7 @@ func init() {
 				B: 67,
 				A: 255,
 			},
-			BackgroundColor: drawing.Color{
+			BackgroundColor: Color{
 				R: 31,
 				G: 29,
 				B: 29,
@@ -286,42 +323,54 @@ func init() {
 			},
 		},
 	)
-	SetDefaultTheme(ThemeLight)
+	if err := SetDefaultTheme(ThemeLight); err != nil {
+		panic(fmt.Errorf("could not setup default theme %s", ThemeLight))
+	}
 }
 
-// SetDefaultTheme sets default theme
-func SetDefaultTheme(name string) {
-	defaultTheme = NewTheme(name)
+// SetDefaultTheme sets default theme by name.
+func SetDefaultTheme(name string) error {
+	if value, ok := palettes.Load(name); ok {
+		palettes.Store(defaultTheme, value)
+		return nil
+	}
+	return fmt.Errorf("theme not found: %s", name)
 }
 
-func AddTheme(name string, opt ThemeOption) {
-	palettes[name] = &themeColorPalette{
+func getPreferredTheme(t ...ColorPalette) ColorPalette {
+	for _, theme := range t {
+		if theme != nil {
+			return theme
+		}
+	}
+	return GetDefaultTheme()
+}
+
+// GetDefaultTheme returns the default theme.
+func GetDefaultTheme() ColorPalette {
+	return GetTheme(defaultTheme)
+}
+
+// InstallTheme adds a theme to the catalog.
+func InstallTheme(name string, opt ThemeOption) {
+	palettes.Store(name, &themeColorPalette{
 		isDarkMode:         opt.IsDarkMode,
 		axisStrokeColor:    opt.AxisStrokeColor,
 		axisSplitLineColor: opt.AxisSplitLineColor,
 		backgroundColor:    opt.BackgroundColor,
 		textColor:          opt.TextColor,
 		seriesColors:       opt.SeriesColors,
-	}
+	})
 }
 
-func NewTheme(name string) ColorPalette {
-	p, ok := palettes[name]
-	if !ok {
-		p = palettes[ThemeLight]
+// GetTheme returns an installed theme by name, or the default if the theme is not installed.
+func GetTheme(name string) ColorPalette {
+	if value, ok := palettes.Load(name); ok {
+		if cp, ok := value.(ColorPalette); ok {
+			return cp
+		}
 	}
-	clone := *p
-	return &clone
-}
-
-func NewThemeWithFont(name string, font *truetype.Font) ColorPalette {
-	p, ok := palettes[name]
-	if !ok {
-		p = palettes[ThemeLight]
-	}
-	clone := *p
-	clone.font = font
-	return &clone
+	return GetDefaultTheme()
 }
 
 func (t *themeColorPalette) IsDark() bool {
@@ -347,19 +396,4 @@ func (t *themeColorPalette) GetBackgroundColor() Color {
 
 func (t *themeColorPalette) GetTextColor() Color {
 	return t.textColor
-}
-
-func (t *themeColorPalette) GetFontSize() float64 {
-	if t.fontSize != 0 {
-		return t.fontSize
-	}
-	return defaultFontSize
-}
-
-func (t *themeColorPalette) GetFont() *truetype.Font {
-	if t.font != nil {
-		return t.font
-	}
-	f, _ := GetDefaultFont()
-	return f
 }

@@ -81,13 +81,13 @@ func (t *titlePainter) Render() (Box, error) {
 	measureOptions := make([]titleMeasureOption, 0)
 
 	if opt.Font == nil {
-		opt.Font = theme.GetFont()
+		opt.Font = GetDefaultFont()
 	}
 	if opt.FontColor.IsZero() {
 		opt.FontColor = theme.GetTextColor()
 	}
 	if opt.FontSize == 0 {
-		opt.FontSize = theme.GetFontSize()
+		opt.FontSize = defaultFontSize
 	}
 	if opt.SubtextFontColor.IsZero() {
 		opt.SubtextFontColor = opt.FontColor

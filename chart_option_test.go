@@ -9,10 +9,12 @@ import (
 )
 
 func TestChartOption(t *testing.T) {
+	t.Parallel()
+
 	fns := []OptionFunc{
 		SVGTypeOption(),
-		FontFamilyOptionFunc("fontFamily"),
-		ThemeOptionFunc("theme"),
+		FontOptionFunc(GetDefaultFont()),
+		ThemeNameOptionFunc(ThemeVividDark),
 		TitleTextOptionFunc("title"),
 		LegendLabelsOptionFunc([]string{
 			"label",
@@ -38,9 +40,9 @@ func TestChartOption(t *testing.T) {
 		fn(&opt)
 	}
 	require.Equal(t, ChartOption{
-		Type:       ChartOutputSVG,
-		FontFamily: "fontFamily",
-		Theme:      "theme",
+		Type:  ChartOutputSVG,
+		Font:  GetDefaultFont(),
+		Theme: GetTheme(ThemeVividDark),
 		Title: TitleOption{
 			Text: "title",
 		},
@@ -74,6 +76,8 @@ func TestChartOption(t *testing.T) {
 }
 
 func TestChartOptionPieSeriesShowLabel(t *testing.T) {
+	t.Parallel()
+
 	opt := ChartOption{
 		SeriesList: NewPieSeriesList([]float64{
 			1,
@@ -85,6 +89,8 @@ func TestChartOptionPieSeriesShowLabel(t *testing.T) {
 }
 
 func TestChartOptionMarkLine(t *testing.T) {
+	t.Parallel()
+
 	opt := ChartOption{
 		SeriesList: NewSeriesListDataFromValues([][]float64{
 			{1, 2},
@@ -95,6 +101,8 @@ func TestChartOptionMarkLine(t *testing.T) {
 }
 
 func TestChartOptionMarkPoint(t *testing.T) {
+	t.Parallel()
+
 	opt := ChartOption{
 		SeriesList: NewSeriesListDataFromValues([][]float64{
 			{1, 2},
@@ -105,6 +113,8 @@ func TestChartOptionMarkPoint(t *testing.T) {
 }
 
 func TestLineRender(t *testing.T) {
+	t.Parallel()
+
 	values := [][]float64{
 		{
 			120,
@@ -180,6 +190,8 @@ func TestLineRender(t *testing.T) {
 }
 
 func TestBarRender(t *testing.T) {
+	t.Parallel()
+
 	values := [][]float64{
 		{
 			2.0,
@@ -251,6 +263,8 @@ func TestBarRender(t *testing.T) {
 }
 
 func TestHorizontalBarRender(t *testing.T) {
+	t.Parallel()
+
 	values := [][]float64{
 		{
 			18203,
@@ -299,6 +313,8 @@ func TestHorizontalBarRender(t *testing.T) {
 }
 
 func TestPieRender(t *testing.T) {
+	t.Parallel()
+
 	values := []float64{
 		1048,
 		735,
@@ -340,6 +356,8 @@ func TestPieRender(t *testing.T) {
 }
 
 func TestRadarRender(t *testing.T) {
+	t.Parallel()
+
 	values := [][]float64{
 		{
 			4200,
@@ -389,6 +407,8 @@ func TestRadarRender(t *testing.T) {
 }
 
 func TestFunnelRender(t *testing.T) {
+	t.Parallel()
+
 	values := []float64{
 		100,
 		80,

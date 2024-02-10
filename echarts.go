@@ -365,7 +365,7 @@ func (et *EChartsTextStyle) ToStyle() chart.Style {
 		FontColor: parseColor(et.Color),
 	}
 	if et.FontFamily != "" {
-		s.Font, _ = GetFont(et.FontFamily)
+		s.Font = GetFont(et.FontFamily)
 	}
 	return s
 }
@@ -405,9 +405,9 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	titleSubtextStyle := eo.Title.SubtextStyle.ToStyle()
 	legendTextStyle := eo.Legend.TextStyle.ToStyle()
 	o := ChartOption{
-		Type:       eo.Type,
-		FontFamily: fontFamily,
-		Theme:      eo.Theme,
+		Type:  eo.Type,
+		Font:  GetFont(fontFamily),
+		Theme: GetTheme(eo.Theme),
 		Title: TitleOption{
 			Text:             eo.Title.Text,
 			Subtext:          eo.Title.Subtext,
