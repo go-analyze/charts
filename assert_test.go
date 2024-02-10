@@ -6,20 +6,24 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func assertEqualSVG(t *testing.T, expected, actual string) {
 	t.Helper()
 
 	if expected != actual {
-		expectedFile, err := writeTempFile(expected, t.Name()+"-expected", "svg")
-		require.NoError(t, err)
 		actualFile, err := writeTempFile(actual, t.Name()+"-actual", "svg")
-		require.NoError(t, err)
+		assert.NoError(t, err)
 
-		t.Fatalf("SVG content does not match. Expected file: %s, Actual file: %s",
-			expectedFile, actualFile)
+		if expected == "" {
+			t.Fatalf("SVG written to %s", actualFile)
+		} else {
+			expectedFile, err := writeTempFile(expected, t.Name()+"-expected", "svg")
+			assert.NoError(t, err)
+			t.Fatalf("SVG content does not match. Expected file: %s, Actual file: %s",
+				expectedFile, actualFile)
+		}
 	}
 }
 

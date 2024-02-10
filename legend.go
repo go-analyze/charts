@@ -82,7 +82,7 @@ func (l *legendPainter) Render() (Box, error) {
 		theme = l.p.theme
 	}
 	if opt.FontSize == 0 {
-		opt.FontSize = theme.GetFontSize()
+		opt.FontSize = defaultFontSize
 	}
 	if opt.FontColor.IsZero() {
 		opt.FontColor = theme.GetTextColor()

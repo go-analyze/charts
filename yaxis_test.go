@@ -8,6 +8,8 @@ import (
 )
 
 func TestRightYAxis(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		render func(*Painter) ([]byte, error)
 		result string
@@ -35,7 +37,7 @@ func TestRightYAxis(t *testing.T) {
 				Type:   ChartOutputSVG,
 				Width:  600,
 				Height: 400,
-			}, PainterThemeOption(defaultTheme), PainterPaddingOption(Box{
+			}, PainterThemeOption(GetTheme(ThemeLight)), PainterPaddingOption(Box{
 				Top:    10,
 				Right:  10,
 				Bottom: 10,

@@ -60,7 +60,7 @@ func NewRadarIndicators(names []string, values []float64) []RadarIndicator {
 // NewRadarChart returns a radar chart renderer
 func NewRadarChart(p *Painter, opt RadarChartOption) *radarChart {
 	if opt.Theme == nil {
-		opt.Theme = defaultTheme
+		opt.Theme = getPreferredTheme(p.theme)
 	}
 	return &radarChart{
 		p:   p,

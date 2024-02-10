@@ -8,6 +8,8 @@ import (
 )
 
 func TestTitleRenderer(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		render func(*Painter) ([]byte, error)
 		result string
@@ -63,7 +65,7 @@ func TestTitleRenderer(t *testing.T) {
 				Type:   ChartOutputSVG,
 				Width:  600,
 				Height: 400,
-			}, PainterThemeOption(defaultTheme))
+			}, PainterThemeOption(GetTheme(ThemeLight)))
 			require.NoError(t, err)
 			data, err := tt.render(p)
 			require.NoError(t, err)

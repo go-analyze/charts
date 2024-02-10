@@ -293,7 +293,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 			Type:   opt.Type,
 			Width:  opt.Width,
 			Height: opt.Height,
-			Font:   opt.font,
+			Font:   opt.Font,
 		})
 		if err != nil {
 			return nil, err
@@ -334,7 +334,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	axisReversed := len(horizontalBarSeriesList) != 0
 	renderOpt := defaultRenderOption{
-		Theme:        opt.theme,
+		Theme:        opt.Theme,
 		Padding:      opt.Padding,
 		SeriesList:   opt.SeriesList,
 		XAxis:        opt.XAxis,
@@ -370,8 +370,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(barSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewBarChart(p, BarChartOption{
-				Theme:    opt.theme,
-				Font:     opt.font,
+				Theme:    opt.Theme,
+				Font:     opt.Font,
 				XAxis:    opt.XAxis,
 				BarWidth: opt.BarWidth,
 			}).render(renderResult, barSeriesList)
@@ -383,8 +383,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(horizontalBarSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewHorizontalBarChart(p, HorizontalBarChartOption{
-				Theme:        opt.theme,
-				Font:         opt.font,
+				Theme:        opt.Theme,
+				Font:         opt.Font,
 				BarHeight:    opt.BarHeight,
 				YAxisOptions: opt.YAxisOptions,
 			}).render(renderResult, horizontalBarSeriesList)
@@ -396,8 +396,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(pieSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewPieChart(p, PieChartOption{
-				Theme: opt.theme,
-				Font:  opt.font,
+				Theme: opt.Theme,
+				Font:  opt.Font,
 			}).render(renderResult, pieSeriesList)
 			return err
 		})
@@ -407,8 +407,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(lineSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewLineChart(p, LineChartOption{
-				Theme:       opt.theme,
-				Font:        opt.font,
+				Theme:       opt.Theme,
+				Font:        opt.Font,
 				XAxis:       opt.XAxis,
 				SymbolShow:  opt.SymbolShow,
 				StrokeWidth: opt.LineStrokeWidth,
@@ -423,8 +423,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(radarSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewRadarChart(p, RadarChartOption{
-				Theme:           opt.theme,
-				Font:            opt.font,
+				Theme:           opt.Theme,
+				Font:            opt.Font,
 				RadarIndicators: opt.RadarIndicators,
 			}).render(renderResult, radarSeriesList)
 			return err
@@ -435,8 +435,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(funnelSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewFunnelChart(p, FunnelChartOption{
-				Theme: opt.theme,
-				Font:  opt.font,
+				Theme: opt.Theme,
+				Font:  opt.Font,
 			}).render(renderResult, funnelSeriesList)
 			return err
 		})
@@ -448,11 +448,11 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	for _, item := range opt.Children {
 		item.Parent = p
-		if item.Theme == "" {
+		if item.Theme == nil {
 			item.Theme = opt.Theme
 		}
-		if item.FontFamily == "" {
-			item.FontFamily = opt.FontFamily
+		if item.Font == nil {
+			item.Font = opt.Font
 		}
 		if _, err = Render(item); err != nil {
 			return nil, err

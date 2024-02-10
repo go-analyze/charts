@@ -1,22 +1,25 @@
 package charts
 
 import (
-	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/golang/freetype/truetype"
 	"github.com/wcharczuk/go-chart/v2/roboto"
 )
 
+const defaultFontSize = 12.0
+
 var fonts = sync.Map{}
-var ErrFontNotExists = errors.New("font is not exists")
-var defaultFontFamily = "defaultFontFamily"
+var defaultFontFamily = "default"
 
 func init() {
 	name := "roboto"
-	_ = InstallFont(name, roboto.Roboto)
-	font, _ := GetFont(name)
-	SetDefaultFont(font)
+	if err := InstallFont(name, roboto.Roboto); err != nil {
+		panic(fmt.Errorf("could not install default font - %v", err))
+	} else if err = SetDefaultFont(name); err != nil {
+		panic(fmt.Errorf("could not set default font - %v", err))
+	}
 }
 
 // InstallFont installs the font for charts
@@ -29,28 +32,35 @@ func InstallFont(fontFamily string, data []byte) error {
 	return nil
 }
 
-// GetDefaultFont get default font
-func GetDefaultFont() (*truetype.Font, error) {
+func getPreferredFont(f ...*truetype.Font) *truetype.Font {
+	for _, font := range f {
+		if font != nil {
+			return font
+		}
+	}
+	return GetDefaultFont()
+}
+
+// GetDefaultFont get default font.
+func GetDefaultFont() *truetype.Font {
 	return GetFont(defaultFontFamily)
 }
 
-// SetDefaultFont set default font
-func SetDefaultFont(font *truetype.Font) {
-	if font == nil {
-		return
+// SetDefaultFont set default font by name.
+func SetDefaultFont(fontFamily string) error {
+	if value, ok := fonts.Load(fontFamily); ok {
+		fonts.Store(defaultFontFamily, value)
+		return nil
 	}
-	fonts.Store(defaultFontFamily, font)
+	return fmt.Errorf("font not found: %v", fontFamily)
 }
 
-// GetFont get the font by font family
-func GetFont(fontFamily string) (*truetype.Font, error) {
-	value, ok := fonts.Load(fontFamily)
-	if !ok {
-		return nil, ErrFontNotExists
+// GetFont get the font by font family or the default if the family is not installed.
+func GetFont(fontFamily string) *truetype.Font {
+	if value, ok := fonts.Load(fontFamily); ok {
+		if f, ok := value.(*truetype.Font); ok {
+			return f
+		}
 	}
-	f, ok := value.(*truetype.Font)
-	if !ok {
-		return nil, ErrFontNotExists
-	}
-	return f, nil
+	return GetDefaultFont()
 }

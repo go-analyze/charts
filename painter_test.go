@@ -13,6 +13,8 @@ import (
 )
 
 func TestPainterOption(t *testing.T) {
+	t.Parallel()
+
 	font := &truetype.Font{}
 	d, err := NewPainter(PainterOptions{
 		Width:  800,
@@ -46,6 +48,8 @@ func TestPainterOption(t *testing.T) {
 }
 
 func TestPainter(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		fn     func(*Painter)
 		result string
@@ -322,17 +326,18 @@ func TestPainter(t *testing.T) {
 }
 
 func TestPainterTextFit(t *testing.T) {
+	t.Parallel()
+
 	p, err := NewPainter(PainterOptions{
 		Width:  400,
 		Height: 300,
 		Type:   ChartOutputSVG,
 	})
 	require.NoError(t, err)
-	f, _ := GetDefaultFont()
 	style := Style{
 		FontSize:  12,
 		FontColor: chart.ColorBlack,
-		Font:      f,
+		Font:      GetDefaultFont(),
 	}
 	p.SetStyle(style)
 	box := p.TextFit("Hello World!", 0, 20, 80)

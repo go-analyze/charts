@@ -173,6 +173,8 @@ func TestEChartsMarkLine(t *testing.T) {
 }
 
 func TestEChartsOption(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		option string
 	}{
@@ -424,6 +426,8 @@ func TestEChartsOption(t *testing.T) {
 }
 
 func TestRenderEChartsToSVG(t *testing.T) {
+	t.Parallel()
+
 	data, err := RenderEChartsToSVG(`{
 		"title": {
 			"text": "Rainfall vs Evaporation",

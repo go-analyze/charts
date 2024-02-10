@@ -84,10 +84,7 @@ func (a *axisPainter) Render() (Box, error) {
 
 	font := opt.Font
 	if font == nil {
-		font = a.p.font
-	}
-	if font == nil {
-		font = theme.GetFont()
+		font = getPreferredFont(a.p.font)
 	}
 	fontColor := opt.FontColor
 	if fontColor.IsZero() {
@@ -95,7 +92,7 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 	fontSize := opt.FontSize
 	if fontSize == 0 {
-		fontSize = theme.GetFontSize()
+		fontSize = defaultFontSize
 	}
 	strokeColor := opt.StrokeColor
 	if strokeColor.IsZero() {

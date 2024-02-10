@@ -7,15 +7,13 @@ import (
 )
 
 type ChartOption struct {
-	theme ColorPalette
-	font  *truetype.Font
+	// The font to use for rendering the chart
+	Font *truetype.Font
 	// The output type of chart, "svg" or "png", default value is "svg"
 	Type string
-	// The font family, which should be installed first
-	FontFamily string
-	// The theme of chart, "light" and "dark".
-	// The default theme is "light"
-	Theme string
+	// The theme of chart.  Built in themes can be loaded using `GetTheme` with
+	//"light", "dark", "vivid-light", "vivid-dark", "ant" or "grafana".
+	Theme ColorPalette
 	// The title option
 	Title TitleOption
 	// The legend option
@@ -77,15 +75,22 @@ func TypeOptionFunc(t string) OptionFunc {
 	}
 }
 
-// FontFamilyOptionFunc set font family of chart
-func FontFamilyOptionFunc(fontFamily string) OptionFunc {
+// FontOptionFunc set font of chart.
+func FontOptionFunc(font *truetype.Font) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.FontFamily = fontFamily
+		opt.Font = font
+	}
+}
+
+// ThemeNameOptionFunc set them of chart by name.
+func ThemeNameOptionFunc(theme string) OptionFunc {
+	return func(opt *ChartOption) {
+		opt.Theme = GetTheme(theme)
 	}
 }
 
 // ThemeOptionFunc set them of chart
-func ThemeOptionFunc(theme string) OptionFunc {
+func ThemeOptionFunc(theme ColorPalette) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Theme = theme
 	}
@@ -263,15 +268,15 @@ func (o *ChartOption) fillDefault() {
 		}
 	}
 
-	o.font, _ = GetFont(o.FontFamily)
-	if o.font == nil {
-		o.font, _ = GetDefaultFont()
+	if o.Font == nil {
+		o.Font = GetDefaultFont()
 	}
-	t := NewThemeWithFont(o.Theme, o.font)
-	o.theme = t
+	if o.Theme == nil {
+		o.Theme = GetDefaultTheme()
+	}
 
 	if o.BackgroundColor.IsZero() {
-		o.BackgroundColor = t.GetBackgroundColor()
+		o.BackgroundColor = o.Theme.GetBackgroundColor()
 	}
 	if o.Padding.IsZero() {
 		o.Padding = Box{
@@ -378,12 +383,6 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 	}
 	if opt.Width <= 0 {
 		opt.Width = defaultChartWidth
-	}
-	if opt.FontFamily != "" {
-		opt.Font, _ = GetFont(opt.FontFamily)
-	}
-	if opt.Font == nil {
-		opt.Font, _ = GetDefaultFont()
 	}
 
 	p, err := NewPainter(PainterOptions{
