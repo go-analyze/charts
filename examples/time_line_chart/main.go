@@ -41,18 +41,18 @@ func main() {
 			values,
 		},
 		charts.TitleTextOptionFunc("Line"),
-		charts.XAxisDataOptionFunc(xAxisValue, charts.FalseFlag()),
+		charts.XAxisDataOptionFunc(xAxisValue, charts.False()),
 		charts.LegendLabelsOptionFunc([]string{
 			"Demo",
 		}, "50"),
 		func(opt *charts.ChartOption) {
-			opt.XAxis.FirstAxis = firstAxis
+			opt.XAxis.DataStartIndex = firstAxis
 			opt.XAxis.Unit = 10
 			opt.Legend.Padding = charts.Box{
 				Top:    5,
 				Bottom: 10,
 			}
-			opt.SymbolShow = charts.FalseFlag()
+			opt.SymbolShow = charts.False()
 			opt.LineStrokeWidth = 1
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)

@@ -21,22 +21,23 @@ func NewBarChart(p *Painter, opt BarChartOption) *barChart {
 }
 
 type BarChartOption struct {
-	// The theme
+	// Theme specifies the colors used for the bar chart.
 	Theme ColorPalette
-	// The font to use
-	Font *truetype.Font
-	// The data series list
-	SeriesList SeriesList
-	// The x-axis options
-	XAxis XAxisOption
-	// The padding of line chart
+	// Padding specifies the padding of bar chart.
 	Padding Box
-	// The y-axis options
-	YAxisOptions []YAxisOption
-	// The option of title
+	// Font is the font used to render the chart.
+	Font *truetype.Font
+	// SeriesList provides the data series.
+	SeriesList SeriesList
+	// XAxis are options for the x-axis.
+	XAxis XAxisOption
+	// YAxis are options for the y-axis (at most two).
+	YAxis []YAxisOption
+	// Title are options for rendering the title.
 	Title TitleOption
-	// The legend option
-	Legend   LegendOption
+	// Legend are options for the data legend.
+	Legend LegendOption
+	// BarWidth specifies the width of each bar.
 	BarWidth int
 }
 
@@ -78,7 +79,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	}
 	for index := range seriesList {
 		series := seriesList[index]
-		yRange := result.axisRanges[series.AxisIndex]
+		yRange := result.axisRanges[series.YAxisIndex]
 		seriesColor := theme.GetSeriesColor(series.index)
 
 		divideValues := xRange.AutoDivide()
@@ -187,13 +188,13 @@ func (b *barChart) Render() (Box, error) {
 		opt.Theme = getPreferredTheme(p.theme)
 	}
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		Theme:        opt.Theme,
-		Padding:      opt.Padding,
-		SeriesList:   opt.SeriesList,
-		XAxis:        opt.XAxis,
-		YAxisOptions: opt.YAxisOptions,
-		TitleOption:  opt.Title,
-		LegendOption: opt.Legend,
+		Theme:      opt.Theme,
+		Padding:    opt.Padding,
+		SeriesList: opt.SeriesList,
+		XAxis:      opt.XAxis,
+		YAxis:      opt.YAxis,
+		Title:      opt.Title,
+		Legend:     opt.Legend,
 	})
 	if err != nil {
 		return BoxZero, err

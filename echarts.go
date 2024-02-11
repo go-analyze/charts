@@ -336,10 +336,10 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 			}
 		}
 		seriesList = append(seriesList, Series{
-			Type:      item.Type,
-			Data:      data,
-			AxisIndex: item.YAxisIndex,
-			Style:     item.ItemStyle.ToStyle(),
+			Type:       item.Type,
+			Data:       data,
+			YAxisIndex: item.YAxisIndex,
+			Style:      item.ItemStyle.ToStyle(),
 			Label: SeriesLabel{
 				Color:    parseColor(item.Label.Color),
 				Show:     item.Label.Show,
@@ -405,9 +405,9 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	titleSubtextStyle := eo.Title.SubtextStyle.ToStyle()
 	legendTextStyle := eo.Legend.TextStyle.ToStyle()
 	o := ChartOption{
-		Type:  eo.Type,
-		Font:  GetFont(fontFamily),
-		Theme: GetTheme(eo.Theme),
+		OutputFormat: eo.Type,
+		Font:         GetFont(fontFamily),
+		Theme:        GetTheme(eo.Theme),
 		Title: TitleOption{
 			Text:             eo.Title.Text,
 			Subtext:          eo.Title.Subtext,
@@ -464,11 +464,11 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			Min:       item.Min,
 			Max:       item.Max,
 			Formatter: item.AxisLabel.Formatter,
-			Color:     parseColor(item.AxisLine.LineStyle.Color),
+			AxisColor: parseColor(item.AxisLine.LineStyle.Color),
 			Data:      item.Data,
 		}
 	}
-	o.YAxisOptions = yAxisOptions
+	o.YAxis = yAxisOptions
 
 	if len(eo.Children) != 0 {
 		o.Children = make([]ChartOption, len(eo.Children))
@@ -485,7 +485,7 @@ func renderEcharts(options, outputType string) ([]byte, error) {
 		return nil, err
 	}
 	opt := o.ToOption()
-	opt.Type = outputType
+	opt.OutputFormat = outputType
 	if d, err := Render(opt); err != nil {
 		return nil, err
 	} else {

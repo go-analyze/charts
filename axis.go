@@ -20,42 +20,38 @@ func NewAxisPainter(p *Painter, opt AxisOption) *axisPainter {
 }
 
 type AxisOption struct {
-	// The theme of chart
-	Theme ColorPalette
-	// Formatter for y axis text value
-	Formatter string
-	// The label of axis
-	Data []string
-	// The boundary gap on both sides of a coordinate axis.
-	// Nil or *true means the center part of two axis ticks
-	BoundaryGap *bool
-	// The flag for show axis, set this to *false will hide axis
+	// Show specifies if the axis should be rendered, set this to *false (through False()) to hide the axis.
 	Show *bool
-	// The position of axis, it can be 'left', 'top', 'right' or 'bottom'
+	// Theme specifies the colors used for the axis.
+	Theme ColorPalette
+	// Data provides labels for the axis.
+	Data []string
+	// DataStartIndex specifies what index the Data values should start from.
+	DataStartIndex int
+	// Formatter for replacing axis text values.
+	Formatter string
+	// Position describes the position of axis, it can be 'left', 'top', 'right' or 'bottom'.
 	Position string
-	// The line color of axis
-	StrokeColor Color
-	// The line width
+	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
+	// centered between two axis ticks.  Enabled by default, specify *false (through False()) to change the spacing.
+	BoundaryGap *bool
+	// StrokeWidth is the axis line width.
 	StrokeWidth float64
-	// The length of the axis tick
+	// TickLength is the length of each axis tick.
 	TickLength int
-	// The first axis
-	FirstAxis int
-	// The margin value of label
+	// LabelMargin specifies the margin value of each label.
 	LabelMargin int
-	// The font size of label
+	// FontSize specifies the font size of each label.
 	FontSize float64
-	// The font of label
+	// Font is the font used to render each label.
 	Font *truetype.Font
-	// The color of label
+	// FontColor is the color used for text rendered.
 	FontColor Color
-	// The flag for show axis split line, set this to true will show axis split line
+	// SplitLineShow, set this to true will show axis split line.
 	SplitLineShow bool
-	// The color of split line
-	SplitLineColor Color
-	// The text rotation of label
+	// TextRotation are the radians for rotating the label.
 	TextRotation float64
-	// The offset of label
+	// LabelOffset is the offset of each label.
 	LabelOffset Box
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
@@ -91,10 +87,6 @@ func (a *axisPainter) Render() (Box, error) {
 	if fontSize == 0 {
 		fontSize = defaultFontSize
 	}
-	strokeColor := opt.StrokeColor
-	if strokeColor.IsZero() {
-		strokeColor = theme.GetAxisStrokeColor()
-	}
 
 	formatter := opt.Formatter
 	if len(formatter) != 0 {
@@ -112,7 +104,7 @@ func (a *axisPainter) Render() (Box, error) {
 	labelMargin := getDefaultInt(opt.LabelMargin, 5)
 
 	style := Style{
-		StrokeColor: strokeColor,
+		StrokeColor: theme.GetAxisStrokeColor(),
 		StrokeWidth: strokeWidth,
 		Font:        font,
 		FontColor:   fontColor,
@@ -235,17 +227,11 @@ func (a *axisPainter) Render() (Box, error) {
 			TickSpaces: tickSpaces,
 			Length:     tickLength,
 			Orient:     orient,
-			First:      opt.FirstAxis,
+			First:      opt.DataStartIndex,
 		})
 		p.LineStroke([]Point{
-			{
-				X: x0,
-				Y: y0,
-			},
-			{
-				X: x1,
-				Y: y1,
-			},
+			{X: x0, Y: y0},
+			{X: x1, Y: y1},
 		})
 	}
 
@@ -254,7 +240,7 @@ func (a *axisPainter) Render() (Box, error) {
 		Top:   labelPaddingTop,
 		Right: labelPaddingRight,
 	})).MultiText(MultiTextOption{
-		First:          opt.FirstAxis,
+		First:          opt.DataStartIndex,
 		Align:          textAlign,
 		TextList:       opt.Data,
 		Orient:         orient,
@@ -266,7 +252,7 @@ func (a *axisPainter) Render() (Box, error) {
 	})
 
 	if opt.SplitLineShow { // show auxiliary lines
-		style.StrokeColor = opt.SplitLineColor
+		style.StrokeColor = theme.GetAxisSplitLineColor()
 		style.StrokeWidth = 1
 		top.OverrideDrawingStyle(style)
 		if isVertical {
@@ -280,14 +266,8 @@ func (a *axisPainter) Render() (Box, error) {
 			yValues = yValues[0 : len(yValues)-1]
 			for _, y := range yValues {
 				top.LineStroke([]Point{
-					{
-						X: x0,
-						Y: y,
-					},
-					{
-						X: x1,
-						Y: y,
-					},
+					{X: x0, Y: y},
+					{X: x1, Y: y},
 				})
 			}
 		} else {
@@ -299,21 +279,12 @@ func (a *axisPainter) Render() (Box, error) {
 					continue
 				}
 				top.LineStroke([]Point{
-					{
-						X: x,
-						Y: y0,
-					},
-					{
-						X: x,
-						Y: y1,
-					},
+					{X: x, Y: y0},
+					{X: x, Y: y1},
 				})
 			}
 		}
 	}
 
-	return Box{
-		Bottom: height,
-		Right:  width,
-	}, nil
+	return Box{Bottom: height, Right: width}, nil
 }

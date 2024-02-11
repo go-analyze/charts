@@ -2,8 +2,8 @@ package charts
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
+
+	"github.com/golang/freetype/truetype"
 )
 
 type legendPainter struct {
@@ -15,31 +15,32 @@ const IconRect = "rect"
 const IconLineDot = "lineDot"
 
 type LegendOption struct {
-	// The theme
-	Theme ColorPalette
-	// Text array of legend
-	Data []string
-	// Distance between legend component and the left side of the container.
-	// It can be pixel value: 20, percentage value: 20%,
-	// or position value: right, center.
-	Left string
-	// Distance between legend component and the top side of the container.
-	// It can be pixel value: 20.
-	Top string
-	// Legend marker and text aligning, it can be left or right, default is left.
-	Align string
-	// The layout orientation of legend, it can be horizontal or vertical, default is horizontal.
-	Orient string
-	// Icon of the legend.
-	Icon string
-	// Font size of legend text
-	FontSize float64
-	// FontColor color of legend text
-	FontColor Color
-	// The flag for show legend, set this to *false will hide legend
+	// Show specifies if the legend should be rendered, set this to *false (through False()) to hide the legend.
 	Show *bool
-	// The padding of legend
+	// Theme specifies the colors used for the legend.
+	Theme ColorPalette
+	// Padding specifies space padding around the legend.
 	Padding Box
+	// Data provides text for the legend.
+	Data []string
+	// FontSize specifies the font size of each label.
+	FontSize float64
+	// Font is the font used to render each label.
+	Font *truetype.Font
+	// FontColor is the color used for text rendered.
+	FontColor Color
+	// Left is the distance between legend component and the left side of the container.
+	// It can be pixel value (20), percentage value (20%), or position description: 'left', 'right', 'center'.
+	Left string
+	// Top is the distance between legend component and the top side of the container.
+	// It can be pixel value (20), or percentage value (20%).
+	Top string
+	// Align is the legend marker and text alignment, it can be 'left' or 'right', default is 'left'.
+	Align string
+	// Orient is the layout orientation of legend, it can be 'horizontal' or 'vertical', default is 'horizontal'.
+	Orient string
+	// Icon to show next to the labels.	Can be 'rect' or 'dot'.
+	Icon string
 }
 
 // NewLegendOption returns a legend option
@@ -73,13 +74,14 @@ func NewLegendPainter(p *Painter, opt LegendOption) *legendPainter {
 
 func (l *legendPainter) Render() (Box, error) {
 	opt := l.opt
-	theme := opt.Theme
 	if opt.IsEmpty() ||
 		isFalse(opt.Show) {
 		return BoxZero, nil
 	}
+
+	theme := opt.Theme
 	if theme == nil {
-		theme = l.p.theme
+		theme = getPreferredTheme(l.p.theme)
 	}
 	if opt.FontSize == 0 {
 		opt.FontSize = defaultFontSize
@@ -87,7 +89,7 @@ func (l *legendPainter) Render() (Box, error) {
 	if opt.FontColor.IsZero() {
 		opt.FontColor = theme.GetTextColor()
 	}
-	if opt.Left == "" {
+	if opt.Left == "" { // default a center legend
 		opt.Left = PositionCenter
 	}
 	padding := opt.Padding
@@ -140,32 +142,36 @@ func (l *legendPainter) Render() (Box, error) {
 	}
 
 	// calculate starting position
-	left := 0
+	var left int
 	switch opt.Left {
+	case PositionLeft:
+		// no-op
 	case PositionRight:
 		left = p.Width() - width
 	case PositionCenter:
 		left = (p.Width() - width) >> 1
 	default:
-		if strings.HasSuffix(opt.Left, "%") {
-			value, _ := strconv.Atoi(strings.ReplaceAll(opt.Left, "%", ""))
-			left = p.Width() * value / 100
+		if v, err := parseFlexibleValue(opt.Left, float64(p.Width())); err != nil {
+			return BoxZero, err
 		} else {
-			value, _ := strconv.Atoi(opt.Left)
-			left = value
+			left = int(v)
 		}
 	}
-	top, err := strconv.Atoi(opt.Top)
-	if opt.Top != "" && err != nil {
-		return BoxZero, fmt.Errorf("unexpected parsing error: %v", err)
-	}
-
 	if left < 0 {
 		left = 0
 	}
 
-	x := int(left)
-	y := int(top) + 10
+	var top int
+	if opt.Top != "" {
+		if v, err := parseFlexibleValue(opt.Top, float64(p.Height())); err != nil {
+			return BoxZero, fmt.Errorf("unexpected parsing error: %v", err)
+		} else {
+			top = int(v)
+		}
+	}
+
+	x := left
+	y := top + 10
 	startY := y
 	x0 := x
 	y0 := y

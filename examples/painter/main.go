@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -12,24 +11,19 @@ import (
 
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
-	err := os.MkdirAll(tmpPath, 0700)
-	if err != nil {
+	if err := os.MkdirAll(tmpPath, 0700); err != nil {
 		return err
 	}
 
 	file := filepath.Join(tmpPath, "painter.png")
-	err = ioutil.WriteFile(file, buf, 0600)
-	if err != nil {
-		return err
-	}
-	return nil
+	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
 	p, err := charts.NewPainter(charts.PainterOptions{
-		Width:  600,
-		Height: 2000,
-		Type:   charts.ChartOutputPNG,
+		OutputFormat: charts.ChartOutputPNG,
+		Width:        600,
+		Height:       2000,
 	})
 	if err != nil {
 		panic(err)
@@ -45,22 +39,10 @@ func main() {
 		StrokeWidth: 1,
 	})
 	p.LineStroke([]charts.Point{
-		{
-			X: 0,
-			Y: 0,
-		},
-		{
-			X: 100,
-			Y: 10,
-		},
-		{
-			X: 200,
-			Y: 0,
-		},
-		{
-			X: 300,
-			Y: 10,
-		},
+		{X: 0, Y: 0},
+		{X: 100, Y: 10},
+		{X: 200, Y: 0},
+		{X: 300, Y: 10},
 	})
 
 	// smooth curve
@@ -112,10 +94,7 @@ func main() {
 		StrokeColor: drawing.ColorBlack,
 		FillColor:   drawing.ColorBlack,
 		StrokeWidth: 1,
-	}).Polygon(charts.Point{
-		X: 100,
-		Y: 0,
-	}, 50, 6)
+	}).Polygon(charts.Point{X: 100, Y: 0}, 50, 6)
 
 	// FillArea
 	top += 60
@@ -124,26 +103,11 @@ func main() {
 	})).SetDrawingStyle(charts.Style{
 		FillColor: drawing.ColorBlack,
 	}).FillArea([]charts.Point{
-		{
-			X: 0,
-			Y: 0,
-		},
-		{
-			X: 100,
-			Y: 0,
-		},
-		{
-			X: 150,
-			Y: 40,
-		},
-		{
-			X: 80,
-			Y: 30,
-		},
-		{
-			X: 0,
-			Y: 0,
-		},
+		{X: 0, Y: 0},
+		{X: 100, Y: 0},
+		{X: 150, Y: 40},
+		{X: 80, Y: 30},
+		{X: 0, Y: 0},
 	})
 
 	// point of coordinate axis
@@ -340,9 +304,9 @@ func main() {
 		FontColor: drawing.ColorBlack,
 		FontSize:  10,
 	}).Grid(charts.GridOption{
-		Column:            8,
+		Columns:           8,
 		IgnoreColumnLines: []int{0, 8},
-		Row:               8,
+		Rows:              8,
 		IgnoreRowLines:    []int{0, 8},
 	})
 
@@ -360,18 +324,9 @@ func main() {
 		StrokeColor: drawing.ColorBlack,
 		StrokeWidth: 1,
 	}).Dots([]charts.Point{
-		{
-			X: 0,
-			Y: 0,
-		},
-		{
-			X: 50,
-			Y: 0,
-		},
-		{
-			X: 100,
-			Y: 10,
-		},
+		{X: 0, Y: 0},
+		{X: 50, Y: 0},
+		{X: 100, Y: 10},
 	})
 
 	// rect
@@ -419,7 +374,7 @@ func main() {
 		Right:  p.Width() - 1,
 		Bottom: top + 100,
 	})), charts.GridPainterOption{
-		Row:            5,
+		Rows:           5,
 		IgnoreFirstRow: true,
 		IgnoreLastRow:  true,
 		StrokeColor:    drawing.ColorBlue,
@@ -502,9 +457,9 @@ func main() {
 			"Sat",
 			"Sun",
 		},
-		StrokeColor: drawing.ColorBlack,
-		FontSize:    12,
-		FontColor:   drawing.ColorBlack,
+		//StrokeColor: drawing.ColorBlack,	// TODO - apply to theme
+		FontSize:  12,
+		FontColor: drawing.ColorBlack,
 	}).Render()
 
 	// axis top
@@ -516,7 +471,7 @@ func main() {
 		Bottom: top + 50,
 	})), charts.AxisOption{
 		Position:    charts.PositionTop,
-		BoundaryGap: charts.FalseFlag(),
+		BoundaryGap: charts.False(),
 		Data: []string{
 			"Mon",
 			"Tue",
@@ -526,9 +481,9 @@ func main() {
 			"Sat",
 			"Sun",
 		},
-		StrokeColor: drawing.ColorBlack,
-		FontSize:    12,
-		FontColor:   drawing.ColorBlack,
+		//StrokeColor: drawing.ColorBlack,	// TODO - apply to theme
+		FontSize:  12,
+		FontColor: drawing.ColorBlack,
 	}).Render()
 
 	// axis left
@@ -549,9 +504,9 @@ func main() {
 			"Sat",
 			"Sun",
 		},
-		StrokeColor: drawing.ColorBlack,
-		FontSize:    12,
-		FontColor:   drawing.ColorBlack,
+		//StrokeColor: drawing.ColorBlack,	// TODO - apply to theme
+		FontSize:  12,
+		FontColor: drawing.ColorBlack,
 	}).Render()
 
 	// axis right
@@ -571,9 +526,9 @@ func main() {
 			"Sat",
 			"Sun",
 		},
-		StrokeColor: drawing.ColorBlack,
-		FontSize:    12,
-		FontColor:   drawing.ColorBlack,
+		//StrokeColor: drawing.ColorBlack,	// TODO - apply to theme
+		FontSize:  12,
+		FontColor: drawing.ColorBlack,
 	}).Render()
 
 	// axis left no tick
@@ -583,7 +538,7 @@ func main() {
 		Right:  300,
 		Bottom: top + 200,
 	})), charts.AxisOption{
-		BoundaryGap: charts.FalseFlag(),
+		BoundaryGap: charts.False(),
 		Position:    charts.PositionLeft,
 		Data: []string{
 			"Mon",
@@ -594,10 +549,10 @@ func main() {
 			"Sat",
 			"Sun",
 		},
-		FontSize:       12,
-		FontColor:      drawing.ColorBlack,
-		SplitLineShow:  true,
-		SplitLineColor: drawing.ColorBlack.WithAlpha(100),
+		FontSize:      12,
+		FontColor:     drawing.ColorBlack,
+		SplitLineShow: true,
+		//SplitLineColor: drawing.ColorBlack.WithAlpha(100),	// TODO - apply to theme
 	}).Render()
 
 	if buf, err := p.Bytes(); err != nil {

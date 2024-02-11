@@ -6,23 +6,23 @@ type gridPainter struct {
 }
 
 type GridPainterOption struct {
-	// The stroke width
+	// StrokeWidth is the grid line width.
 	StrokeWidth float64
-	// The stroke color
+	// StrokeColor is the grid line color.
 	StrokeColor Color
-	// The spans of column
+	// ColumnSpans specifies the span for each column.
 	ColumnSpans []int
-	// The column of grid
-	Column int
-	// The row of grid
-	Row int
-	// Ignore first row
+	// Columns is the count of columns in the grid.
+	Columns int
+	// Rows are the count of rows in the grid.
+	Rows int
+	// IgnoreFirstRow can be set to true to ignore the first row.
 	IgnoreFirstRow bool
-	// Ignore last row
+	// IgnoreLastRow can be set to true to ignore the last row.
 	IgnoreLastRow bool
-	// Ignore first column
+	// IgnoreFirstColumn can be set to true to ignore the first colum.
 	IgnoreFirstColumn bool
-	// Ignore last column
+	// IgnoreLastColumn can be set to true to ignore the last columns.
 	IgnoreLastColumn bool
 }
 
@@ -41,14 +41,14 @@ func (g *gridPainter) Render() (Box, error) {
 		ignoreColumnLines = append(ignoreColumnLines, 0)
 	}
 	if opt.IgnoreLastColumn {
-		ignoreColumnLines = append(ignoreColumnLines, opt.Column)
+		ignoreColumnLines = append(ignoreColumnLines, opt.Columns)
 	}
 	ignoreRowLines := make([]int, 0)
 	if opt.IgnoreFirstRow {
 		ignoreRowLines = append(ignoreRowLines, 0)
 	}
 	if opt.IgnoreLastRow {
-		ignoreRowLines = append(ignoreRowLines, opt.Row)
+		ignoreRowLines = append(ignoreRowLines, opt.Rows)
 	}
 	strokeWidth := opt.StrokeWidth
 	if strokeWidth <= 0 {
@@ -60,9 +60,9 @@ func (g *gridPainter) Render() (Box, error) {
 		StrokeColor: opt.StrokeColor,
 	})
 	g.p.Grid(GridOption{
-		Column:            opt.Column,
+		Columns:           opt.Columns,
 		ColumnSpans:       opt.ColumnSpans,
-		Row:               opt.Row,
+		Rows:              opt.Rows,
 		IgnoreColumnLines: ignoreColumnLines,
 		IgnoreRowLines:    ignoreRowLines,
 	})

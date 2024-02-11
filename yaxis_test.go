@@ -29,9 +29,9 @@ func TestRightYAxis(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			p, err := NewPainter(PainterOptions{
-				Type:   ChartOutputSVG,
-				Width:  600,
-				Height: 400,
+				OutputFormat: ChartOutputSVG,
+				Width:        600,
+				Height:       400,
 			}, PainterThemeOption(GetTheme(ThemeLight)), PainterPaddingOption(Box{
 				Top:    10,
 				Right:  10,

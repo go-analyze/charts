@@ -74,7 +74,7 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 	bytesList := make([][]byte, 0)
 	for _, opt := range chartOptions {
 		opt.Theme = charts.GetTheme(theme)
-		opt.Type = charts.ChartOutputSVG
+		opt.OutputFormat = charts.ChartOutputSVG
 		d, err := charts.Render(opt)
 		if err != nil {
 			panic(err)
@@ -94,7 +94,7 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 	}
 
 	p, err := charts.TableOptionRender(charts.TableChartOption{
-		Type: charts.ChartOutputSVG,
+		OutputFormat: charts.ChartOutputSVG,
 		Header: []string{
 			"Name",
 			"Age",
@@ -233,7 +233,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				"Fri",
 				"Sat",
 				"Sun",
-			}, charts.FalseFlag()),
+			}, charts.False()),
 			SeriesList: []charts.Series{
 				{
 					Data: charts.NewSeriesDataFromValues([]float64{
@@ -331,12 +331,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 						{
 							Value: 190,
 							Style: charts.Style{
-								FillColor: charts.Color{
-									R: 169,
-									G: 0,
-									B: 0,
-									A: 255,
-								},
+								FillColor: charts.Color{R: 169, G: 0, B: 0, A: 255},
 							},
 						},
 						{
@@ -377,7 +372,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				"2011",
 				"2012",
 			}),
-			YAxisOptions: charts.NewYAxisOptions([]string{
+			YAxis: charts.NewYAxisOptions([]string{
 				"Brazil",
 				"Indonesia",
 				"USA",
@@ -515,24 +510,14 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				"Precipitation",
 				"Temperature",
 			}),
-			YAxisOptions: []charts.YAxisOption{
+			YAxis: []charts.YAxisOption{
 				{
 					Formatter: "{value}ml",
-					Color: charts.Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					AxisColor: charts.Color{R: 84, G: 112, B: 198, A: 255},
 				},
 				{
 					Formatter: "{value}°C",
-					Color: charts.Color{
-						R: 250,
-						G: 200,
-						B: 88,
-						A: 255,
-					},
+					AxisColor: charts.Color{R: 250, G: 200, B: 88, A: 255},
 				},
 			},
 			SeriesList: []charts.Series{
@@ -585,7 +570,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 						12.0,
 						6.2,
 					}),
-					AxisIndex: 1,
+					YAxisIndex: 1,
 				},
 			},
 		},
@@ -755,11 +740,11 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				"2016",
 				"2017",
 			}),
-			YAxisOptions: []charts.YAxisOption{
+			YAxis: []charts.YAxisOption{
 				{
 
-					Min: charts.NewFloatPoint(0),
-					Max: charts.NewFloatPoint(90),
+					Min: charts.FloatPointer(0),
+					Max: charts.FloatPointer(90),
 				},
 			},
 			SeriesList: []charts.Series{
@@ -799,7 +784,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			Children: []charts.ChartOption{
 				{
 					Legend: charts.LegendOption{
-						Show: charts.FalseFlag(),
+						Show: charts.False(),
 						Data: []string{
 							"Milk Tea",
 							"Matcha Latte",

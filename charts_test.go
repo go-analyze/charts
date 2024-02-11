@@ -10,7 +10,7 @@ import (
 func BenchmarkMultiChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		opt := ChartOption{
-			Type: ChartOutputPNG,
+			OutputFormat: ChartOutputPNG,
 			Legend: LegendOption{
 				Top: "-90",
 				Data: []string{
@@ -34,11 +34,11 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 				"2016",
 				"2017",
 			}),
-			YAxisOptions: []YAxisOption{
+			YAxis: []YAxisOption{
 				{
 
-					Min: NewFloatPoint(0),
-					Max: NewFloatPoint(90),
+					Min: FloatPointer(0),
+					Max: FloatPointer(90),
 				},
 			},
 			SeriesList: []Series{
@@ -78,7 +78,7 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 			Children: []ChartOption{
 				{
 					Legend: LegendOption{
-						Show: FalseFlag(),
+						Show: False(),
 						Data: []string{
 							"Milk Tea",
 							"Matcha Latte",
@@ -143,11 +143,10 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 				"2016",
 				"2017",
 			}),
-			YAxisOptions: []YAxisOption{
+			YAxis: []YAxisOption{
 				{
-
-					Min: NewFloatPoint(0),
-					Max: NewFloatPoint(90),
+					Min: FloatPointer(0),
+					Max: FloatPointer(90),
 				},
 			},
 			SeriesList: []Series{
@@ -187,7 +186,7 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 			Children: []ChartOption{
 				{
 					Legend: LegendOption{
-						Show: FalseFlag(),
+						Show: False(),
 						Data: []string{
 							"Milk Tea",
 							"Matcha Latte",

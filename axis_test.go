@@ -28,8 +28,7 @@ func TestAxis(t *testing.T) {
 						"Sat",
 						"Sun",
 					},
-					SplitLineShow:  true,
-					SplitLineColor: drawing.ColorBlack,
+					SplitLineShow: true,
 				}).Render()
 				return p.Bytes()
 			},
@@ -48,7 +47,7 @@ func TestAxis(t *testing.T) {
 						"Sat",
 						"Sun",
 					},
-					BoundaryGap: FalseFlag(),
+					BoundaryGap: False(),
 				}).Render()
 				return p.Bytes()
 			},
@@ -86,10 +85,9 @@ func TestAxis(t *testing.T) {
 						"Sat",
 						"Sun",
 					},
-					Position:       PositionLeft,
-					BoundaryGap:    FalseFlag(),
-					SplitLineShow:  true,
-					SplitLineColor: drawing.ColorBlack,
+					Position:      PositionLeft,
+					BoundaryGap:   False(),
+					SplitLineShow: true,
 				}).Render()
 				return p.Bytes()
 			},
@@ -108,10 +106,9 @@ func TestAxis(t *testing.T) {
 						"Sat",
 						"Sun",
 					},
-					Position:       PositionRight,
-					BoundaryGap:    FalseFlag(),
-					SplitLineShow:  true,
-					SplitLineColor: drawing.ColorBlack,
+					Position:      PositionRight,
+					BoundaryGap:   False(),
+					SplitLineShow: true,
 				}).Render()
 				return p.Bytes()
 			},
@@ -139,13 +136,21 @@ func TestAxis(t *testing.T) {
 		},
 	}
 
+	testThemeName := "axisTestTheme"
+	InstallTheme(testThemeName, ThemeOption{
+		IsDarkMode:         false,
+		AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
+		AxisSplitLineColor: drawing.ColorBlack,
+		BackgroundColor:    drawing.ColorWhite,
+		TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+	})
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			p, err := NewPainter(PainterOptions{
-				Type:   ChartOutputSVG,
-				Width:  600,
-				Height: 400,
-			}, PainterThemeOption(GetTheme(ThemeLight)))
+				OutputFormat: ChartOutputSVG,
+				Width:        600,
+				Height:       400,
+			}, PainterThemeOption(GetTheme(testThemeName)))
 			require.NoError(t, err)
 			data, err := tt.render(p)
 			require.NoError(t, err)

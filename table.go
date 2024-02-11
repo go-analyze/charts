@@ -33,35 +33,35 @@ type TableCell struct {
 }
 
 type TableChartOption struct {
-	// The output type
-	Type string
-	// The width of table
-	Width int
-	// The theme
+	// OutputFormat specifies the output type, "svg" or "png".
+	OutputFormat string
+	// Theme specifies the colors used for the table.
 	Theme ColorPalette
-	// The padding of table cell
+	// Padding specifies the padding of table.
 	Padding Box
-	// The header data of table
+	// Width specifies the width of the table.
+	Width int
+	// Header provides header data for the top of the table.
 	Header []string
-	// The data of table
+	// Data provides the row and column data for the table.
 	Data [][]string
-	// The span list of table column
+	// Spans provide the span for each column on the table.
 	Spans []int
-	// The text align list of table cell
+	// TextAligns specifies the text alignment for each cell on the table.
 	TextAligns []string
-	// The font size of table
+	// The font size of table contents.
 	FontSize float64
-	// The font to render the table with
+	// Font is the font used to render the table.
 	Font *truetype.Font
-	// The font color of table
+	// FontColor is the color used for text on the table.
 	FontColor Color
-	// The background color of header
+	// HeaderBackgroundColor provides a background color of header row.
 	HeaderBackgroundColor Color
-	// The header font color
+	// HeaderFontColor specifies a text color for the header text.
 	HeaderFontColor Color
-	// The background color of row
+	// RowBackgroundColors specifies an array of colors for each row.
 	RowBackgroundColors []Color
-	// The background color
+	// BackgroundColor specifies a general background color.
 	BackgroundColor Color
 	// CellTextStyle customize text style of table cell
 	CellTextStyle func(TableCell) *Style
@@ -70,47 +70,27 @@ type TableChartOption struct {
 }
 
 type TableSetting struct {
-	// The color of header
+	// HeaderColor specifies the color of the header.
 	HeaderColor Color
-	// The color of header text
+	// HeaderFontColor specifies the color of header text.
 	HeaderFontColor Color
-	// The color of table text
+	// FontColor specifies the color of table text.
 	FontColor Color
-	// The color list of row
+	// RowColors specifies an array of colors for each row.
 	RowColors []Color
-	// The padding of cell
-	Padding Box
+	// Padding specifies the padding of each cell.
+	CellPadding Box
 }
 
 var TableLightThemeSetting = TableSetting{
-	HeaderColor: Color{
-		R: 240,
-		G: 240,
-		B: 240,
-		A: 255,
-	},
-	HeaderFontColor: Color{
-		R: 98,
-		G: 105,
-		B: 118,
-		A: 255,
-	},
-	FontColor: Color{
-		R: 70,
-		G: 70,
-		B: 70,
-		A: 255,
-	},
+	HeaderColor:     Color{R: 240, G: 240, B: 240, A: 255},
+	HeaderFontColor: Color{R: 98, G: 105, B: 118, A: 255},
+	FontColor:       Color{R: 70, G: 70, B: 70, A: 255},
 	RowColors: []Color{
 		drawing.ColorWhite,
-		{
-			R: 247,
-			G: 247,
-			B: 247,
-			A: 255,
-		},
+		{R: 247, G: 247, B: 247, A: 255},
 	},
-	Padding: Box{
+	CellPadding: Box{
 		Left:   10,
 		Top:    10,
 		Right:  10,
@@ -119,39 +99,14 @@ var TableLightThemeSetting = TableSetting{
 }
 
 var TableDarkThemeSetting = TableSetting{
-	HeaderColor: Color{
-		R: 38,
-		G: 38,
-		B: 42,
-		A: 255,
-	},
-	HeaderFontColor: Color{
-		R: 216,
-		G: 217,
-		B: 218,
-		A: 255,
-	},
-	FontColor: Color{
-		R: 216,
-		G: 217,
-		B: 218,
-		A: 255,
-	},
+	HeaderColor:     Color{R: 38, G: 38, B: 42, A: 255},
+	HeaderFontColor: Color{R: 216, G: 217, B: 218, A: 255},
+	FontColor:       Color{R: 216, G: 217, B: 218, A: 255},
 	RowColors: []Color{
-		{
-			R: 24,
-			G: 24,
-			B: 28,
-			A: 255,
-		},
-		{
-			R: 38,
-			G: 38,
-			B: 42,
-			A: 255,
-		},
+		{R: 24, G: 24, B: 28, A: 255},
+		{R: 38, G: 38, B: 42, A: 255},
 	},
-	Padding: Box{
+	CellPadding: Box{
 		Left:   10,
 		Top:    10,
 		Right:  10,
@@ -232,9 +187,9 @@ func (t *tableChart) render() (*renderInfo, error) {
 	headerHeight := 0
 	if opt.Padding.IsZero() {
 		if opt.Theme.IsDark() {
-			opt.Padding = TableDarkThemeSetting.Padding
+			opt.Padding = TableDarkThemeSetting.CellPadding
 		} else {
-			opt.Padding = TableLightThemeSetting.Padding
+			opt.Padding = TableLightThemeSetting.CellPadding
 		}
 	}
 	getCellTextStyle := opt.CellTextStyle
@@ -346,9 +301,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 		}
 		arr = append(arr, opt.Data...)
 		top := 0
-		heights := []int{
-			info.HeaderHeight,
-		}
+		heights := []int{info.HeaderHeight}
 		heights = append(heights, info.RowHeights...)
 		// loop through all table cells to generate background color
 		for i, textList := range arr {
@@ -397,7 +350,7 @@ func (t *tableChart) Render() (Box, error) {
 
 	r := p.render
 	fn := chart.PNG
-	if p.outputType == ChartOutputSVG {
+	if p.outputFormat == ChartOutputSVG {
 		fn = chart.SVG
 	}
 	newRender, err := fn(p.Width(), 100)

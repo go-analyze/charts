@@ -9,9 +9,9 @@ import (
 )
 
 type SeriesData struct {
-	// The value of series data
+	// Value is the retained value for the data.
 	Value float64
-	// The style of series data
+	// Style provides a style for the series data.
 	Style Style
 }
 
@@ -73,41 +73,38 @@ const (
 )
 
 type SeriesMarkData struct {
-	// The mark data type, it can be "max", "min", "average".
-	// The "average" is only for mark line
+	// Type is the mark data type, it can be "max", "min", "average". "average" is only for mark line.
 	Type string
 }
 type SeriesMarkPoint struct {
-	// The width of symbol, default value is 30
+	// SymbolSize is the width of symbol, default value is 30.
 	SymbolSize int
-	// The mark data of series mark point
+	// Data is the mark data for the series mark point.
 	Data []SeriesMarkData
 }
 type SeriesMarkLine struct {
-	// The mark data of series mark line
+	// Data is the mark data for the series mark line.
 	Data []SeriesMarkData
 }
 type Series struct {
 	index int
-	// The type of series, it can be "line", "bar" or "pie".
-	// Default value is "line"
+	// Type is the type of series, it can be "line", "bar" or "pie". Default value is "line".
 	Type string
-	// The data list of series
+	// Data provides the series data list.
 	Data []SeriesData
-	// The Y axis index, it should be 0 or 1.
-	// Default value is 0
-	AxisIndex int
-	// The style for series
+	// YAxisIndex is the index for the axis, it should be 0 or 1.
+	YAxisIndex int
+	// Style represents the style for the series.
 	Style chart.Style
-	// The label for series
+	// Label provides the series labels.
 	Label SeriesLabel
-	// The name of series
+	// Name specifies a name for the series.
 	Name string
 	// Radius for Pie chart, e.g.: 40%, default is "40%"
 	Radius string
-	// Mark point for series
+	// MarkPoint provides a series for mark points.
 	MarkPoint SeriesMarkPoint
-	// Make line for series
+	// MarkLine provides a series for mark lines.
 	MarkLine SeriesMarkLine
 	// Max value of series
 	Min *float64
@@ -146,7 +143,7 @@ func (sl SeriesList) GetMinMax(axisIndex int) (float64, float64) {
 	min := math.MaxFloat64
 	max := -math.MaxFloat64
 	for _, series := range sl {
-		if series.AxisIndex != axisIndex {
+		if series.YAxisIndex != axisIndex {
 			continue
 		}
 		for _, item := range series.Data {

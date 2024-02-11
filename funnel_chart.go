@@ -29,17 +29,17 @@ func NewFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
 }
 
 type FunnelChartOption struct {
-	// The theme
+	// Theme specifies the colors used for the chart.
 	Theme ColorPalette
-	// The font size
-	Font *truetype.Font
-	// The data series list
-	SeriesList SeriesList
-	// The padding of line chart
+	// Padding specifies the padding of funnel chart.
 	Padding Box
-	// The option of title
+	// Font is the font used to render the chart.
+	Font *truetype.Font
+	// SeriesList provides the data series.
+	SeriesList SeriesList
+	// Title are options for rendering the title.
 	Title TitleOption
-	// The legend option
+	// Legend are options for the data legend.
 	Legend LegendOption
 }
 
@@ -153,15 +153,15 @@ func (f *funnelChart) Render() (Box, error) {
 		Padding:    opt.Padding,
 		SeriesList: opt.SeriesList,
 		XAxis: XAxisOption{
-			Show: FalseFlag(),
+			Show: False(),
 		},
-		YAxisOptions: []YAxisOption{
+		YAxis: []YAxisOption{
 			{
-				Show: FalseFlag(),
+				Show: False(),
 			},
 		},
-		TitleOption:  opt.Title,
-		LegendOption: opt.Legend,
+		Title:  opt.Title,
+		Legend: opt.Legend,
 	})
 	if err != nil {
 		return BoxZero, err

@@ -17,9 +17,9 @@ func TestPainterOption(t *testing.T) {
 
 	font := &truetype.Font{}
 	d, err := NewPainter(PainterOptions{
-		Type:   ChartOutputSVG,
-		Width:  800,
-		Height: 600,
+		OutputFormat: ChartOutputSVG,
+		Width:        800,
+		Height:       600,
 	},
 		PainterBoxOption(Box{Right: 400, Bottom: 300}),
 		PainterPaddingOption(Box{Left: 1, Top: 2, Right: 3, Bottom: 4}),
@@ -205,9 +205,9 @@ func TestPainter(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			d, err := NewPainter(PainterOptions{
-				Type:   ChartOutputSVG,
-				Width:  400,
-				Height: 300,
+				OutputFormat: ChartOutputSVG,
+				Width:        400,
+				Height:       300,
 			}, PainterPaddingOption(chart.Box{Left: 5, Top: 10}))
 			require.NoError(t, err)
 			tt.fn(d)
@@ -222,9 +222,9 @@ func TestPainterTextFit(t *testing.T) {
 	t.Parallel()
 
 	p, err := NewPainter(PainterOptions{
-		Type:   ChartOutputSVG,
-		Width:  400,
-		Height: 300,
+		OutputFormat: ChartOutputSVG,
+		Width:        400,
+		Height:       300,
 	})
 	require.NoError(t, err)
 	style := Style{

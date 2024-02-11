@@ -21,32 +21,32 @@ func NewLineChart(p *Painter, opt LineChartOption) *lineChart {
 }
 
 type LineChartOption struct {
-	// The theme
+	// Theme specifies the colors used for the line chart.
 	Theme ColorPalette
-	// The font size
-	Font *truetype.Font
-	// The data series list
-	SeriesList SeriesList
-	// The x-axis option
-	XAxis XAxisOption
-	// The padding of line chart
+	// Padding specifies the padding of line chart.
 	Padding Box
-	// The y-axis option
-	YAxisOptions []YAxisOption
-	// The option of title
+	// Font is the font used to render the chart.
+	Font *truetype.Font
+	// SeriesList provides the data series.
+	SeriesList SeriesList
+	// XAxis are options for the x-axis.
+	XAxis XAxisOption
+	// YAxis are options for the y-axis (at most two).
+	YAxis []YAxisOption
+	// Title are options for rendering the title.
 	Title TitleOption
-	// The legend option
+	// Legend are options for the data legend.
 	Legend LegendOption
-	// The flag for show symbol of line, set this to *false will hide symbol
+	// SymbolShow set this to *false (through False()) to hide symbols.
 	SymbolShow *bool
-	// The stroke width of line
+	// StrokeWidth is the width of the rendered line.
 	StrokeWidth float64
-	// Fill the area below the line
+	// FillArea set this to true to fill the area below the line.
 	FillArea bool
-	// background is filled
+	// FillOpacity is the opacity (alpha) of the area fill.
+	FillOpacity uint8
+	// backgroundIsFilled is set to true if the background is filled.
 	backgroundIsFilled bool
-	// background fill (alpha) opacity
-	Opacity uint8
 }
 
 func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
@@ -91,7 +91,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			drawingStyle.StrokeDashArray = series.Style.StrokeDashArray
 		}
 
-		yRange := result.axisRanges[series.AxisIndex]
+		yRange := result.axisRanges[series.YAxisIndex]
 		points := make([]Point, 0)
 		var labelPainter *SeriesLabelPainter
 		if series.Label.Show {
@@ -132,8 +132,8 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			copy(areaPoints, points)
 			bottomY := yRange.getRestHeight(yRange.min)
 			var opacity uint8 = 200
-			if opt.Opacity != 0 {
-				opacity = opt.Opacity
+			if opt.FillOpacity > 0 {
+				opacity = opt.FillOpacity
 			}
 			areaPoints = append(areaPoints, Point{
 				X: areaPoints[len(areaPoints)-1].X,
@@ -198,9 +198,9 @@ func (l *lineChart) Render() (Box, error) {
 		Padding:            opt.Padding,
 		SeriesList:         opt.SeriesList,
 		XAxis:              opt.XAxis,
-		YAxisOptions:       opt.YAxisOptions,
-		TitleOption:        opt.Title,
-		LegendOption:       opt.Legend,
+		YAxis:              opt.YAxis,
+		Title:              opt.Title,
+		Legend:             opt.Legend,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {

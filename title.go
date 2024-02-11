@@ -1,35 +1,35 @@
 package charts
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
 )
 
 type TitleOption struct {
-	// The theme of chart
+	// Show specifies if the title should be rendered, set this to *false (through False()) to hide the title.
+	Show *bool
+	// Theme specifies the colors used for the title.
 	Theme ColorPalette
-	// Title text, support \n for new line
+	// Text specifies the title text, supporting \n for new lines.
 	Text string
-	// Subtitle text, support \n for new line
+	// Subtext to the title, supporting \n for new lines.
 	Subtext string
-	// Distance between title component and the left side of the container.
-	// It can be pixel value: 20, percentage value: 20%,
-	// or position value: right, center.
+	// Left is the distance between title component and the left side of the container.
+	// It can be pixel value (20) or percentage value (20%), or position description: 'left', 'right', 'center'.
 	Left string
-	// Distance between title component and the top side of the container.
-	// It can be pixel value: 20.
+	// Top is the distance between title component and the top side of the container.
+	// It can be pixel value (20) or percentage value (20%).
 	Top string
-	// The font of label
-	Font *truetype.Font
-	// The font size of label
+	// The font size of title.
 	FontSize float64
-	// The color of label
+	// Font is the font used to render the title.
+	Font *truetype.Font
+	// FontColor is the color used for text on the title.
 	FontColor Color
-	// The subtext font size of label
+	// SubtextFontSize specifies the size of the subtext.
 	SubtextFontSize float64
-	// The subtext font color of label
+	// SubtextFontColor specifies a unique color for the subtext.
 	SubtextFontColor Color
 }
 
@@ -69,10 +69,13 @@ func NewTitlePainter(p *Painter, opt TitleOption) *titlePainter {
 func (t *titlePainter) Render() (Box, error) {
 	opt := t.opt
 	p := t.p
-	theme := opt.Theme
+	if isFalse(opt.Show) {
+		return BoxZero, nil
+	}
 
+	theme := opt.Theme
 	if theme == nil {
-		theme = p.theme
+		theme = getPreferredTheme(p.theme)
 	}
 	if opt.Text == "" && opt.Subtext == "" {
 		return BoxZero, nil
@@ -141,24 +144,26 @@ func (t *titlePainter) Render() (Box, error) {
 
 	titleX := 0
 	switch opt.Left {
+	case "", PositionLeft:
+		// no-op
 	case PositionRight:
 		titleX = p.Width() - textMaxWidth
 	case PositionCenter:
 		titleX = p.Width()>>1 - (textMaxWidth >> 1)
 	default:
-		if strings.HasSuffix(opt.Left, "%") {
-			value, _ := strconv.Atoi(strings.ReplaceAll(opt.Left, "%", ""))
-			titleX = p.Width() * value / 100
+		if v, err := parseFlexibleValue(opt.Left, float64(p.Width())); err != nil {
+			return BoxZero, err
 		} else {
-			value, _ := strconv.Atoi(opt.Left)
-			titleX = value
+			titleX = int(v)
 		}
 	}
 	titleY := 0
-	// TODO - top only supports numerical values
 	if opt.Top != "" {
-		value, _ := strconv.Atoi(opt.Top)
-		titleY += value
+		if v, err := parseFlexibleValue(opt.Top, float64(p.Height())); err != nil {
+			return BoxZero, err
+		} else {
+			titleY = int(v)
+		}
 	}
 	for _, item := range measureOptions {
 		p.OverrideTextStyle(item.style)

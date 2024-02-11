@@ -17,18 +17,18 @@ type Point struct {
 }
 
 const (
-	ChartTypeLine   = "line"
-	ChartTypeBar    = "bar"
-	ChartTypePie    = "pie"
-	ChartTypeRadar  = "radar"
-	ChartTypeFunnel = "funnel"
-	// horizontal bar
+	ChartTypeLine          = "line"
+	ChartTypeBar           = "bar"
+	ChartTypePie           = "pie"
+	ChartTypeRadar         = "radar"
+	ChartTypeFunnel        = "funnel"
 	ChartTypeHorizontalBar = "horizontalBar"
 )
 
 const (
-	ChartOutputSVG = "svg"
-	ChartOutputPNG = "png"
+	ChartOutputSVG           = "svg"
+	ChartOutputPNG           = "png"
+	chartDefaultOutputFormat = ChartOutputPNG
 )
 
 const (

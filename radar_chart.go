@@ -15,30 +15,30 @@ type radarChart struct {
 }
 
 type RadarIndicator struct {
-	// Indicator's name
+	// Name specifies a name for the iIndicator.
 	Name string
-	// The maximum value of indicator
+	// Max is the maximum value of indicator.
 	Max float64
-	// The minimum value of indicator
+	// Min is the minimum value of indicator.
 	Min float64
 }
 
 type RadarChartOption struct {
-	// The theme
+	// Theme specifies the colors used for the pie chart.
 	Theme ColorPalette
-	// The font size
-	Font *truetype.Font
-	// The data series list
-	SeriesList SeriesList
-	// The padding of line chart
+	// Padding specifies the padding of pie chart.
 	Padding Box
-	// The option of title
+	// Font is the font used to render the chart.
+	Font *truetype.Font
+	// SeriesList provides the data series.
+	SeriesList SeriesList
+	// Title are options for rendering the title.
 	Title TitleOption
-	// The legend option
+	// Legend are options for the data legend.
 	Legend LegendOption
-	// The radar indicator list
+	// RadarIndicators provides the radar indicator list.
 	RadarIndicators []RadarIndicator
-	// background is filled
+	// backgroundIsFilled is set to true if the background is filled.
 	backgroundIsFilled bool
 }
 
@@ -109,10 +109,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		StrokeColor: theme.GetAxisSplitLineColor(),
 		StrokeWidth: 1,
 	})
-	center := Point{
-		X: cx,
-		Y: cy,
-	}
+	center := Point{X: cx, Y: cy}
 	for i := 0; i < divideCount; i++ {
 		seriesPainter.Polygon(center, divideRadius*float64(i+1), sides)
 	}
@@ -232,15 +229,15 @@ func (r *radarChart) Render() (Box, error) {
 		Padding:    opt.Padding,
 		SeriesList: opt.SeriesList,
 		XAxis: XAxisOption{
-			Show: FalseFlag(),
+			Show: False(),
 		},
-		YAxisOptions: []YAxisOption{
+		YAxis: []YAxisOption{
 			{
-				Show: FalseFlag(),
+				Show: False(),
 			},
 		},
-		TitleOption:        opt.Title,
-		LegendOption:       opt.Legend,
+		Title:              opt.Title,
+		Legend:             opt.Legend,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {

@@ -103,9 +103,9 @@ func TestTableChart(t *testing.T) {
 
 	for i, tt := range tests {
 		painterOptions := PainterOptions{
-			Type:   ChartOutputSVG,
-			Width:  600,
-			Height: 400,
+			OutputFormat: ChartOutputSVG,
+			Width:        600,
+			Height:       400,
 		}
 		runName := strconv.Itoa(i)
 		if tt.theme != nil {

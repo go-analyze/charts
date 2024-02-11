@@ -5,30 +5,28 @@ import (
 )
 
 type XAxisOption struct {
-	// The font of x-axis
-	Font *truetype.Font
-	// The boundary gap on both sides of a coordinate axis.
-	// Nil or *true means the center part of two axis ticks
-	BoundaryGap *bool
-	// The data value of x-axis
-	Data []string
-	// The theme of chart
-	Theme ColorPalette
-	// The font size of x-axis label
-	FontSize float64
-	// The flag for show axis, set this to *false will hide axis
+	// Show specifies if the x-axis should be rendered, set this to *false (through False()) to hide the axis.
 	Show *bool
-	// The position of axis, it can be 'top' or 'bottom'
+	// Theme specifies the colors used for the x-axis.
+	Theme ColorPalette
+	// Data provides labels for the x-axis.
+	Data []string
+	// DataStartIndex specifies what index the Data values should start from.
+	DataStartIndex int
+	// Position describes the position of x-axis, it can be 'top' or 'bottom'.
 	Position string
-	// The line color of axis
-	StrokeColor Color
-	// The color of label
+	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
+	// centered between two axis ticks.  Enabled by default, specify *false (through False()) to change the spacing.
+	BoundaryGap *bool
+	// FontSize specifies the font size of each label.
+	FontSize float64
+	// Font is the font used to render each label.
+	Font *truetype.Font
+	// FontColor is the color used for text rendered.
 	FontColor Color
-	// The text rotation of label
+	// TextRotation are the radians for rotating the label.
 	TextRotation float64
-	// The first axis
-	FirstAxis int
-	// The offset of label
+	// LabelOffset is the offset of each label.
 	LabelOffset Box
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
@@ -58,24 +56,22 @@ func (opt *XAxisOption) ToAxisOption() AxisOption {
 	axisOpt := AxisOption{
 		Theme:          opt.Theme,
 		Data:           opt.Data,
+		DataStartIndex: opt.DataStartIndex,
 		BoundaryGap:    opt.BoundaryGap,
 		Position:       position,
-		StrokeColor:    opt.StrokeColor,
 		FontSize:       opt.FontSize,
 		Font:           opt.Font,
 		FontColor:      opt.FontColor,
 		Show:           opt.Show,
 		Unit:           opt.Unit,
 		LabelCount:     opt.LabelCount,
-		SplitLineColor: opt.Theme.GetAxisSplitLineColor(),
 		TextRotation:   opt.TextRotation,
 		LabelOffset:    opt.LabelOffset,
-		FirstAxis:      opt.FirstAxis,
 	}
 	if opt.isValueAxis {
 		axisOpt.SplitLineShow = true
 		axisOpt.StrokeWidth = -1
-		axisOpt.BoundaryGap = FalseFlag()
+		axisOpt.BoundaryGap = False()
 	}
 	return axisOpt
 }

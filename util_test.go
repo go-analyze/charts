@@ -96,8 +96,33 @@ func TestReverseSlice(t *testing.T) {
 	assert.Equal(t, []int{9, 7, 5, 3, 1}, numbers)
 }
 
+func TestParseFlexibleValue(t *testing.T) {
+	t.Run("percent", func(t *testing.T) {
+		result, err := parseFlexibleValue("10%", 200)
+		assert.NoError(t, err)
+		assert.Equal(t, 20.0, result)
+	})
+	t.Run("value", func(t *testing.T) {
+		result, err := parseFlexibleValue("10", 200)
+		assert.NoError(t, err)
+		assert.Equal(t, 10.0, result)
+	})
+}
+
 func TestConvertPercent(t *testing.T) {
-	assert.Equal(t, -1.0, convertPercent("1"))
-	assert.Equal(t, -1.0, convertPercent("a%"))
-	assert.Equal(t, 0.1, convertPercent("10%"))
+	verifyConvertPercent(t, -1.0, "1")
+	verifyConvertPercent(t, -1.0, "a%")
+	verifyConvertPercent(t, 0.1, "10%")
+}
+
+func verifyConvertPercent(t *testing.T, expected float64, input string) {
+	t.Helper()
+
+	v, err := convertPercent(input)
+	if expected == -1 {
+		assert.Error(t, err)
+	} else {
+		assert.NoError(t, err)
+	}
+	assert.Equal(t, expected, v)
 }

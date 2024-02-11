@@ -18,18 +18,18 @@ type Painter struct {
 	style          Style
 	theme          ColorPalette
 	font           *truetype.Font
-	outputType     string
+	outputFormat   string
 	valueFormatter ValueFormatter
 }
 
 type PainterOptions struct {
-	// Draw type, "svg" or "png", default type is "png"
-	Type string
-	// The width of draw painter
+	// OutputFormat specifies the output type, "svg" or "png", default value is "png"
+	OutputFormat string
+	// Width is the width of the draw painter.
 	Width int
-	// The height of draw painter
+	// Height is the height of the draw painter.
 	Height int
-	// The font for painter
+	// Font is the font used for rendering text.
 	Font *truetype.Font
 }
 
@@ -58,12 +58,15 @@ type MultiTextOption struct {
 }
 
 type GridOption struct {
-	Column      int
-	Row         int
+	// Columns is the count of columns in the grid.
+	Columns int
+	// Rows are the count of rows in the grid.
+	Rows int
+	// ColumnSpans specifies the span for each column.
 	ColumnSpans []int
-	// ignore columns that are not displayed
+	// IgnoreColumnLines specifies index for columns to not display.
 	IgnoreColumnLines []int
-	// ignore rows that are not displayed
+	// IgnoreRowLines specifies index for rows to not display.
 	IgnoreRowLines []int
 }
 
@@ -136,7 +139,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 		font = GetDefaultFont()
 	}
 	fn := chart.PNG
-	if opts.Type == ChartOutputSVG {
+	if opts.OutputFormat == ChartOutputSVG {
 		fn = chart.SVG
 	}
 	width := opts.Width
@@ -153,8 +156,8 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 			Right:  opts.Width,
 			Bottom: opts.Height,
 		},
-		font:       font,
-		outputType: opts.Type,
+		font:         font,
+		outputFormat: opts.OutputFormat,
 	}
 	p.setOptions(opt...)
 	if p.theme == nil {
@@ -624,25 +627,13 @@ func (p *Painter) Ticks(opt TicksOption) *Painter {
 		}
 		if isVertical {
 			p.LineStroke([]Point{
-				{
-					X: 0,
-					Y: value,
-				},
-				{
-					X: opt.Length,
-					Y: value,
-				},
+				{X: 0, Y: value},
+				{X: opt.Length, Y: value},
 			})
 		} else {
 			p.LineStroke([]Point{
-				{
-					X: value,
-					Y: opt.Length,
-				},
-				{
-					X: value,
-					Y: 0,
-				},
+				{X: value, Y: opt.Length},
+				{X: value, Y: 0},
 			})
 		}
 	}
@@ -769,27 +760,21 @@ func (p *Painter) Grid(opt GridOption) *Painter {
 				y1 = v
 			}
 			p.LineStroke([]Point{
-				{
-					X: x0,
-					Y: y0,
-				},
-				{
-					X: x1,
-					Y: y1,
-				},
+				{X: x0, Y: y0},
+				{X: x1, Y: y1},
 			})
 		}
 	}
 	columnCount := sumInt(opt.ColumnSpans)
 	if columnCount == 0 {
-		columnCount = opt.Column
+		columnCount = opt.Columns
 	}
 	if columnCount > 0 {
 		values := autoDivideSpans(width, columnCount, opt.ColumnSpans)
 		drawLines(values, opt.IgnoreColumnLines, true)
 	}
-	if opt.Row > 0 {
-		values := autoDivide(height, opt.Row)
+	if opt.Rows > 0 {
+		values := autoDivide(height, opt.Rows)
 		drawLines(values, opt.IgnoreRowLines, false)
 	}
 	return p

@@ -62,7 +62,7 @@ func makeBasicBarChartOption() BarChartOption {
 			"Nov",
 			"Dec",
 		}),
-		YAxisOptions: NewYAxisOptions([]string{
+		YAxis: NewYAxisOptions([]string{
 			"Rainfall",
 			"Evaporation",
 		}),
@@ -94,9 +94,9 @@ func TestBarChart(t *testing.T) {
 
 	for _, tt := range tests {
 		painterOptions := PainterOptions{
-			Type:   ChartOutputSVG,
-			Width:  600,
-			Height: 400,
+			OutputFormat: ChartOutputSVG,
+			Width:        600,
+			Height:       400,
 		}
 		if tt.defaultTheme {
 			t.Run(tt.name, func(t *testing.T) {

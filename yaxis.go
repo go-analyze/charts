@@ -5,30 +5,30 @@ import (
 )
 
 type YAxisOption struct {
-	// The minimun value of axis.
-	Min *float64
-	// The maximum value of axis.
-	Max *float64
-	// RangeValuePaddingScale suggest a scale of padding added to the max and min values
-	RangeValuePaddingScale *float64
-	// The font of y-axis
-	Font *truetype.Font
-	// The data value of y-axis
-	Data []string
-	// The theme of chart
-	Theme ColorPalette
-	// The font size of y-axis label
-	FontSize float64
-	// The position of axis, it can be 'left' or 'right'
-	Position string
-	// The color of label
-	FontColor Color
-	// Formatter for y-axis text value
-	Formatter string
-	// Color for y-axis
-	Color Color
-	// The flag for show axis, set this to *false will hide axis
+	// Show specifies if the y-axis should be rendered, set this to *false (through False()) to hide the axis.
 	Show *bool
+	// Theme specifies the colors used for the x-axis.
+	Theme ColorPalette
+	// Color for y-axis.
+	AxisColor Color
+	// Min, if set this will force the minimum value of y-axis.
+	Min *float64
+	// Max, if set this will force the maximum value of y-axis.
+	Max *float64
+	// RangeValuePaddingScale suggest a scale of padding added to the max and min values.
+	RangeValuePaddingScale *float64
+	// Data provides labels for the y-axis.
+	Data []string
+	// Position describes the position of y-axis, it can be 'left' or 'right'.
+	Position string
+	// FontSize specifies the font size of each label.
+	FontSize float64
+	// Font is the font used to render each label.
+	Font *truetype.Font
+	// FontColor is the color used for text rendered.
+	FontColor Color
+	// Formatter for replacing y-axis text values.
+	Formatter string
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.
@@ -71,20 +71,19 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 		StrokeWidth:    -1,
 		Font:           opt.Font,
 		FontColor:      opt.FontColor,
-		BoundaryGap:    FalseFlag(),
+		BoundaryGap:    False(),
 		Unit:           opt.Unit,
 		LabelCount:     opt.LabelCount,
 		LabelSkipCount: opt.LabelSkipCount,
 		SplitLineShow:  true,
-		SplitLineColor: theme.GetAxisSplitLineColor(),
 		Show:           opt.Show,
 	}
-	if !opt.Color.IsZero() {
-		axisOpt.FontColor = opt.Color
-		axisOpt.StrokeColor = opt.Color
+	if !opt.AxisColor.IsZero() {
+		axisOpt.FontColor = opt.AxisColor
+		axisOpt.Theme = theme.WithAxisColor(opt.AxisColor)
 	}
 	if opt.isCategoryAxis {
-		axisOpt.BoundaryGap = TrueFlag()
+		axisOpt.BoundaryGap = True()
 		axisOpt.StrokeWidth = 1
 		axisOpt.SplitLineShow = false
 	}

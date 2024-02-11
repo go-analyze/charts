@@ -20,8 +20,8 @@ func TestGrid(t *testing.T) {
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewGridPainter(p, GridPainterOption{
 					StrokeColor:       drawing.ColorBlack,
-					Column:            6,
-					Row:               6,
+					Columns:           6,
+					Rows:              6,
 					IgnoreFirstRow:    true,
 					IgnoreLastRow:     true,
 					IgnoreFirstColumn: true,
@@ -38,12 +38,8 @@ func TestGrid(t *testing.T) {
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewGridPainter(p, GridPainterOption{
 					StrokeColor: drawing.ColorBlack,
-					ColumnSpans: []int{
-						2,
-						5,
-						3,
-					},
-					Row: 6,
+					ColumnSpans: []int{2, 5, 3},
+					Rows:        6,
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -56,9 +52,9 @@ func TestGrid(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			p, err := NewPainter(PainterOptions{
-				Type:   ChartOutputSVG,
-				Width:  600,
-				Height: 400,
+				OutputFormat: ChartOutputSVG,
+				Width:        600,
+				Height:       400,
 			}, PainterThemeOption(GetTheme(ThemeLight)))
 			require.NoError(t, err)
 			data, err := tt.render(p)

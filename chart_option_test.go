@@ -5,26 +5,19 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
 func TestChartOption(t *testing.T) {
 	t.Parallel()
 
 	fns := []OptionFunc{
-		SVGTypeOption(),
+		SVGOutputOption(),
 		FontOptionFunc(GetDefaultFont()),
 		ThemeNameOptionFunc(ThemeVividDark),
 		TitleTextOptionFunc("title"),
-		LegendLabelsOptionFunc([]string{
-			"label",
-		}),
-		XAxisDataOptionFunc([]string{
-			"xaxis",
-		}),
-		YAxisDataOptionFunc([]string{
-			"yaxis",
-		}),
+		LegendLabelsOptionFunc([]string{"label"}),
+		XAxisDataOptionFunc([]string{"xaxis"}),
+		YAxisDataOptionFunc([]string{"yaxis"}),
 		WidthOptionFunc(800),
 		HeightOptionFunc(600),
 		PaddingOptionFunc(Box{
@@ -33,34 +26,27 @@ func TestChartOption(t *testing.T) {
 			Right:  10,
 			Bottom: 10,
 		}),
-		BackgroundColorOptionFunc(drawing.ColorBlack),
 	}
 	opt := ChartOption{}
 	for _, fn := range fns {
 		fn(&opt)
 	}
 	require.Equal(t, ChartOption{
-		Type:  ChartOutputSVG,
-		Font:  GetDefaultFont(),
-		Theme: GetTheme(ThemeVividDark),
+		OutputFormat: ChartOutputSVG,
+		Font:         GetDefaultFont(),
+		Theme:        GetTheme(ThemeVividDark),
 		Title: TitleOption{
 			Text: "title",
 		},
 		Legend: LegendOption{
-			Data: []string{
-				"label",
-			},
+			Data: []string{"label"},
 		},
 		XAxis: XAxisOption{
-			Data: []string{
-				"xaxis",
-			},
+			Data: []string{"xaxis"},
 		},
-		YAxisOptions: []YAxisOption{
+		YAxis: []YAxisOption{
 			{
-				Data: []string{
-					"yaxis",
-				},
+				Data: []string{"yaxis"},
 			},
 		},
 		Width:  800,
@@ -71,7 +57,6 @@ func TestChartOption(t *testing.T) {
 			Right:  10,
 			Bottom: 10,
 		},
-		BackgroundColor: drawing.ColorBlack,
 	}, opt)
 }
 
@@ -79,10 +64,7 @@ func TestChartOptionPieSeriesShowLabel(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewPieSeriesList([]float64{
-			1,
-			2,
-		}),
+		SeriesList: NewPieSeriesList([]float64{1, 2}),
 	}
 	PieSeriesShowLabel()(&opt)
 	assert.True(t, opt.SeriesList[0].Label.Show)
@@ -92,9 +74,7 @@ func TestChartOptionMarkLine(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewSeriesListDataFromValues([][]float64{
-			{1, 2},
-		}),
+		SeriesList: NewSeriesListDataFromValues([][]float64{{1, 2}}),
 	}
 	MarkLineOptionFunc(0, "min", "max")(&opt)
 	assert.Equal(t, NewMarkLine("min", "max"), opt.SeriesList[0].MarkLine)
@@ -104,9 +84,7 @@ func TestChartOptionMarkPoint(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewSeriesListDataFromValues([][]float64{
-			{1, 2},
-		}),
+		SeriesList: NewSeriesListDataFromValues([][]float64{{1, 2}}),
 	}
 	MarkPointOptionFunc(0, "min", "max")(&opt)
 	assert.Equal(t, NewMarkPoint("min", "max"), opt.SeriesList[0].MarkPoint)
@@ -164,7 +142,7 @@ func TestLineRender(t *testing.T) {
 	}
 	p, err := LineRender(
 		values,
-		SVGTypeOption(),
+		SVGOutputOption(),
 		TitleTextOptionFunc("Line"),
 		XAxisDataOptionFunc([]string{
 			"Mon",
@@ -224,7 +202,7 @@ func TestBarRender(t *testing.T) {
 	}
 	p, err := BarRender(
 		values,
-		SVGTypeOption(),
+		SVGOutputOption(),
 		XAxisDataOptionFunc([]string{
 			"Jan",
 			"Feb",
@@ -285,7 +263,7 @@ func TestHorizontalBarRender(t *testing.T) {
 	}
 	p, err := HorizontalBarRender(
 		values,
-		SVGTypeOption(),
+		SVGOutputOption(),
 		TitleTextOptionFunc("World Population"),
 		PaddingOptionFunc(Box{
 			Top:    20,
@@ -324,7 +302,7 @@ func TestPieRender(t *testing.T) {
 	}
 	p, err := PieRender(
 		values,
-		SVGTypeOption(),
+		SVGOutputOption(),
 		TitleOptionFunc(TitleOption{
 			Text:    "Rainfall vs Evaporation",
 			Subtext: "Fake Data",
@@ -378,7 +356,7 @@ func TestRadarRender(t *testing.T) {
 	}
 	p, err := RadarRender(
 		values,
-		SVGTypeOption(),
+		SVGOutputOption(),
 		TitleTextOptionFunc("Basic Radar Chart"),
 		LegendLabelsOptionFunc([]string{
 			"Allocated Budget",
@@ -418,7 +396,7 @@ func TestFunnelRender(t *testing.T) {
 	}
 	p, err := FunnelRender(
 		values,
-		SVGTypeOption(),
+		SVGOutputOption(),
 		TitleTextOptionFunc("Funnel"),
 		LegendLabelsOptionFunc([]string{
 			"Show",

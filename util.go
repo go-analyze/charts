@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -9,19 +10,24 @@ import (
 	"github.com/wcharczuk/go-chart/v2"
 )
 
-func TrueFlag() *bool {
-	t := true
-	return &t
+// True returns a pointer to a true bool, useful for configuration.
+func True() *bool {
+	return BoolPointer(true)
 }
 
-func FalseFlag() *bool {
-	f := false
+// False returns a pointer to a false bool, useful for configuration.
+func False() *bool {
+	return BoolPointer(false)
+}
+
+// BoolPointer returns a pointer to the given bool value, useful for configuration.
+func BoolPointer(b bool) *bool {
+	return &b
+}
+
+// FloatPointer returns a pointer to the given float64 value, useful for configuration.
+func FloatPointer(f float64) *float64 {
 	return &f
-}
-
-func ZeroFloat() *float64 {
-	v := 0.0
-	return &v
 }
 
 func isFalse(flag *bool) bool {
@@ -120,20 +126,27 @@ func reverseIntSlice(intList []int) {
 	}
 }
 
-func convertPercent(value string) float64 {
-	if !strings.HasSuffix(value, "%") {
-		return -1
+func parseFlexibleValue(value string, percentTotal float64) (float64, error) {
+	if strings.HasSuffix(value, "%") {
+		percent, err := convertPercent(value)
+		if err != nil {
+			return 0, err
+		}
+		return percent * percentTotal, nil
+	} else {
+		return strconv.ParseFloat(value, 64)
 	}
-	v, err := strconv.Atoi(strings.ReplaceAll(value, "%", ""))
-	if err != nil {
-		return -1
-	}
-	return float64(v) / 100
 }
 
-func NewFloatPoint(f float64) *float64 {
-	v := f
-	return &v
+func convertPercent(value string) (float64, error) {
+	if !strings.HasSuffix(value, "%") {
+		return -1, fmt.Errorf("not a percent input: %s", value)
+	}
+	v, err := strconv.ParseFloat(strings.ReplaceAll(value, "%", ""), 64)
+	if err != nil {
+		return -1, err
+	}
+	return v / 100.0, nil
 }
 
 const K_VALUE = float64(1000)
@@ -163,15 +176,15 @@ const defaultRadiusPercent = 0.4
 func getRadius(diameter float64, radiusValue string) float64 {
 	var radius float64
 	if len(radiusValue) != 0 {
-		v := convertPercent(radiusValue)
+		v, _ := convertPercent(radiusValue)
 		if v != -1 {
-			radius = float64(diameter) * v
+			radius = diameter * v
 		} else {
 			radius, _ = strconv.ParseFloat(radiusValue, 64)
 		}
 	}
 	if radius <= 0 {
-		radius = float64(diameter) * defaultRadiusPercent
+		radius = diameter * defaultRadiusPercent
 	}
 	return radius
 }

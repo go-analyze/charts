@@ -33,6 +33,9 @@ type ColorPalette interface {
 	GetSeriesColor(int) Color
 	GetBackgroundColor() Color
 	GetTextColor() Color
+	// WithAxisColor will provide a new ColorPalette that uses the specified color for axis values.
+	// This includes the Axis Stroke, Split Line, and Text Color.
+	WithAxisColor(Color) ColorPalette
 }
 
 type themeColorPalette struct {
@@ -265,4 +268,13 @@ func (t *themeColorPalette) GetBackgroundColor() Color {
 
 func (t *themeColorPalette) GetTextColor() Color {
 	return t.textColor
+}
+
+func (t *themeColorPalette) WithAxisColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-modified"
+	copy.axisStrokeColor = c
+	copy.axisSplitLineColor = c
+	copy.textColor = c
+	return &copy
 }

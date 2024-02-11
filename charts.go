@@ -69,20 +69,23 @@ func (rh *renderHandler) Do() error {
 }
 
 type defaultRenderOption struct {
-	Theme      ColorPalette
-	Padding    Box
+	// Theme specifies the colors used for the chart.
+	Theme ColorPalette
+	// Padding specifies the padding of chart.
+	Padding Box
+	// SeriesList provides the data series.
 	SeriesList SeriesList
-	// The y-axis options
-	YAxisOptions []YAxisOption
-	// The x-axis options
+	// XAxis are options for the x-axis.
 	XAxis XAxisOption
-	// The title option
-	TitleOption TitleOption
-	// The legend option
-	LegendOption LegendOption
-	// background is filled
+	// YAxis are options for the y-axis (at most two).
+	YAxis []YAxisOption
+	// Title are options for rendering the title.
+	Title TitleOption
+	// Legend are options for the data legend.
+	Legend LegendOption
+	// backgroundIsFilled is true if the background is filled.
 	backgroundIsFilled bool
-	// x y axis is reversed
+	// axisReversed is true if the x y axis is reversed.
 	axisReversed bool
 }
 
@@ -104,30 +107,30 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 
 	legendHeight := 0
-	if len(opt.LegendOption.Data) != 0 {
-		if opt.LegendOption.Theme == nil {
-			opt.LegendOption.Theme = opt.Theme
+	if len(opt.Legend.Data) != 0 {
+		if opt.Legend.Theme == nil {
+			opt.Legend.Theme = opt.Theme
 		}
-		legendResult, err := NewLegendPainter(p, opt.LegendOption).Render()
+		legendResult, err := NewLegendPainter(p, opt.Legend).Render()
 		if err != nil {
 			return nil, err
 		}
 		legendHeight = legendResult.Height()
 	}
 
-	if opt.TitleOption.Text != "" {
-		if opt.TitleOption.Theme == nil {
-			opt.TitleOption.Theme = opt.Theme
+	if opt.Title.Text != "" {
+		if opt.Title.Theme == nil {
+			opt.Title.Theme = opt.Theme
 		}
 
-		titleBox, err := NewTitlePainter(p, opt.TitleOption).Render()
+		titleBox, err := NewTitlePainter(p, opt.Title).Render()
 		if err != nil {
 			return nil, err
 		}
 
 		top := chart.MaxInt(legendHeight, titleBox.Height())
 		// if in vertical mode, the legend height is not calculated
-		if opt.LegendOption.Orient == OrientVertical {
+		if opt.Legend.Orient == OrientVertical {
 			top = titleBox.Height()
 		}
 		p = p.Child(PainterPaddingOption(Box{
@@ -142,10 +145,10 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	axisIndexList := make([]int, 0)
 	for _, series := range opt.SeriesList {
-		if containsInt(axisIndexList, series.AxisIndex) {
+		if containsInt(axisIndexList, series.YAxisIndex) {
 			continue
 		}
-		axisIndexList = append(axisIndexList, series.AxisIndex)
+		axisIndexList = append(axisIndexList, series.YAxisIndex)
 	}
 	// the height needs to be subtracted from the height of the x-axis
 	rangeHeight := p.Height() - defaultXAxisHeight
@@ -157,8 +160,8 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	// calculate the axis range
 	for _, index := range axisIndexList {
 		yAxisOption := YAxisOption{}
-		if len(opt.YAxisOptions) > index {
-			yAxisOption = opt.YAxisOptions[index]
+		if len(opt.YAxis) > index {
+			yAxisOption = opt.YAxis[index]
 		}
 		minPadRange, maxPadRange := 1.0, 1.0
 		if yAxisOption.RangeValuePaddingScale != nil {
@@ -290,10 +293,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if opt.Parent == nil {
 		isChild = false
 		p, err := NewPainter(PainterOptions{
-			Type:   opt.Type,
-			Width:  opt.Width,
-			Height: opt.Height,
-			Font:   opt.Font,
+			OutputFormat: opt.OutputFormat,
+			Width:        opt.Width,
+			Height:       opt.Height,
+			Font:         opt.Font,
 		})
 		if err != nil {
 			return nil, err
@@ -308,7 +311,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		p = p.Child(PainterBoxOption(opt.Box))
 	}
 	if !isChild {
-		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
+		p.SetBackground(p.Width(), p.Height(), opt.Theme.GetBackgroundColor())
 	}
 	seriesList := opt.SeriesList
 	seriesList.init()
@@ -338,9 +341,9 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		Padding:      opt.Padding,
 		SeriesList:   opt.SeriesList,
 		XAxis:        opt.XAxis,
-		YAxisOptions: opt.YAxisOptions,
-		TitleOption:  opt.Title,
-		LegendOption: opt.Legend,
+		YAxis:        opt.YAxis,
+		Title:        opt.Title,
+		Legend:       opt.Legend,
 		axisReversed: axisReversed,
 		// the background color has been set
 		backgroundIsFilled: true,
@@ -348,15 +351,15 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(pieSeriesList) != 0 ||
 		len(radarSeriesList) != 0 ||
 		len(funnelSeriesList) != 0 {
-		renderOpt.XAxis.Show = FalseFlag()
-		renderOpt.YAxisOptions = []YAxisOption{
+		renderOpt.XAxis.Show = False()
+		renderOpt.YAxis = []YAxisOption{
 			{
-				Show: FalseFlag(),
+				Show: False(),
 			},
 		}
 	}
 	if len(horizontalBarSeriesList) != 0 {
-		renderOpt.YAxisOptions[0].Unit = 1
+		renderOpt.YAxis[0].Unit = 1
 	}
 
 	renderResult, err := defaultRender(p, renderOpt)
@@ -383,10 +386,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(horizontalBarSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := NewHorizontalBarChart(p, HorizontalBarChartOption{
-				Theme:        opt.Theme,
-				Font:         opt.Font,
-				BarHeight:    opt.BarHeight,
-				YAxisOptions: opt.YAxisOptions,
+				Theme:     opt.Theme,
+				Font:      opt.Font,
+				BarHeight: opt.BarHeight,
+				YAxis:     opt.YAxis,
 			}).render(renderResult, horizontalBarSeriesList)
 			return err
 		})
@@ -413,7 +416,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				SymbolShow:  opt.SymbolShow,
 				StrokeWidth: opt.LineStrokeWidth,
 				FillArea:    opt.FillArea,
-				Opacity:     opt.Opacity,
+				FillOpacity: opt.FillOpacity,
 			}).render(renderResult, lineSeriesList)
 			return err
 		})

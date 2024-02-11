@@ -27,15 +27,15 @@ func TestCustomFontSizeRender(t *testing.T) {
 	t.Parallel()
 
 	p, err := NewPainter(PainterOptions{
-		Type:   ChartOutputSVG,
-		Width:  600,
-		Height: 400,
+		OutputFormat: ChartOutputSVG,
+		Width:        600,
+		Height:       400,
 	}, PainterThemeOption(GetTheme(ThemeLight)))
 	require.NoError(t, err)
 
 	opt := makeBasicLineChartOption()
 	opt.XAxis.FontSize = 4.0
-	opt.YAxisOptions = []YAxisOption{
+	opt.YAxis = []YAxisOption{
 		{
 			FontSize: 4.0,
 		},

@@ -27,10 +27,7 @@ func TestEChartsSeriesDataValue(t *testing.T) {
 	es := EChartsSeriesDataValue{}
 	require.NoError(t, es.UnmarshalJSON([]byte(`[1, 2]`)))
 	assert.Equal(t, EChartsSeriesDataValue{
-		values: []float64{
-			1,
-			2,
-		},
+		values: []float64{1, 2},
 	}, es)
 	assert.Equal(t, NewEChartsSeriesDataValue(1, 2), es)
 	assert.Equal(t, 1.0, es.First())
@@ -40,17 +37,13 @@ func TestEChartsSeriesData(t *testing.T) {
 	es := EChartsSeriesData{}
 	require.NoError(t, es.UnmarshalJSON([]byte("1.1")))
 	assert.Equal(t, EChartsSeriesDataValue{
-		values: []float64{
-			1.1,
-		},
+		values: []float64{1.1},
 	}, es.Value)
 
 	require.NoError(t, es.UnmarshalJSON([]byte(`{"value":200,"itemStyle":{"color":"#a90000"}}`)))
 	assert.Equal(t, EChartsSeriesData{
 		Value: EChartsSeriesDataValue{
-			values: []float64{
-				200.0,
-			},
+			values: []float64{200.0},
 		},
 		ItemStyle: EChartStyle{
 			Color: "#a90000",
@@ -65,13 +58,10 @@ func TestEChartsXAxis(t *testing.T) {
 	assert.Equal(t, EChartsXAxis{
 		Data: []EChartsXAxisData{
 			{
-				BoundaryGap: TrueFlag(),
+				BoundaryGap: True(),
 				SplitNumber: 5,
-				Data: []string{
-					"a",
-					"b",
-				},
-				Type: "value",
+				Data:        []string{"a", "b"},
+				Type:        "value",
 			},
 		},
 	}, ex)

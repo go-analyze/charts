@@ -7,71 +7,69 @@ import (
 )
 
 type ChartOption struct {
-	// The font to use for rendering the chart
-	Font *truetype.Font
-	// The output type of chart, "svg" or "png", default value is "svg"
-	Type string
-	// The theme of chart.  Built in themes can be loaded using `GetTheme` with
-	//"light", "dark", "vivid-light", "vivid-dark", "ant" or "grafana".
-	Theme ColorPalette
-	// The title option
-	Title TitleOption
-	// The legend option
-	Legend LegendOption
-	// The x-axis options
-	XAxis XAxisOption
-	// The y-axis option list
-	YAxisOptions []YAxisOption
-	// The width of chart, default width is 600
+	// OutputFormat specifies the output type of chart, "svg" or "png", default value is "png"
+	OutputFormat string
+	// Width is the width of chart, default width is 600.
 	Width int
-	// The height of chart, default height is 400
+	// Height is the height of chart, default height is 400
 	Height int
-	Parent *Painter
-	// The padding for chart, default padding is [20, 10, 10, 10]
+	// Theme specifies the colors used for the chart. Built in themes can be loaded using GetTheme with
+	// "light", "dark", "vivid-light", "vivid-dark", "ant" or "grafana".
+	Theme ColorPalette
+	// Padding specifies the padding for chart, default padding is [20, 10, 10, 10]
 	Padding Box
-	// The canvas box for chart
-	Box Box
-	// The series list
+	// XAxis are options for the x-axis.
+	XAxis XAxisOption
+	// YAxis are options for the y-axis (at most two).
+	YAxis []YAxisOption
+	// Title are options for rendering the title.
+	Title TitleOption
+	// Legend are options for the data legend.
+	Legend LegendOption
+	// Font is the font to use for rendering the chart.
+	Font *truetype.Font
+	// Box specifies the canvas box for the chart.
+	Box    Box
+	Parent *Painter
+	// SeriesList provides the data series.
 	SeriesList SeriesList
-	// The radar indicator list
+	// RadarIndicators are radar indicator list for radar charts
 	RadarIndicators []RadarIndicator
-	// The background color of chart
-	BackgroundColor Color
-	// The flag for show symbol of line, set this to *false will hide symbol
+	// SymbolShow set this to *false (using False()) to hide symbols.
 	SymbolShow *bool
-	// The stroke width of line chart
+	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
-	// The bar with of bar chart
-	BarWidth int
-	// The bar height of horizontal bar chart
-	BarHeight int
-	// Fill in the area under the line
+	// FillArea set to true to fill the area under the line in line charts
 	FillArea bool
-	// background fill (alpha) opacity
-	Opacity uint8
-	// The child charts
+	// FillOpacity is the opacity (alpha) of the area fill in line charts.
+	FillOpacity uint8
+	// BarWidth is the width of the bars for bar charts.
+	BarWidth int
+	// BarHeight is the height of the bars for horizontal bar charts.
+	BarHeight int
+	// Children are child charts to pull options from.
 	Children []ChartOption
-	// The value formatter
+	// ValueFormatter to format numeric values into labels.
 	ValueFormatter ValueFormatter
 }
 
 // OptionFunc option function
 type OptionFunc func(opt *ChartOption)
 
-// SVGTypeOption set svg type of chart's output
-func SVGTypeOption() OptionFunc {
-	return TypeOptionFunc(ChartOutputSVG)
+// SVGOutputOption set svg type of chart's output.
+func SVGOutputOption() OptionFunc {
+	return OutputFormatOptionFunc(ChartOutputSVG)
 }
 
-// PNGTypeOption set png type of chart's output
-func PNGTypeOption() OptionFunc {
-	return TypeOptionFunc(ChartOutputPNG)
+// PNGOutputOption set png type of chart's output.
+func PNGOutputOption() OptionFunc {
+	return OutputFormatOptionFunc(ChartOutputPNG)
 }
 
-// TypeOptionFunc set type of chart's output
-func TypeOptionFunc(t string) OptionFunc {
+// OutputFormatOptionFunc set type of chart's output.
+func OutputFormatOptionFunc(t string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.Type = t
+		opt.OutputFormat = t
 	}
 }
 
@@ -144,14 +142,14 @@ func XAxisDataOptionFunc(data []string, boundaryGap ...*bool) OptionFunc {
 // YAxisOptionFunc set y-axis of chart, supports up to two y-axis.
 func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.YAxisOptions = yAxisOption
+		opt.YAxis = yAxisOption
 	}
 }
 
 // YAxisDataOptionFunc set y-axis data of chart
 func YAxisDataOptionFunc(data []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.YAxisOptions = NewYAxisOptions(data)
+		opt.YAxis = NewYAxisOptions(data)
 	}
 }
 
@@ -209,13 +207,6 @@ func RadarIndicatorOptionFunc(names []string, values []float64) OptionFunc {
 	}
 }
 
-// BackgroundColorOptionFunc set background color of chart
-func BackgroundColorOptionFunc(color Color) OptionFunc {
-	return func(opt *ChartOption) {
-		opt.BackgroundColor = color
-	}
-}
-
 // MarkLineOptionFunc set mark line for series of chart
 func MarkLineOptionFunc(seriesIndex int, markLineTypes ...string) OptionFunc {
 	return func(opt *ChartOption) {
@@ -237,18 +228,18 @@ func MarkPointOptionFunc(seriesIndex int, markPointTypes ...string) OptionFunc {
 }
 
 func (o *ChartOption) fillDefault() {
-	axisCount := 1
+	yaxisCount := 1
 	for _, series := range o.SeriesList {
-		if series.AxisIndex >= axisCount {
-			axisCount++
+		if series.YAxisIndex >= yaxisCount {
+			yaxisCount++
 		}
 	}
 	o.Width = getDefaultInt(o.Width, defaultChartWidth)
 	o.Height = getDefaultInt(o.Height, defaultChartHeight)
 
-	yAxisOptions := make([]YAxisOption, axisCount)
-	copy(yAxisOptions, o.YAxisOptions)
-	o.YAxisOptions = yAxisOptions
+	yAxisOptions := make([]YAxisOption, yaxisCount)
+	copy(yAxisOptions, o.YAxis)
+	o.YAxis = yAxisOptions
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
 	// TODO - but can't do this earlier due to needing the axis initialized
 	// TODO - we should reconsider the API for configuration
@@ -260,10 +251,10 @@ func (o *ChartOption) fillDefault() {
 		}
 	}
 	if hasMarkpoint {
-		for i := range o.YAxisOptions {
-			if o.YAxisOptions[i].RangeValuePaddingScale == nil {
+		for i := range o.YAxis {
+			if o.YAxis[i].RangeValuePaddingScale == nil {
 				defaultPadding := 2.5 // default a larger padding to give space for the mark point
-				o.YAxisOptions[i].RangeValuePaddingScale = &defaultPadding
+				o.YAxis[i].RangeValuePaddingScale = &defaultPadding
 			}
 		}
 	}
@@ -275,9 +266,6 @@ func (o *ChartOption) fillDefault() {
 		o.Theme = GetDefaultTheme()
 	}
 
-	if o.BackgroundColor.IsZero() {
-		o.BackgroundColor = o.Theme.GetBackgroundColor()
-	}
 	if o.Padding.IsZero() {
 		o.Padding = Box{
 			Top:    20,
@@ -378,19 +366,18 @@ func TableRender(header []string, data [][]string, spanMaps ...map[int]int) (*Pa
 
 // TableOptionRender table render with option
 func TableOptionRender(opt TableChartOption) (*Painter, error) {
-	if opt.Type == "" {
-		opt.Type = ChartOutputPNG
+	if opt.OutputFormat == "" {
+		opt.OutputFormat = chartDefaultOutputFormat
 	}
 	if opt.Width <= 0 {
 		opt.Width = defaultChartWidth
 	}
 
 	p, err := NewPainter(PainterOptions{
-		Type:  opt.Type,
-		Width: opt.Width,
-		// is only used to calculate the hight of the table
-		Height: 100,
-		Font:   opt.Font,
+		OutputFormat: opt.OutputFormat,
+		Width:        opt.Width,
+		Height:       100, // is only used to calculate the height of the table
+		Font:         opt.Font,
 	})
 	if err != nil {
 		return nil, err
@@ -401,10 +388,10 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 	}
 
 	p, err = NewPainter(PainterOptions{
-		Type:   opt.Type,
-		Width:  info.Width,
-		Height: info.Height,
-		Font:   opt.Font,
+		OutputFormat: opt.OutputFormat,
+		Width:        info.Width,
+		Height:       info.Height,
+		Font:         opt.Font,
 	})
 	if err != nil {
 		return nil, err
