@@ -47,8 +47,12 @@ func containsInt(values []int, value int) bool {
 }
 
 func ceilFloatToInt(value float64) int {
-	// TODO - why not use math.Ceil?
-	// TODO - check usage for overflow risks
+	if value >= float64(math.MaxInt) {
+		return math.MaxInt
+	} else if value <= float64(math.MinInt) {
+		return math.MinInt
+	}
+
 	i := int(value)
 	if value == float64(i) {
 		return i
@@ -94,9 +98,14 @@ func autoDivideSpans(max, size int, spans []int) []int {
 }
 
 func sumInt(values []int) int {
-	// TODO - overflow risks?
+	// chart.SumInt() also exists, but it does not handle overflow like we are
 	sum := 0
 	for _, v := range values {
+		if v > 0 && (math.MaxInt-sum) < v {
+			return math.MaxInt
+		} else if v < 0 && math.MinInt-sum > v {
+			return math.MinInt
+		}
 		sum += v
 	}
 	return sum

@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,26 +10,29 @@ import (
 )
 
 func TestGetDefaultInt(t *testing.T) {
-	require.Equal(t, 1, getDefaultInt(0, 1))
-	require.Equal(t, 10, getDefaultInt(10, 1))
+	assert.Equal(t, 1, getDefaultInt(0, 1))
+	assert.Equal(t, 10, getDefaultInt(10, 1))
 }
 
 func TestCeilFloatToInt(t *testing.T) {
-	require.Equal(t, 1, ceilFloatToInt(0.8))
-	require.Equal(t, 1, ceilFloatToInt(1.0))
-	require.Equal(t, 2, ceilFloatToInt(1.2))
+	assert.Equal(t, 1, ceilFloatToInt(0.8))
+	assert.Equal(t, 1, ceilFloatToInt(1.0))
+	assert.Equal(t, 2, ceilFloatToInt(1.2))
+	assert.Equal(t, math.MaxInt, ceilFloatToInt(math.MaxFloat64))
+	assert.Equal(t, math.MaxInt, ceilFloatToInt(float64(math.MaxInt)+1))
+	assert.Equal(t, math.MinInt, ceilFloatToInt(float64(math.MinInt)-1))
 }
 
 func TestCommafWithDigits(t *testing.T) {
-	require.Equal(t, "1.2", commafWithDigits(1.2))
-	require.Equal(t, "1.21", commafWithDigits(1.21231))
+	assert.Equal(t, "1.2", commafWithDigits(1.2))
+	assert.Equal(t, "1.21", commafWithDigits(1.21231))
 
-	require.Equal(t, "1.20k", commafWithDigits(1200.121))
-	require.Equal(t, "1.20M", commafWithDigits(1200000.121))
+	assert.Equal(t, "1.20k", commafWithDigits(1200.121))
+	assert.Equal(t, "1.20M", commafWithDigits(1200000.121))
 }
 
 func TestAutoDivide(t *testing.T) {
-	require.Equal(t, []int{
+	assert.Equal(t, []int{
 		0,
 		85,
 		171,
@@ -38,6 +42,22 @@ func TestAutoDivide(t *testing.T) {
 		514,
 		600,
 	}, autoDivide(600, 7))
+}
+
+func TestSumInt(t *testing.T) {
+	t.Run("basic", func(t *testing.T) {
+		assert.Equal(t, 3, sumInt([]int{1, 2}))
+	})
+	t.Run("overflow-add", func(t *testing.T) {
+		assert.Equal(t, math.MaxInt, sumInt([]int{1, math.MaxInt}))
+		assert.Equal(t, math.MaxInt, sumInt([]int{1, math.MaxInt - 1}))
+		assert.Equal(t, math.MaxInt, sumInt([]int{math.MaxInt, math.MaxInt}))
+	})
+	t.Run("overflow-sub", func(t *testing.T) {
+		assert.Equal(t, math.MinInt, sumInt([]int{-1, math.MinInt}))
+		assert.Equal(t, math.MinInt, sumInt([]int{-1, math.MinInt + 1}))
+		assert.Equal(t, math.MinInt, sumInt([]int{math.MinInt, math.MinInt}))
+	})
 }
 
 func TestGetRadius(t *testing.T) {
