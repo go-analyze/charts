@@ -16,12 +16,7 @@ func TestRightYAxis(t *testing.T) {
 	}{
 		{
 			render: func(p *Painter) ([]byte, error) {
-				opt := NewYAxisOptions([]string{
-					"a",
-					"b",
-					"c",
-					"d",
-				})[0]
+				opt := NewYAxisOptions([]string{"a", "b", "c", "d"})[0]
 				_, err := NewRightYAxis(p, opt).Render()
 				if err != nil {
 					return nil, err

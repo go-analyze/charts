@@ -1,26 +1,20 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
-  "github.com/go-analyze/charts"
+	"github.com/go-analyze/charts"
 )
 
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
-	err := os.MkdirAll(tmpPath, 0700)
-	if err != nil {
+	if err := os.MkdirAll(tmpPath, 0700); err != nil {
 		return err
 	}
 
 	file := filepath.Join(tmpPath, "area-line-chart.png")
-	err = ioutil.WriteFile(file, buf, 0600)
-	if err != nil {
-		return err
-	}
-	return nil
+	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
@@ -63,12 +57,9 @@ func main() {
 		panic(err)
 	}
 
-	buf, err := p.Bytes()
-	if err != nil {
+	if buf, err := p.Bytes(); err != nil {
 		panic(err)
-	}
-	err = writeFile(buf)
-	if err != nil {
+	} else if err = writeFile(buf); err != nil {
 		panic(err)
 	}
 }

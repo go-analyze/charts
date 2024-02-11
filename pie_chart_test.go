@@ -16,9 +16,7 @@ func makeBasicPieChartOption() PieChartOption {
 	}
 	return PieChartOption{
 		SeriesList: NewPieSeriesList(values, PieSeriesOption{
-			Label: SeriesLabel{
-				Show: true,
-			},
+			Label: SeriesLabel{Show: true},
 		}),
 		Title: TitleOption{
 			Text:    "Rainfall vs Evaporation",

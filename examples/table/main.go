@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -14,17 +13,12 @@ import (
 
 func writeFile(buf []byte, filename string) error {
 	tmpPath := "./tmp"
-	err := os.MkdirAll(tmpPath, 0700)
-	if err != nil {
+	if err := os.MkdirAll(tmpPath, 0700); err != nil {
 		return err
 	}
 
 	file := filepath.Join(tmpPath, filename)
-	err = ioutil.WriteFile(file, buf, 0600)
-	if err != nil {
-		return err
-	}
-	return nil
+	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
@@ -86,12 +80,7 @@ func main() {
 		panic(err)
 	}
 
-	bgColor := charts.Color{
-		R: 16,
-		G: 22,
-		B: 30,
-		A: 255,
-	}
+	bgColor := charts.Color{R: 16, G: 22, B: 30, A: 255}
 	p, err = charts.TableOptionRender(charts.TableChartOption{
 		Header: []string{
 			"Name",
@@ -148,19 +137,9 @@ func main() {
 				},
 			}
 			if value > 0 {
-				style.FillColor = charts.Color{
-					R: 179,
-					G: 53,
-					B: 20,
-					A: 255,
-				}
+				style.FillColor = charts.Color{R: 179, G: 53, B: 20, A: 255}
 			} else if value < 0 {
-				style.FillColor = charts.Color{
-					R: 33,
-					G: 124,
-					B: 50,
-					A: 255,
-				}
+				style.FillColor = charts.Color{R: 33, G: 124, B: 50, A: 255}
 			}
 			return &style
 		},
@@ -169,12 +148,9 @@ func main() {
 		panic(err)
 	}
 
-	buf, err = p.Bytes()
-	if err != nil {
+	if buf, err = p.Bytes(); err != nil {
 		panic(err)
-	}
-	err = writeFile(buf, "table-color.png")
-	if err != nil {
+	} else if err = writeFile(buf, "table-color.png"); err != nil {
 		panic(err)
 	}
 }

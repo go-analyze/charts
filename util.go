@@ -226,10 +226,7 @@ func getPolygonPointAngles(sides int) []float64 {
 func getPolygonPoint(center Point, radius, angle float64) Point {
 	x := center.X + int(radius*math.Cos(angle))
 	y := center.Y + int(radius*math.Sin(angle))
-	return Point{
-		X: x,
-		Y: y,
-	}
+	return Point{X: x, Y: y}
 }
 
 func getPolygonPoints(center Point, radius float64, sides int) []Point {

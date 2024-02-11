@@ -82,10 +82,7 @@ func (a *axisPainter) Render() (Box, error) {
 		strokeWidth = 1
 	}
 
-	font := opt.Font
-	if font == nil {
-		font = getPreferredFont(a.p.font)
-	}
+	font := getPreferredFont(opt.Font, a.p.font)
 	fontColor := opt.FontColor
 	if fontColor.IsZero() {
 		fontColor = theme.GetTextColor()
@@ -108,8 +105,7 @@ func (a *axisPainter) Render() (Box, error) {
 	dataCount := len(opt.Data)
 
 	centerLabels := !isFalse(opt.BoundaryGap)
-	isVertical := opt.Position == PositionLeft ||
-		opt.Position == PositionRight
+	isVertical := opt.Position == PositionLeft || opt.Position == PositionRight
 
 	// if less than zero, it means not processing
 	tickLength := getDefaultInt(opt.TickLength, 5)

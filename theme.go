@@ -36,6 +36,7 @@ type ColorPalette interface {
 }
 
 type themeColorPalette struct {
+	name               string
 	isDarkMode         bool
 	axisStrokeColor    Color
 	axisSplitLineColor Color
@@ -57,26 +58,11 @@ var palettes = sync.Map{}
 
 const defaultTheme = "default"
 
-var defaultLightFontColor = drawing.Color{
-	R: 70,
-	G: 70,
-	B: 70,
-	A: 255,
-}
-var defaultDarkFontColor = drawing.Color{
-	R: 238,
-	G: 238,
-	B: 238,
-	A: 255,
-}
+var defaultLightFontColor = drawing.Color{R: 70, G: 70, B: 70, A: 255}
+var defaultDarkFontColor = drawing.Color{R: 238, G: 238, B: 238, A: 255}
 
 func init() {
-	darkGray := Color{
-		R: 40,
-		G: 40,
-		B: 40,
-		A: 255,
-	}
+	darkGray := Color{R: 40, G: 40, B: 40, A: 255}
 	echartSeriesColors := []Color{
 		parseColor("#5470c6"),
 		parseColor("#91cc75"),
@@ -91,186 +77,84 @@ func init() {
 	InstallTheme(
 		ThemeLight,
 		ThemeOption{
-			IsDarkMode: false,
-			AxisStrokeColor: Color{
-				R: 110,
-				G: 112,
-				B: 121,
-				A: 255,
-			},
-			AxisSplitLineColor: Color{
-				R: 224,
-				G: 230,
-				B: 242,
-				A: 255,
-			},
-			BackgroundColor: drawing.ColorWhite,
-			TextColor: Color{
-				R: 70,
-				G: 70,
-				B: 70,
-				A: 255,
-			},
-			SeriesColors: echartSeriesColors,
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
+			AxisSplitLineColor: Color{R: 224, G: 230, B: 242, A: 255},
+			BackgroundColor:    drawing.ColorWhite,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+			SeriesColors:       echartSeriesColors,
 		},
 	)
 	InstallTheme(
 		ThemeDark,
 		ThemeOption{
-			IsDarkMode: true,
-			AxisStrokeColor: Color{
-				R: 185,
-				G: 184,
-				B: 206,
-				A: 255,
-			},
-			AxisSplitLineColor: Color{
-				R: 72,
-				G: 71,
-				B: 83,
-				A: 255,
-			},
-			BackgroundColor: darkGray,
-			TextColor: Color{
-				R: 238,
-				G: 238,
-				B: 238,
-				A: 255,
-			},
-			SeriesColors: echartSeriesColors,
+			IsDarkMode:         true,
+			AxisStrokeColor:    Color{R: 185, G: 184, B: 206, A: 255},
+			AxisSplitLineColor: Color{R: 72, G: 71, B: 83, A: 255},
+			BackgroundColor:    darkGray,
+			TextColor:          Color{R: 238, G: 238, B: 238, A: 255},
+			SeriesColors:       echartSeriesColors,
 		},
 	)
 	vividSeriesColors := []Color{
 		{ // red
-			R: 255,
-			G: 100,
-			B: 100,
-			A: 255,
+			R: 255, G: 100, B: 100, A: 255,
 		},
 		{ // yellow
-			R: 255,
-			G: 210,
-			B: 100,
-			A: 255,
+			R: 255, G: 210, B: 100, A: 255,
 		},
 		{ // blue
-			R: 100,
-			G: 180,
-			B: 210,
-			A: 255,
+			R: 100, G: 180, B: 210, A: 255,
 		},
 		{ // green
-			R: 64,
-			G: 160,
-			B: 110,
-			A: 255,
+			R: 64, G: 160, B: 110, A: 255,
 		},
 		{ // purple
-			R: 154,
-			G: 100,
-			B: 180,
-			A: 255,
+			R: 154, G: 100, B: 180, A: 255,
 		},
 		{ // light red
-			R: 250,
-			G: 128,
-			B: 80,
-			A: 255,
+			R: 250, G: 128, B: 80, A: 255,
 		},
 		{ // light green
-			R: 90,
-			G: 210,
-			B: 110,
-			A: 255,
+			R: 90, G: 210, B: 110, A: 255,
 		},
 		{ // light purple
-			R: 220,
-			G: 150,
-			B: 210,
-			A: 255,
+			R: 220, G: 150, B: 210, A: 255,
 		},
 		{ // dark blue
-			R: 90,
-			G: 118,
-			B: 140,
-			A: 255,
+			R: 90, G: 118, B: 140, A: 255,
 		},
 	}
 	InstallTheme(
 		ThemeVividLight,
 		ThemeOption{
-			IsDarkMode: false,
-			AxisStrokeColor: Color{
-				R: 110,
-				G: 112,
-				B: 121,
-				A: 255,
-			},
-			AxisSplitLineColor: Color{
-				R: 224,
-				G: 230,
-				B: 242,
-				A: 255,
-			},
-			BackgroundColor: drawing.ColorWhite,
-			TextColor: Color{
-				R: 70,
-				G: 70,
-				B: 70,
-				A: 255,
-			},
-			SeriesColors: vividSeriesColors,
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
+			AxisSplitLineColor: Color{R: 224, G: 230, B: 242, A: 255},
+			BackgroundColor:    drawing.ColorWhite,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+			SeriesColors:       vividSeriesColors,
 		},
 	)
 	InstallTheme(
 		ThemeVividDark,
 		ThemeOption{
-			IsDarkMode: true,
-			AxisStrokeColor: Color{
-				R: 185,
-				G: 184,
-				B: 206,
-				A: 255,
-			},
-			AxisSplitLineColor: Color{
-				R: 72,
-				G: 71,
-				B: 83,
-				A: 255,
-			},
-			BackgroundColor: darkGray,
-			TextColor: Color{
-				R: 238,
-				G: 238,
-				B: 238,
-				A: 255,
-			},
-			SeriesColors: vividSeriesColors,
+			IsDarkMode:         true,
+			AxisStrokeColor:    Color{R: 185, G: 184, B: 206, A: 255},
+			AxisSplitLineColor: Color{R: 72, G: 71, B: 83, A: 255},
+			BackgroundColor:    darkGray,
+			TextColor:          Color{R: 238, G: 238, B: 238, A: 255},
+			SeriesColors:       vividSeriesColors,
 		},
 	)
 	InstallTheme(
 		ThemeAnt,
 		ThemeOption{
-			IsDarkMode: false,
-			AxisStrokeColor: Color{
-				R: 110,
-				G: 112,
-				B: 121,
-				A: 255,
-			},
-			AxisSplitLineColor: Color{
-				R: 224,
-				G: 230,
-				B: 242,
-				A: 255,
-			},
-			BackgroundColor: drawing.ColorWhite,
-			TextColor: Color{
-				R: 70,
-				G: 70,
-				B: 70,
-				A: 255,
-			},
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
+			AxisSplitLineColor: Color{R: 224, G: 230, B: 242, A: 255},
+			BackgroundColor:    drawing.ColorWhite,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
 			SeriesColors: []Color{
 				parseColor("#5b8ff9"),
 				parseColor("#5ad8a6"),
@@ -286,31 +170,11 @@ func init() {
 	InstallTheme(
 		ThemeGrafana,
 		ThemeOption{
-			IsDarkMode: true,
-			AxisStrokeColor: Color{
-				R: 185,
-				G: 184,
-				B: 206,
-				A: 255,
-			},
-			AxisSplitLineColor: Color{
-				R: 68,
-				G: 67,
-				B: 67,
-				A: 255,
-			},
-			BackgroundColor: Color{
-				R: 31,
-				G: 29,
-				B: 29,
-				A: 255,
-			},
-			TextColor: Color{
-				R: 216,
-				G: 217,
-				B: 218,
-				A: 255,
-			},
+			IsDarkMode:         true,
+			AxisStrokeColor:    Color{R: 185, G: 184, B: 206, A: 255},
+			AxisSplitLineColor: Color{R: 68, G: 67, B: 67, A: 255},
+			BackgroundColor:    Color{R: 31, G: 29, B: 29, A: 255},
+			TextColor:          Color{R: 216, G: 217, B: 218, A: 255},
 			SeriesColors: []Color{
 				parseColor("#7EB26D"),
 				parseColor("#EAB839"),
@@ -354,6 +218,7 @@ func GetDefaultTheme() ColorPalette {
 // InstallTheme adds a theme to the catalog.
 func InstallTheme(name string, opt ThemeOption) {
 	palettes.Store(name, &themeColorPalette{
+		name:               name,
 		isDarkMode:         opt.IsDarkMode,
 		axisStrokeColor:    opt.AxisStrokeColor,
 		axisSplitLineColor: opt.AxisSplitLineColor,
@@ -371,6 +236,10 @@ func GetTheme(name string) ColorPalette {
 		}
 	}
 	return GetDefaultTheme()
+}
+
+func (t *themeColorPalette) String() string {
+	return t.name
 }
 
 func (t *themeColorPalette) IsDark() bool {

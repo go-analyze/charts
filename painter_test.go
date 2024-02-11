@@ -17,24 +17,14 @@ func TestPainterOption(t *testing.T) {
 
 	font := &truetype.Font{}
 	d, err := NewPainter(PainterOptions{
+		Type:   ChartOutputSVG,
 		Width:  800,
 		Height: 600,
-		Type:   ChartOutputSVG,
 	},
-		PainterBoxOption(Box{
-			Right:  400,
-			Bottom: 300,
-		}),
-		PainterPaddingOption(Box{
-			Left:   1,
-			Top:    2,
-			Right:  3,
-			Bottom: 4,
-		}),
+		PainterBoxOption(Box{Right: 400, Bottom: 300}),
+		PainterPaddingOption(Box{Left: 1, Top: 2, Right: 3, Bottom: 4}),
 		PainterFontOption(font),
-		PainterStyleOption(Style{
-			ClassName: "test",
-		}),
+		PainterStyleOption(Style{ClassName: "test"}),
 	)
 	require.NoError(t, err)
 	assert.Equal(t, Box{
@@ -85,14 +75,8 @@ func TestPainter(t *testing.T) {
 					StrokeWidth: 1,
 				})
 				p.LineStroke([]Point{
-					{
-						X: 1,
-						Y: 2,
-					},
-					{
-						X: 3,
-						Y: 4,
-					},
+					{X: 1, Y: 2},
+					{X: 3, Y: 4},
 				})
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<path  d=\"M 6 12\nL 8 14\" style=\"stroke-width:1;stroke:rgba(0,0,0,1.0);fill:none\"/></svg>",
@@ -123,18 +107,8 @@ func TestPainter(t *testing.T) {
 			fn: func(p *Painter) {
 				p.SetStyle(Style{
 					StrokeWidth: 1,
-					StrokeColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
-					FillColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
+					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
 				})
 				p.Pin(30, 30, 30)
 			},
@@ -145,18 +119,8 @@ func TestPainter(t *testing.T) {
 			fn: func(p *Painter) {
 				p.SetStyle(Style{
 					StrokeWidth: 1,
-					StrokeColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
-					FillColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
+					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
 				})
 				p.ArrowLeft(30, 30, 16, 10)
 			},
@@ -167,18 +131,8 @@ func TestPainter(t *testing.T) {
 			fn: func(p *Painter) {
 				p.SetStyle(Style{
 					StrokeWidth: 1,
-					StrokeColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
-					FillColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
+					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
 				})
 				p.ArrowRight(30, 30, 16, 10)
 			},
@@ -189,18 +143,8 @@ func TestPainter(t *testing.T) {
 			fn: func(p *Painter) {
 				p.SetStyle(Style{
 					StrokeWidth: 1,
-					StrokeColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
-					FillColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
+					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
 				})
 				p.ArrowTop(30, 30, 10, 16)
 			},
@@ -211,18 +155,8 @@ func TestPainter(t *testing.T) {
 			fn: func(p *Painter) {
 				p.SetStyle(Style{
 					StrokeWidth: 1,
-					StrokeColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
-					FillColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
+					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
 				})
 				p.ArrowBottom(30, 30, 10, 16)
 			},
@@ -232,23 +166,10 @@ func TestPainter(t *testing.T) {
 		{
 			fn: func(p *Painter) {
 				p.SetStyle(Style{
-					StrokeWidth: 1,
-					StrokeColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
-					FillColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
-					StrokeDashArray: []float64{
-						4,
-						2,
-					},
+					StrokeWidth:     1,
+					StrokeColor:     Color{R: 84, G: 112, B: 198, A: 255},
+					FillColor:       Color{R: 84, G: 112, B: 198, A: 255},
+					StrokeDashArray: []float64{4, 2},
 				})
 				p.MarkLine(0, 20, 300)
 			},
@@ -259,17 +180,9 @@ func TestPainter(t *testing.T) {
 			fn: func(p *Painter) {
 				p.SetStyle(Style{
 					StrokeWidth: 1,
-					StrokeColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 				})
-				p.Polygon(Point{
-					X: 100,
-					Y: 100,
-				}, 50, 6)
+				p.Polygon(Point{X: 100, Y: 100}, 50, 6)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<path  d=\"M 105 60\nL 148 85\nL 148 134\nL 105 160\nL 62 135\nL 62 86\nL 105 60\" style=\"stroke-width:1;stroke:rgba(84,112,198,1.0);fill:none\"/></svg>",
 		},
@@ -277,30 +190,13 @@ func TestPainter(t *testing.T) {
 		{
 			fn: func(p *Painter) {
 				p.SetDrawingStyle(Style{
-					FillColor: Color{
-						R: 84,
-						G: 112,
-						B: 198,
-						A: 255,
-					},
+					FillColor: Color{R: 84, G: 112, B: 198, A: 255},
 				})
 				p.FillArea([]Point{
-					{
-						X: 0,
-						Y: 0,
-					},
-					{
-						X: 0,
-						Y: 100,
-					},
-					{
-						X: 100,
-						Y: 100,
-					},
-					{
-						X: 0,
-						Y: 0,
-					},
+					{X: 0, Y: 0},
+					{X: 0, Y: 100},
+					{X: 100, Y: 100},
+					{X: 0, Y: 0},
 				})
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<path  d=\"M 5 10\nL 5 110\nL 105 110\nL 5 10\" style=\"stroke-width:0;stroke:none;fill:rgba(84,112,198,1.0)\"/></svg>",
@@ -309,13 +205,10 @@ func TestPainter(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			d, err := NewPainter(PainterOptions{
+				Type:   ChartOutputSVG,
 				Width:  400,
 				Height: 300,
-				Type:   ChartOutputSVG,
-			}, PainterPaddingOption(chart.Box{
-				Left: 5,
-				Top:  10,
-			}))
+			}, PainterPaddingOption(chart.Box{Left: 5, Top: 10}))
 			require.NoError(t, err)
 			tt.fn(d)
 			data, err := d.Bytes()
@@ -329,9 +222,9 @@ func TestPainterTextFit(t *testing.T) {
 	t.Parallel()
 
 	p, err := NewPainter(PainterOptions{
+		Type:   ChartOutputSVG,
 		Width:  400,
 		Height: 300,
-		Type:   ChartOutputSVG,
 	})
 	require.NoError(t, err)
 	style := Style{
@@ -341,16 +234,10 @@ func TestPainterTextFit(t *testing.T) {
 	}
 	p.SetStyle(style)
 	box := p.TextFit("Hello World!", 0, 20, 80)
-	assert.Equal(t, chart.Box{
-		Right:  45,
-		Bottom: 35,
-	}, box)
+	assert.Equal(t, chart.Box{Right: 45, Bottom: 35}, box)
 
 	box = p.TextFit("Hello World!", 0, 100, 200)
-	assert.Equal(t, chart.Box{
-		Right:  84,
-		Bottom: 15,
-	}, box)
+	assert.Equal(t, chart.Box{Right: 84, Bottom: 15}, box)
 
 	buf, err := p.Bytes()
 	require.NoError(t, err)

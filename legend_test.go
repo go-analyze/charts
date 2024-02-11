@@ -18,11 +18,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data: []string{
-						"One",
-						"Two",
-						"Three",
-					},
+					Data: []string{"One", "Two", "Three"},
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -34,11 +30,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data: []string{
-						"One",
-						"Two",
-						"Three",
-					},
+					Data: []string{"One", "Two", "Three"},
 					Left: PositionLeft,
 				}).Render()
 				if err != nil {
@@ -51,11 +43,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data: []string{
-						"One",
-						"Two",
-						"Three",
-					},
+					Data:   []string{"One", "Two", "Three"},
 					Orient: OrientVertical,
 					Icon:   IconRect,
 					Left:   "10%",

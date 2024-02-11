@@ -14,10 +14,7 @@ func writeFile(buf []byte) error {
 	}
 
 	file := filepath.Join(tmpPath, "chinese-line-chart.png")
-	if err := os.WriteFile(file, buf, 0600); err != nil {
-		return err
-	}
-	return nil
+	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {

@@ -81,12 +81,7 @@ func TestEChartStyle(t *testing.T) {
 	es := EChartStyle{
 		Color: "#999",
 	}
-	color := drawing.Color{
-		R: 153,
-		G: 153,
-		B: 153,
-		A: 255,
-	}
+	color := drawing.Color{R: 153, G: 153, B: 153, A: 255}
 	assert.Equal(t, Style{
 		FillColor:   color,
 		FontColor:   color,
