@@ -2,8 +2,10 @@ package charts
 
 import (
 	"fmt"
+	"hash/crc32"
 	"sync"
 
+	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
@@ -26,6 +28,8 @@ const ThemeGrafana = "grafana"
 // ThemeAnt is an ant styled theme.
 const ThemeAnt = "ant"
 
+const rangeLoopShadeAdjust = 80
+
 type ColorPalette interface {
 	IsDark() bool
 	GetAxisStrokeColor() Color
@@ -36,6 +40,9 @@ type ColorPalette interface {
 	// WithAxisColor will provide a new ColorPalette that uses the specified color for axis values.
 	// This includes the Axis Stroke, Split Line, and Text Color.
 	WithAxisColor(Color) ColorPalette
+	// WithTextColor will provide a new ColorPalette that uses the specified color for text.
+	// This is generally recommended over using the FontColor config values.
+	WithTextColor(Color) ColorPalette
 }
 
 type themeColorPalette struct {
@@ -218,9 +225,24 @@ func GetDefaultTheme() ColorPalette {
 	return GetTheme(defaultTheme)
 }
 
-// InstallTheme adds a theme to the catalog.
+// MakeTheme constructs a one-off theme without installing it into the catalog.
+func MakeTheme(opt ThemeOption) ColorPalette {
+	optStr := fmt.Sprintf("%v", opt)
+	optId := crc32.ChecksumIEEE([]byte(optStr))
+	return &themeColorPalette{
+		name:               fmt.Sprintf("custom-%x", optId),
+		isDarkMode:         opt.IsDarkMode,
+		axisStrokeColor:    opt.AxisStrokeColor,
+		axisSplitLineColor: opt.AxisSplitLineColor,
+		backgroundColor:    opt.BackgroundColor,
+		textColor:          opt.TextColor,
+		seriesColors:       opt.SeriesColors,
+	}
+}
+
+// InstallTheme adds a theme to the catalog which can later be retrieved using GetTheme.
 func InstallTheme(name string, opt ThemeOption) {
-	palettes.Store(name, &themeColorPalette{
+	cp := &themeColorPalette{
 		name:               name,
 		isDarkMode:         opt.IsDarkMode,
 		axisStrokeColor:    opt.AxisStrokeColor,
@@ -228,7 +250,8 @@ func InstallTheme(name string, opt ThemeOption) {
 		backgroundColor:    opt.BackgroundColor,
 		textColor:          opt.TextColor,
 		seriesColors:       opt.SeriesColors,
-	})
+	}
+	palettes.Store(name, cp)
 }
 
 // GetTheme returns an installed theme by name, or the default if the theme is not installed.
@@ -259,7 +282,25 @@ func (t *themeColorPalette) GetAxisSplitLineColor() Color {
 
 func (t *themeColorPalette) GetSeriesColor(index int) Color {
 	colors := t.seriesColors
-	return colors[index%len(colors)]
+	colorCount := len(colors)
+	if index < colorCount {
+		return colors[index]
+	} else {
+		result := colors[index%colorCount]
+		// adjust the color shade automatically
+		max := 200
+		min := 0
+		adjustment := rangeLoopShadeAdjust * chart.MinInt(2, index/colorCount)
+		if t.IsDark() { // adjust the shade darker for dark themes
+			adjustment *= -1
+			max = 255
+			min = 60
+		}
+		result.R = uint8(chart.MaxInt(chart.MinInt(int(result.R)+adjustment, max), min))
+		result.G = uint8(chart.MaxInt(chart.MinInt(int(result.G)+adjustment, max), min))
+		result.B = uint8(chart.MaxInt(chart.MinInt(int(result.B)+adjustment, max), min))
+		return result
+	}
 }
 
 func (t *themeColorPalette) GetBackgroundColor() Color {
@@ -272,9 +313,16 @@ func (t *themeColorPalette) GetTextColor() Color {
 
 func (t *themeColorPalette) WithAxisColor(c Color) ColorPalette {
 	copy := *t
-	copy.name += "-modified"
+	copy.name += "-axis_mod"
 	copy.axisStrokeColor = c
 	copy.axisSplitLineColor = c
+	copy.textColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithTextColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-text_mod"
 	copy.textColor = c
 	return &copy
 }

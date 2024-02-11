@@ -136,8 +136,7 @@ func TestAxis(t *testing.T) {
 		},
 	}
 
-	testThemeName := "axisTestTheme"
-	InstallTheme(testThemeName, ThemeOption{
+	axisTheme := MakeTheme(ThemeOption{
 		IsDarkMode:         false,
 		AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
 		AxisSplitLineColor: drawing.ColorBlack,
@@ -150,7 +149,7 @@ func TestAxis(t *testing.T) {
 				OutputFormat: ChartOutputSVG,
 				Width:        600,
 				Height:       400,
-			}, PainterThemeOption(GetTheme(testThemeName)))
+			}, PainterThemeOption(axisTheme))
 			require.NoError(t, err)
 			data, err := tt.render(p)
 			require.NoError(t, err)
