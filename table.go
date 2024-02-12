@@ -83,12 +83,12 @@ type TableSetting struct {
 }
 
 var TableLightThemeSetting = TableSetting{
-	HeaderColor:     Color{R: 240, G: 240, B: 240, A: 255},
-	HeaderFontColor: Color{R: 98, G: 105, B: 118, A: 255},
-	FontColor:       Color{R: 70, G: 70, B: 70, A: 255},
+	HeaderColor:     Color{R: 220, G: 220, B: 220, A: 255},
+	HeaderFontColor: Color{R: 80, G: 80, B: 80, A: 255},
+	FontColor:       Color{R: 50, G: 50, B: 50, A: 255},
 	RowColors: []Color{
 		drawing.ColorWhite,
-		{R: 247, G: 247, B: 247, A: 255},
+		{R: 245, G: 245, B: 245, A: 255},
 	},
 	CellPadding: Box{
 		Left:   10,
