@@ -127,6 +127,9 @@ func (t *tableChart) render() (*renderInfo, error) {
 		RowHeights: make([]int, 0),
 	}
 	p := t.p
+	if t.opt.Theme == nil {
+		t.opt.Theme = getPreferredTheme(p.theme)
+	}
 	opt := t.opt
 	if len(opt.Header) == 0 {
 		return nil, errors.New("header can not be nil")
@@ -263,6 +266,9 @@ func (t *tableChart) render() (*renderInfo, error) {
 
 func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 	p := t.p
+	if t.opt.Theme == nil {
+		t.opt.Theme = getPreferredTheme(p.theme)
+	}
 	opt := t.opt
 	if !opt.BackgroundColor.IsZero() {
 		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
@@ -340,12 +346,8 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 
 func (t *tableChart) Render() (Box, error) {
 	p := t.p
-	opt := t.opt
-	if opt.Theme == nil {
-		opt.Theme = getPreferredTheme(p.theme)
-	}
-	if !opt.BackgroundColor.IsZero() {
-		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
+	if !t.opt.BackgroundColor.IsZero() {
+		p.SetBackground(p.Width(), p.Height(), t.opt.BackgroundColor)
 	}
 
 	r := p.render
