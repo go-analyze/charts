@@ -8,13 +8,17 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Example basic line chart with a variety of basic configuration options shown.
+*/
+
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
 	if err := os.MkdirAll(tmpPath, 0700); err != nil {
 		return err
 	}
 
-	file := filepath.Join(tmpPath, "line-chart.png")
+	file := filepath.Join(tmpPath, "line-chart-1.png")
 	return os.WriteFile(file, buf, 0600)
 }
 
@@ -85,20 +89,19 @@ func main() {
 			"Video Ads",
 			"Direct",
 			"Search Engine",
-		}, "50"),
+		}),
 		func(opt *charts.ChartOption) {
+			opt.Title.FontSize = 16
 			opt.Legend.Padding = charts.Box{
-				Top:    5,
-				Bottom: 10,
+				Left: 100,
 			}
 			opt.SymbolShow = charts.False()
-			opt.LineStrokeWidth = 1
+			opt.LineStrokeWidth = 1.2
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)
 			}
 		},
 	)
-
 	if err != nil {
 		panic(err)
 	}

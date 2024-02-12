@@ -7,6 +7,10 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Example bar chart with a variety of basic configuration options shown.
+*/
+
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
 	if err := os.MkdirAll(tmpPath, 0700); err != nil {
@@ -80,6 +84,7 @@ func main() {
 			opt.SeriesList[1].MarkLine = charts.NewMarkLine(
 				charts.SeriesMarkDataTypeAverage,
 			)
+			opt.XAxis.LabelCount = 12 // force label count due to the labels being very close
 		},
 	)
 	if err != nil {

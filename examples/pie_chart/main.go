@@ -7,6 +7,10 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Example pie chart with a variety of basic configuration options shown.
+*/
+
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
 	if err := os.MkdirAll(tmpPath, 0700); err != nil {
@@ -28,9 +32,11 @@ func main() {
 	p, err := charts.PieRender(
 		values,
 		charts.TitleOptionFunc(charts.TitleOption{
-			Text:    "Rainfall vs Evaporation",
-			Subtext: "Fake Data",
-			Left:    charts.PositionCenter,
+			Text:            "Rainfall vs Evaporation",
+			Subtext:         "(Fake Data)",
+			Left:            charts.PositionCenter,
+			FontSize:        16,
+			SubtextFontSize: 10,
 		}),
 		charts.PaddingOptionFunc(charts.Box{
 			Top:    20,
@@ -47,7 +53,8 @@ func main() {
 				"Union Ads",
 				"Video Ads",
 			},
-			Left: charts.PositionLeft,
+			Left:     charts.PositionLeft,
+			FontSize: 12,
 		}),
 		charts.PieSeriesShowLabel(),
 	)

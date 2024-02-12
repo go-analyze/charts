@@ -11,6 +11,10 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Example table chart with a variety of basic configuration options shown.
+*/
+
 func writeFile(buf []byte, filename string) error {
 	tmpPath := "./tmp"
 	if err := os.MkdirAll(tmpPath, 0700); err != nil {
@@ -22,7 +26,6 @@ func writeFile(buf []byte, filename string) error {
 }
 
 func main() {
-	// charts.SetDefaultTableSetting(charts.TableDarkThemeSetting)
 	charts.SetDefaultWidth(810)
 	header := []string{
 		"Name",
@@ -71,12 +74,9 @@ func main() {
 		panic(err)
 	}
 
-	buf, err := p.Bytes()
-	if err != nil {
+	if buf, err := p.Bytes(); err != nil {
 		panic(err)
-	}
-	err = writeFile(buf, "table.png")
-	if err != nil {
+	} else if err = writeFile(buf, "table.png"); err != nil {
 		panic(err)
 	}
 
@@ -148,7 +148,7 @@ func main() {
 		panic(err)
 	}
 
-	if buf, err = p.Bytes(); err != nil {
+	if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf, "table-color.png"); err != nil {
 		panic(err)

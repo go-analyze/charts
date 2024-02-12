@@ -7,6 +7,10 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Example funnel chart with a variety of basic configuration options shown.
+*/
+
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
 	if err := os.MkdirAll(tmpPath, 0700); err != nil {
@@ -25,7 +29,7 @@ func main() {
 		40,
 		20,
 		10,
-		0,
+		2,
 	}
 	p, err := charts.FunnelRender(
 		values,
@@ -39,6 +43,9 @@ func main() {
 			"Pay",
 			"Cancel",
 		}),
+		func(opt *charts.ChartOption) {
+			opt.Legend.Padding = charts.Box{Left: 100}
+		},
 	)
 	if err != nil {
 		panic(err)

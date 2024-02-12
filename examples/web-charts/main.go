@@ -9,6 +9,10 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Hosts an example http server which will render the charts to the web page.
+*/
+
 var html = `<!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -144,15 +148,19 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 	chartOptions := []charts.ChartOption{
 		{
 			Title: charts.TitleOption{
-				Text: "Line",
+				Text:     "Line",
+				FontSize: 18,
 			},
-			Legend: charts.NewLegendOption([]string{
-				"Email",
-				"Union Ads",
-				"Video Ads",
-				"Direct",
-				"Search Engine",
-			}),
+			Legend: charts.LegendOption{
+				Data: []string{
+					"Email",
+					"Union Ads",
+					"Video Ads",
+					"Direct",
+					"Search Engine",
+				},
+				Padding: charts.Box{Left: 100},
+			},
 			XAxis: charts.NewXAxisOption([]string{
 				"Mon",
 				"Tue",
@@ -264,7 +272,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		},
 		{
 			Title: charts.TitleOption{
-				Text: "Line Area",
+				Text:     "Line Area",
+				FontSize: 18,
 			},
 			Legend: charts.NewLegendOption([]string{
 				"Email",
@@ -278,6 +287,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				"Sat",
 				"Sun",
 			}),
+			YAxis: []charts.YAxisOption{{
+				Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
+			}},
 			SeriesList: []charts.Series{
 				charts.NewSeriesFromValues([]float64{
 					120,
@@ -294,7 +306,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// histogram
 		{
 			Title: charts.TitleOption{
-				Text: "Bar",
+				Text:     "Bar",
+				FontSize: 18,
 			},
 			XAxis: charts.NewXAxisOption([]string{
 				"Mon",
@@ -360,7 +373,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// horizontal bar chart
 		{
 			Title: charts.TitleOption{
-				Text: "World Population",
+				Text:     "World Population",
+				FontSize: 18,
 			},
 			Padding: charts.Box{
 				Top:    20,
@@ -408,8 +422,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// histogram+marker
 		{
 			Title: charts.TitleOption{
-				Text:    "Rainfall vs Evaporation",
-				Subtext: "Fake Data",
+				Text:            "Rainfall vs Evaporation",
+				Subtext:         "(Fake Data)",
+				FontSize:        16,
+				SubtextFontSize: 10,
 			},
 			Padding: charts.Box{
 				Top:    20,
@@ -489,7 +505,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// dual y-axis
 		{
 			Title: charts.TitleOption{
-				Text: "Temperature",
+				Text:     "Temperature",
+				FontSize: 16,
 			},
 			XAxis: charts.NewXAxisOption([]string{
 				"Jan",
@@ -505,11 +522,14 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				"Nov",
 				"Dec",
 			}),
-			Legend: charts.NewLegendOption([]string{
-				"Evaporation",
-				"Precipitation",
-				"Temperature",
-			}),
+			Legend: charts.LegendOption{
+				Data: []string{
+					"Evaporation",
+					"Precipitation",
+					"Temperature",
+				},
+				Padding: charts.Box{Left: 100},
+			},
 			YAxis: []charts.YAxisOption{
 				{
 					Formatter: "{value}ml",
@@ -577,9 +597,11 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// pie chart
 		{
 			Title: charts.TitleOption{
-				Text:    "Referer of a Website",
-				Subtext: "Fake Data",
-				Left:    charts.PositionCenter,
+				Text:            "Referer of a Website",
+				Subtext:         "(Fake Data)",
+				Left:            charts.PositionCenter,
+				FontSize:        16,
+				SubtextFontSize: 10,
 			},
 			Legend: charts.LegendOption{
 				Orient: charts.OrientVertical,
@@ -608,12 +630,16 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// radar chart
 		{
 			Title: charts.TitleOption{
-				Text: "Basic Radar Chart",
+				Text:     "Basic Radar Chart",
+				FontSize: 16,
 			},
-			Legend: charts.NewLegendOption([]string{
-				"Allocated Budget",
-				"Actual Spending",
-			}),
+			Legend: charts.LegendOption{
+				Data: []string{
+					"Allocated Budget",
+					"Actual Spending",
+				},
+				Padding: charts.Box{Left: 100},
+			},
 			RadarIndicators: []charts.RadarIndicator{
 				{
 					Name: "Sales",

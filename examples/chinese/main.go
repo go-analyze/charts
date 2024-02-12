@@ -7,6 +7,10 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Example showing how to load in custom fonts.
+*/
+
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
 	if err := os.MkdirAll(tmpPath, 0700); err != nil {

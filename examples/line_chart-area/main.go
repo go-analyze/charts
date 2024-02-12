@@ -7,13 +7,17 @@ import (
 	"github.com/go-analyze/charts"
 )
 
+/*
+Example line chart with the area below the line shaded.
+*/
+
 func writeFile(buf []byte) error {
 	tmpPath := "./tmp"
 	if err := os.MkdirAll(tmpPath, 0700); err != nil {
 		return err
 	}
 
-	file := filepath.Join(tmpPath, "area-line-chart.png")
+	file := filepath.Join(tmpPath, "line-chart-area.png")
 	return os.WriteFile(file, buf, 0600)
 }
 
@@ -50,9 +54,12 @@ func main() {
 				Bottom: 10,
 			}
 			opt.FillArea = true
+			opt.XAxis.BoundaryGap = charts.False()
+			opt.YAxis = []charts.YAxisOption{{
+				Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
+			}}
 		},
 	)
-
 	if err != nil {
 		panic(err)
 	}
