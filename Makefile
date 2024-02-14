@@ -1,9 +1,8 @@
 export GO111MODULE = on
 
-.PHONY: default test test-cover dev hooks
+.PHONY: default test test-cover bench lint
 
 
-# for test
 test:
 	go test -race -cover ./...
 
@@ -15,6 +14,3 @@ bench:
 
 lint:
 	golangci-lint run
-
-hooks:
-	cp hooks/* .git/hooks/
