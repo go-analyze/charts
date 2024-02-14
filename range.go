@@ -8,6 +8,7 @@ const rangeMinPaddingPercentMin = 0.0 // increasing could result in forced negat
 const rangeMinPaddingPercentMax = 20.0
 const rangeMaxPaddingPercentMin = 5.0 // set minimum spacing at the top of the graph
 const rangeMaxPaddingPercentMax = 20.0
+const zeroSpanAdjustment = 1 // Adjustment
 
 type axisRange struct {
 	p           *Painter
@@ -77,8 +78,17 @@ rootLoop:
 		minResult = minTrunk // remove possible float multiplication inaccuracies
 	}
 
-	if maxPaddingScale <= 0.0 {
+	if max == minResult {
+		// no adjustment was made and there is no span, because of that the max calculation below can't function
+		// for that reason we apply a default constant span, still wanting to prefer a zero start if possible
+		if minResult == 0 {
+			return minResult, minResult + (2 * zeroSpanAdjustment)
+		}
+		return minResult - zeroSpanAdjustment, minResult + zeroSpanAdjustment
+	} else if maxPaddingScale <= 0.0 {
 		return minResult, max
+	} else if math.Abs(max) < 10 {
+		return minResult, math.Ceil(max) + 1
 	}
 
 	// update max to provide ideal padding and human friendly intervals

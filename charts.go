@@ -12,7 +12,8 @@ const labelFontSize = 10
 const smallLabelFontSize = 8
 const defaultDotWidth = 2.0
 const defaultStrokeWidth = 2.0
-const defaultYAxisLabelCount = 10
+const defaultYAxisLabelCountHigh = 10
+const defaultYAxisLabelCountLow = 3
 
 var defaultChartWidth = 600
 var defaultChartHeight = 400
@@ -41,6 +42,15 @@ func SetNullValue(v float64) {
 // GetNullValue gets the null value
 func GetNullValue() float64 {
 	return nullValue
+}
+
+func defaultYAxisLabelCount(span float64, decimalData bool) int {
+	result := math.Min(math.Max(span+1, defaultYAxisLabelCountLow), defaultYAxisLabelCountHigh)
+	if decimalData {
+		// if there is a decimal, we double our labels to provide more detailed labels
+		result = math.Min(result*2, defaultYAxisLabelCountHigh)
+	}
+	return int(result)
 }
 
 type Renderer interface {
@@ -169,6 +179,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			maxPadRange = *yAxisOption.RangeValuePaddingScale
 		}
 		min, max := opt.SeriesList.GetMinMax(index)
+		decimalData := (max - min) != math.Floor(max-min)
 		if yAxisOption.Min != nil && *yAxisOption.Min < min {
 			min = *yAxisOption.Min
 			minPadRange = 0.0
@@ -195,7 +206,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			if yAxisOption.Unit > 0 {
 				padLabelCount = int((max-min)/yAxisOption.Unit) + 1
 			} else {
-				padLabelCount = defaultYAxisLabelCount
+				padLabelCount = defaultYAxisLabelCount(max-min, decimalData)
 			}
 		}
 		// we call padRange directly because we need to do this padding before we can calculate the final labelCount for the axisRange
@@ -207,7 +218,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 				}
 				labelCount = int((max-min)/yAxisOption.Unit) + 1
 			} else {
-				labelCount = defaultYAxisLabelCount
+				labelCount = defaultYAxisLabelCount(max-min, decimalData)
 			}
 			yAxisOption.LabelCount = labelCount
 		}

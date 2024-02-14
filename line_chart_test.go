@@ -355,6 +355,34 @@ func TestLineChart(t *testing.T) {
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"400\">\\n<path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(255,255,255,1.0)\"/><text x=\"10\" y=\"17\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.5k</text><text x=\"23\" y=\"133\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1k</text><text x=\"13\" y=\"250\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">500</text><text x=\"31\" y=\"367\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 88 332\nL 165 330\nL 242 337\nL 319 329\nL 396 339\nL 473 307\nL 551 311\" style=\"stroke-width:2;stroke:rgba(84,112,198,1.0);fill:none\"/><path  d=\"M 88 169\nL 165 143\nL 242 150\nL 319 143\nL 396 59\nL 473 50\nL 551 52\" style=\"stroke-width:2;stroke:rgba(145,204,117,1.0);fill:none\"/></svg>",
 		},
+		{
+			name:         "ZeroData",
+			defaultTheme: true,
+			makeOptions: func() LineChartOption {
+				opt := makeMinimalLineChartOption()
+				values := [][]float64{
+					{0, 0, 0, 0, 0, 0, 0},
+					{0, 0, 0, 0, 0, 0, 0},
+				}
+				opt.SeriesList = NewSeriesListDataFromValues(values)
+				return opt
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"400\">\\n<path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(255,255,255,1.0)\"/><text x=\"10\" y=\"17\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">2</text><text x=\"10\" y=\"192\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1</text><text x=\"10\" y=\"367\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 29 10\nL 590 10\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 29 185\nL 590 185\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 69 360\nL 149 360\nL 229 360\nL 309 360\nL 389 360\nL 469 360\nL 549 360\" style=\"stroke-width:2;stroke:rgba(84,112,198,1.0);fill:none\"/><path  d=\"M 69 360\nL 149 360\nL 229 360\nL 309 360\nL 389 360\nL 469 360\nL 549 360\" style=\"stroke-width:2;stroke:rgba(145,204,117,1.0);fill:none\"/></svg>",
+		},
+		{
+			name:         "TinyRange",
+			defaultTheme: true,
+			makeOptions: func() LineChartOption {
+				opt := makeMinimalLineChartOption()
+				values := [][]float64{
+					{0.1, 0.2, 0.1, 0.2, 0.4, 0.2, 0.1},
+					{0.2, 0.4, 0.8, 0.4, 0.2, 0.1, 0.2},
+				}
+				opt.SeriesList = NewSeriesListDataFromValues(values)
+				return opt
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"400\">\\n<path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(255,255,255,1.0)\"/><text x=\"32\" y=\"17\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">2</text><text x=\"19\" y=\"87\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.6</text><text x=\"10\" y=\"157\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.20</text><text x=\"19\" y=\"227\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0.8</text><text x=\"19\" y=\"297\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0.4</text><text x=\"32\" y=\"367\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 51 10\nL 590 10\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 51 80\nL 590 80\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 51 150\nL 590 150\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 51 220\nL 590 220\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 51 290\nL 590 290\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 89 343\nL 166 325\nL 243 343\nL 320 325\nL 397 290\nL 474 325\nL 551 343\" style=\"stroke-width:2;stroke:rgba(84,112,198,1.0);fill:none\"/><path  d=\"M 89 325\nL 166 290\nL 243 220\nL 320 290\nL 397 325\nL 474 343\nL 551 325\" style=\"stroke-width:2;stroke:rgba(145,204,117,1.0);fill:none\"/></svg>",
+		},
 	}
 
 	for _, tt := range tests {
