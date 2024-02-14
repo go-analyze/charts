@@ -50,7 +50,7 @@ type MultiTextOption struct {
 	CenterLabels bool
 	Align        string
 	TextRotation float64
-	Offset       Box
+	Offset       Offset
 	// The first text index
 	First          int
 	LabelCount     int
@@ -713,7 +713,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 				// attempt to space the labels better rather than line up directly to the graph points
 				exactLabels := count == opt.LabelCount
 				if !exactLabels && index == 0 {
-					x = start // align to the actual start (left side of tick space)
+					x = start - 1 // align to the actual start (left side of tick space)
 				} else if !exactLabels && index == count-1 {
 					x = width - box.Width() // align to the right side of tick space
 				} else {
@@ -724,7 +724,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 				if index == count-1 {
 					x = width - box.Width() // align to the right side of tick space
 				} else {
-					x = start // align to the left side of the tick space
+					x = start - 1 // align to the left side of the tick space
 				}
 			}
 		}

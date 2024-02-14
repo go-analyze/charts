@@ -52,17 +52,17 @@ type SeriesLabel struct {
 	// {c}: the value of a data item.
 	// {d}: the percent of a data item(pie chart).
 	Formatter string
-	// The color for label
+	// Color specifies the color for the label.
 	Color Color
 	// Show flag for label
 	Show bool
 	// Distance to the host graphic element.
 	Distance int
-	// The position of label
+	// Position defines the label position.
 	Position string
-	// The offset of label's position
-	Offset Box
-	// The font size of label
+	// Offset specifies an offset from the position.
+	Offset Offset
+	// FontSize is the size for text rendering.
 	FontSize float64
 }
 

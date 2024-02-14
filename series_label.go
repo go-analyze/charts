@@ -22,7 +22,7 @@ type LabelValue struct {
 	FontColor Color
 	FontSize  float64
 	Orient    string
-	Offset    Box
+	Offset    Offset
 }
 
 type SeriesLabelPainter struct {

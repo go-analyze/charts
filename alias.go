@@ -11,6 +11,14 @@ type Color = drawing.Color
 
 var BoxZero = chart.BoxZero
 
+// Offset provides an ability to configure a shift from the top or left alignments.
+type Offset struct {
+	// Left indicates a vertical spacing adjustment from the top.
+	Top int
+	// Left indicates a horizontal spacing adjustment from the left.
+	Left int
+}
+
 type Point struct {
 	X int
 	Y int
