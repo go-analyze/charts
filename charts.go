@@ -47,7 +47,7 @@ func GetNullValue() float64 {
 func defaultYAxisLabelCount(span float64, decimalData bool) int {
 	result := math.Min(math.Max(span+1, defaultYAxisLabelCountLow), defaultYAxisLabelCountHigh)
 	if decimalData {
-		// if there is a decimal, we double our labels to provide more detailed labels
+		// if there is a decimal, we double our labels to provide more detail
 		result = math.Min(result*2, defaultYAxisLabelCountHigh)
 	}
 	return int(result)
@@ -179,7 +179,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			maxPadRange = *yAxisOption.RangeValuePaddingScale
 		}
 		min, max := opt.SeriesList.GetMinMax(index)
-		decimalData := (max - min) != math.Floor(max-min)
+		decimalData := min != math.Floor(min) || (max-min) != math.Floor(max-min)
 		if yAxisOption.Min != nil && *yAxisOption.Min < min {
 			min = *yAxisOption.Min
 			minPadRange = 0.0
