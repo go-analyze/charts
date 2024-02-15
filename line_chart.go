@@ -61,6 +61,11 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		xDivideCount--
 	}
 	xDivideValues := autoDivide(seriesPainter.Width(), xDivideCount)
+	if boundaryGap && xDivideCount > 1 && xDivideValues[1]-xDivideValues[0] <= 10 {
+		// boundary gap would be so small it's visually better to disable the line spacing adjustment and just keep
+		// the label changes only
+		boundaryGap = false
+	}
 	xValues := make([]int, len(xDivideValues)-1)
 	if boundaryGap {
 		for i := 0; i < len(xDivideValues)-1; i++ {
