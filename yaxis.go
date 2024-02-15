@@ -33,6 +33,9 @@ type YAxisOption struct {
 	Unit float64
 	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.
 	LabelCount int
+	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
+	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.
+	LabelCountAdjustment int
 	// LabelSkipCount specifies a number of lines between labels where there will be no label and instead just a horizontal line.
 	LabelSkipCount int
 	isCategoryAxis bool
@@ -65,20 +68,21 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 		theme = p.theme
 	}
 	axisOpt := AxisOption{
-		Formatter:      opt.Formatter,
-		Theme:          theme,
-		Data:           opt.Data,
-		Position:       position,
-		FontSize:       opt.FontSize,
-		StrokeWidth:    -1,
-		Font:           opt.Font,
-		FontColor:      opt.FontColor,
-		BoundaryGap:    False(),
-		Unit:           opt.Unit,
-		LabelCount:     opt.LabelCount,
-		LabelSkipCount: opt.LabelSkipCount,
-		SplitLineShow:  true,
-		Show:           opt.Show,
+		Formatter:            opt.Formatter,
+		Theme:                theme,
+		Data:                 opt.Data,
+		Position:             position,
+		FontSize:             opt.FontSize,
+		StrokeWidth:          -1,
+		Font:                 opt.Font,
+		FontColor:            opt.FontColor,
+		BoundaryGap:          False(),
+		Unit:                 opt.Unit,
+		LabelCount:           opt.LabelCount,
+		LabelCountAdjustment: opt.LabelCountAdjustment,
+		LabelSkipCount:       opt.LabelSkipCount,
+		SplitLineShow:        true,
+		Show:                 opt.Show,
 	}
 	if !opt.AxisColor.IsZero() {
 		axisOpt.FontColor = opt.AxisColor

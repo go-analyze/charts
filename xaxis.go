@@ -31,8 +31,11 @@ type XAxisOption struct {
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.
-	LabelCount  int
-	isValueAxis bool
+	LabelCount int
+	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
+	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.
+	LabelCountAdjustment int
+	isValueAxis          bool
 }
 
 const defaultXAxisHeight = 30
@@ -54,19 +57,20 @@ func (opt *XAxisOption) ToAxisOption() AxisOption {
 		position = PositionTop
 	}
 	axisOpt := AxisOption{
-		Theme:          opt.Theme,
-		Data:           opt.Data,
-		DataStartIndex: opt.DataStartIndex,
-		BoundaryGap:    opt.BoundaryGap,
-		Position:       position,
-		FontSize:       opt.FontSize,
-		Font:           opt.Font,
-		FontColor:      opt.FontColor,
-		Show:           opt.Show,
-		Unit:           opt.Unit,
-		LabelCount:     opt.LabelCount,
-		TextRotation:   opt.TextRotation,
-		LabelOffset:    opt.LabelOffset,
+		Theme:                opt.Theme,
+		Data:                 opt.Data,
+		DataStartIndex:       opt.DataStartIndex,
+		BoundaryGap:          opt.BoundaryGap,
+		Position:             position,
+		FontSize:             opt.FontSize,
+		Font:                 opt.Font,
+		FontColor:            opt.FontColor,
+		Show:                 opt.Show,
+		Unit:                 opt.Unit,
+		LabelCount:           opt.LabelCount,
+		LabelCountAdjustment: opt.LabelCountAdjustment,
+		TextRotation:         opt.TextRotation,
+		LabelOffset:          opt.LabelOffset,
 	}
 	if opt.isValueAxis {
 		axisOpt.SplitLineShow = true

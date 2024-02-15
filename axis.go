@@ -57,6 +57,9 @@ type AxisOption struct {
 	Unit float64
 	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions. This value takes priority over Unit.
 	LabelCount int
+	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
+	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.
+	LabelCountAdjustment int
 	// LabelSkipCount specifies a number of lines between labels where there will be no label,
 	// but a horizontal line will still be drawn.
 	LabelSkipCount int
@@ -209,6 +212,10 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 	if labelCount > dataCount {
 		labelCount = dataCount
+	}
+	labelCount += opt.LabelCountAdjustment
+	if labelCount < 2 {
+		labelCount = 2
 	}
 	tickSpaces := dataCount
 	if !centerLabels {

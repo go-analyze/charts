@@ -209,6 +209,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 				padLabelCount = defaultYAxisLabelCount(max-min, decimalData)
 			}
 		}
+		padLabelCount = chart.MaxInt(padLabelCount+yAxisOption.LabelCountAdjustment, 2)
 		// we call padRange directly because we need to do this padding before we can calculate the final labelCount for the axisRange
 		min, max = padRange(padLabelCount, min, max, minPadRange, maxPadRange)
 		if labelCount <= 0 {
@@ -222,6 +223,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			}
 			yAxisOption.LabelCount = labelCount
 		}
+		labelCount = chart.MaxInt(labelCount+yAxisOption.LabelCountAdjustment, 2)
 		r := axisRange{
 			p:           p,
 			divideCount: labelCount,
