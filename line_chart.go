@@ -52,20 +52,19 @@ type LineChartOption struct {
 func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	p := l.p
 	opt := l.opt
-	boundaryGap := !isFalse(opt.XAxis.BoundaryGap)
-
 	seriesPainter := result.seriesPainter
 
+	boundaryGap := !isFalse(opt.XAxis.BoundaryGap)
 	xDivideCount := len(opt.XAxis.Data)
-	if !boundaryGap {
-		xDivideCount--
-	}
-	xDivideValues := autoDivide(seriesPainter.Width(), xDivideCount)
-	if boundaryGap && xDivideCount > 1 && xDivideValues[1]-xDivideValues[0] <= 10 {
+	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= 10 {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment and just keep
 		// the label changes only
 		boundaryGap = false
 	}
+	if !boundaryGap {
+		xDivideCount--
+	}
+	xDivideValues := autoDivide(seriesPainter.Width(), xDivideCount)
 	xValues := make([]int, len(xDivideValues)-1)
 	if boundaryGap {
 		for i := 0; i < len(xDivideValues)-1; i++ {
