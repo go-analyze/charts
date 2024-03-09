@@ -28,8 +28,6 @@ const ThemeGrafana = "grafana"
 // ThemeAnt is an ant styled theme.
 const ThemeAnt = "ant"
 
-const rangeLoopShadeAdjust = 80
-
 type ColorPalette interface {
 	IsDark() bool
 	GetAxisStrokeColor() Color
@@ -288,18 +286,57 @@ func (t *themeColorPalette) GetSeriesColor(index int) Color {
 	} else {
 		result := colors[index%colorCount]
 		// adjust the color shade automatically
-		max := 200
-		min := 0
-		adjustment := rangeLoopShadeAdjust * chart.MinInt(2, index/colorCount)
+		rMax, gMax, bMax := 200, 200, 200
+		rMin, gMin, bMin := 0, 0, 0
+		// the adjustment amount and mod count must be balanced to ensure colors don't hit their limits quickly
+		adjustment := 40 * ((index / colorCount) % 3)
 		if t.IsDark() { // adjust the shade darker for dark themes
 			adjustment *= -1
-			max = 255
-			min = 60
+			rMax, gMax, bMax = 255, 255, 255
+			rMin, gMin, bMin = 40, 40, 40
 		}
-		result.R = uint8(chart.MaxInt(chart.MinInt(int(result.R)+adjustment, max), min))
-		result.G = uint8(chart.MaxInt(chart.MinInt(int(result.G)+adjustment, max), min))
-		result.B = uint8(chart.MaxInt(chart.MinInt(int(result.B)+adjustment, max), min))
+		if result.R != result.G || result.R != result.B {
+			// try to ensure the brightest channel maintains emphasis
+			if result.R >= result.G && result.R >= result.B {
+				rMin += 80
+				gMax -= 20
+				bMax -= 20
+			} else if result.G >= result.R && result.G >= result.B {
+				gMin += 80
+				rMax -= 20
+				bMax -= 20
+			} else {
+				bMin += 80
+				rMax -= 20
+				gMax -= 20
+			}
+		}
+
+		result.R = uint8(chart.MaxInt(chart.MinInt(int(result.R)+adjustment, rMax), rMin))
+		result.G = uint8(chart.MaxInt(chart.MinInt(int(result.G)+adjustment, gMax), gMin))
+		result.B = uint8(chart.MaxInt(chart.MinInt(int(result.B)+adjustment, bMax), bMin))
+
 		return result
+	}
+}
+
+func maxVal(c Color) uint8 {
+	if c.R >= c.G && c.R >= c.B {
+		return c.R
+	} else if c.G >= c.R && c.G >= c.B {
+		return c.G
+	} else {
+		return c.B
+	}
+}
+
+func minVal(c Color) uint8 {
+	if c.R <= c.G && c.R <= c.B {
+		return c.R
+	} else if c.G <= c.R && c.G <= c.B {
+		return c.G
+	} else {
+		return c.B
 	}
 }
 
