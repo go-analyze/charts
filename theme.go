@@ -320,26 +320,6 @@ func (t *themeColorPalette) GetSeriesColor(index int) Color {
 	}
 }
 
-func maxVal(c Color) uint8 {
-	if c.R >= c.G && c.R >= c.B {
-		return c.R
-	} else if c.G >= c.R && c.G >= c.B {
-		return c.G
-	} else {
-		return c.B
-	}
-}
-
-func minVal(c Color) uint8 {
-	if c.R <= c.G && c.R <= c.B {
-		return c.R
-	} else if c.G <= c.R && c.G <= c.B {
-		return c.G
-	} else {
-		return c.B
-	}
-}
-
 func (t *themeColorPalette) GetBackgroundColor() Color {
 	return t.backgroundColor
 }
