@@ -69,7 +69,7 @@ func NewTitlePainter(p *Painter, opt TitleOption) *titlePainter {
 func (t *titlePainter) Render() (Box, error) {
 	opt := t.opt
 	p := t.p
-	if isFalse(opt.Show) {
+	if flagIs(false, opt.Show) {
 		return BoxZero, nil
 	}
 

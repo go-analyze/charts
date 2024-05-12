@@ -30,11 +30,12 @@ func FloatPointer(f float64) *float64 {
 	return &f
 }
 
-func isFalse(flag *bool) bool {
-	if flag != nil && !*flag {
-		return true
+// flagIs returns true if the flag is not-nil and matches the comparison argument.
+func flagIs(is bool, flag *bool) bool {
+	if flag == nil {
+		return false
 	}
-	return false
+	return *flag == is
 }
 
 func containsInt(values []int, value int) bool {
