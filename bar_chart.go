@@ -39,6 +39,8 @@ type BarChartOption struct {
 	Legend LegendOption
 	// BarWidth specifies the width of each bar.
 	BarWidth int
+	// RoundedBarCaps set to `true` to produce a bar graph where the bars have rounded tops.
+	RoundedBarCaps *bool
 }
 
 func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
@@ -115,7 +117,28 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 
 			seriesPainter.OverrideDrawingStyle(Style{
 				FillColor: fillColor,
-			}).Rect(chart.Box{
+			})
+			if flagIs(true, opt.RoundedBarCaps) {
+				radius := .5 * float64(barWidth)
+				top += int(radius)
+				seriesPainter.Circle(radius, x+int(radius), top)
+				if top+int(radius) > barMaxHeight {
+					// hide the part of the circle below the axis line
+					seriesPainter.OverrideDrawingStyle(Style{
+						FillColor: opt.Theme.GetBackgroundColor(),
+					}).Rect(chart.Box{
+						Top:    barMaxHeight,
+						Left:   x,
+						Right:  x + barWidth,
+						Bottom: top + int(radius),
+					})
+					seriesPainter.OverrideDrawingStyle(Style{
+						FillColor: fillColor,
+					})
+					top = barMaxHeight
+				}
+			}
+			seriesPainter.Rect(chart.Box{
 				Top:    top,
 				Left:   x,
 				Right:  x + barWidth,

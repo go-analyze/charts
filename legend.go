@@ -74,8 +74,7 @@ func NewLegendPainter(p *Painter, opt LegendOption) *legendPainter {
 
 func (l *legendPainter) Render() (Box, error) {
 	opt := l.opt
-	if opt.IsEmpty() ||
-		isFalse(opt.Show) {
+	if opt.IsEmpty() || flagIs(false, opt.Show) {
 		return BoxZero, nil
 	}
 

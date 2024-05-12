@@ -54,7 +54,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	opt := l.opt
 	seriesPainter := result.seriesPainter
 
-	boundaryGap := !isFalse(opt.XAxis.BoundaryGap)
+	boundaryGap := !flagIs(false, opt.XAxis.BoundaryGap)
 	xDivideCount := len(opt.XAxis.Data)
 	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= 10 {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment and just keep
@@ -164,7 +164,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		}
 		drawingStyle.StrokeWidth = 1
 		seriesPainter.SetDrawingStyle(drawingStyle)
-		if !isFalse(opt.SymbolShow) {
+		if !flagIs(false, opt.SymbolShow) {
 			seriesPainter.Dots(points)
 		}
 		markPointPainter.Add(markPointRenderOption{

@@ -67,7 +67,7 @@ type AxisOption struct {
 
 func (a *axisPainter) Render() (Box, error) {
 	opt := a.opt
-	if isFalse(opt.Show) {
+	if flagIs(false, opt.Show) {
 		return BoxZero, nil
 	}
 	top := a.p
@@ -99,7 +99,7 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 	dataCount := len(opt.Data)
 
-	centerLabels := !isFalse(opt.BoundaryGap)
+	centerLabels := !flagIs(false, opt.BoundaryGap)
 	isVertical := opt.Position == PositionLeft || opt.Position == PositionRight
 
 	// if less than zero, it means not processing
