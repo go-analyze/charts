@@ -218,6 +218,73 @@ func TestPainter(t *testing.T) {
 	}
 }
 
+func TestRoundedRect(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		fn     func(*Painter)
+		result string
+	}{
+		{
+			name: "RoundFully",
+			fn: func(p *Painter) {
+				p.RoundedRect(Box{
+					Left:   10,
+					Right:  30,
+					Bottom: 150,
+					Top:    10,
+				}, 5, true, true)
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<path  d=\"M 15 10\nL 25 10\nL 25 10\nA 5 5 90.00 0 1 30 15\nL 30 145\nL 30 145\nA 5 5 90.00 0 1 25 150\nL 15 150\nL 15 150\nA 5 5 90.00 0 1 10 145\nL 10 15\nL 10 15\nA 5 5 90.00 0 1 15 10\nZ\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/><path  d=\"\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/></svg>",
+		},
+		{
+			name: "SquareTop",
+			fn: func(p *Painter) {
+				p.RoundedRect(Box{
+					Left:   10,
+					Right:  30,
+					Bottom: 150,
+					Top:    10,
+				}, 5, false, true)
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<path  d=\"M 10 10\nL 30 10\nL 30 145\nL 30 145\nA 5 5 90.00 0 1 25 150\nL 15 150\nL 15 150\nA 5 5 90.00 0 1 10 145\nL 10 10\nZ\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/><path  d=\"\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/></svg>",
+		},
+		{
+			name: "SquareBottom",
+			fn: func(p *Painter) {
+				p.RoundedRect(Box{
+					Left:   10,
+					Right:  30,
+					Bottom: 150,
+					Top:    10,
+				}, 5, true, false)
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"400\" height=\"300\">\\n<path  d=\"M 15 10\nL 25 10\nL 25 10\nA 5 5 90.00 0 1 30 15\nL 30 150\nL 10 150\nL 10 15\nL 10 15\nA 5 5 90.00 0 1 15 10\nZ\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/><path  d=\"\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/></svg>",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			p, err := NewPainter(PainterOptions{
+				Width:        400,
+				Height:       300,
+				OutputFormat: ChartOutputSVG,
+			})
+			require.NoError(t, err)
+			p.OverrideDrawingStyle(Style{
+				FillColor:   drawing.ColorBlue,
+				StrokeWidth: 1,
+				StrokeColor: drawing.ColorBlue,
+			})
+			tc.fn(p)
+			buf, err := p.Bytes()
+			require.NoError(t, err)
+			assertEqualSVG(t, tc.result, string(buf))
+		})
+	}
+}
+
 func TestPainterTextFit(t *testing.T) {
 	t.Parallel()
 

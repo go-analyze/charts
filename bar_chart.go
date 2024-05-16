@@ -119,31 +119,20 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				FillColor: fillColor,
 			})
 			if flagIs(true, opt.RoundedBarCaps) {
-				radius := .5 * float64(barWidth)
-				top += int(radius)
-				seriesPainter.Circle(radius, x+int(radius), top)
-				if top+int(radius) > barMaxHeight {
-					// hide the part of the circle below the axis line
-					seriesPainter.OverrideDrawingStyle(Style{
-						FillColor: opt.Theme.GetBackgroundColor(),
-					}).Rect(chart.Box{
-						Top:    barMaxHeight,
-						Left:   x,
-						Right:  x + barWidth,
-						Bottom: top + int(radius),
-					})
-					seriesPainter.OverrideDrawingStyle(Style{
-						FillColor: fillColor,
-					})
-					top = barMaxHeight
-				}
+				seriesPainter.RoundedRect(chart.Box{
+					Top:    top,
+					Left:   x,
+					Right:  x + barWidth,
+					Bottom: barMaxHeight - 1,
+				}, barWidth, true, false)
+			} else {
+				seriesPainter.Rect(chart.Box{
+					Top:    top,
+					Left:   x,
+					Right:  x + barWidth,
+					Bottom: barMaxHeight - 1,
+				})
 			}
-			seriesPainter.Rect(chart.Box{
-				Top:    top,
-				Left:   x,
-				Right:  x + barWidth,
-				Bottom: barMaxHeight - 1,
-			})
 			// generate marker point by hand
 			points[j] = Point{
 				// centered position
