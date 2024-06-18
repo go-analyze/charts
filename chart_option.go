@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/golang/freetype/truetype"
@@ -29,8 +30,7 @@ type ChartOption struct {
 	// Font is the font to use for rendering the chart.
 	Font *truetype.Font
 	// Box specifies the canvas box for the chart.
-	Box    Box
-	Parent *Painter
+	Box Box
 	// SeriesList provides the data series.
 	SeriesList SeriesList
 	// RadarIndicators are radar indicator list for radar charts
@@ -47,8 +47,9 @@ type ChartOption struct {
 	BarWidth int
 	// BarHeight is the height of the bars for horizontal bar charts.
 	BarHeight int
-	// Children are child charts to pull options from.
+	// Children are child charts to render together.
 	Children []ChartOption
+	parent   *Painter
 	// ValueFormatter to format numeric values into labels.
 	ValueFormatter ValueFormatter
 }
@@ -227,35 +228,36 @@ func MarkPointOptionFunc(seriesIndex int, markPointTypes ...string) OptionFunc {
 	}
 }
 
-func (o *ChartOption) fillDefault() {
-	yaxisCount := 1
-	for _, series := range o.SeriesList {
-		if series.YAxisIndex >= yaxisCount {
-			yaxisCount++
-		}
-	}
+func (o *ChartOption) fillDefault() error {
 	o.Width = getDefaultInt(o.Width, defaultChartWidth)
 	o.Height = getDefaultInt(o.Height, defaultChartHeight)
 
-	yAxisOptions := make([]YAxisOption, yaxisCount)
-	copy(yAxisOptions, o.YAxis)
-	o.YAxis = yAxisOptions
+	yaxisCount := 1
+	for _, series := range o.SeriesList {
+		if series.YAxisIndex == 1 {
+			yaxisCount++
+			break
+		} else if series.YAxisIndex > 1 {
+			return fmt.Errorf("series '%s' specified invalid y-axis index: %v", series.Name, series.YAxisIndex)
+		}
+	}
+	if len(o.YAxis) < yaxisCount {
+		yAxisOptions := make([]YAxisOption, yaxisCount)
+		copy(yAxisOptions, o.YAxis)
+		o.YAxis = yAxisOptions
+	}
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
 	// TODO - but can't do this earlier due to needing the axis initialized
 	// TODO - we should reconsider the API for configuration
-	hasMarkpoint := false
 	for _, sl := range o.SeriesList {
-		if len(sl.MarkPoint.Data) > 0 {
-			hasMarkpoint = true
-			break
-		}
-	}
-	if hasMarkpoint {
-		for i := range o.YAxis {
-			if o.YAxis[i].RangeValuePaddingScale == nil {
-				defaultPadding := 2.5 // default a larger padding to give space for the mark point
-				o.YAxis[i].RangeValuePaddingScale = &defaultPadding
+		if len(sl.MarkPoint.Data) > 0 { // if graph has markpoint
+			// adjust padding scale to give space for mark point (if not specified by user)
+			for i := range o.YAxis {
+				if o.YAxis[i].RangeValuePaddingScale == nil {
+					o.YAxis[i].RangeValuePaddingScale = FloatPointer(2.5)
+				}
 			}
+			break
 		}
 	}
 
@@ -265,6 +267,7 @@ func (o *ChartOption) fillDefault() {
 	if o.Theme == nil {
 		o.Theme = GetDefaultTheme()
 	}
+	fillThemeDefaults(o.Theme, &o.Title, &o.Legend, &o.XAxis)
 
 	if o.Padding.IsZero() {
 		o.Padding = Box{
@@ -280,8 +283,7 @@ func (o *ChartOption) fillDefault() {
 	} else {
 		seriesCount := len(o.SeriesList)
 		for index, name := range o.Legend.Data {
-			if index < seriesCount &&
-				len(o.SeriesList[index].Name) == 0 {
+			if index < seriesCount && len(o.SeriesList[index].Name) == 0 {
 				o.SeriesList[index].Name = name
 			}
 		}
@@ -294,29 +296,39 @@ func (o *ChartOption) fillDefault() {
 			return nameIndexDict[o.SeriesList[i].Name] < nameIndexDict[o.SeriesList[j].Name]
 		})
 	}
+	return nil
+}
+
+func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *LegendOption, xaxis *XAxisOption) {
+	if title.Theme == nil {
+		title.Theme = defaultTheme
+	}
+	if legend.Theme == nil {
+		legend.Theme = defaultTheme
+	}
+	if xaxis.Theme == nil {
+		xaxis.Theme = defaultTheme
+	}
 }
 
 // LineRender line chart render
 func LineRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
-	seriesList := NewSeriesListDataFromValues(values, ChartTypeLine)
 	return Render(ChartOption{
-		SeriesList: seriesList,
+		SeriesList: NewSeriesListDataFromValues(values, ChartTypeLine),
 	}, opts...)
 }
 
 // BarRender bar chart render
 func BarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
-	seriesList := NewSeriesListDataFromValues(values, ChartTypeBar)
 	return Render(ChartOption{
-		SeriesList: seriesList,
+		SeriesList: NewSeriesListDataFromValues(values, ChartTypeBar),
 	}, opts...)
 }
 
 // HorizontalBarRender horizontal bar chart render
 func HorizontalBarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
-	seriesList := NewSeriesListDataFromValues(values, ChartTypeHorizontalBar)
 	return Render(ChartOption{
-		SeriesList: seriesList,
+		SeriesList: NewSeriesListDataFromValues(values, ChartTypeHorizontalBar),
 	}, opts...)
 }
 
@@ -329,17 +341,15 @@ func PieRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 
 // RadarRender radar chart render
 func RadarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
-	seriesList := NewSeriesListDataFromValues(values, ChartTypeRadar)
 	return Render(ChartOption{
-		SeriesList: seriesList,
+		SeriesList: NewSeriesListDataFromValues(values, ChartTypeRadar),
 	}, opts...)
 }
 
 // FunnelRender funnel chart render
 func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
-	seriesList := NewFunnelSeriesList(values)
 	return Render(ChartOption{
-		SeriesList: seriesList,
+		SeriesList: NewFunnelSeriesList(values),
 	}, opts...)
 }
 

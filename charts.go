@@ -106,6 +106,8 @@ type defaultRenderResult struct {
 }
 
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
+	fillThemeDefaults(getPreferredTheme(opt.Theme), &opt.Title, &opt.Legend, &opt.XAxis)
+
 	seriesList := opt.SeriesList
 	seriesList.init()
 	if !opt.backgroundIsFilled {
@@ -118,9 +120,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	legendHeight := 0
 	if len(opt.Legend.Data) != 0 {
-		if opt.Legend.Theme == nil {
-			opt.Legend.Theme = opt.Theme
-		}
 		legendResult, err := NewLegendPainter(p, opt.Legend).Render()
 		if err != nil {
 			return nil, err
@@ -129,10 +128,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 
 	if opt.Title.Text != "" {
-		if opt.Title.Theme == nil {
-			opt.Title.Theme = opt.Theme
-		}
-
 		titleBox, err := NewTitlePainter(p, opt.Title).Render()
 		if err != nil {
 			return nil, err
@@ -248,7 +243,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			opt.XAxis.isValueAxis = true
 		}
 		reverseStringSlice(yAxisOption.Data)
-		// TODO - generate other positions and y-axis
 		child := p.Child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
 			Right: rangeWidthRight,
@@ -268,9 +262,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 	}
 
-	if opt.XAxis.Theme == nil {
-		opt.XAxis.Theme = opt.Theme
-	}
 	xAxis := NewBottomXAxis(p.Child(PainterPaddingOption(Box{
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
@@ -300,11 +291,12 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	for _, fn := range opts {
 		fn(&opt)
 	}
-	opt.fillDefault()
+	if err := opt.fillDefault(); err != nil {
+		return nil, err
+	}
 
-	isChild := true
-	if opt.Parent == nil {
-		isChild = false
+	isChild := opt.parent != nil
+	if !isChild {
 		p, err := NewPainter(PainterOptions{
 			OutputFormat: opt.OutputFormat,
 			Width:        opt.Width,
@@ -314,9 +306,9 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		if err != nil {
 			return nil, err
 		}
-		opt.Parent = p
+		opt.parent = p
 	}
-	p := opt.Parent
+	p := opt.parent
 	if opt.ValueFormatter != nil {
 		p.valueFormatter = opt.ValueFormatter
 	}
@@ -329,7 +321,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	seriesList := opt.SeriesList
 	seriesList.init()
 
-	// line chart
 	lineSeriesList := seriesList.Filter(ChartTypeLine)
 	barSeriesList := seriesList.Filter(ChartTypeBar)
 	horizontalBarSeriesList := seriesList.Filter(ChartTypeHorizontalBar)
@@ -463,7 +454,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	}
 
 	for _, item := range opt.Children {
-		item.Parent = p
+		item.parent = p
 		if item.Theme == nil {
 			item.Theme = opt.Theme
 		}

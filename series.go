@@ -92,7 +92,7 @@ type Series struct {
 	Type string
 	// Data provides the series data list.
 	Data []SeriesData
-	// YAxisIndex is the index for the axis, it should be 0 or 1.
+	// YAxisIndex is the index for the axis, it must be 0 or 1.
 	YAxisIndex int
 	// Style represents the style for the series.
 	Style chart.Style
@@ -114,11 +114,8 @@ type Series struct {
 type SeriesList []Series
 
 func (sl SeriesList) init() {
-	if len(sl) == 0 {
-		return
-	}
-	if sl[len(sl)-1].index != 0 {
-		return
+	if len(sl) == 0 || sl[len(sl)-1].index != 0 {
+		return // already initialized
 	}
 	for i := 0; i < len(sl); i++ {
 		if sl[i].Type == "" {
