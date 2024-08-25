@@ -149,7 +149,6 @@ func (p *Path) Copy() (dest *Path) {
 func (p *Path) Clear() {
 	p.Components = p.Components[0:0]
 	p.Points = p.Points[0:0]
-	return
 }
 
 // IsEmpty returns true if the path is empty

@@ -5,7 +5,6 @@ import (
 
 	"golang.org/x/image/math/fixed"
 
-	"github.com/golang/freetype/raster"
 	"github.com/golang/freetype/truetype"
 )
 
@@ -34,28 +33,6 @@ func distance(x1, y1, x2, y2 float64) float64 {
 
 func vectorDistance(dx, dy float64) float64 {
 	return float64(math.Sqrt(dx*dx + dy*dy))
-}
-
-func toFtCap(c LineCap) raster.Capper {
-	switch c {
-	case RoundCap:
-		return raster.RoundCapper
-	case ButtCap:
-		return raster.ButtCapper
-	case SquareCap:
-		return raster.SquareCapper
-	}
-	return raster.RoundCapper
-}
-
-func toFtJoin(j LineJoin) raster.Joiner {
-	switch j {
-	case RoundJoin:
-		return raster.RoundJoiner
-	case BevelJoin:
-		return raster.BevelJoiner
-	}
-	return raster.RoundJoiner
 }
 
 func pointToF64Point(p truetype.Point) (x, y float64) {

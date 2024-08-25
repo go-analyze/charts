@@ -221,14 +221,6 @@ func (pc DonutChart) styleDefaultsCanvas() Style {
 	}
 }
 
-func (pc DonutChart) styleDefaultsDonutChartValue() Style {
-	return Style{
-		StrokeColor: pc.GetColorPalette().TextColor(),
-		StrokeWidth: 4.0,
-		FillColor:   pc.GetColorPalette().TextColor(),
-	}
-}
-
 func (pc DonutChart) styleDonutChartValue(index int) Style {
 	return pc.SliceStyle.InheritFrom(Style{
 		StrokeColor: ColorWhite,

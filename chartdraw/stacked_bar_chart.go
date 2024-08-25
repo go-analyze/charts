@@ -566,17 +566,6 @@ func (sbc StackedBarChart) styleDefaultsStackedBarValue(index int) Style {
 	}
 }
 
-func (sbc StackedBarChart) styleDefaultsTitle() Style {
-	return sbc.TitleStyle.InheritFrom(Style{
-		FontColor:           DefaultTextColor,
-		Font:                sbc.GetFont(),
-		FontSize:            sbc.getTitleFontSize(),
-		TextHorizontalAlign: TextHorizontalAlignCenter,
-		TextVerticalAlign:   TextVerticalAlignTop,
-		TextWrap:            TextWrapWord,
-	})
-}
-
 func (sbc StackedBarChart) getScaledFontSize() float64 {
 	effectiveDimension := MinInt(sbc.GetWidth(), sbc.GetHeight())
 	if effectiveDimension >= 2048 {
@@ -589,20 +578,6 @@ func (sbc StackedBarChart) getScaledFontSize() float64 {
 		return 12.0
 	}
 	return 10.0
-}
-
-func (sbc StackedBarChart) getTitleFontSize() float64 {
-	effectiveDimension := MinInt(sbc.GetWidth(), sbc.GetHeight())
-	if effectiveDimension >= 2048 {
-		return 48
-	} else if effectiveDimension >= 1024 {
-		return 24
-	} else if effectiveDimension >= 512 {
-		return 18
-	} else if effectiveDimension >= 256 {
-		return 12
-	}
-	return 10
 }
 
 func (sbc StackedBarChart) styleDefaultsAxes() Style {

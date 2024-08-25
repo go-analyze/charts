@@ -439,17 +439,6 @@ func (bc BarChart) styleDefaultsBar(index int) Style {
 	}
 }
 
-func (bc BarChart) styleDefaultsTitle() Style {
-	return bc.TitleStyle.InheritFrom(Style{
-		FontColor:           bc.GetColorPalette().TextColor(),
-		Font:                bc.GetFont(),
-		FontSize:            bc.getTitleFontSize(),
-		TextHorizontalAlign: TextHorizontalAlignCenter,
-		TextVerticalAlign:   TextVerticalAlignTop,
-		TextWrap:            TextWrapWord,
-	})
-}
-
 func (bc BarChart) getTitleFontSize() float64 {
 	effectiveDimension := MinInt(bc.GetWidth(), bc.GetHeight())
 	if effectiveDimension >= 2048 {

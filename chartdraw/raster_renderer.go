@@ -153,7 +153,8 @@ func (rr *rasterRenderer) Text(body string, x, y int) {
 	rr.gc.SetFont(rr.s.Font)
 	rr.gc.SetFontSize(rr.s.FontSize)
 	rr.gc.SetFillColor(rr.s.FontColor)
-	rr.gc.CreateStringPath(body, float64(xf), float64(yf))
+	// TODO - handle error?
+	_, _ = rr.gc.CreateStringPath(body, float64(xf), float64(yf))
 	rr.gc.Fill()
 }
 

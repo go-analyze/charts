@@ -2,7 +2,6 @@ package chartdraw
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 )
 
@@ -48,22 +47,6 @@ func formatTime(v interface{}, dateFormat string) string {
 		return time.Unix(0, int64(typed)).Format(dateFormat)
 	}
 	return ""
-}
-
-// IntValueFormatter is a ValueFormatter for float64.
-func IntValueFormatter(v interface{}) string {
-	switch v.(type) {
-	case int:
-		return strconv.Itoa(v.(int))
-	case int64:
-		return strconv.FormatInt(v.(int64), 10)
-	case float32:
-		return strconv.FormatInt(int64(v.(float32)), 10)
-	case float64:
-		return strconv.FormatInt(int64(v.(float64)), 10)
-	default:
-		return ""
-	}
 }
 
 // FloatValueFormatter is a ValueFormatter for float64.

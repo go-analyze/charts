@@ -33,7 +33,7 @@ type Axis interface {
 	GetTicks() []Tick
 	GenerateTicks(r Renderer, ra Range, vf ValueFormatter) []Tick
 
-	// GenerateGridLines returns the gridlines for the axis.
+	// GetGridLines returns the gridlines for the axis.
 	GetGridLines(ticks []Tick) []GridLine
 
 	// Measure should return an absolute box for the axis.

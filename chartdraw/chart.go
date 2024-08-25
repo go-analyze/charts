@@ -109,7 +109,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 
 	err = c.checkRanges(xr, yr, yra)
 	if err != nil {
-		r.Save(w)
+		_ = r.Save(w)
 		return err
 	}
 

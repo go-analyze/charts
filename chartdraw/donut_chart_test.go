@@ -25,7 +25,7 @@ func TestDonutChart(t *testing.T) {
 	}
 
 	b := bytes.NewBuffer([]byte{})
-	pie.Render(PNG, b)
+	require.NoError(t, pie.Render(PNG, b))
 	assert.NotZero(t, b.Len())
 }
 

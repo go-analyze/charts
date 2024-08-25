@@ -292,7 +292,7 @@ func (m *Matrix) Copy() *Matrix {
 // DiagonalVector returns a vector from the diagonal of a matrix.
 func (m *Matrix) DiagonalVector() Vector {
 	rows, cols := m.Size()
-	rank := minInt(rows, cols)
+	rank := MinInt(rows, cols)
 	values := make([]float64, rank)
 
 	for index := 0; index < rank; index++ {
@@ -304,7 +304,7 @@ func (m *Matrix) DiagonalVector() Vector {
 // Diagonal returns a matrix from the diagonal of a matrix.
 func (m *Matrix) Diagonal() *Matrix {
 	rows, cols := m.Size()
-	rank := minInt(rows, cols)
+	rank := MinInt(rows, cols)
 	m2 := New(rank, rank)
 
 	for index := 0; index < rank; index++ {
@@ -523,9 +523,6 @@ func (m *Matrix) QR() (q, r *Matrix) {
 		r.Set(k, k, -norm)
 
 	}
-
-	//Q Matrix:
-	i, j, k = 0, 0, 0
 
 	for k = cols - 1; k >= 0; k-- {
 		q.Set(k, k, 1.0)

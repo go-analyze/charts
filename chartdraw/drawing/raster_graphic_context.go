@@ -70,7 +70,7 @@ func (rgc *RasterGraphicContext) Clear() {
 // ClearRect fills the current canvas with a default transparent color at the specified rectangle
 func (rgc *RasterGraphicContext) ClearRect(x1, y1, x2, y2 int) {
 	imageColor := image.NewUniform(rgc.current.FillColor)
-	draw.Draw(rgc.img, image.Rect(x1, y1, x2, y2), imageColor, image.ZP, draw.Over)
+	draw.Draw(rgc.img, image.Rect(x1, y1, x2, y2), imageColor, image.Point{}, draw.Over)
 }
 
 // DrawImage draws the raster image in the current canvas
@@ -125,7 +125,7 @@ func (rgc *RasterGraphicContext) drawGlyph(glyph truetype.Index, dx, dy float64)
 func (rgc *RasterGraphicContext) CreateStringPath(s string, x, y float64) (cursor float64, err error) {
 	f := rgc.GetFont()
 	if f == nil {
-		err = errors.New("No font loaded, cannot continue")
+		err = errors.New("no font loaded, cannot continue")
 		return
 	}
 	rgc.recalc()
@@ -153,10 +153,10 @@ func (rgc *RasterGraphicContext) CreateStringPath(s string, x, y float64) (curso
 func (rgc *RasterGraphicContext) GetStringBounds(s string) (left, top, right, bottom float64, err error) {
 	f := rgc.GetFont()
 	if f == nil {
-		err = errors.New("No font loaded, cannot continue")
+		err = errors.New("no font loaded, cannot continue")
 		return
 	}
-	rgc.recalc()
+	rgc.recalc() // TODO - recalc necessary?
 
 	left = math.MaxFloat64
 	top = math.MaxFloat64
@@ -193,7 +193,7 @@ func (rgc *RasterGraphicContext) GetStringBounds(s string) (left, top, right, bo
 // recalc recalculates scale and bounds values from the font size, screen
 // resolution and font metrics, and invalidates the glyph cache.
 func (rgc *RasterGraphicContext) recalc() {
-	rgc.current.Scale = rgc.current.FontSizePoints * float64(rgc.DPI)
+	rgc.current.Scale = rgc.current.FontSizePoints * rgc.DPI
 }
 
 // SetFont sets the font used to draw text.
@@ -206,7 +206,7 @@ func (rgc *RasterGraphicContext) GetFont() *truetype.Font {
 	return rgc.current.Font
 }
 
-// SetFontSize sets the font size in points (as in ``a 12 point font'').
+// SetFontSize sets the font size in points (as in “a 12 point font”).
 func (rgc *RasterGraphicContext) SetFontSize(fontSizePoints float64) {
 	rgc.current.FontSizePoints = fontSizePoints
 	rgc.recalc()

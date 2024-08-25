@@ -28,8 +28,7 @@ func TestVectorRendererPath(t *testing.T) {
 	buffer := bytes.NewBuffer([]byte{})
 	require.NoError(t, typed.Save(buffer))
 
-	raw := string(buffer.Bytes())
-
+	raw := buffer.String()
 	assert.True(t, strings.HasPrefix(raw, "<svg"))
 	assert.True(t, strings.HasSuffix(raw, "</svg>"))
 }

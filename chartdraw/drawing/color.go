@@ -137,9 +137,7 @@ func ColorFromRGB(rgb string) (output Color) {
 //
 // NOTE: it will trim a leading '#' character if present.
 func ColorFromHex(hex string) Color {
-	if strings.HasPrefix(hex, "#") {
-		hex = strings.TrimPrefix(hex, "#")
-	}
+	hex = strings.TrimPrefix(hex, "#")
 	var c Color
 	if len(hex) == 3 {
 		c.R = parseHex(string(hex[0])) * 0x11

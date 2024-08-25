@@ -95,7 +95,7 @@ func (lrs *LinearRegressionSeries) GetValues(index int) (x, y float64) {
 	}
 	offset := lrs.GetOffset()
 	effectiveIndex := MinInt(index+offset, lrs.InnerSeries.Len())
-	x, y = lrs.InnerSeries.GetValues(effectiveIndex)
+	x, _ = lrs.InnerSeries.GetValues(effectiveIndex)
 	y = (lrs.m * lrs.normalize(x)) + lrs.b
 	return
 }
@@ -108,7 +108,7 @@ func (lrs *LinearRegressionSeries) GetFirstValues() (x, y float64) {
 	if lrs.IsZero() {
 		lrs.computeCoefficients()
 	}
-	x, y = lrs.InnerSeries.GetValues(0)
+	x, _ = lrs.InnerSeries.GetValues(0)
 	y = (lrs.m * lrs.normalize(x)) + lrs.b
 	return
 }
@@ -122,7 +122,7 @@ func (lrs *LinearRegressionSeries) GetLastValues() (x, y float64) {
 		lrs.computeCoefficients()
 	}
 	endIndex := lrs.GetEndIndex()
-	x, y = lrs.InnerSeries.GetValues(endIndex)
+	x, _ = lrs.InnerSeries.GetValues(endIndex)
 	y = (lrs.m * lrs.normalize(x)) + lrs.b
 	return
 }

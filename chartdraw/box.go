@@ -301,7 +301,6 @@ func (bc BoxCorners) Height() int {
 
 // Center returns the center of the box
 func (bc BoxCorners) Center() (x, y int) {
-
 	left := MeanInt(bc.TopLeft.X, bc.BottomLeft.X)
 	right := MeanInt(bc.TopRight.X, bc.BottomRight.X)
 	x = ((right - left) >> 1) + left

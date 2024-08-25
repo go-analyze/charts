@@ -217,14 +217,6 @@ func (pc PieChart) styleDefaultsCanvas() Style {
 	}
 }
 
-func (pc PieChart) styleDefaultsPieChartValue() Style {
-	return Style{
-		StrokeColor: pc.GetColorPalette().TextColor(),
-		StrokeWidth: 5.0,
-		FillColor:   pc.GetColorPalette().TextColor(),
-	}
-}
-
 func (pc PieChart) stylePieChartValue(index int) Style {
 	return pc.SliceStyle.InheritFrom(Style{
 		StrokeColor: ColorWhite,

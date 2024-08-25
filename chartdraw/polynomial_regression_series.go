@@ -102,7 +102,7 @@ func (prs *PolynomialRegressionSeries) GetValues(index int) (x, y float64) {
 
 	offset := prs.GetOffset()
 	effectiveIndex := MinInt(index+offset, prs.InnerSeries.Len())
-	x, y = prs.InnerSeries.GetValues(effectiveIndex)
+	x, _ = prs.InnerSeries.GetValues(effectiveIndex)
 	y = prs.apply(x)
 	return
 }
@@ -119,7 +119,7 @@ func (prs *PolynomialRegressionSeries) GetFirstValues() (x, y float64) {
 		}
 		prs.coeffs = coeffs
 	}
-	x, y = prs.InnerSeries.GetValues(0)
+	x, _ = prs.InnerSeries.GetValues(0)
 	y = prs.apply(x)
 	return
 }
@@ -137,7 +137,7 @@ func (prs *PolynomialRegressionSeries) GetLastValues() (x, y float64) {
 		prs.coeffs = coeffs
 	}
 	endIndex := prs.GetEndIndex()
-	x, y = prs.InnerSeries.GetValues(endIndex)
+	x, _ = prs.InnerSeries.GetValues(endIndex)
 	y = prs.apply(x)
 	return
 }

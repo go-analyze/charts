@@ -93,7 +93,6 @@ func SubdivideQuad(c, c1, c2 []float64) {
 	c1[4] = (c1[2] + c2[2]) / 2
 	c1[5] = (c1[3] + c2[3]) / 2
 	c2[0], c2[1] = c1[4], c1[5]
-	return
 }
 
 func traceWindowIndices(i int) (startAt, endAt int) {
@@ -122,7 +121,6 @@ func traceGetWindow(curves []float64, i int) []float64 {
 // flattening_threshold helps determines the flattening expectation of the curve
 func TraceQuad(t Liner, quad []float64, flatteningThreshold float64) {
 	const curveLen = CurveRecursionLimit * 6
-	const curveEndIndex = curveLen - 1
 	const lastIteration = CurveRecursionLimit - 1
 
 	// Allocates curves stack
