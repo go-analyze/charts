@@ -8,58 +8,50 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/go-analyze/charts/chartdraw/drawing"
-	"github.com/go-analyze/charts/chartdraw/testutil"
 )
 
 func TestChartGetDPI(t *testing.T) {
-	// replaced new assertions helper
-
 	unset := Chart{}
-	testutil.AssertEqual(t, DefaultDPI, unset.GetDPI())
-	testutil.AssertEqual(t, 192, unset.GetDPI(192))
+	assert.Equal(t, DefaultDPI, unset.GetDPI())
+	assert.Equal(t, float64(192), unset.GetDPI(192))
 
 	set := Chart{DPI: 128}
-	testutil.AssertEqual(t, 128, set.GetDPI())
-	testutil.AssertEqual(t, 128, set.GetDPI(192))
+	assert.Equal(t, float64(128), set.GetDPI())
+	assert.Equal(t, float64(128), set.GetDPI(192))
 }
 
 func TestChartGetFont(t *testing.T) {
-	// replaced new assertions helper
-
 	f, err := GetDefaultFont()
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	unset := Chart{}
-	testutil.AssertNil(t, unset.GetFont())
+	require.Nil(t, unset.GetFont())
 
 	set := Chart{Font: f}
-	testutil.AssertNotNil(t, set.GetFont())
+	require.NotNil(t, set.GetFont())
 }
 
 func TestChartGetWidth(t *testing.T) {
-	// replaced new assertions helper
-
 	unset := Chart{}
-	testutil.AssertEqual(t, DefaultChartWidth, unset.GetWidth())
+	assert.Equal(t, DefaultChartWidth, unset.GetWidth())
 
 	set := Chart{Width: DefaultChartWidth + 10}
-	testutil.AssertEqual(t, DefaultChartWidth+10, set.GetWidth())
+	assert.Equal(t, DefaultChartWidth+10, set.GetWidth())
 }
 
 func TestChartGetHeight(t *testing.T) {
-	// replaced new assertions helper
-
 	unset := Chart{}
-	testutil.AssertEqual(t, DefaultChartHeight, unset.GetHeight())
+	assert.Equal(t, DefaultChartHeight, unset.GetHeight())
 
 	set := Chart{Height: DefaultChartHeight + 10}
-	testutil.AssertEqual(t, DefaultChartHeight+10, set.GetHeight())
+	assert.Equal(t, DefaultChartHeight+10, set.GetHeight())
 }
 
 func TestChartGetRanges(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -79,14 +71,14 @@ func TestChartGetRanges(t *testing.T) {
 	}
 
 	xrange, yrange, yrangeAlt := c.getRanges()
-	testutil.AssertEqual(t, -2.0, xrange.GetMin())
-	testutil.AssertEqual(t, 5.0, xrange.GetMax())
+	assert.Equal(t, -2.0, xrange.GetMin())
+	assert.Equal(t, 5.0, xrange.GetMax())
 
-	testutil.AssertEqual(t, -2.1, yrange.GetMin())
-	testutil.AssertEqual(t, 4.5, yrange.GetMax())
+	assert.Equal(t, -2.1, yrange.GetMin())
+	assert.Equal(t, 4.5, yrange.GetMax())
 
-	testutil.AssertEqual(t, 10.0, yrangeAlt.GetMin())
-	testutil.AssertEqual(t, 14.0, yrangeAlt.GetMax())
+	assert.Equal(t, 10.0, yrangeAlt.GetMin())
+	assert.Equal(t, 14.0, yrangeAlt.GetMax())
 
 	cSet := Chart{
 		XAxis: XAxis{
@@ -116,19 +108,17 @@ func TestChartGetRanges(t *testing.T) {
 	}
 
 	xr2, yr2, yra2 := cSet.getRanges()
-	testutil.AssertEqual(t, 9.8, xr2.GetMin())
-	testutil.AssertEqual(t, 19.8, xr2.GetMax())
+	assert.Equal(t, 9.8, xr2.GetMin())
+	assert.Equal(t, 19.8, xr2.GetMax())
 
-	testutil.AssertEqual(t, 9.9, yr2.GetMin())
-	testutil.AssertEqual(t, 19.9, yr2.GetMax())
+	assert.Equal(t, 9.9, yr2.GetMin())
+	assert.Equal(t, 19.9, yr2.GetMax())
 
-	testutil.AssertEqual(t, 9.7, yra2.GetMin())
-	testutil.AssertEqual(t, 19.7, yra2.GetMax())
+	assert.Equal(t, 9.7, yra2.GetMin())
+	assert.Equal(t, 19.7, yra2.GetMax())
 }
 
 func TestChartGetRangesUseTicks(t *testing.T) {
-	// replaced new assertions helper
-
 	// this test asserts that ticks should supercede manual ranges when generating the overall ranges.
 
 	c := Chart{
@@ -155,16 +145,14 @@ func TestChartGetRangesUseTicks(t *testing.T) {
 	}
 
 	xr, yr, yar := c.getRanges()
-	testutil.AssertEqual(t, -2.0, xr.GetMin())
-	testutil.AssertEqual(t, 2.0, xr.GetMax())
-	testutil.AssertEqual(t, 0.0, yr.GetMin())
-	testutil.AssertEqual(t, 5.0, yr.GetMax())
-	testutil.AssertTrue(t, yar.IsZero(), yar.String())
+	assert.Equal(t, -2.0, xr.GetMin())
+	assert.Equal(t, 2.0, xr.GetMax())
+	assert.Equal(t, 0.0, yr.GetMin())
+	assert.Equal(t, 5.0, yr.GetMax())
+	assert.True(t, yar.IsZero(), yar.String())
 }
 
 func TestChartGetRangesUseUserRanges(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		YAxis: YAxis{
 			Range: &ContinuousRange{
@@ -181,16 +169,14 @@ func TestChartGetRangesUseUserRanges(t *testing.T) {
 	}
 
 	xr, yr, yar := c.getRanges()
-	testutil.AssertEqual(t, -2.0, xr.GetMin())
-	testutil.AssertEqual(t, 2.0, xr.GetMax())
-	testutil.AssertEqual(t, -5.0, yr.GetMin())
-	testutil.AssertEqual(t, 5.0, yr.GetMax())
-	testutil.AssertTrue(t, yar.IsZero(), yar.String())
+	assert.Equal(t, -2.0, xr.GetMin())
+	assert.Equal(t, 2.0, xr.GetMax())
+	assert.Equal(t, -5.0, yr.GetMin())
+	assert.Equal(t, 5.0, yr.GetMax())
+	assert.True(t, yar.IsZero(), yar.String())
 }
 
 func TestChartGetBackgroundStyle(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Background: Style{
 			FillColor: drawing.ColorBlack,
@@ -198,12 +184,10 @@ func TestChartGetBackgroundStyle(t *testing.T) {
 	}
 
 	bs := c.getBackgroundStyle()
-	testutil.AssertEqual(t, bs.FillColor.String(), drawing.ColorBlack.String())
+	assert.Equal(t, bs.FillColor.String(), drawing.ColorBlack.String())
 }
 
 func TestChartGetCanvasStyle(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Canvas: Style{
 			FillColor: drawing.ColorBlack,
@@ -211,19 +195,17 @@ func TestChartGetCanvasStyle(t *testing.T) {
 	}
 
 	bs := c.getCanvasStyle()
-	testutil.AssertEqual(t, bs.FillColor.String(), drawing.ColorBlack.String())
+	assert.Equal(t, bs.FillColor.String(), drawing.ColorBlack.String())
 }
 
 func TestChartGetDefaultCanvasBox(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{}
 	canvasBoxDefault := c.getDefaultCanvasBox()
-	testutil.AssertFalse(t, canvasBoxDefault.IsZero())
-	testutil.AssertEqual(t, DefaultBackgroundPadding.Top, canvasBoxDefault.Top)
-	testutil.AssertEqual(t, DefaultBackgroundPadding.Left, canvasBoxDefault.Left)
-	testutil.AssertEqual(t, c.GetWidth()-DefaultBackgroundPadding.Right, canvasBoxDefault.Right)
-	testutil.AssertEqual(t, c.GetHeight()-DefaultBackgroundPadding.Bottom, canvasBoxDefault.Bottom)
+	assert.False(t, canvasBoxDefault.IsZero())
+	assert.Equal(t, DefaultBackgroundPadding.Top, canvasBoxDefault.Top)
+	assert.Equal(t, DefaultBackgroundPadding.Left, canvasBoxDefault.Left)
+	assert.Equal(t, c.GetWidth()-DefaultBackgroundPadding.Right, canvasBoxDefault.Right)
+	assert.Equal(t, c.GetHeight()-DefaultBackgroundPadding.Bottom, canvasBoxDefault.Bottom)
 
 	custom := Chart{
 		Background: Style{
@@ -236,16 +218,14 @@ func TestChartGetDefaultCanvasBox(t *testing.T) {
 		},
 	}
 	canvasBoxCustom := custom.getDefaultCanvasBox()
-	testutil.AssertFalse(t, canvasBoxCustom.IsZero())
-	testutil.AssertEqual(t, DefaultBackgroundPadding.Top+1, canvasBoxCustom.Top)
-	testutil.AssertEqual(t, DefaultBackgroundPadding.Left+1, canvasBoxCustom.Left)
-	testutil.AssertEqual(t, c.GetWidth()-(DefaultBackgroundPadding.Right+1), canvasBoxCustom.Right)
-	testutil.AssertEqual(t, c.GetHeight()-(DefaultBackgroundPadding.Bottom+1), canvasBoxCustom.Bottom)
+	assert.False(t, canvasBoxCustom.IsZero())
+	assert.Equal(t, DefaultBackgroundPadding.Top+1, canvasBoxCustom.Top)
+	assert.Equal(t, DefaultBackgroundPadding.Left+1, canvasBoxCustom.Left)
+	assert.Equal(t, c.GetWidth()-(DefaultBackgroundPadding.Right+1), canvasBoxCustom.Right)
+	assert.Equal(t, c.GetHeight()-(DefaultBackgroundPadding.Bottom+1), canvasBoxCustom.Bottom)
 }
 
 func TestChartGetValueFormatters(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -265,16 +245,14 @@ func TestChartGetValueFormatters(t *testing.T) {
 	}
 
 	dxf, dyf, dyaf := c.getValueFormatters()
-	testutil.AssertNotNil(t, dxf)
-	testutil.AssertNotNil(t, dyf)
-	testutil.AssertNotNil(t, dyaf)
+	assert.NotNil(t, dxf)
+	assert.NotNil(t, dyf)
+	assert.NotNil(t, dyaf)
 }
 
 func TestChartHasAxes(t *testing.T) {
-	// replaced new assertions helper
-
-	testutil.AssertTrue(t, Chart{}.hasAxes())
-	testutil.AssertFalse(t, Chart{XAxis: XAxis{Style: Hidden()}, YAxis: YAxis{Style: Hidden()}, YAxisSecondary: YAxis{Style: Hidden()}}.hasAxes())
+	assert.True(t, Chart{}.hasAxes())
+	assert.False(t, Chart{XAxis: XAxis{Style: Hidden()}, YAxis: YAxis{Style: Hidden()}, YAxisSecondary: YAxis{Style: Hidden()}}.hasAxes())
 
 	x := Chart{
 		XAxis: XAxis{
@@ -287,7 +265,7 @@ func TestChartHasAxes(t *testing.T) {
 			Style: Hidden(),
 		},
 	}
-	testutil.AssertTrue(t, x.hasAxes())
+	assert.True(t, x.hasAxes())
 
 	y := Chart{
 		XAxis: XAxis{
@@ -300,7 +278,7 @@ func TestChartHasAxes(t *testing.T) {
 			Style: Hidden(),
 		},
 	}
-	testutil.AssertTrue(t, y.hasAxes())
+	assert.True(t, y.hasAxes())
 
 	ya := Chart{
 		XAxis: XAxis{
@@ -313,14 +291,12 @@ func TestChartHasAxes(t *testing.T) {
 			Style: Shown(),
 		},
 	}
-	testutil.AssertTrue(t, ya.hasAxes())
+	assert.True(t, ya.hasAxes())
 }
 
 func TestChartGetAxesTicks(t *testing.T) {
-	// replaced new assertions helper
-
 	r, err := PNG(1024, 1024)
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	c := Chart{
 		XAxis: XAxis{
@@ -336,13 +312,12 @@ func TestChartGetAxesTicks(t *testing.T) {
 	xr, yr, yar := c.getRanges()
 
 	xt, yt, yat := c.getAxesTicks(r, xr, yr, yar, FloatValueFormatter, FloatValueFormatter, FloatValueFormatter)
-	testutil.AssertNotEmpty(t, xt)
-	testutil.AssertNotEmpty(t, yt)
-	testutil.AssertNotEmpty(t, yat)
+	assert.NotEmpty(t, xt)
+	assert.NotEmpty(t, yt)
+	assert.NotEmpty(t, yat)
 }
 
 func TestChartSingleSeries(t *testing.T) {
-	// replaced new assertions helper
 	now := time.Now()
 	c := Chart{
 		Title:  "Hello!",
@@ -364,13 +339,11 @@ func TestChartSingleSeries(t *testing.T) {
 	}
 
 	buffer := bytes.NewBuffer([]byte{})
-	c.Render(PNG, buffer)
-	testutil.AssertNotEmpty(t, buffer.Bytes())
+	require.NoError(t, c.Render(PNG, buffer))
+	assert.NotEmpty(t, buffer.Bytes())
 }
 
 func TestChartRegressionBadRanges(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -380,13 +353,10 @@ func TestChartRegressionBadRanges(t *testing.T) {
 		},
 	}
 	buffer := bytes.NewBuffer([]byte{})
-	c.Render(PNG, buffer)
-	testutil.AssertTrue(t, true, "Render needs to finish.")
+	require.Error(t, c.Render(PNG, buffer))
 }
 
 func TestChartRegressionBadRangesByUser(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		YAxis: YAxis{
 			Range: &ContinuousRange{
@@ -402,13 +372,10 @@ func TestChartRegressionBadRangesByUser(t *testing.T) {
 		},
 	}
 	buffer := bytes.NewBuffer([]byte{})
-	c.Render(PNG, buffer)
-	testutil.AssertTrue(t, true, "Render needs to finish.")
+	require.Error(t, c.Render(PNG, buffer))
 }
 
 func TestChartValidatesSeries(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -418,7 +385,7 @@ func TestChartValidatesSeries(t *testing.T) {
 		},
 	}
 
-	testutil.AssertNil(t, c.validateSeries())
+	require.NoError(t, c.validateSeries())
 
 	c = Chart{
 		Series: []Series{
@@ -428,12 +395,10 @@ func TestChartValidatesSeries(t *testing.T) {
 		},
 	}
 
-	testutil.AssertNotNil(t, c.validateSeries())
+	require.Error(t, c.validateSeries())
 }
 
 func TestChartCheckRanges(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -444,12 +409,10 @@ func TestChartCheckRanges(t *testing.T) {
 	}
 
 	xr, yr, yra := c.getRanges()
-	testutil.AssertNil(t, c.checkRanges(xr, yr, yra))
+	require.NoError(t, c.checkRanges(xr, yr, yra))
 }
 
 func TestChartCheckRangesWithRanges(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		XAxis: XAxis{
 			Range: &ContinuousRange{
@@ -472,7 +435,7 @@ func TestChartCheckRangesWithRanges(t *testing.T) {
 	}
 
 	xr, yr, yra := c.getRanges()
-	testutil.AssertNil(t, c.checkRanges(xr, yr, yra))
+	require.NoError(t, c.checkRanges(xr, yr, yra))
 }
 
 func at(i image.Image, x, y int) drawing.Color {
@@ -480,8 +443,6 @@ func at(i image.Image, x, y int) drawing.Color {
 }
 
 func TestChartE2ELine(t *testing.T) {
-	// replaced new assertions helper
-
 	c := Chart{
 		Height:         50,
 		Width:          50,
@@ -504,28 +465,25 @@ func TestChartE2ELine(t *testing.T) {
 	}
 
 	var buffer = &bytes.Buffer{}
-	err := c.Render(PNG, buffer)
-	testutil.AssertNil(t, err)
+	require.NoError(t, c.Render(PNG, buffer))
 
 	// do color tests ...
 
 	i, err := png.Decode(buffer)
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	// test the bottom and top of the line
-	testutil.AssertEqual(t, drawing.ColorWhite, at(i, 0, 0))
-	testutil.AssertEqual(t, drawing.ColorWhite, at(i, 49, 49))
+	assert.Equal(t, drawing.ColorWhite, at(i, 0, 0))
+	assert.Equal(t, drawing.ColorWhite, at(i, 49, 49))
 
 	// test a line mid point
 	defaultSeriesColor := GetDefaultColor(0)
-	testutil.AssertEqual(t, defaultSeriesColor, at(i, 0, 49))
-	testutil.AssertEqual(t, defaultSeriesColor, at(i, 49, 0))
-	testutil.AssertEqual(t, drawing.ColorFromHex("bddbf6"), at(i, 24, 24))
+	assert.Equal(t, defaultSeriesColor, at(i, 0, 49))
+	assert.Equal(t, defaultSeriesColor, at(i, 49, 0))
+	assert.Equal(t, drawing.ColorFromHex("bddbf6"), at(i, 24, 24))
 }
 
 func TestChartE2ELineWithFill(t *testing.T) {
-	// replaced new assertions helper
-
 	logBuffer := new(bytes.Buffer)
 
 	c := Chart{
@@ -554,24 +512,23 @@ func TestChartE2ELineWithFill(t *testing.T) {
 		Log: NewLogger(OptLoggerStdout(logBuffer), OptLoggerStderr(logBuffer)),
 	}
 
-	testutil.AssertEqual(t, 5, len(c.Series[0].(ContinuousSeries).XValues))
-	testutil.AssertEqual(t, 5, len(c.Series[0].(ContinuousSeries).YValues))
+	assert.Equal(t, 5, len(c.Series[0].(ContinuousSeries).XValues))
+	assert.Equal(t, 5, len(c.Series[0].(ContinuousSeries).YValues))
 
 	var buffer = &bytes.Buffer{}
-	err := c.Render(PNG, buffer)
-	testutil.AssertNil(t, err)
+	require.NoError(t, c.Render(PNG, buffer))
 
 	i, err := png.Decode(buffer)
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	// test the bottom and top of the line
-	testutil.AssertEqual(t, drawing.ColorWhite, at(i, 0, 0))
-	testutil.AssertEqual(t, drawing.ColorRed, at(i, 49, 49))
+	assert.Equal(t, drawing.ColorWhite, at(i, 0, 0))
+	assert.Equal(t, drawing.ColorRed, at(i, 49, 49))
 
 	// test a line mid point
 	defaultSeriesColor := drawing.ColorBlue
-	testutil.AssertEqual(t, defaultSeriesColor, at(i, 0, 49))
-	testutil.AssertEqual(t, defaultSeriesColor, at(i, 49, 0))
+	assert.Equal(t, defaultSeriesColor, at(i, 0, 49))
+	assert.Equal(t, defaultSeriesColor, at(i, 49, 0))
 }
 
 func Test_Chart_cve(t *testing.T) {
@@ -590,5 +547,5 @@ func Test_Chart_cve(t *testing.T) {
 
 	var imgContent bytes.Buffer
 	err := poc.Render(PNG, &imgContent)
-	testutil.AssertNotNil(t, err)
+	assert.NotNil(t, err)
 }

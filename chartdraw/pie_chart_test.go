@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestPieChart(t *testing.T) {
-	// replaced new assertions helper
-
 	pie := PieChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -26,13 +25,11 @@ func TestPieChart(t *testing.T) {
 	}
 
 	b := bytes.NewBuffer([]byte{})
-	pie.Render(PNG, b)
-	testutil.AssertNotZero(t, b.Len())
+	require.NoError(t, pie.Render(PNG, b))
+	assert.NotZero(t, b.Len())
 }
 
 func TestPieChartDropsZeroValues(t *testing.T) {
-	// replaced new assertions helper
-
 	pie := PieChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -45,13 +42,10 @@ func TestPieChartDropsZeroValues(t *testing.T) {
 	}
 
 	b := bytes.NewBuffer([]byte{})
-	err := pie.Render(PNG, b)
-	testutil.AssertNil(t, err)
+	require.NoError(t, pie.Render(PNG, b))
 }
 
 func TestPieChartAllZeroValues(t *testing.T) {
-	// replaced new assertions helper
-
 	pie := PieChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -64,6 +58,5 @@ func TestPieChartAllZeroValues(t *testing.T) {
 	}
 
 	b := bytes.NewBuffer([]byte{})
-	err := pie.Render(PNG, b)
-	testutil.AssertNotNil(t, err)
+	require.Error(t, pie.Render(PNG, b))
 }

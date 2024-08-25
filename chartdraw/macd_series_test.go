@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -63,13 +63,11 @@ var (
 )
 
 func TestMACDSeries(t *testing.T) {
-	// replaced new assertions helper
-
 	mockSeries := mockValuesProvider{
 		emaXValues,
 		emaYValues,
 	}
-	testutil.AssertEqual(t, 50, mockSeries.Len())
+	assert.Equal(t, 50, mockSeries.Len())
 
 	mas := &MACDSeries{
 		InnerSeries: mockSeries,
@@ -81,8 +79,8 @@ func TestMACDSeries(t *testing.T) {
 		yvalues = append(yvalues, y)
 	}
 
-	testutil.AssertNotEmpty(t, yvalues)
+	assert.NotEmpty(t, yvalues)
 	for index, vy := range yvalues {
-		testutil.AssertInDelta(t, vy, macdExpected[index], emaDelta, fmt.Sprintf("delta @ %d actual: %0.9f expected: %0.9f", index, vy, macdExpected[index]))
+		assert.InDelta(t, vy, macdExpected[index], emaDelta, fmt.Sprintf("delta @ %d actual: %0.9f expected: %0.9f", index, vy, macdExpected[index]))
 	}
 }

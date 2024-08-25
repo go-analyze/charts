@@ -88,12 +88,12 @@ func (vr *vectorRenderer) SetFillColor(c drawing.Color) {
 	vr.s.FillColor = c
 }
 
-// SetLineWidth implements the interface method.
+// SetStrokeWidth implements the interface method.
 func (vr *vectorRenderer) SetStrokeWidth(width float64) {
 	vr.s.StrokeWidth = width
 }
 
-// StrokeDashArray sets the stroke dash array.
+// SetStrokeDashArray sets the stroke dash array.
 func (vr *vectorRenderer) SetStrokeDashArray(dashArray []float64) {
 	vr.s.StrokeDashArray = dashArray
 }
@@ -341,15 +341,15 @@ func (c *canvas) styleAsSVG(s Style) string {
 		pieces = append(pieces, "stroke-width:0")
 	}
 
-	if !sc.IsZero() {
+	if !sc.IsTransparent() {
 		pieces = append(pieces, "stroke:"+sc.String())
 	} else {
 		pieces = append(pieces, "stroke:none")
 	}
 
-	if !fnc.IsZero() {
+	if !fnc.IsTransparent() {
 		pieces = append(pieces, "fill:"+fnc.String())
-	} else if !fc.IsZero() {
+	} else if !fc.IsTransparent() {
 		pieces = append(pieces, "fill:"+fc.String())
 	} else {
 		pieces = append(pieces, "fill:none")

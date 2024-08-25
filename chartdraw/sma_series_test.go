@@ -3,7 +3,7 @@ package chartdraw
 import (
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 type mockValuesProvider struct {
@@ -28,13 +28,11 @@ func (m mockValuesProvider) GetValues(index int) (x, y float64) {
 }
 
 func TestSMASeriesGetValue(t *testing.T) {
-	// replaced new assertions helper
-
 	mockSeries := mockValuesProvider{
 		LinearRange(1.0, 10.0),
 		LinearRange(10, 1.0),
 	}
-	testutil.AssertEqual(t, 10, mockSeries.Len())
+	assert.Equal(t, 10, mockSeries.Len())
 
 	mas := &SMASeries{
 		InnerSeries: mockSeries,
@@ -47,25 +45,23 @@ func TestSMASeriesGetValue(t *testing.T) {
 		yvalues = append(yvalues, y)
 	}
 
-	testutil.AssertEqual(t, 10.0, yvalues[0])
-	testutil.AssertEqual(t, 9.5, yvalues[1])
-	testutil.AssertEqual(t, 9.0, yvalues[2])
-	testutil.AssertEqual(t, 8.5, yvalues[3])
-	testutil.AssertEqual(t, 8.0, yvalues[4])
-	testutil.AssertEqual(t, 7.5, yvalues[5])
-	testutil.AssertEqual(t, 7.0, yvalues[6])
-	testutil.AssertEqual(t, 6.5, yvalues[7])
-	testutil.AssertEqual(t, 6.0, yvalues[8])
+	assert.Equal(t, 10.0, yvalues[0])
+	assert.Equal(t, 9.5, yvalues[1])
+	assert.Equal(t, 9.0, yvalues[2])
+	assert.Equal(t, 8.5, yvalues[3])
+	assert.Equal(t, 8.0, yvalues[4])
+	assert.Equal(t, 7.5, yvalues[5])
+	assert.Equal(t, 7.0, yvalues[6])
+	assert.Equal(t, 6.5, yvalues[7])
+	assert.Equal(t, 6.0, yvalues[8])
 }
 
 func TestSMASeriesGetLastValueWindowOverlap(t *testing.T) {
-	// replaced new assertions helper
-
 	mockSeries := mockValuesProvider{
 		LinearRange(1.0, 10.0),
 		LinearRange(10, 1.0),
 	}
-	testutil.AssertEqual(t, 10, mockSeries.Len())
+	assert.Equal(t, 10, mockSeries.Len())
 
 	mas := &SMASeries{
 		InnerSeries: mockSeries,
@@ -79,19 +75,17 @@ func TestSMASeriesGetLastValueWindowOverlap(t *testing.T) {
 	}
 
 	lx, ly := mas.GetLastValues()
-	testutil.AssertEqual(t, 10.0, lx)
-	testutil.AssertEqual(t, 5.5, ly)
-	testutil.AssertEqual(t, yvalues[len(yvalues)-1], ly)
+	assert.Equal(t, 10.0, lx)
+	assert.Equal(t, 5.5, ly)
+	assert.Equal(t, yvalues[len(yvalues)-1], ly)
 }
 
 func TestSMASeriesGetLastValue(t *testing.T) {
-	// replaced new assertions helper
-
 	mockSeries := mockValuesProvider{
 		LinearRange(1.0, 100.0),
 		LinearRange(100, 1.0),
 	}
-	testutil.AssertEqual(t, 100, mockSeries.Len())
+	assert.Equal(t, 100, mockSeries.Len())
 
 	mas := &SMASeries{
 		InnerSeries: mockSeries,
@@ -105,7 +99,7 @@ func TestSMASeriesGetLastValue(t *testing.T) {
 	}
 
 	lx, ly := mas.GetLastValues()
-	testutil.AssertEqual(t, 100.0, lx)
-	testutil.AssertEqual(t, 6, ly)
-	testutil.AssertEqual(t, yvalues[len(yvalues)-1], ly)
+	assert.Equal(t, 100.0, lx)
+	assert.Equal(t, 6.0, ly)
+	assert.Equal(t, yvalues[len(yvalues)-1], ly)
 }

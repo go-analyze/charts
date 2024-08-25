@@ -5,69 +5,69 @@ import (
 	"image/color"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestColorFromHex(t *testing.T) {
 	white := ColorFromHex("FFFFFF")
-	testutil.AssertEqual(t, ColorWhite, white)
+	assert.Equal(t, ColorWhite, white)
 
 	shortWhite := ColorFromHex("FFF")
-	testutil.AssertEqual(t, ColorWhite, shortWhite)
+	assert.Equal(t, ColorWhite, shortWhite)
 
 	black := ColorFromHex("000000")
-	testutil.AssertEqual(t, ColorBlack, black)
+	assert.Equal(t, ColorBlack, black)
 
 	shortBlack := ColorFromHex("000")
-	testutil.AssertEqual(t, ColorBlack, shortBlack)
+	assert.Equal(t, ColorBlack, shortBlack)
 
 	red := ColorFromHex("FF0000")
-	testutil.AssertEqual(t, ColorRed, red)
+	assert.Equal(t, ColorRed, red)
 
 	shortRed := ColorFromHex("F00")
-	testutil.AssertEqual(t, ColorRed, shortRed)
+	assert.Equal(t, ColorRed, shortRed)
 
 	green := ColorFromHex("008000")
-	testutil.AssertEqual(t, ColorGreen, green)
+	assert.Equal(t, ColorGreen, green)
 
 	// shortGreen := ColorFromHex("0F0")
-	// testutil.AssertEqual(t, ColorGreen, shortGreen)
+	// assert.Equal(t, ColorGreen, shortGreen)
 
 	blue := ColorFromHex("0000FF")
-	testutil.AssertEqual(t, ColorBlue, blue)
+	assert.Equal(t, ColorBlue, blue)
 
 	shortBlue := ColorFromHex("00F")
-	testutil.AssertEqual(t, ColorBlue, shortBlue)
+	assert.Equal(t, ColorBlue, shortBlue)
 }
 
 func TestColorFromHex_handlesHash(t *testing.T) {
 	withHash := ColorFromHex("#FF0000")
-	testutil.AssertEqual(t, ColorRed, withHash)
+	assert.Equal(t, ColorRed, withHash)
 
 	withoutHash := ColorFromHex("#FF0000")
-	testutil.AssertEqual(t, ColorRed, withoutHash)
+	assert.Equal(t, ColorRed, withoutHash)
 }
 
 func TestColorFromAlphaMixedRGBA(t *testing.T) {
 	black := ColorFromAlphaMixedRGBA(color.Black.RGBA())
-	testutil.AssertTrue(t, black.Equals(ColorBlack), black.String())
+	assert.True(t, black.Equals(ColorBlack), black.String())
 
 	white := ColorFromAlphaMixedRGBA(color.White.RGBA())
-	testutil.AssertTrue(t, white.Equals(ColorWhite), white.String())
+	assert.True(t, white.Equals(ColorWhite), white.String())
 }
 
 func Test_ColorFromRGBA(t *testing.T) {
 	value := "rgba(192, 192, 192, 1.0)"
 	parsed := ColorFromRGBA(value)
-	testutil.AssertEqual(t, ColorSilver, parsed)
+	assert.Equal(t, ColorSilver, parsed)
 
 	value = "rgba(192,192,192,1.0)"
 	parsed = ColorFromRGBA(value)
-	testutil.AssertEqual(t, ColorSilver, parsed)
+	assert.Equal(t, ColorSilver, parsed)
 
 	value = "rgba(192,192,192,1.5)"
 	parsed = ColorFromRGBA(value)
-	testutil.AssertEqual(t, ColorSilver, parsed)
+	assert.Equal(t, ColorSilver, parsed)
 }
 
 func TestParseColor(t *testing.T) {
@@ -108,6 +108,6 @@ func TestParseColor(t *testing.T) {
 
 	for index, tc := range testCases {
 		actual := ParseColor(tc.Input)
-		testutil.AssertEqual(t, tc.Expected, actual, fmt.Sprintf("test case: %d -> %s", index, tc.Input))
+		assert.Equal(t, tc.Expected, actual, fmt.Sprintf("test case: %d -> %s", index, tc.Input))
 	}
 }

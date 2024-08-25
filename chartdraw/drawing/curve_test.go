@@ -3,7 +3,7 @@ package drawing
 import (
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 type point struct {
@@ -23,13 +23,11 @@ func (ml mockLine) Len() int {
 }
 
 func TestTraceQuad(t *testing.T) {
-	// replaced new assertions helper
-
 	// Quad
 	// x1, y1, cpx1, cpy2, x2, y2 float64
 	// do the 9->12 circle segment
 	quad := []float64{10, 20, 20, 20, 20, 10}
 	liner := &mockLine{}
 	TraceQuad(liner, quad, 0.5)
-	testutil.AssertNotZero(t, liner.Len())
+	assert.NotZero(t, liner.Len())
 }

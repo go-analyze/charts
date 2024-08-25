@@ -3,12 +3,10 @@ package chartdraw
 import (
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValuesValues(t *testing.T) {
-	// replaced new assertions helper
-
 	vs := []Value{
 		{Value: 10, Label: "Blue"},
 		{Value: 9, Label: "Green"},
@@ -20,19 +18,17 @@ func TestValuesValues(t *testing.T) {
 	}
 
 	values := Values(vs).Values()
-	testutil.AssertLen(t, values, 7)
-	testutil.AssertEqual(t, 10, values[0])
-	testutil.AssertEqual(t, 9, values[1])
-	testutil.AssertEqual(t, 8, values[2])
-	testutil.AssertEqual(t, 7, values[3])
-	testutil.AssertEqual(t, 6, values[4])
-	testutil.AssertEqual(t, 5, values[5])
-	testutil.AssertEqual(t, 2, values[6])
+	assert.Len(t, values, 7)
+	assert.Equal(t, float64(10), values[0])
+	assert.Equal(t, float64(9), values[1])
+	assert.Equal(t, float64(8), values[2])
+	assert.Equal(t, float64(7), values[3])
+	assert.Equal(t, float64(6), values[4])
+	assert.Equal(t, float64(5), values[5])
+	assert.Equal(t, float64(2), values[6])
 }
 
 func TestValuesValuesNormalized(t *testing.T) {
-	// replaced new assertions helper
-
 	vs := []Value{
 		{Value: 10, Label: "Blue"},
 		{Value: 9, Label: "Green"},
@@ -44,14 +40,12 @@ func TestValuesValuesNormalized(t *testing.T) {
 	}
 
 	values := Values(vs).ValuesNormalized()
-	testutil.AssertLen(t, values, 7)
-	testutil.AssertEqual(t, 0.2127, values[0])
-	testutil.AssertEqual(t, 0.0425, values[6])
+	assert.Len(t, values, 7)
+	assert.Equal(t, 0.2127, values[0])
+	assert.Equal(t, 0.0425, values[6])
 }
 
 func TestValuesNormalize(t *testing.T) {
-	// replaced new assertions helper
-
 	vs := []Value{
 		{Value: 10, Label: "Blue"},
 		{Value: 9, Label: "Green"},
@@ -63,7 +57,7 @@ func TestValuesNormalize(t *testing.T) {
 	}
 
 	values := Values(vs).Normalize()
-	testutil.AssertLen(t, values, 7)
-	testutil.AssertEqual(t, 0.2127, values[0].Value)
-	testutil.AssertEqual(t, 0.0425, values[6].Value)
+	assert.Len(t, values, 7)
+	assert.Equal(t, 0.2127, values[0].Value)
+	assert.Equal(t, 0.0425, values[6].Value)
 }

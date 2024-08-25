@@ -3,13 +3,12 @@ package chartdraw
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/go-analyze/charts/chartdraw/matrix"
-	"github.com/go-analyze/charts/chartdraw/testutil"
 )
 
 func TestPolynomialRegression(t *testing.T) {
-	// replaced new assertions helper
-
 	var xv []float64
 	var yv []float64
 
@@ -30,6 +29,6 @@ func TestPolynomialRegression(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		_, y := poly.GetValues(i)
-		testutil.AssertInDelta(t, float64(i*i), y, matrix.DefaultEpsilon)
+		assert.InDelta(t, float64(i*i), y, matrix.DefaultEpsilon)
 	}
 }

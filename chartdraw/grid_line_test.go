@@ -3,12 +3,10 @@ package chartdraw
 import (
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateGridLines(t *testing.T) {
-	// replaced new assertions helper
-
 	ticks := []Tick{
 		{Value: 1.0, Label: "1.0"},
 		{Value: 2.0, Label: "2.0"},
@@ -17,8 +15,8 @@ func TestGenerateGridLines(t *testing.T) {
 	}
 
 	gl := GenerateGridLines(ticks, Style{}, Style{})
-	testutil.AssertLen(t, gl, 2)
+	assert.Len(t, gl, 2)
 
-	testutil.AssertEqual(t, 2.0, gl[0].Value)
-	testutil.AssertEqual(t, 3.0, gl[1].Value)
+	assert.Equal(t, 2.0, gl[0].Value)
+	assert.Equal(t, 3.0, gl[1].Value)
 }

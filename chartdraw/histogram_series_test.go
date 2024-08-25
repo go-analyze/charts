@@ -3,12 +3,10 @@ package chartdraw
 import (
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHistogramSeries(t *testing.T) {
-	// replaced new assertions helper
-
 	cs := ContinuousSeries{
 		Name:    "Test Series",
 		XValues: LinearRange(1.0, 20.0),
@@ -22,10 +20,10 @@ func TestHistogramSeries(t *testing.T) {
 	for x := 0; x < hs.Len(); x++ {
 		csx, csy := cs.GetValues(0)
 		hsx, hsy1, hsy2 := hs.GetBoundedValues(0)
-		testutil.AssertEqual(t, csx, hsx)
-		testutil.AssertTrue(t, hsy1 > 0)
-		testutil.AssertTrue(t, hsy2 <= 0)
-		testutil.AssertTrue(t, csy < 0 || (csy > 0 && csy == hsy1))
-		testutil.AssertTrue(t, csy > 0 || (csy < 0 && csy == hsy2))
+		assert.Equal(t, csx, hsx)
+		assert.True(t, hsy1 > 0)
+		assert.True(t, hsy2 <= 0)
+		assert.True(t, csy < 0 || (csy > 0 && csy == hsy1))
+		assert.True(t, csy > 0 || (csy < 0 && csy == hsy2))
 	}
 }

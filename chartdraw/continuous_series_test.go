@@ -4,36 +4,33 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestContinuousSeries(t *testing.T) {
-	// replaced new assertions helper
-
 	cs := ContinuousSeries{
 		Name:    "Test Series",
 		XValues: LinearRange(1.0, 10.0),
 		YValues: LinearRange(1.0, 10.0),
 	}
 
-	testutil.AssertEqual(t, "Test Series", cs.GetName())
-	testutil.AssertEqual(t, 10, cs.Len())
+	assert.Equal(t, "Test Series", cs.GetName())
+	assert.Equal(t, 10, cs.Len())
 	x0, y0 := cs.GetValues(0)
-	testutil.AssertEqual(t, 1.0, x0)
-	testutil.AssertEqual(t, 1.0, y0)
+	assert.Equal(t, 1.0, x0)
+	assert.Equal(t, 1.0, y0)
 
 	xn, yn := cs.GetValues(9)
-	testutil.AssertEqual(t, 10.0, xn)
-	testutil.AssertEqual(t, 10.0, yn)
+	assert.Equal(t, 10.0, xn)
+	assert.Equal(t, 10.0, yn)
 
 	xn, yn = cs.GetLastValues()
-	testutil.AssertEqual(t, 10.0, xn)
-	testutil.AssertEqual(t, 10.0, yn)
+	assert.Equal(t, 10.0, xn)
+	assert.Equal(t, 10.0, yn)
 }
 
 func TestContinuousSeriesValueFormatter(t *testing.T) {
-	// replaced new assertions helper
-
 	cs := ContinuousSeries{
 		XValueFormatter: func(v interface{}) string {
 			return fmt.Sprintf("%f foo", v)
@@ -44,29 +41,27 @@ func TestContinuousSeriesValueFormatter(t *testing.T) {
 	}
 
 	xf, yf := cs.GetValueFormatters()
-	testutil.AssertEqual(t, "0.100000 foo", xf(0.1))
-	testutil.AssertEqual(t, "0.100000 bar", yf(0.1))
+	assert.Equal(t, "0.100000 foo", xf(0.1))
+	assert.Equal(t, "0.100000 bar", yf(0.1))
 }
 
 func TestContinuousSeriesValidate(t *testing.T) {
-	// replaced new assertions helper
-
 	cs := ContinuousSeries{
 		Name:    "Test Series",
 		XValues: LinearRange(1.0, 10.0),
 		YValues: LinearRange(1.0, 10.0),
 	}
-	testutil.AssertNil(t, cs.Validate())
+	require.NoError(t, cs.Validate())
 
 	cs = ContinuousSeries{
 		Name:    "Test Series",
 		XValues: LinearRange(1.0, 10.0),
 	}
-	testutil.AssertNotNil(t, cs.Validate())
+	require.Error(t, cs.Validate())
 
 	cs = ContinuousSeries{
 		Name:    "Test Series",
 		YValues: LinearRange(1.0, 10.0),
 	}
-	testutil.AssertNotNil(t, cs.Validate())
+	require.Error(t, cs.Validate())
 }

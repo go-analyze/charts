@@ -5,12 +5,10 @@ import (
 	"math"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBollingerBandSeries(t *testing.T) {
-	// replaced new assertions helper
-
 	s1 := mockValuesProvider{
 		X: LinearRange(1.0, 100.0),
 		Y: RandomValuesWithMax(100, 1024),
@@ -29,13 +27,11 @@ func TestBollingerBandSeries(t *testing.T) {
 	}
 
 	for x := bbs.GetPeriod(); x < 100; x++ {
-		testutil.AssertTrue(t, y1values[x] > y2values[x], fmt.Sprintf("%v vs. %v", y1values[x], y2values[x]))
+		assert.True(t, y1values[x] > y2values[x], fmt.Sprintf("%v vs. %v", y1values[x], y2values[x]))
 	}
 }
 
 func TestBollingerBandLastValue(t *testing.T) {
-	// replaced new assertions helper
-
 	s1 := mockValuesProvider{
 		X: LinearRange(1.0, 100.0),
 		Y: LinearRange(1.0, 100.0),
@@ -46,7 +42,7 @@ func TestBollingerBandLastValue(t *testing.T) {
 	}
 
 	x, y1, y2 := bbs.GetBoundedLastValues()
-	testutil.AssertEqual(t, 100.0, x)
-	testutil.AssertEqual(t, 101, math.Floor(y1))
-	testutil.AssertEqual(t, 83, math.Floor(y2))
+	assert.Equal(t, 100.0, x)
+	assert.Equal(t, float64(101), math.Floor(y1))
+	assert.Equal(t, float64(83), math.Floor(y2))
 }

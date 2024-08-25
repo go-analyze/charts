@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDonutChart(t *testing.T) {
-	// replaced new assertions helper
-
 	pie := DonutChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -27,12 +26,10 @@ func TestDonutChart(t *testing.T) {
 
 	b := bytes.NewBuffer([]byte{})
 	pie.Render(PNG, b)
-	testutil.AssertNotZero(t, b.Len())
+	assert.NotZero(t, b.Len())
 }
 
 func TestDonutChartDropsZeroValues(t *testing.T) {
-	// replaced new assertions helper
-
 	pie := DonutChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -45,13 +42,10 @@ func TestDonutChartDropsZeroValues(t *testing.T) {
 	}
 
 	b := bytes.NewBuffer([]byte{})
-	err := pie.Render(PNG, b)
-	testutil.AssertNil(t, err)
+	require.NoError(t, pie.Render(PNG, b))
 }
 
 func TestDonutChartAllZeroValues(t *testing.T) {
-	// replaced new assertions helper
-
 	pie := DonutChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -64,6 +58,5 @@ func TestDonutChartAllZeroValues(t *testing.T) {
 	}
 
 	b := bytes.NewBuffer([]byte{})
-	err := pie.Render(PNG, b)
-	testutil.AssertNotNil(t, err)
+	require.Error(t, pie.Render(PNG, b))
 }

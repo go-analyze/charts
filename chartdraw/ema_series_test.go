@@ -3,7 +3,7 @@ package chartdraw
 import (
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -73,13 +73,11 @@ var (
 )
 
 func TestEMASeries(t *testing.T) {
-	// replaced new assertions helper
-
 	mockSeries := mockValuesProvider{
 		emaXValues,
 		emaYValues,
 	}
-	testutil.AssertEqual(t, 50, mockSeries.Len())
+	assert.Equal(t, 50, mockSeries.Len())
 
 	ema := &EMASeries{
 		InnerSeries: mockSeries,
@@ -87,7 +85,7 @@ func TestEMASeries(t *testing.T) {
 	}
 
 	sig := ema.GetSigma()
-	testutil.AssertEqual(t, 2.0/(26.0+1), sig)
+	assert.Equal(t, 2.0/(26.0+1), sig)
 
 	var yvalues []float64
 	for x := 0; x < ema.Len(); x++ {
@@ -96,10 +94,10 @@ func TestEMASeries(t *testing.T) {
 	}
 
 	for index, yv := range yvalues {
-		testutil.AssertInDelta(t, yv, emaExpected[index], emaDelta)
+		assert.InDelta(t, yv, emaExpected[index], emaDelta)
 	}
 
 	lvx, lvy := ema.GetLastValues()
-	testutil.AssertEqual(t, 50.0, lvx)
-	testutil.AssertInDelta(t, lvy, emaExpected[49], emaDelta)
+	assert.Equal(t, 50.0, lvx)
+	assert.InDelta(t, lvy, emaExpected[49], emaDelta)
 }

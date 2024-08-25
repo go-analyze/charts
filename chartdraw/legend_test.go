@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/testutil"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestLegend(t *testing.T) {
-	// replaced new assertions helper
-
 	graph := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -25,7 +24,6 @@ func TestLegend(t *testing.T) {
 		Legend(&graph),
 	}
 	buf := bytes.NewBuffer([]byte{})
-	err := graph.Render(PNG, buf)
-	testutil.AssertNil(t, err)
-	testutil.AssertNotZero(t, buf.Len())
+	require.NoError(t, graph.Render(PNG, buf))
+	assert.NotZero(t, buf.Len())
 }

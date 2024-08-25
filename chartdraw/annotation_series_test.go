@@ -4,13 +4,13 @@ import (
 	"image/color"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/go-analyze/charts/chartdraw/drawing"
-	"github.com/go-analyze/charts/chartdraw/testutil"
 )
 
 func TestAnnotationSeriesMeasure(t *testing.T) {
-	// replaced new assertions helper
-
 	as := AnnotationSeries{
 		Annotations: []Value2{
 			{XValue: 1.0, YValue: 1.0, Label: "1.0"},
@@ -21,10 +21,10 @@ func TestAnnotationSeriesMeasure(t *testing.T) {
 	}
 
 	r, err := PNG(110, 110)
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	f, err := GetDefaultFont()
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	xrange := &ContinuousRange{
 		Min:    1.0,
@@ -49,16 +49,14 @@ func TestAnnotationSeriesMeasure(t *testing.T) {
 	}
 
 	box := as.Measure(r, cb, xrange, yrange, sd)
-	testutil.AssertFalse(t, box.IsZero())
-	testutil.AssertEqual(t, -5.0, box.Top)
-	testutil.AssertEqual(t, 5.0, box.Left)
-	testutil.AssertEqual(t, 146.0, box.Right) //the top,left annotation sticks up 5px and out ~44px.
-	testutil.AssertEqual(t, 115.0, box.Bottom)
+	assert.False(t, box.IsZero())
+	assert.Equal(t, -5, box.Top)
+	assert.Equal(t, 5, box.Left)
+	assert.Equal(t, 146, box.Right) //the top,left annotation sticks up 5px and out ~44px.
+	assert.Equal(t, 115, box.Bottom)
 }
 
 func TestAnnotationSeriesRender(t *testing.T) {
-	// replaced new assertions helper
-
 	as := AnnotationSeries{
 		Style: Style{
 			FillColor:   drawing.ColorWhite,
@@ -73,10 +71,10 @@ func TestAnnotationSeriesRender(t *testing.T) {
 	}
 
 	r, err := PNG(110, 110)
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	f, err := GetDefaultFont()
-	testutil.AssertNil(t, err)
+	require.NoError(t, err)
 
 	xrange := &ContinuousRange{
 		Min:    1.0,
@@ -103,13 +101,13 @@ func TestAnnotationSeriesRender(t *testing.T) {
 	as.Render(r, cb, xrange, yrange, sd)
 
 	rr, isRaster := r.(*rasterRenderer)
-	testutil.AssertTrue(t, isRaster)
-	testutil.AssertNotNil(t, rr)
+	assert.True(t, isRaster)
+	assert.NotNil(t, rr)
 
 	c := rr.i.At(38, 70)
 	converted, isRGBA := color.RGBAModel.Convert(c).(color.RGBA)
-	testutil.AssertTrue(t, isRGBA)
-	testutil.AssertEqual(t, 0, converted.R)
-	testutil.AssertEqual(t, 0, converted.G)
-	testutil.AssertEqual(t, 0, converted.B)
+	assert.True(t, isRGBA)
+	assert.Equal(t, uint8(0), converted.R)
+	assert.Equal(t, uint8(0), converted.G)
+	assert.Equal(t, uint8(0), converted.B)
 }
