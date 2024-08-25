@@ -3,10 +3,12 @@ package main
 //go:generate go run main.go
 
 import (
+	"encoding/csv"
 	"fmt"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-analyze/charts/chartdraw"
@@ -30,7 +32,10 @@ func readData() ([]time.Time, []float64) {
 	var xvalues []time.Time
 	var yvalues []float64
 	err := chartdraw.ReadLines("requests.csv", func(line string) error {
-		parts := chartdraw.SplitCSV(line)
+		parts, err := splitCSV(line)
+		if err != nil {
+			return err
+		}
 		year := parseInt(parts[0])
 		month := parseInt(parts[1])
 		day := parseInt(parts[2])
@@ -44,6 +49,15 @@ func readData() ([]time.Time, []float64) {
 		fmt.Println(err.Error())
 	}
 	return xvalues, yvalues
+}
+
+func splitCSV(line string) ([]string, error) {
+	if len(line) == 0 {
+		return []string{}, nil
+	}
+
+	r := csv.NewReader(strings.NewReader(line))
+	return r.Read()
 }
 
 func releases() []chartdraw.GridLine {

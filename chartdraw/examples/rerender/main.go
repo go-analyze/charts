@@ -16,7 +16,7 @@ var ts *chartdraw.TimeSeries
 func addData(t time.Time, e time.Duration) {
 	lock.Lock()
 	ts.XValues = append(ts.XValues, t)
-	ts.YValues = append(ts.YValues, chartdraw.TimeMillis(e))
+	ts.YValues = append(ts.YValues, float64(e.Milliseconds()))
 	lock.Unlock()
 }
 

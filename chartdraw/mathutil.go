@@ -12,8 +12,8 @@ const (
 	_7pi4 = (7 * math.Pi) / 4.0
 	_pi2  = math.Pi / 2.0
 	_pi4  = math.Pi / 4.0
-	_d2r  = (math.Pi / 180.0)
-	_r2d  = (180.0 / math.Pi)
+	_d2r  = math.Pi / 180.0
+	_r2d  = 180.0 / math.Pi
 )
 
 // MinMax returns the minimum and maximum of a given set of values.
@@ -116,11 +116,6 @@ func DegreesAdd(baseDegrees, deltaDegrees float64) float64 {
 	return value
 }
 
-// DegreesToCompass returns the degree value in compass / clock orientation.
-func DegreesToCompass(deg float64) float64 {
-	return DegreesAdd(deg, -90.0)
-}
-
 // CirclePoint returns the absolute position of a circle diameter point given
 // by the radius and the theta.
 func CirclePoint(cx, cy int, radius, thetaRadians float64) (x, y int) {
@@ -172,9 +167,9 @@ func Normalize(values ...float64) []float64 {
 	return output
 }
 
-// Mean returns the mean of a set of values
-func Mean(values ...float64) float64 {
-	return Sum(values...) / float64(len(values))
+// MeanFloat64 returns the mean of a set of values
+func MeanFloat64(values ...float64) float64 {
+	return SumFloat64(values...) / float64(len(values))
 }
 
 // MeanInt returns the mean of a set of integer values.
@@ -182,8 +177,8 @@ func MeanInt(values ...int) int {
 	return SumInt(values...) / len(values)
 }
 
-// Sum sums a set of values.
-func Sum(values ...float64) float64 {
+// SumFloat64 sums a set of values.
+func SumFloat64(values ...float64) float64 {
 	var total float64
 	for _, v := range values {
 		total += v

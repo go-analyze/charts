@@ -5,27 +5,6 @@ import (
 	"time"
 )
 
-func TestTimeMinMax(t *testing.T) {
-	// empty input
-	min, max := TimeMinMax()
-	if !min.IsZero() || !max.IsZero() {
-		t.Errorf("Expected minimum and maximum to be zero time for empty input, but got min=%s, max=%s", min, max)
-	}
-
-	// non-empty input
-	times := []time.Time{
-		time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
-		time.Date(2022, 2, 1, 0, 0, 0, 0, time.UTC),
-		time.Date(2022, 3, 1, 0, 0, 0, 0, time.UTC),
-	}
-	expectedMin := time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)
-	expectedMax := time.Date(2022, 3, 1, 0, 0, 0, 0, time.UTC)
-	min, max = TimeMinMax(times...)
-	if min != expectedMin || max != expectedMax {
-		t.Errorf("Expected minimum=%s, maximum=%s for non-empty input, but got min=%s, max=%s", expectedMin, expectedMax, min, max)
-	}
-}
-
 func TestTimeToFloat64(t *testing.T) {
 	// zero time
 	tf := TimeToFloat64(time.Time{})
