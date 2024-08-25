@@ -32,8 +32,6 @@ type Chart struct {
 
 	Series   []Series
 	Elements []Renderable
-
-	Log Logger
 }
 
 // GetDPI returns the dpi for the chart.
@@ -103,8 +101,6 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 	canvasBox := c.getDefaultCanvasBox()
 	xf, yf, yfa := c.getValueFormatters()
 
-	Debugf(c.Log, "chart; canvas box: %v", canvasBox)
-
 	xr, yr, yra = c.setRangeDomains(canvasBox, xr, yr, yra)
 
 	err = c.checkRanges(xr, yr, yra)
@@ -118,8 +114,6 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 		canvasBox = c.getAxesAdjustedCanvasBox(r, canvasBox, xr, yr, yra, xt, yt, yta)
 		xr, yr, yra = c.setRangeDomains(canvasBox, xr, yr, yra)
 
-		Debugf(c.Log, "chart; axes adjusted canvas box: %v", canvasBox)
-
 		// do a second pass in case things haven't settled yet.
 		xt, yt, yta = c.getAxesTicks(r, xr, yr, yra, xf, yf, yfa)
 		canvasBox = c.getAxesAdjustedCanvasBox(r, canvasBox, xr, yr, yra, xt, yt, yta)
@@ -130,8 +124,6 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 		canvasBox = c.getAnnotationAdjustedCanvasBox(r, canvasBox, xr, yr, yra, xf, yf, yfa)
 		xr, yr, yra = c.setRangeDomains(canvasBox, xr, yr, yra)
 		xt, yt, yta = c.getAxesTicks(r, xr, yr, yra, xf, yf, yfa)
-
-		Debugf(c.Log, "chart; annotation adjusted canvas box: %v", canvasBox)
 	}
 
 	c.drawCanvas(r, canvasBox)
@@ -303,7 +295,6 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 }
 
 func (c Chart) checkRanges(xr, yr, yra Range) error {
-	Debugf(c.Log, "checking xrange: %v", xr)
 	xDelta := xr.GetDelta()
 	if math.IsInf(xDelta, 0) {
 		return errors.New("infinite x-range delta")
@@ -315,7 +306,6 @@ func (c Chart) checkRanges(xr, yr, yra Range) error {
 		return errors.New("zero x-range delta; there needs to be at least (2) values")
 	}
 
-	Debugf(c.Log, "checking yrange: %v", yr)
 	yDelta := yr.GetDelta()
 	if math.IsInf(yDelta, 0) {
 		return errors.New("infinite y-range delta")
@@ -325,7 +315,6 @@ func (c Chart) checkRanges(xr, yr, yra Range) error {
 	}
 
 	if c.hasSecondarySeries() {
-		Debugf(c.Log, "checking secondary yrange: %v", yra)
 		yraDelta := yra.GetDelta()
 		if math.IsInf(yraDelta, 0) {
 			return errors.New("infinite secondary y-range delta")
@@ -388,17 +377,14 @@ func (c Chart) getAxesAdjustedCanvasBox(r Renderer, canvasBox Box, xr, yr, yra R
 	axesOuterBox := canvasBox.Clone()
 	if !c.XAxis.Style.Hidden {
 		axesBounds := c.XAxis.Measure(r, canvasBox, xr, c.styleDefaultsAxes(), xticks)
-		Debugf(c.Log, "chart; x-axis measured %v", axesBounds)
 		axesOuterBox = axesOuterBox.Grow(axesBounds)
 	}
 	if !c.YAxis.Style.Hidden {
 		axesBounds := c.YAxis.Measure(r, canvasBox, yr, c.styleDefaultsAxes(), yticks)
-		Debugf(c.Log, "chart; y-axis measured %v", axesBounds)
 		axesOuterBox = axesOuterBox.Grow(axesBounds)
 	}
 	if !c.YAxisSecondary.Style.Hidden && c.hasSecondarySeries() {
 		axesBounds := c.YAxisSecondary.Measure(r, canvasBox, yra, c.styleDefaultsAxes(), yticksAlt)
-		Debugf(c.Log, "chart; y-axis secondary measured %v", axesBounds)
 		axesOuterBox = axesOuterBox.Grow(axesBounds)
 	}
 

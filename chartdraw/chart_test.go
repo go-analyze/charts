@@ -484,8 +484,6 @@ func TestChartE2ELine(t *testing.T) {
 }
 
 func TestChartE2ELineWithFill(t *testing.T) {
-	logBuffer := new(bytes.Buffer)
-
 	c := Chart{
 		Height: 50,
 		Width:  50,
@@ -509,7 +507,6 @@ func TestChartE2ELineWithFill(t *testing.T) {
 				YValues: LinearRangeWithStep(0, 4, 1),
 			},
 		},
-		Log: NewLogger(OptLoggerStdout(logBuffer), OptLoggerStderr(logBuffer)),
 	}
 
 	assert.Equal(t, 5, len(c.Series[0].(ContinuousSeries).XValues))

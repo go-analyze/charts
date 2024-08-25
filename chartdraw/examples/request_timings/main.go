@@ -13,8 +13,7 @@ import (
 )
 
 func main() {
-	log := chartdraw.NewLogger()
-	drawChart(log)
+	drawChart()
 }
 
 func parseInt(str string) int {
@@ -58,7 +57,7 @@ func releases() []chartdraw.GridLine {
 	}
 }
 
-func drawChart(log chartdraw.Logger) http.HandlerFunc {
+func drawChart() http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		xvalues, yvalues := readData()
 		mainSeries := chartdraw.TimeSeries{
@@ -90,7 +89,6 @@ func drawChart(log chartdraw.Logger) http.HandlerFunc {
 		}
 
 		graph := chartdraw.Chart{
-			Log:    log,
 			Width:  1280,
 			Height: 720,
 			Background: chartdraw.Style{
