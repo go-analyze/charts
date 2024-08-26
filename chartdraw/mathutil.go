@@ -86,7 +86,8 @@ func DegreesToRadians(degrees float64) float64 {
 
 // RadiansToDegrees translates a radian value to a degree value.
 func RadiansToDegrees(value float64) float64 {
-	return math.Mod(value, _2pi) * _r2d
+	degrees := value * _r2d
+	return DegreesAdd(degrees, 0)
 }
 
 // PercentToRadians converts a normalized value (0,1) to radians.
@@ -97,23 +98,13 @@ func PercentToRadians(pct float64) float64 {
 // RadianAdd adds a delta to a base in radians.
 func RadianAdd(base, delta float64) float64 {
 	value := base + delta
-	if value > _2pi {
-		return math.Mod(value, _2pi)
-	} else if value < 0 {
-		return math.Mod(_2pi+value, _2pi)
-	}
-	return value
+	return math.Mod(math.Mod(value, _2pi)+_2pi, _2pi)
 }
 
 // DegreesAdd adds a delta to a base in radians.
 func DegreesAdd(baseDegrees, deltaDegrees float64) float64 {
 	value := baseDegrees + deltaDegrees
-	if value > _2pi {
-		return math.Mod(value, 360.0)
-	} else if value < 0 {
-		return math.Mod(360.0+value, 360.0)
-	}
-	return value
+	return math.Mod(math.Mod(value, 360.0)+360.0, 360.0)
 }
 
 // CirclePoint returns the absolute position of a circle diameter point given
@@ -161,8 +152,10 @@ func Normalize(values ...float64) []float64 {
 		total += v
 	}
 	output := make([]float64, len(values))
-	for x, v := range values {
-		output[x] = RoundDown(v/total, 0.0001)
+	if total != 0 {
+		for x, v := range values {
+			output[x] = RoundDown(v/total, 0.0001)
+		}
 	}
 	return output
 }

@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -59,8 +60,8 @@ func TestPadRange(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+	for i, tc := range testCases {
+		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			min, max := padRange(tc.labelCount, tc.minValue, tc.maxValue, 1.0, 1.0)
 
 			assert.Equal(t, tc.expectedMinValue, min, "Unexpected value rounding %v", tc.minValue)
