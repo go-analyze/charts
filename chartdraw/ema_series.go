@@ -27,22 +27,22 @@ type EMASeries struct {
 }
 
 // GetName returns the name of the time series.
-func (ema EMASeries) GetName() string {
+func (ema *EMASeries) GetName() string {
 	return ema.Name
 }
 
 // GetStyle returns the line style.
-func (ema EMASeries) GetStyle() Style {
+func (ema *EMASeries) GetStyle() Style {
 	return ema.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (ema EMASeries) GetYAxis() YAxisType {
+func (ema *EMASeries) GetYAxis() YAxisType {
 	return ema.YAxis
 }
 
 // GetPeriod returns the window size.
-func (ema EMASeries) GetPeriod() int {
+func (ema *EMASeries) GetPeriod() int {
 	if ema.Period == 0 {
 		return DefaultEMAPeriod
 	}
@@ -50,12 +50,12 @@ func (ema EMASeries) GetPeriod() int {
 }
 
 // Len returns the number of elements in the series.
-func (ema EMASeries) Len() int {
+func (ema *EMASeries) Len() int {
 	return ema.InnerSeries.Len()
 }
 
-// GetSigma returns the smoothing factor for the serise.
-func (ema EMASeries) GetSigma() float64 {
+// GetSigma returns the smoothing factor for the series.
+func (ema *EMASeries) GetSigma() float64 {
 	return 2.0 / (float64(ema.GetPeriod()) + 1)
 }
 

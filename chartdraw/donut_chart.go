@@ -8,7 +8,7 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
-// DonutChart is a chart that draws sections of a circle based on percentages with an hole.
+// DonutChart is a chart that draws sections of a circle based on percentages with a hole.
 type DonutChart struct {
 	Title      string
 	TitleStyle Style
@@ -142,7 +142,7 @@ func (pc DonutChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 			rads = PercentToRadians(total)
 			delta = PercentToRadians(v.Value)
 
-			r.ArcTo(cx, cy, (radius / 1.25), (radius / 1.25), rads, delta)
+			r.ArcTo(cx, cy, radius/1.25, radius/1.25, rads, delta)
 
 			r.LineTo(cx, cy)
 			r.Close()
@@ -158,7 +158,7 @@ func (pc DonutChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 	})
 	v.Style.InheritFrom(styletemp).WriteToRenderer(r)
 	r.MoveTo(cx, cy)
-	r.ArcTo(cx, cy, (radius / 3.5), (radius / 3.5), DegreesToRadians(0), DegreesToRadians(359))
+	r.ArcTo(cx, cy, radius/3.5, radius/3.5, DegreesToRadians(0), DegreesToRadians(359))
 	r.LineTo(cx, cy)
 	r.Close()
 	r.FillStroke()

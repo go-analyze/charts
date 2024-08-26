@@ -4,7 +4,7 @@ import "fmt"
 
 // HistogramSeries is a special type of series that draws as a histogram.
 // Some peculiarities; it will always be lower bounded at 0 (at the very least).
-// This may alter ranges a bit and generally you want to put a histogram series on it's own y-axis.
+// This may alter ranges a bit and generally you want to put a histogram series on its own y-axis.
 type HistogramSeries struct {
 	Name        string
 	Style       Style

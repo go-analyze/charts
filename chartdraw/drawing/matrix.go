@@ -12,12 +12,12 @@ const (
 )
 
 // Determinant compute the determinant of the matrix
-func (tr Matrix) Determinant() float64 {
+func (tr *Matrix) Determinant() float64 {
 	return tr[0]*tr[3] - tr[1]*tr[2]
 }
 
 // Transform applies the transformation matrix to points. It modify the points passed in parameter.
-func (tr Matrix) Transform(points []float64) {
+func (tr *Matrix) Transform(points []float64) {
 	for i, j := 0, 1; j < len(points); i, j = i+2, j+2 {
 		x := points[i]
 		y := points[j]
@@ -27,7 +27,7 @@ func (tr Matrix) Transform(points []float64) {
 }
 
 // TransformPoint applies the transformation matrix to point. It returns the point the transformed point.
-func (tr Matrix) TransformPoint(x, y float64) (xres, yres float64) {
+func (tr *Matrix) TransformPoint(x, y float64) (xres, yres float64) {
 	xres = x*tr[0] + y*tr[2] + tr[4]
 	yres = x*tr[1] + y*tr[3] + tr[5]
 	return xres, yres
@@ -41,7 +41,7 @@ func minMax(x, y float64) (min, max float64) {
 }
 
 // TransformRectangle applies the transformation matrix to the rectangle represented by the min and the max point of the rectangle
-func (tr Matrix) TransformRectangle(x0, y0, x2, y2 float64) (nx0, ny0, nx2, ny2 float64) {
+func (tr *Matrix) TransformRectangle(x0, y0, x2, y2 float64) (nx0, ny0, nx2, ny2 float64) {
 	points := []float64{x0, y0, x2, y0, x2, y2, x0, y2}
 	tr.Transform(points)
 	points[0], points[2] = minMax(points[0], points[2])
@@ -57,7 +57,7 @@ func (tr Matrix) TransformRectangle(x0, y0, x2, y2 float64) (nx0, ny0, nx2, ny2 
 }
 
 // InverseTransform applies the transformation inverse matrix to the rectangle represented by the min and the max point of the rectangle
-func (tr Matrix) InverseTransform(points []float64) {
+func (tr *Matrix) InverseTransform(points []float64) {
 	d := tr.Determinant() // matrix determinant
 	for i, j := 0, 1; j < len(points); i, j = i+2, j+2 {
 		x := points[i]
@@ -68,7 +68,7 @@ func (tr Matrix) InverseTransform(points []float64) {
 }
 
 // InverseTransformPoint applies the transformation inverse matrix to point. It returns the point the transformed point.
-func (tr Matrix) InverseTransformPoint(x, y float64) (xres, yres float64) {
+func (tr *Matrix) InverseTransformPoint(x, y float64) (xres, yres float64) {
 	d := tr.Determinant() // matrix determinant
 	xres = ((x-tr[4])*tr[3] - (y-tr[5])*tr[2]) / d
 	yres = ((y-tr[5])*tr[0] - (x-tr[4])*tr[1]) / d
@@ -77,7 +77,7 @@ func (tr Matrix) InverseTransformPoint(x, y float64) (xres, yres float64) {
 
 // VectorTransform applies the transformation matrix to points without using the translation parameter of the affine matrix.
 // It modify the points passed in parameter.
-func (tr Matrix) VectorTransform(points []float64) {
+func (tr *Matrix) VectorTransform(points []float64) {
 	for i, j := 0, 1; j < len(points); i, j = i+2, j+2 {
 		x := points[i]
 		y := points[j]
@@ -130,7 +130,7 @@ func (tr *Matrix) Inverse() {
 }
 
 // Copy copies the matrix.
-func (tr Matrix) Copy() Matrix {
+func (tr *Matrix) Copy() Matrix {
 	var result Matrix
 	copy(result[:], tr[:])
 	return result
@@ -176,17 +176,17 @@ func (tr *Matrix) Rotate(radians float64) {
 }
 
 // GetTranslation gets the matrix traslation.
-func (tr Matrix) GetTranslation() (x, y float64) {
+func (tr *Matrix) GetTranslation() (x, y float64) {
 	return tr[4], tr[5]
 }
 
 // GetScaling gets the matrix scaling.
-func (tr Matrix) GetScaling() (x, y float64) {
+func (tr *Matrix) GetScaling() (x, y float64) {
 	return tr[0], tr[3]
 }
 
 // GetScale computes a scale for the matrix
-func (tr Matrix) GetScale() float64 {
+func (tr *Matrix) GetScale() float64 {
 	x := 0.707106781*tr[0] + 0.707106781*tr[1]
 	y := 0.707106781*tr[2] + 0.707106781*tr[3]
 	return math.Sqrt(x*x + y*y)
@@ -195,7 +195,7 @@ func (tr Matrix) GetScale() float64 {
 // ******************** Testing ********************
 
 // Equals tests if a two transformation are equal. A tolerance is applied when comparing matrix elements.
-func (tr Matrix) Equals(tr2 Matrix) bool {
+func (tr *Matrix) Equals(tr2 Matrix) bool {
 	for i := 0; i < 6; i = i + 1 {
 		if !fequals(tr[i], tr2[i]) {
 			return false
@@ -205,12 +205,12 @@ func (tr Matrix) Equals(tr2 Matrix) bool {
 }
 
 // IsIdentity tests if a transformation is the identity transformation. A tolerance is applied when comparing matrix elements.
-func (tr Matrix) IsIdentity() bool {
+func (tr *Matrix) IsIdentity() bool {
 	return fequals(tr[4], 0) && fequals(tr[5], 0) && tr.IsTranslation()
 }
 
-// IsTranslation tests if a transformation is is a pure translation. A tolerance is applied when comparing matrix elements.
-func (tr Matrix) IsTranslation() bool {
+// IsTranslation tests if a transformation is a pure translation. A tolerance is applied when comparing matrix elements.
+func (tr *Matrix) IsTranslation() bool {
 	return fequals(tr[0], 1) && fequals(tr[1], 0) && fequals(tr[2], 0) && fequals(tr[3], 1)
 }
 

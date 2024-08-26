@@ -1,6 +1,6 @@
 package chartdraw
 
-// LinearCoefficientProvider is a type that returns linear cofficients.
+// LinearCoefficientProvider is a type that returns linear coefficients.
 type LinearCoefficientProvider interface {
 	Coefficients() (m, b, stdev, avg float64)
 }

@@ -228,7 +228,7 @@ func (rgc *RasterGraphicContext) Stroke(paths ...*Path) {
 	stroker.HalfLineWidth = rgc.current.LineWidth / 2
 
 	var liner Flattener
-	if rgc.current.Dash != nil && len(rgc.current.Dash) > 0 {
+	if len(rgc.current.Dash) > 0 {
 		liner = NewDashVertexConverter(rgc.current.Dash, rgc.current.DashOffset, stroker)
 	} else {
 		liner = stroker
@@ -253,7 +253,7 @@ func (rgc *RasterGraphicContext) Fill(paths ...*Path) {
 	rgc.paint(rgc.fillRasterizer, rgc.current.FillColor)
 }
 
-// FillStroke first fills the paths and than strokes them
+// FillStroke first fills the paths and then strokes them
 func (rgc *RasterGraphicContext) FillStroke(paths ...*Path) {
 	paths = append(paths, rgc.current.Path)
 	rgc.fillRasterizer.UseNonZeroWinding = rgc.current.FillRule == FillRuleWinding
@@ -265,7 +265,7 @@ func (rgc *RasterGraphicContext) FillStroke(paths ...*Path) {
 	stroker.HalfLineWidth = rgc.current.LineWidth / 2
 
 	var liner Flattener
-	if rgc.current.Dash != nil && len(rgc.current.Dash) > 0 {
+	if len(rgc.current.Dash) > 0 {
 		liner = NewDashVertexConverter(rgc.current.Dash, rgc.current.DashOffset, stroker)
 	} else {
 		liner = stroker

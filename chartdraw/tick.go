@@ -78,7 +78,7 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 
 	domain := float64(ra.GetDomain())
 	domainRemainder := domain - (tickSize * 2)
-	intermediateTickCount := int(math.Floor(float64(domainRemainder) / float64(tickSize)))
+	intermediateTickCount := int(math.Floor(domainRemainder / tickSize))
 
 	rangeDelta := math.Abs(max - min)
 	tickStep := rangeDelta / float64(intermediateTickCount)

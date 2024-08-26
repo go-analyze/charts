@@ -57,12 +57,12 @@ func (rr *rasterRenderer) SetStrokeColor(c drawing.Color) {
 	rr.s.StrokeColor = c
 }
 
-// SetLineWidth implements the interface method.
+// SetStrokeWidth implements the interface method.
 func (rr *rasterRenderer) SetStrokeWidth(width float64) {
 	rr.s.StrokeWidth = width
 }
 
-// StrokeDashArray sets the stroke dash array.
+// SetStrokeDashArray sets the stroke dash array.
 func (rr *rasterRenderer) SetStrokeDashArray(dashArray []float64) {
 	rr.s.StrokeDashArray = dashArray
 }

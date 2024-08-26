@@ -27,27 +27,27 @@ type LinearSeries struct {
 }
 
 // GetName returns the name of the time series.
-func (ls LinearSeries) GetName() string {
+func (ls *LinearSeries) GetName() string {
 	return ls.Name
 }
 
 // GetStyle returns the line style.
-func (ls LinearSeries) GetStyle() Style {
+func (ls *LinearSeries) GetStyle() Style {
 	return ls.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (ls LinearSeries) GetYAxis() YAxisType {
+func (ls *LinearSeries) GetYAxis() YAxisType {
 	return ls.YAxis
 }
 
 // Len returns the number of elements in the series.
-func (ls LinearSeries) Len() int {
+func (ls *LinearSeries) Len() int {
 	return len(ls.XValues)
 }
 
 // GetEndIndex returns the effective limit end.
-func (ls LinearSeries) GetEndIndex() int {
+func (ls *LinearSeries) GetEndIndex() int {
 	return len(ls.XValues) - 1
 }
 
@@ -94,7 +94,7 @@ func (ls *LinearSeries) Render(r Renderer, canvasBox Box, xrange, yrange Range, 
 }
 
 // Validate validates the series.
-func (ls LinearSeries) Validate() error {
+func (ls *LinearSeries) Validate() error {
 	if ls.InnerSeries == nil {
 		return fmt.Errorf("linear regression series requires InnerSeries to be set")
 	}
@@ -102,7 +102,7 @@ func (ls LinearSeries) Validate() error {
 }
 
 // IsZero returns if the linear series has computed coefficients or not.
-func (ls LinearSeries) IsZero() bool {
+func (ls *LinearSeries) IsZero() bool {
 	return ls.m == 0 && ls.b == 0
 }
 

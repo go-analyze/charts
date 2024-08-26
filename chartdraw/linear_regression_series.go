@@ -30,7 +30,7 @@ type LinearRegressionSeries struct {
 }
 
 // Coefficients returns the linear coefficients for the series.
-func (lrs LinearRegressionSeries) Coefficients() (m, b, stdev, avg float64) {
+func (lrs *LinearRegressionSeries) Coefficients() (m, b, stdev, avg float64) {
 	if lrs.IsZero() {
 		lrs.computeCoefficients()
 	}
@@ -43,27 +43,27 @@ func (lrs LinearRegressionSeries) Coefficients() (m, b, stdev, avg float64) {
 }
 
 // GetName returns the name of the time series.
-func (lrs LinearRegressionSeries) GetName() string {
+func (lrs *LinearRegressionSeries) GetName() string {
 	return lrs.Name
 }
 
 // GetStyle returns the line style.
-func (lrs LinearRegressionSeries) GetStyle() Style {
+func (lrs *LinearRegressionSeries) GetStyle() Style {
 	return lrs.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (lrs LinearRegressionSeries) GetYAxis() YAxisType {
+func (lrs *LinearRegressionSeries) GetYAxis() YAxisType {
 	return lrs.YAxis
 }
 
 // Len returns the number of elements in the series.
-func (lrs LinearRegressionSeries) Len() int {
+func (lrs *LinearRegressionSeries) Len() int {
 	return MinInt(lrs.GetLimit(), lrs.InnerSeries.Len()-lrs.GetOffset())
 }
 
 // GetLimit returns the window size.
-func (lrs LinearRegressionSeries) GetLimit() int {
+func (lrs *LinearRegressionSeries) GetLimit() int {
 	if lrs.Limit == 0 {
 		return lrs.InnerSeries.Len()
 	}
@@ -71,14 +71,14 @@ func (lrs LinearRegressionSeries) GetLimit() int {
 }
 
 // GetEndIndex returns the effective limit end.
-func (lrs LinearRegressionSeries) GetEndIndex() int {
+func (lrs *LinearRegressionSeries) GetEndIndex() int {
 	windowEnd := lrs.GetOffset() + lrs.GetLimit()
 	innerSeriesLastIndex := lrs.InnerSeries.Len() - 1
 	return MinInt(windowEnd, innerSeriesLastIndex)
 }
 
 // GetOffset returns the data offset.
-func (lrs LinearRegressionSeries) GetOffset() int {
+func (lrs *LinearRegressionSeries) GetOffset() int {
 	if lrs.Offset == 0 {
 		return 0
 	}

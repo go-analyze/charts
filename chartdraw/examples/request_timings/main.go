@@ -3,6 +3,7 @@ package main
 //go:generate go run main.go
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
 	"net/http"
@@ -31,7 +32,7 @@ func parseFloat64(str string) float64 {
 func readData() ([]time.Time, []float64) {
 	var xvalues []time.Time
 	var yvalues []float64
-	err := chartdraw.ReadLines("requests.csv", func(line string) error {
+	err := readLines("requests.csv", func(line string) error {
 		parts, err := splitCSV(line)
 		if err != nil {
 			return err
@@ -49,6 +50,25 @@ func readData() ([]time.Time, []float64) {
 		fmt.Println(err.Error())
 	}
 	return xvalues, yvalues
+}
+
+// readLines reads a file and calls the handler for each line.
+func readLines(filePath string, handler func(string) error) error {
+	f, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := scanner.Text()
+		err = handler(line)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func splitCSV(line string) ([]string, error) {

@@ -30,27 +30,27 @@ type PolynomialRegressionSeries struct {
 }
 
 // GetName returns the name of the time series.
-func (prs PolynomialRegressionSeries) GetName() string {
+func (prs *PolynomialRegressionSeries) GetName() string {
 	return prs.Name
 }
 
 // GetStyle returns the line style.
-func (prs PolynomialRegressionSeries) GetStyle() Style {
+func (prs *PolynomialRegressionSeries) GetStyle() Style {
 	return prs.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (prs PolynomialRegressionSeries) GetYAxis() YAxisType {
+func (prs *PolynomialRegressionSeries) GetYAxis() YAxisType {
 	return prs.YAxis
 }
 
 // Len returns the number of elements in the series.
-func (prs PolynomialRegressionSeries) Len() int {
+func (prs *PolynomialRegressionSeries) Len() int {
 	return MinInt(prs.GetLimit(), prs.InnerSeries.Len()-prs.GetOffset())
 }
 
 // GetLimit returns the window size.
-func (prs PolynomialRegressionSeries) GetLimit() int {
+func (prs *PolynomialRegressionSeries) GetLimit() int {
 	if prs.Limit == 0 {
 		return prs.InnerSeries.Len()
 	}
@@ -58,14 +58,14 @@ func (prs PolynomialRegressionSeries) GetLimit() int {
 }
 
 // GetEndIndex returns the effective limit end.
-func (prs PolynomialRegressionSeries) GetEndIndex() int {
+func (prs *PolynomialRegressionSeries) GetEndIndex() int {
 	windowEnd := prs.GetOffset() + prs.GetLimit()
 	innerSeriesLastIndex := prs.InnerSeries.Len() - 1
 	return MinInt(windowEnd, innerSeriesLastIndex)
 }
 
 // GetOffset returns the data offset.
-func (prs PolynomialRegressionSeries) GetOffset() int {
+func (prs *PolynomialRegressionSeries) GetOffset() int {
 	if prs.Offset == 0 {
 		return 0
 	}

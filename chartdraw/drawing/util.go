@@ -8,12 +8,6 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
-// PixelsToPoints returns the points for a given number of pixels at a DPI.
-func PixelsToPoints(dpi, pixels float64) (points float64) {
-	points = (pixels * 72.0) / dpi
-	return
-}
-
 // PointsToPixels returns the pixels for a given number of points at a DPI.
 func PointsToPixels(dpi, points float64) (pixels float64) {
 	pixels = (points * dpi) / 72.0
@@ -32,7 +26,7 @@ func distance(x1, y1, x2, y2 float64) float64 {
 }
 
 func vectorDistance(dx, dy float64) float64 {
-	return float64(math.Sqrt(dx*dx + dy*dy))
+	return math.Sqrt(dx*dx + dy*dy)
 }
 
 func pointToF64Point(p truetype.Point) (x, y float64) {

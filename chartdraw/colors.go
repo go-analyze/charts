@@ -24,15 +24,15 @@ var (
 	// ColorLightGray is the basic theme light gray color.
 	ColorLightGray = drawing.Color{R: 239, G: 239, B: 239, A: 255}
 
-	// ColorAlternateBlue is a alternate theme color.
+	// ColorAlternateBlue is an alternate theme color.
 	ColorAlternateBlue = drawing.Color{R: 106, G: 195, B: 203, A: 255}
-	// ColorAlternateGreen is a alternate theme color.
+	// ColorAlternateGreen is an alternate theme color.
 	ColorAlternateGreen = drawing.Color{R: 42, G: 190, B: 137, A: 255}
-	// ColorAlternateGray is a alternate theme color.
+	// ColorAlternateGray is an alternate theme color.
 	ColorAlternateGray = drawing.Color{R: 110, G: 128, B: 139, A: 255}
-	// ColorAlternateYellow is a alternate theme color.
+	// ColorAlternateYellow is an alternate theme color.
 	ColorAlternateYellow = drawing.Color{R: 240, G: 174, B: 90, A: 255}
-	// ColorAlternateLightGray is a alternate theme color.
+	// ColorAlternateLightGray is an alternate theme color.
 	ColorAlternateLightGray = drawing.Color{R: 187, G: 190, B: 191, A: 255}
 
 	// ColorTransparent is a transparent (alpha zero) color.
@@ -119,7 +119,7 @@ type ColorPalette interface {
 	GetSeriesColor(index int) drawing.Color
 }
 
-// DefaultColorPalette represents the default palatte.
+// DefaultColorPalette represents the default palette.
 var DefaultColorPalette defaultColorPalette
 
 type defaultColorPalette struct{}
@@ -152,7 +152,7 @@ func (dp defaultColorPalette) GetSeriesColor(index int) drawing.Color {
 	return GetDefaultColor(index)
 }
 
-// AlternateColorPalette represents the default palatte.
+// AlternateColorPalette represents the default palette.
 var AlternateColorPalette alternateColorPalette
 
 type alternateColorPalette struct{}

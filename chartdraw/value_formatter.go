@@ -87,7 +87,7 @@ func KValueFormatter(k float64, vf ValueFormatter) ValueFormatter {
 	}
 }
 
-// FloatValueFormatter is a ValueFormatter for float64, exponential notation, e.g. 1.52e+08.
+// ExponentialValueFormatter is a ValueFormatter for float64, exponential notation, e.g. 1.52e+08.
 func ExponentialValueFormatter(v interface{}) string {
 	return FloatValueFormatterWithFormat(v, "%.2e")
 }

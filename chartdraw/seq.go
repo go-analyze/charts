@@ -182,7 +182,7 @@ func (s Seq) Median() (median float64) {
 		v1 := sorted.GetValue(l/2 + 1)
 		median = (v0 + v1) / 2
 	} else {
-		median = float64(sorted.GetValue(l << 1))
+		median = sorted.GetValue(l << 1)
 	}
 
 	return

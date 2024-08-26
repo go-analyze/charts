@@ -48,7 +48,7 @@ const (
 	TextVerticalAlignMiddle TextVerticalAlign = 3
 	// TextVerticalAlignMiddleBaseline aligns the text vertically so that there is an equal number of pixels above and below the baseline of the string.
 	TextVerticalAlignMiddleBaseline TextVerticalAlign = 4
-	// TextVerticalAlignTop alignts the text so that the top of the ligatures are at y-pixel 0 in the container.
+	// TextVerticalAlignTop aligns the text so that the top of the ligatures are at y-pixel 0 in the container.
 	TextVerticalAlignTop TextVerticalAlign = 5
 )
 
@@ -86,7 +86,7 @@ func (t text) WrapFitWord(r Renderer, value string, width int, style Style) []st
 	var textBox Box
 
 	for _, c := range value {
-		if c == rune('\n') { // commit the line to output
+		if c == '\n' { // commit the line to output
 			output = append(output, t.Trim(line+word))
 			line = ""
 			word = ""
@@ -102,7 +102,7 @@ func (t text) WrapFitWord(r Renderer, value string, width int, style Style) []st
 			continue
 		}
 
-		if c == rune(' ') || c == rune('\t') {
+		if c == ' ' || c == '\t' {
 			line = line + word + string(c)
 			word = ""
 			continue
@@ -120,7 +120,7 @@ func (t text) WrapFitRune(r Renderer, value string, width int, style Style) []st
 	var line string
 	var textBox Box
 	for _, c := range value {
-		if c == rune('\n') {
+		if c == '\n' {
 			output = append(output, line)
 			line = ""
 			continue

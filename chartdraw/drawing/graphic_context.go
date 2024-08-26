@@ -77,6 +77,6 @@ type GraphicContext interface {
 	Stroke(paths ...*Path)
 	// Fill fills the paths with the color specified by SetFillColor
 	Fill(paths ...*Path)
-	// FillStroke first fills the paths and than strokes them
+	// FillStroke first fills the paths and then strokes them
 	FillStroke(paths ...*Path)
 }

@@ -154,7 +154,7 @@ func (sbc StackedBarChart) drawBars(r Renderer, canvasBox Box) {
 	xoffset := canvasBox.Left
 	for _, bar := range sbc.Bars {
 		sbc.drawBar(r, canvasBox, xoffset, bar)
-		xoffset += (sbc.GetBarSpacing() + bar.GetWidth())
+		xoffset += sbc.GetBarSpacing() + bar.GetWidth()
 	}
 }
 

@@ -7,7 +7,7 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
-// StackGraphicContext is a context that does thngs.
+// StackGraphicContext is a context that does things.
 type StackGraphicContext struct {
 	current *ContextStack
 }

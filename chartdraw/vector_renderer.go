@@ -146,21 +146,21 @@ func (vr *vectorRenderer) Close() {
 
 // Stroke draws the path with no fill.
 func (vr *vectorRenderer) Stroke() {
-	vr.drawPath(vr.s.GetStrokeOptions())
+	vr.drawPath()
 }
 
 // Fill draws the path with no stroke.
 func (vr *vectorRenderer) Fill() {
-	vr.drawPath(vr.s.GetFillOptions())
+	vr.drawPath()
 }
 
 // FillStroke draws the path with both fill and stroke.
 func (vr *vectorRenderer) FillStroke() {
-	vr.drawPath(vr.s.GetFillAndStrokeOptions())
+	vr.drawPath()
 }
 
-// drawPath draws a path.
-func (vr *vectorRenderer) drawPath(s Style) {
+// drawPath draws the path set into the p slice.
+func (vr *vectorRenderer) drawPath() {
 	vr.c.Path(strings.Join(vr.p, "\n"), vr.s.GetFillAndStrokeOptions())
 	vr.p = []string{} // clear the path
 }

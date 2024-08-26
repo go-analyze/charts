@@ -28,7 +28,7 @@ type MACDSeries struct {
 }
 
 // Validate validates the series.
-func (macd MACDSeries) Validate() error {
+func (macd *MACDSeries) Validate() error {
 	var err error
 	if macd.signal != nil {
 		err = macd.signal.Validate()
@@ -46,7 +46,7 @@ func (macd MACDSeries) Validate() error {
 }
 
 // GetPeriods returns the primary and secondary periods.
-func (macd MACDSeries) GetPeriods() (w1, w2, sig int) {
+func (macd *MACDSeries) GetPeriods() (w1, w2, sig int) {
 	if macd.PrimaryPeriod == 0 {
 		w1 = DefaultMACDPeriodPrimary
 	} else {
@@ -66,22 +66,22 @@ func (macd MACDSeries) GetPeriods() (w1, w2, sig int) {
 }
 
 // GetName returns the name of the time series.
-func (macd MACDSeries) GetName() string {
+func (macd *MACDSeries) GetName() string {
 	return macd.Name
 }
 
 // GetStyle returns the line style.
-func (macd MACDSeries) GetStyle() Style {
+func (macd *MACDSeries) GetStyle() Style {
 	return macd.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (macd MACDSeries) GetYAxis() YAxisType {
+func (macd *MACDSeries) GetYAxis() YAxisType {
 	return macd.YAxis
 }
 
 // Len returns the number of elements in the series.
-func (macd MACDSeries) Len() int {
+func (macd *MACDSeries) Len() int {
 	if macd.InnerSeries == nil {
 		return 0
 	}
@@ -140,7 +140,7 @@ type MACDSignalSeries struct {
 }
 
 // Validate validates the series.
-func (macds MACDSignalSeries) Validate() error {
+func (macds *MACDSignalSeries) Validate() error {
 	if macds.signal != nil {
 		return macds.signal.Validate()
 	}
@@ -148,7 +148,7 @@ func (macds MACDSignalSeries) Validate() error {
 }
 
 // GetPeriods returns the primary and secondary periods.
-func (macds MACDSignalSeries) GetPeriods() (w1, w2, sig int) {
+func (macds *MACDSignalSeries) GetPeriods() (w1, w2, sig int) {
 	if macds.PrimaryPeriod == 0 {
 		w1 = DefaultMACDPeriodPrimary
 	} else {
@@ -168,17 +168,17 @@ func (macds MACDSignalSeries) GetPeriods() (w1, w2, sig int) {
 }
 
 // GetName returns the name of the time series.
-func (macds MACDSignalSeries) GetName() string {
+func (macds *MACDSignalSeries) GetName() string {
 	return macds.Name
 }
 
 // GetStyle returns the line style.
-func (macds MACDSignalSeries) GetStyle() Style {
+func (macds *MACDSignalSeries) GetStyle() Style {
 	return macds.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (macds MACDSignalSeries) GetYAxis() YAxisType {
+func (macds *MACDSignalSeries) GetYAxis() YAxisType {
 	return macds.YAxis
 }
 
@@ -241,7 +241,7 @@ type MACDLineSeries struct {
 }
 
 // Validate validates the series.
-func (macdl MACDLineSeries) Validate() error {
+func (macdl *MACDLineSeries) Validate() error {
 	var err error
 	if macdl.ema1 != nil {
 		err = macdl.ema1.Validate()
@@ -262,22 +262,22 @@ func (macdl MACDLineSeries) Validate() error {
 }
 
 // GetName returns the name of the time series.
-func (macdl MACDLineSeries) GetName() string {
+func (macdl *MACDLineSeries) GetName() string {
 	return macdl.Name
 }
 
 // GetStyle returns the line style.
-func (macdl MACDLineSeries) GetStyle() Style {
+func (macdl *MACDLineSeries) GetStyle() Style {
 	return macdl.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (macdl MACDLineSeries) GetYAxis() YAxisType {
+func (macdl *MACDLineSeries) GetYAxis() YAxisType {
 	return macdl.YAxis
 }
 
 // GetPeriods returns the primary and secondary periods.
-func (macdl MACDLineSeries) GetPeriods() (w1, w2 int) {
+func (macdl *MACDLineSeries) GetPeriods() (w1, w2 int) {
 	if macdl.PrimaryPeriod == 0 {
 		w1 = DefaultMACDPeriodPrimary
 	} else {

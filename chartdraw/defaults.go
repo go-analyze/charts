@@ -38,9 +38,9 @@ const (
 	// DefaultLineSpacing is the default vertical distance between lines of text.
 	DefaultLineSpacing = 5
 
-	// DefaultYAxisMargin is the default distance from the right of the canvas to the y axis labels.
+	// DefaultYAxisMargin is the default distance from the right of the canvas to the y-axis labels.
 	DefaultYAxisMargin = 10
-	// DefaultXAxisMargin is the default distance from bottom of the canvas to the x axis labels.
+	// DefaultXAxisMargin is the default distance from bottom of the canvas to the x-axis labels.
 	DefaultXAxisMargin = 10
 
 	//DefaultVerticalTickHeight is half the margin.
@@ -48,8 +48,6 @@ const (
 	//DefaultHorizontalTickWidth is half the margin.
 	DefaultHorizontalTickWidth = DefaultYAxisMargin >> 1
 
-	// DefaultTickCount is the default number of ticks to show
-	DefaultTickCount = 10
 	// DefaultTickCountSanityCheck is a hard limit on number of ticks to prevent infinite loops.
 	DefaultTickCountSanityCheck = 1 << 10 //1024
 
@@ -73,17 +71,6 @@ const (
 	DefaultBarSpacing = 100
 	// DefaultBarWidth is the default pixel width of bars in a bar chart.
 	DefaultBarWidth = 50
-)
-
-var (
-	// DashArrayDots is a dash array that represents '....' style stroke dashes.
-	DashArrayDots = []int{1, 1}
-	// DashArrayDashesSmall is a dash array that represents '- - -' style stroke dashes.
-	DashArrayDashesSmall = []int{3, 3}
-	// DashArrayDashesMedium is a dash array that represents '-- -- --' style stroke dashes.
-	DashArrayDashesMedium = []int{5, 5}
-	// DashArrayDashesLarge is a dash array that represents '----- ----- -----' style stroke dashes.
-	DashArrayDashesLarge = []int{10, 10}
 )
 
 var (

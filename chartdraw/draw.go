@@ -167,7 +167,7 @@ func (d draw) HistogramSeries(r Renderer, canvasBox Box, xrange, yrange Range, s
 }
 
 // MeasureAnnotation measures how big an annotation would be.
-func (d draw) MeasureAnnotation(r Renderer, canvasBox Box, style Style, lx, ly int, label string) Box {
+func (d draw) MeasureAnnotation(r Renderer, style Style, lx, ly int, label string) Box {
 	style.WriteToRenderer(r)
 	defer r.ResetStyle()
 
@@ -195,8 +195,8 @@ func (d draw) MeasureAnnotation(r Renderer, canvasBox Box, style Style, lx, ly i
 	}
 }
 
-// Annotation draws an anotation with a renderer.
-func (d draw) Annotation(r Renderer, canvasBox Box, style Style, lx, ly int, label string) {
+// Annotation draws an annotation with a renderer.
+func (d draw) Annotation(r Renderer, style Style, lx, ly int, label string) {
 	style.GetTextOptions().WriteToRenderer(r)
 	defer r.ResetStyle()
 
@@ -268,7 +268,7 @@ func (d draw) BoxCorners(r Renderer, bc BoxCorners, s Style) {
 	r.FillStroke()
 }
 
-// DrawText draws text with a given style.
+// Text draws text with a given style.
 func (d draw) Text(r Renderer, text string, x, y int, style Style) {
 	style.GetTextOptions().WriteToRenderer(r)
 	defer r.ResetStyle()

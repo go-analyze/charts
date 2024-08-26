@@ -23,22 +23,22 @@ type LinearSeq struct {
 }
 
 // Start returns the start value.
-func (lg LinearSeq) Start() float64 {
+func (lg *LinearSeq) Start() float64 {
 	return lg.start
 }
 
 // End returns the end value.
-func (lg LinearSeq) End() float64 {
+func (lg *LinearSeq) End() float64 {
 	return lg.end
 }
 
 // Step returns the step value.
-func (lg LinearSeq) Step() float64 {
+func (lg *LinearSeq) Step() float64 {
 	return lg.step
 }
 
 // Len returns the number of elements in the seq.
-func (lg LinearSeq) Len() int {
+func (lg *LinearSeq) Len() int {
 	if lg.start < lg.end {
 		return int((lg.end-lg.start)/lg.step) + 1
 	}
@@ -46,7 +46,7 @@ func (lg LinearSeq) Len() int {
 }
 
 // GetValue returns the value at a given index.
-func (lg LinearSeq) GetValue(index int) float64 {
+func (lg *LinearSeq) GetValue(index int) float64 {
 	fi := float64(index)
 	if lg.start < lg.end {
 		return lg.start + (fi * lg.step)

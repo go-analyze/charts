@@ -17,7 +17,7 @@ type Times []time.Time
 
 // Array returns the times to an array.
 func (t Times) Array() []time.Time {
-	return []time.Time(t)
+	return t
 }
 
 // Len returns the length of the array.

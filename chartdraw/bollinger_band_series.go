@@ -24,22 +24,22 @@ type BollingerBandsSeries struct {
 }
 
 // GetName returns the name of the time series.
-func (bbs BollingerBandsSeries) GetName() string {
+func (bbs *BollingerBandsSeries) GetName() string {
 	return bbs.Name
 }
 
 // GetStyle returns the line style.
-func (bbs BollingerBandsSeries) GetStyle() Style {
+func (bbs *BollingerBandsSeries) GetStyle() Style {
 	return bbs.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (bbs BollingerBandsSeries) GetYAxis() YAxisType {
+func (bbs *BollingerBandsSeries) GetYAxis() YAxisType {
 	return bbs.YAxis
 }
 
 // GetPeriod returns the window size.
-func (bbs BollingerBandsSeries) GetPeriod() int {
+func (bbs *BollingerBandsSeries) GetPeriod() int {
 	if bbs.Period == 0 {
 		return DefaultSimpleMovingAveragePeriod
 	}
@@ -49,7 +49,7 @@ func (bbs BollingerBandsSeries) GetPeriod() int {
 // GetK returns the K value, or the number of standard deviations above and below
 // to band the simple moving average with.
 // Typical K value is 2.0.
-func (bbs BollingerBandsSeries) GetK(defaults ...float64) float64 {
+func (bbs *BollingerBandsSeries) GetK(defaults ...float64) float64 {
 	if bbs.K == 0 {
 		if len(defaults) > 0 {
 			return defaults[0]
@@ -60,7 +60,7 @@ func (bbs BollingerBandsSeries) GetK(defaults ...float64) float64 {
 }
 
 // Len returns the number of elements in the series.
-func (bbs BollingerBandsSeries) Len() int {
+func (bbs *BollingerBandsSeries) Len() int {
 	return bbs.InnerSeries.Len()
 }
 
@@ -127,7 +127,7 @@ func (bbs *BollingerBandsSeries) Render(r Renderer, canvasBox Box, xrange, yrang
 }
 
 // Validate validates the series.
-func (bbs BollingerBandsSeries) Validate() error {
+func (bbs *BollingerBandsSeries) Validate() error {
 	if bbs.InnerSeries == nil {
 		return fmt.Errorf("bollinger bands series requires InnerSeries to be set")
 	}

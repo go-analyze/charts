@@ -38,8 +38,8 @@ func (l *LineStroker) LineTo(x, y float64) {
 func (l *LineStroker) LineJoin() {}
 
 func (l *LineStroker) line(x1, y1, x2, y2 float64) {
-	dx := (x2 - x1)
-	dy := (y2 - y1)
+	dx := x2 - x1
+	dy := y2 - y1
 	d := vectorDistance(dx, dy)
 	if d != 0 {
 		nx := dy * l.HalfLineWidth / d

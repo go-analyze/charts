@@ -37,7 +37,7 @@ func NewValueBufferWithCapacity(capacity int) *ValueBuffer {
 	}
 }
 
-// ValueBuffer is a fifo datastructure that is backed by a pre-allocated array.
+// ValueBuffer is a fifo data structure that is backed by a pre-allocated array.
 // Instead of allocating a whole new node object for each element, array elements are re-used (which saves GC churn).
 // Enqueue can be O(n), Dequeue is generally O(1).
 // Buffer implements `seq.Provider`
@@ -96,7 +96,7 @@ func (b *ValueBuffer) Clear() {
 // Enqueue adds an element to the "back" of the Buffer.
 func (b *ValueBuffer) Enqueue(value float64) {
 	if b.size == len(b.array) {
-		newCapacity := int(len(b.array) * int(bufferGrowFactor/100))
+		newCapacity := len(b.array) * bufferGrowFactor / 100
 		if newCapacity < (len(b.array) + bufferMinimumGrow) {
 			newCapacity = len(b.array) + bufferMinimumGrow
 		}

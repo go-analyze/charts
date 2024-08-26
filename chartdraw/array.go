@@ -7,7 +7,7 @@ var (
 // NewArray returns a new array from a given set of values.
 // Array implements Sequence, which allows it to be used with the sequence helpers.
 func NewArray(values ...float64) Array {
-	return Array(values)
+	return values
 }
 
 // Array is a wrapper for an array of floats that implements `ValuesProvider`.

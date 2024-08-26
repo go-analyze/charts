@@ -104,7 +104,7 @@ func traceWindowIndices(i int) (startAt, endAt int) {
 func traceCalcDeltas(c []float64) (dx, dy, d float64) {
 	dx = c[4] - c[0]
 	dy = c[5] - c[1]
-	d = math.Abs(((c[2]-c[4])*dy - (c[3]-c[5])*dx))
+	d = math.Abs((c[2]-c[4])*dy - (c[3]-c[5])*dx)
 	return
 }
 

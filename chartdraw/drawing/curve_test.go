@@ -18,7 +18,7 @@ func (ml *mockLine) LineTo(x, y float64) {
 	ml.inner = append(ml.inner, point{x, y})
 }
 
-func (ml mockLine) Len() int {
+func (ml *mockLine) Len() int {
 	return len(ml.inner)
 }
 

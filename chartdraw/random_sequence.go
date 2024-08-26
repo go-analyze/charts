@@ -70,7 +70,7 @@ func (r *RandomSeq) WithLen(length int) *RandomSeq {
 }
 
 // Min returns the minimum value.
-func (r RandomSeq) Min() *float64 {
+func (r *RandomSeq) Min() *float64 {
 	return r.min
 }
 
@@ -81,7 +81,7 @@ func (r *RandomSeq) WithMin(min float64) *RandomSeq {
 }
 
 // Max returns the maximum value.
-func (r RandomSeq) Max() *float64 {
+func (r *RandomSeq) Max() *float64 {
 	return r.max
 }
 

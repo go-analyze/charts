@@ -71,7 +71,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	xRange := NewRange(p, seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
 	seriesNames := seriesList.Names()
 
-	rendererList := []Renderer{}
+	var rendererList []Renderer
 	for index := range seriesList {
 		series := seriesList[index]
 		seriesColor := theme.GetSeriesColor(series.index)

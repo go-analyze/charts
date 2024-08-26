@@ -20,12 +20,12 @@ func (cs ConcatSeries) GetValue(index int) (x, y float64) {
 	cursor := 0
 	for _, s := range cs {
 		if typed, isValuesProvider := s.(ValuesProvider); isValuesProvider {
-			len := typed.Len()
-			if index < cursor+len {
+			length := typed.Len()
+			if index < cursor+length {
 				x, y = typed.GetValues(index - cursor) //FENCEPOSTS.
 				return
 			}
-			cursor += typed.Len()
+			cursor += length
 		}
 	}
 	return
@@ -33,10 +33,8 @@ func (cs ConcatSeries) GetValue(index int) (x, y float64) {
 
 // Validate validates the series.
 func (cs ConcatSeries) Validate() error {
-	var err error
 	for _, s := range cs {
-		err = s.Validate()
-		if err != nil {
+		if err := s.Validate(); err != nil {
 			return err
 		}
 	}

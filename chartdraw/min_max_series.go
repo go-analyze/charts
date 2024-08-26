@@ -16,22 +16,22 @@ type MinSeries struct {
 }
 
 // GetName returns the name of the time series.
-func (ms MinSeries) GetName() string {
+func (ms *MinSeries) GetName() string {
 	return ms.Name
 }
 
 // GetStyle returns the line style.
-func (ms MinSeries) GetStyle() Style {
+func (ms *MinSeries) GetStyle() Style {
 	return ms.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (ms MinSeries) GetYAxis() YAxisType {
+func (ms *MinSeries) GetYAxis() YAxisType {
 	return ms.YAxis
 }
 
 // Len returns the number of elements in the series.
-func (ms MinSeries) Len() int {
+func (ms *MinSeries) Len() int {
 	return ms.InnerSeries.Len()
 }
 
@@ -82,22 +82,22 @@ type MaxSeries struct {
 }
 
 // GetName returns the name of the time series.
-func (ms MaxSeries) GetName() string {
+func (ms *MaxSeries) GetName() string {
 	return ms.Name
 }
 
 // GetStyle returns the line style.
-func (ms MaxSeries) GetStyle() Style {
+func (ms *MaxSeries) GetStyle() Style {
 	return ms.Style
 }
 
 // GetYAxis returns which YAxis the series draws on.
-func (ms MaxSeries) GetYAxis() YAxisType {
+func (ms *MaxSeries) GetYAxis() YAxisType {
 	return ms.YAxis
 }
 
 // Len returns the number of elements in the series.
-func (ms MaxSeries) Len() int {
+func (ms *MaxSeries) Len() int {
 	return ms.InnerSeries.Len()
 }
 

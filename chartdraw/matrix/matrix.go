@@ -211,7 +211,7 @@ func (m *Matrix) Col(col int) Vector {
 	for row := 0; row < rows; row++ {
 		values[row] = m.Get(row, col)
 	}
-	return Vector(values)
+	return values
 }
 
 // Row returns a row of the matrix as a vector.
@@ -221,7 +221,7 @@ func (m *Matrix) Row(row int) Vector {
 	for col := 0; col < cols; col++ {
 		values[col] = m.Get(row, col)
 	}
-	return Vector(values)
+	return values
 }
 
 // SubMatrix returns a sub matrix from a given outer matrix.
@@ -298,7 +298,7 @@ func (m *Matrix) DiagonalVector() Vector {
 	for index := 0; index < rank; index++ {
 		values[index] = m.Get(index, index)
 	}
-	return Vector(values)
+	return values
 }
 
 // Diagonal returns a matrix from the diagonal of a matrix.

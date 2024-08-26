@@ -125,7 +125,7 @@ func (ya YAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 	}
 
 	if !ya.NameStyle.Hidden && len(ya.Name) > 0 {
-		maxx += (DefaultYAxisMargin + maxTextHeight)
+		maxx += DefaultYAxisMargin + maxTextHeight
 	}
 
 	return Box{

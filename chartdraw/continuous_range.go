@@ -14,19 +14,19 @@ type ContinuousRange struct {
 }
 
 // IsDescending returns if the range is descending.
-func (r ContinuousRange) IsDescending() bool {
+func (r *ContinuousRange) IsDescending() bool {
 	return r.Descending
 }
 
 // IsZero returns if the ContinuousRange has been set or not.
-func (r ContinuousRange) IsZero() bool {
+func (r *ContinuousRange) IsZero() bool {
 	return (r.Min == 0 || math.IsNaN(r.Min)) &&
 		(r.Max == 0 || math.IsNaN(r.Max)) &&
 		r.Domain == 0
 }
 
 // GetMin gets the min value for the continuous range.
-func (r ContinuousRange) GetMin() float64 {
+func (r *ContinuousRange) GetMin() float64 {
 	return r.Min
 }
 
@@ -36,7 +36,7 @@ func (r *ContinuousRange) SetMin(min float64) {
 }
 
 // GetMax returns the max value for the continuous range.
-func (r ContinuousRange) GetMax() float64 {
+func (r *ContinuousRange) GetMax() float64 {
 	return r.Max
 }
 
@@ -46,12 +46,12 @@ func (r *ContinuousRange) SetMax(max float64) {
 }
 
 // GetDelta returns the difference between the min and max value.
-func (r ContinuousRange) GetDelta() float64 {
+func (r *ContinuousRange) GetDelta() float64 {
 	return r.Max - r.Min
 }
 
 // GetDomain returns the range domain.
-func (r ContinuousRange) GetDomain() int {
+func (r *ContinuousRange) GetDomain() int {
 	return r.Domain
 }
 
@@ -61,7 +61,7 @@ func (r *ContinuousRange) SetDomain(domain int) {
 }
 
 // String returns a simple string for the ContinuousRange.
-func (r ContinuousRange) String() string {
+func (r *ContinuousRange) String() string {
 	if r.GetDelta() == 0 {
 		return "ContinuousRange [empty]"
 	}
@@ -69,7 +69,7 @@ func (r ContinuousRange) String() string {
 }
 
 // Translate maps a given value into the ContinuousRange space.
-func (r ContinuousRange) Translate(value float64) int {
+func (r *ContinuousRange) Translate(value float64) int {
 	normalized := value - r.Min
 	ratio := normalized / r.GetDelta()
 
