@@ -332,14 +332,12 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 		for j, dataItem := range item.Data {
 			data[j] = SeriesData{
 				Value: dataItem.Value.First(),
-				Style: dataItem.ItemStyle.ToStyle(),
 			}
 		}
 		seriesList = append(seriesList, Series{
 			Type:       item.Type,
 			Data:       data,
 			YAxisIndex: item.YAxisIndex,
-			Style:      item.ItemStyle.ToStyle(),
 			Label: SeriesLabel{
 				Color:    parseColor(item.Label.Color),
 				Show:     item.Label.Show,

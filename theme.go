@@ -41,6 +41,10 @@ type ColorPalette interface {
 	// WithTextColor will provide a new ColorPalette that uses the specified color for text.
 	// This is generally recommended over using the FontColor config values.
 	WithTextColor(Color) ColorPalette
+	// WithSeriesColors will provide a new ColorPalette that uses the specified series colors.
+	WithSeriesColors([]Color) ColorPalette
+	// WithBackgroundColor will provide a new ColorPalette that uses the specified color for the background.
+	WithBackgroundColor(Color) ColorPalette
 }
 
 type themeColorPalette struct {
@@ -341,5 +345,32 @@ func (t *themeColorPalette) WithTextColor(c Color) ColorPalette {
 	copy := *t
 	copy.name += "-text_mod"
 	copy.textColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithSeriesColors(colors []Color) ColorPalette {
+	copy := *t
+	if len(colors) == 0 { // ignore invalid input rather than panic later
+		copy.name += "-ignored_invalid_series_mod"
+		return &copy
+	}
+	copy.name += "-series_mod"
+	copy.seriesColors = colors
+	return &copy
+}
+
+func (t *themeColorPalette) WithBackgroundColor(color Color) ColorPalette {
+	copy := *t
+	copy.name += "-background_mod"
+	copy.backgroundColor = color
+	updatedDark := !isLightColor(color)
+	if copy.isDarkMode != updatedDark {
+		copy.isDarkMode = updatedDark
+		if copy.isDarkMode {
+			copy.name += "_dark"
+		} else {
+			copy.name += "_light"
+		}
+	}
 	return &copy
 }

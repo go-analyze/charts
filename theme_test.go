@@ -205,3 +205,55 @@ func TestWithTextColor(t *testing.T) {
 	assert.Equal(t, drawing.ColorWhite, blackCP.GetBackgroundColor())
 	assert.Equal(t, drawing.ColorWhite, blackCP.GetSeriesColor(0))
 }
+
+func TestWithSeriesColors(t *testing.T) {
+	t.Parallel()
+
+	yellowCP := &themeColorPalette{
+		name:               t.Name(),
+		isDarkMode:         false,
+		axisSplitLineColor: drawing.ColorYellow,
+		axisStrokeColor:    drawing.ColorYellow,
+		backgroundColor:    drawing.ColorYellow,
+		textColor:          drawing.ColorYellow,
+		seriesColors:       []Color{drawing.ColorYellow},
+	}
+
+	t.Run("ignored", func(t *testing.T) {
+		invalidCP := yellowCP.WithSeriesColors([]Color{})
+
+		assert.Equal(t, yellowCP.GetSeriesColor(0), invalidCP.GetSeriesColor(0))
+	})
+	t.Run("updated", func(t *testing.T) {
+		blackCP := yellowCP.WithSeriesColors([]Color{drawing.ColorBlack})
+
+		assert.Equal(t, drawing.ColorYellow, blackCP.GetTextColor())
+		assert.Equal(t, drawing.ColorYellow, blackCP.GetAxisSplitLineColor())
+		assert.Equal(t, drawing.ColorYellow, blackCP.GetAxisStrokeColor())
+		assert.Equal(t, drawing.ColorYellow, blackCP.GetBackgroundColor())
+		assert.Equal(t, drawing.ColorBlack, blackCP.GetSeriesColor(0))
+	})
+}
+
+func TestWithBackgroundColor(t *testing.T) {
+	t.Parallel()
+
+	whiteCP := &themeColorPalette{
+		name:               t.Name(),
+		isDarkMode:         false,
+		axisSplitLineColor: drawing.ColorWhite,
+		axisStrokeColor:    drawing.ColorWhite,
+		backgroundColor:    drawing.ColorWhite,
+		textColor:          drawing.ColorWhite,
+		seriesColors:       []Color{drawing.ColorWhite},
+	}
+
+	blackCP := whiteCP.WithBackgroundColor(drawing.ColorBlack)
+
+	require.False(t, whiteCP.IsDark())
+	assert.True(t, blackCP.IsDark())
+
+	yellowCP := blackCP.WithBackgroundColor(drawing.ColorYellow)
+
+	require.False(t, yellowCP.IsDark())
+}

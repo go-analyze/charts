@@ -5,15 +5,11 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type SeriesData struct {
 	// Value is the retained value for the data.
 	Value float64
-	// Style provides a style for the series data.
-	Style Style
 }
 
 // NewSeriesListDataFromValues returns a series list
@@ -98,8 +94,6 @@ type Series struct {
 	Data []SeriesData
 	// YAxisIndex is the index for the axis, it must be 0 or 1.
 	YAxisIndex int
-	// Style represents the style for the series.
-	Style chartdraw.Style
 	// Label provides the series labels.
 	Label SeriesLabel
 	// Name specifies a name for the series.

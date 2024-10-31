@@ -343,9 +343,6 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 						},
 						{
 							Value: 190,
-							Style: charts.Style{
-								FillColor: charts.Color{R: 169, G: 0, B: 0, A: 255},
-							},
 						},
 						{
 							Value: 230,

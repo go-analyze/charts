@@ -111,9 +111,6 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 
 			h := yRange.getHeight(item.Value)
 			fillColor := seriesColor
-			if !item.Style.FillColor.IsZero() {
-				fillColor = item.Style.FillColor
-			}
 			top := barMaxHeight - h
 
 			seriesPainter.OverrideDrawingStyle(Style{
