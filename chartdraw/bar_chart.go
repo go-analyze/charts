@@ -455,10 +455,12 @@ func (bc BarChart) getTitleFontSize() float64 {
 
 func (bc BarChart) styleDefaultsAxes() Style {
 	return Style{
+		FontStyle: FontStyle{
+			Font:      bc.GetFont(),
+			FontSize:  DefaultAxisFontSize,
+			FontColor: bc.GetColorPalette().TextColor(),
+		},
 		StrokeColor:         bc.GetColorPalette().AxisStrokeColor(),
-		Font:                bc.GetFont(),
-		FontSize:            DefaultAxisFontSize,
-		FontColor:           bc.GetColorPalette().TextColor(),
 		TextHorizontalAlign: TextHorizontalAlignCenter,
 		TextVerticalAlign:   TextVerticalAlignTop,
 		TextWrap:            TextWrapWord,
@@ -467,7 +469,9 @@ func (bc BarChart) styleDefaultsAxes() Style {
 
 func (bc BarChart) styleDefaultsElements() Style {
 	return Style{
-		Font: bc.GetFont(),
+		FontStyle: FontStyle{
+			Font: bc.GetFont(),
+		},
 	}
 }
 

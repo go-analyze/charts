@@ -113,7 +113,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			fillColor := seriesColor
 			top := barMaxHeight - h
 
-			seriesPainter.OverrideDrawingStyle(Style{
+			seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 				FillColor: fillColor,
 			})
 			if flagIs(true, opt.RoundedBarCaps) {

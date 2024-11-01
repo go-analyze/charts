@@ -7,8 +7,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestConvertToArray(t *testing.T) {
@@ -66,18 +64,6 @@ func TestEChartsXAxis(t *testing.T) {
 			},
 		},
 	}, ex)
-}
-
-func TestEChartStyle(t *testing.T) {
-	es := EChartStyle{
-		Color: "#999",
-	}
-	color := drawing.Color{R: 153, G: 153, B: 153, A: 255}
-	assert.Equal(t, Style{
-		FillColor:   color,
-		FontColor:   color,
-		StrokeColor: color,
-	}, es.ToStyle())
 }
 
 func TestEChartsPadding(t *testing.T) {

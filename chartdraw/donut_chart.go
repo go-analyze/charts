@@ -154,7 +154,10 @@ func (pc DonutChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 	//making the donut hole
 	v := Value{Value: 100, Label: "center"}
 	styletemp := pc.SliceStyle.InheritFrom(Style{
-		StrokeColor: ColorWhite, StrokeWidth: 4.0, FillColor: ColorWhite, FontColor: ColorWhite, //Font:        pc.GetFont(),//FontSize:    pc.getScaledFontSize(),
+		StrokeColor: ColorWhite, StrokeWidth: 4.0, FillColor: ColorWhite,
+		FontStyle: FontStyle{
+			FontColor: ColorWhite, //Font:        pc.GetFont(),//FontSize:    pc.getScaledFontSize(),
+		},
 	})
 	v.Style.InheritFrom(styletemp).WriteToRenderer(r)
 	r.MoveTo(cx, cy)
@@ -223,12 +226,14 @@ func (pc DonutChart) styleDefaultsCanvas() Style {
 
 func (pc DonutChart) styleDonutChartValue(index int) Style {
 	return pc.SliceStyle.InheritFrom(Style{
+		FontStyle: FontStyle{
+			FontSize:  pc.getScaledFontSize(),
+			FontColor: pc.GetColorPalette().TextColor(),
+			Font:      pc.GetFont(),
+		},
 		StrokeColor: ColorWhite,
 		StrokeWidth: 4.0,
 		FillColor:   pc.GetColorPalette().GetSeriesColor(index),
-		FontSize:    pc.getScaledFontSize(),
-		FontColor:   pc.GetColorPalette().TextColor(),
-		Font:        pc.GetFont(),
 	})
 }
 
@@ -256,15 +261,19 @@ func (pc DonutChart) styleDefaultsBackground() Style {
 
 func (pc DonutChart) styleDefaultsElements() Style {
 	return Style{
-		Font: pc.GetFont(),
+		FontStyle: FontStyle{
+			Font: pc.GetFont(),
+		},
 	}
 }
 
 func (pc DonutChart) styleDefaultsTitle() Style {
 	return pc.TitleStyle.InheritFrom(Style{
-		FontColor:           pc.GetColorPalette().TextColor(),
-		Font:                pc.GetFont(),
-		FontSize:            pc.getTitleFontSize(),
+		FontStyle: FontStyle{
+			FontColor: pc.GetColorPalette().TextColor(),
+			Font:      pc.GetFont(),
+			FontSize:  pc.getTitleFontSize(),
+		},
 		TextHorizontalAlign: TextHorizontalAlignCenter,
 		TextVerticalAlign:   TextVerticalAlignTop,
 		TextWrap:            TextWrapWord,

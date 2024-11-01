@@ -199,7 +199,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	maxY := 0
 	minY := 0
 	for _, s := range sectors {
-		seriesPainter.OverrideDrawingStyle(Style{
+		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 			StrokeWidth: 1,
 			StrokeColor: s.color,
 			FillColor:   s.color,
@@ -240,7 +240,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		seriesPainter.MoveTo(s.lineBranchX, s.lineBranchY)
 		seriesPainter.LineTo(s.lineEndX, s.lineEndY)
 		seriesPainter.Stroke()
-		textStyle := Style{
+		textStyle := chartdraw.FontStyle{
 			FontColor: theme.GetTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,
@@ -248,7 +248,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		if !s.series.Label.Color.IsZero() {
 			textStyle.FontColor = s.series.Label.Color
 		}
-		seriesPainter.OverrideTextStyle(textStyle)
+		seriesPainter.OverrideFontStyle(textStyle)
 		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label))
 		seriesPainter.Text(s.label, x, y)
 	}

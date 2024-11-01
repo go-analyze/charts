@@ -2,6 +2,8 @@ package charts
 
 import (
 	"github.com/golang/freetype/truetype"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type funnelChart struct {
@@ -120,13 +122,13 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 		}
 		color := theme.GetSeriesColor(series.index)
 
-		seriesPainter.OverrideDrawingStyle(Style{
+		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 			FillColor: color,
 		}).FillArea(points)
 
 		// text
 		text := textList[index]
-		seriesPainter.OverrideTextStyle(Style{
+		seriesPainter.OverrideFontStyle(chartdraw.FontStyle{
 			FontColor: theme.GetTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,

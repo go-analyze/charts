@@ -6,7 +6,6 @@ import (
 )
 
 type Box = chartdraw.Box
-type Style = chartdraw.Style
 type Color = drawing.Color
 
 var BoxZero = chartdraw.BoxZero

@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/freetype/truetype"
 
+	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
@@ -88,7 +89,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	for index := range seriesList {
 		series := seriesList[index]
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
-		drawingStyle := Style{
+		drawingStyle := chartdraw.Style{
 			StrokeColor: seriesColor,
 			StrokeWidth: strokeWidth,
 		}
@@ -144,7 +145,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				X: areaPoints[0].X,
 				Y: bottomY,
 			}, areaPoints[0])
-			seriesPainter.SetDrawingStyle(Style{
+			seriesPainter.SetDrawingStyle(chartdraw.Style{
 				FillColor: seriesColor.WithAlpha(opacity),
 			})
 			seriesPainter.FillArea(areaPoints)

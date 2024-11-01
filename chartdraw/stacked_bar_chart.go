@@ -560,9 +560,11 @@ func (sbc StackedBarChart) styleDefaultsStackedBarValue(index int) Style {
 		StrokeColor: sbc.GetColorPalette().GetSeriesColor(index),
 		StrokeWidth: 3.0,
 		FillColor:   sbc.GetColorPalette().GetSeriesColor(index),
-		FontSize:    sbc.getScaledFontSize(),
-		FontColor:   sbc.GetColorPalette().TextColor(),
-		Font:        sbc.GetFont(),
+		FontStyle: FontStyle{
+			FontSize:  sbc.getScaledFontSize(),
+			FontColor: sbc.GetColorPalette().TextColor(),
+			Font:      sbc.GetFont(),
+		},
 	}
 }
 
@@ -582,10 +584,12 @@ func (sbc StackedBarChart) getScaledFontSize() float64 {
 
 func (sbc StackedBarChart) styleDefaultsAxes() Style {
 	return Style{
-		StrokeColor:         DefaultAxisColor,
-		Font:                sbc.GetFont(),
-		FontSize:            DefaultAxisFontSize,
-		FontColor:           DefaultAxisColor,
+		StrokeColor: DefaultAxisColor,
+		FontStyle: FontStyle{
+			Font:      sbc.GetFont(),
+			FontSize:  DefaultAxisFontSize,
+			FontColor: DefaultAxisColor,
+		},
 		TextHorizontalAlign: TextHorizontalAlignCenter,
 		TextVerticalAlign:   TextVerticalAlignTop,
 		TextWrap:            TextWrapWord,
@@ -594,10 +598,12 @@ func (sbc StackedBarChart) styleDefaultsAxes() Style {
 
 func (sbc StackedBarChart) styleDefaultsHorizontalAxes() Style {
 	return Style{
-		StrokeColor:         DefaultAxisColor,
-		Font:                sbc.GetFont(),
-		FontSize:            DefaultAxisFontSize,
-		FontColor:           DefaultAxisColor,
+		StrokeColor: DefaultAxisColor,
+		FontStyle: FontStyle{
+			Font:      sbc.GetFont(),
+			FontSize:  DefaultAxisFontSize,
+			FontColor: DefaultAxisColor,
+		},
 		TextHorizontalAlign: TextHorizontalAlignCenter,
 		TextVerticalAlign:   TextVerticalAlignMiddle,
 		TextWrap:            TextWrapWord,
@@ -606,6 +612,8 @@ func (sbc StackedBarChart) styleDefaultsHorizontalAxes() Style {
 
 func (sbc StackedBarChart) styleDefaultsElements() Style {
 	return Style{
-		Font: sbc.GetFont(),
+		FontStyle: FontStyle{
+			Font: sbc.GetFont(),
+		},
 	}
 }

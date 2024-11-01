@@ -517,19 +517,23 @@ func (c Chart) styleDefaultsCanvas() Style {
 
 func (c Chart) styleDefaultsSeries(seriesIndex int) Style {
 	return Style{
+		FontStyle: FontStyle{
+			Font:     c.GetFont(),
+			FontSize: DefaultFontSize,
+		},
 		DotColor:    c.GetColorPalette().GetSeriesColor(seriesIndex),
 		StrokeColor: c.GetColorPalette().GetSeriesColor(seriesIndex),
 		StrokeWidth: DefaultSeriesLineWidth,
-		Font:        c.GetFont(),
-		FontSize:    DefaultFontSize,
 	}
 }
 
 func (c Chart) styleDefaultsAxes() Style {
 	return Style{
-		Font:        c.GetFont(),
-		FontColor:   c.GetColorPalette().TextColor(),
-		FontSize:    DefaultAxisFontSize,
+		FontStyle: FontStyle{
+			Font:      c.GetFont(),
+			FontColor: c.GetColorPalette().TextColor(),
+			FontSize:  DefaultAxisFontSize,
+		},
 		StrokeColor: c.GetColorPalette().AxisStrokeColor(),
 		StrokeWidth: DefaultAxisLineWidth,
 	}
@@ -537,7 +541,9 @@ func (c Chart) styleDefaultsAxes() Style {
 
 func (c Chart) styleDefaultsElements() Style {
 	return Style{
-		Font: c.GetFont(),
+		FontStyle: FontStyle{
+			Font: c.GetFont(),
+		},
 	}
 }
 

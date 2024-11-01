@@ -57,9 +57,11 @@ func TestCanvasStyleSVG(t *testing.T) {
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
 		FillColor:   drawing.ColorWhite,
-		FontColor:   drawing.ColorWhite,
-		Font:        f,
-		Padding:     DefaultBackgroundPadding,
+		FontStyle: FontStyle{
+			FontColor: drawing.ColorWhite,
+			Font:      f,
+		},
+		Padding: DefaultBackgroundPadding,
 	}
 
 	canvas := &canvas{dpi: DefaultDPI}

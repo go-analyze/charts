@@ -17,8 +17,10 @@ func TestXAxisGetTicks(t *testing.T) {
 	xa := XAxis{}
 	xr := &ContinuousRange{Min: 10, Max: 100, Domain: 1024}
 	styleDefaults := Style{
-		Font:     f,
-		FontSize: 10.0,
+		FontStyle: FontStyle{
+			Font:     f,
+			FontSize: 10.0,
+		},
 	}
 	vf := FloatValueFormatter
 	ticks := xa.GetTicks(r, xr, styleDefaults, vf)
@@ -37,8 +39,10 @@ func TestXAxisGetTicksWithUserDefaults(t *testing.T) {
 	}
 	xr := &ContinuousRange{Min: 10, Max: 100, Domain: 1024}
 	styleDefaults := Style{
-		Font:     f,
-		FontSize: 10.0,
+		FontStyle: FontStyle{
+			Font:     f,
+			FontSize: 10.0,
+		},
 	}
 	vf := FloatValueFormatter
 	ticks := xa.GetTicks(r, xr, styleDefaults, vf)
@@ -49,8 +53,10 @@ func TestXAxisMeasure(t *testing.T) {
 	f, err := GetDefaultFont()
 	require.NoError(t, err)
 	style := Style{
-		Font:     f,
-		FontSize: 10.0,
+		FontStyle: FontStyle{
+			Font:     f,
+			FontSize: 10.0,
+		},
 	}
 	r, err := PNG(100, 100)
 	require.NoError(t, err)

@@ -222,9 +222,11 @@ func (pc PieChart) stylePieChartValue(index int) Style {
 		StrokeColor: ColorWhite,
 		StrokeWidth: 5.0,
 		FillColor:   pc.GetColorPalette().GetSeriesColor(index),
-		FontSize:    pc.getScaledFontSize(),
-		FontColor:   pc.GetColorPalette().TextColor(),
-		Font:        pc.GetFont(),
+		FontStyle: FontStyle{
+			FontSize:  pc.getScaledFontSize(),
+			FontColor: pc.GetColorPalette().TextColor(),
+			Font:      pc.GetFont(),
+		},
 	})
 }
 
@@ -252,15 +254,19 @@ func (pc PieChart) styleDefaultsBackground() Style {
 
 func (pc PieChart) styleDefaultsElements() Style {
 	return Style{
-		Font: pc.GetFont(),
+		FontStyle: FontStyle{
+			Font: pc.GetFont(),
+		},
 	}
 }
 
 func (pc PieChart) styleDefaultsTitle() Style {
 	return pc.TitleStyle.InheritFrom(Style{
-		FontColor:           pc.GetColorPalette().TextColor(),
-		Font:                pc.GetFont(),
-		FontSize:            pc.getTitleFontSize(),
+		FontStyle: FontStyle{
+			FontColor: pc.GetColorPalette().TextColor(),
+			Font:      pc.GetFont(),
+			FontSize:  pc.getTitleFontSize(),
+		},
 		TextHorizontalAlign: TextHorizontalAlignCenter,
 		TextVerticalAlign:   TextVerticalAlignTop,
 		TextWrap:            TextWrapWord,

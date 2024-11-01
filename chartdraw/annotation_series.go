@@ -35,10 +35,12 @@ func (as AnnotationSeries) GetYAxis() YAxisType {
 
 func (as AnnotationSeries) annotationStyleDefaults(defaults Style) Style {
 	return Style{
-		FontColor:   DefaultTextColor,
-		Font:        defaults.Font,
+		FontStyle: FontStyle{
+			FontColor: DefaultTextColor,
+			Font:      defaults.Font,
+			FontSize:  DefaultAnnotationFontSize,
+		},
 		FillColor:   DefaultAnnotationFillColor,
-		FontSize:    DefaultAnnotationFontSize,
 		StrokeColor: defaults.StrokeColor,
 		StrokeWidth: defaults.StrokeWidth,
 		Padding:     DefaultAnnotationPadding,

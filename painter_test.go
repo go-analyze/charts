@@ -25,7 +25,7 @@ func TestPainterOption(t *testing.T) {
 		PainterBoxOption(Box{Right: 400, Bottom: 300}),
 		PainterPaddingOption(Box{Left: 1, Top: 2, Right: 3, Bottom: 4}),
 		PainterFontOption(font),
-		PainterStyleOption(Style{ClassName: "test"}),
+		PainterStyleOption(chartdraw.Style{ClassName: "test"}),
 	)
 	require.NoError(t, err)
 	assert.Equal(t, Box{
@@ -72,7 +72,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "line",
 			fn: func(p *Painter) {
-				p.SetDrawingStyle(Style{
+				p.SetDrawingStyle(chartdraw.Style{
 					StrokeColor: drawing.ColorBlack,
 					StrokeWidth: 1,
 				})
@@ -93,7 +93,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arc",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: drawing.ColorBlack,
 					FillColor:   drawing.ColorBlue,
@@ -107,7 +107,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "pin",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -119,7 +119,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arrow_left",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -131,7 +131,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arrow_right",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -143,7 +143,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arrow_top",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -155,7 +155,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arrow_bottom",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -167,7 +167,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "mark_line",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth:     1,
 					StrokeColor:     Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:       Color{R: 84, G: 112, B: 198, A: 255},
@@ -180,7 +180,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "polygon",
 			fn: func(p *Painter) {
-				p.SetStyle(Style{
+				p.SetStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 				})
@@ -191,7 +191,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "fillArea",
 			fn: func(p *Painter) {
-				p.SetDrawingStyle(Style{
+				p.SetDrawingStyle(chartdraw.Style{
 					FillColor: Color{R: 84, G: 112, B: 198, A: 255},
 				})
 				p.FillArea([]Point{
@@ -274,7 +274,7 @@ func TestRoundedRect(t *testing.T) {
 				OutputFormat: ChartOutputSVG,
 			})
 			require.NoError(t, err)
-			p.OverrideDrawingStyle(Style{
+			p.OverrideDrawingStyle(chartdraw.Style{
 				FillColor:   drawing.ColorBlue,
 				StrokeWidth: 1,
 				StrokeColor: drawing.ColorBlue,
@@ -296,12 +296,12 @@ func TestPainterTextFit(t *testing.T) {
 		Height:       300,
 	})
 	require.NoError(t, err)
-	style := Style{
+	style := chartdraw.FontStyle{
 		FontSize:  12,
 		FontColor: chartdraw.ColorBlack,
 		Font:      GetDefaultFont(),
 	}
-	p.SetStyle(style)
+	p.SetStyle(chartdraw.Style{FontStyle: style})
 	box := p.TextFit("Hello World!", 0, 20, 80)
 	assert.Equal(t, chartdraw.Box{Right: 45, Bottom: 35}, box)
 

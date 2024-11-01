@@ -25,11 +25,17 @@ func NewTableChart(p *Painter, opt TableChartOption) *tableChart {
 type TableCell struct {
 	// Text the text of table cell
 	Text string
-	// Style the current style of table cell
-	Style Style
-	// Row the row index of table cell
+	// The font size of table contents.
+	FontSize float64
+	// Font is the font used to render the table.
+	Font *truetype.Font
+	// FontColor is the color used for text on the table.
+	FontColor Color
+	// FillColor sets a color for this table cell.
+	FillColor drawing.Color
+	// Row the row index of table cell.
 	Row int
-	// Column the column index of table cell
+	// Column the column index of table cell.
 	Column int
 }
 
@@ -64,10 +70,8 @@ type TableChartOption struct {
 	RowBackgroundColors []Color
 	// BackgroundColor specifies a general background color.
 	BackgroundColor Color
-	// CellTextStyle customize text style of table cell
-	CellTextStyle func(TableCell) *Style
-	// CellStyle customize drawing style of table cell
-	CellStyle func(TableCell) *Style
+	// CellModifier is an optional function to modify the style or content of a specific TableCell before they are rendered.
+	CellModifier func(TableCell) TableCell
 }
 
 type TableSetting struct {
@@ -79,8 +83,6 @@ type TableSetting struct {
 	FontColor Color
 	// RowColors specifies an array of colors for each row.
 	RowColors []Color
-	// Padding specifies the padding of each cell.
-	CellPadding Box
 }
 
 var TableLightThemeSetting = TableSetting{
@@ -90,12 +92,6 @@ var TableLightThemeSetting = TableSetting{
 	RowColors: []Color{
 		drawing.ColorWhite,
 		{R: 245, G: 245, B: 245, A: 255},
-	},
-	CellPadding: Box{
-		Left:   10,
-		Top:    10,
-		Right:  10,
-		Bottom: 10,
 	},
 }
 
@@ -107,25 +103,20 @@ var TableDarkThemeSetting = TableSetting{
 		{R: 24, G: 24, B: 28, A: 255},
 		{R: 38, G: 38, B: 42, A: 255},
 	},
-	CellPadding: Box{
-		Left:   10,
-		Top:    10,
-		Right:  10,
-		Bottom: 10,
-	},
 }
 
 type renderInfo struct {
-	Width        int
-	Height       int
-	HeaderHeight int
-	RowHeights   []int
-	ColumnWidths []int
+	width        int
+	height       int
+	headerHeight int
+	rowHeights   []int
+	columnWidths []int
+	tableCells   [][]TableCell
 }
 
 func (t *tableChart) render() (*renderInfo, error) {
 	info := renderInfo{
-		RowHeights: make([]int, 0),
+		rowHeights: make([]int, 0),
 	}
 	p := t.p
 	if t.opt.Theme == nil {
@@ -178,30 +169,18 @@ func (t *tableChart) render() (*renderInfo, error) {
 		}
 		columnWidths = append(columnWidths, values[index+1]-v)
 	}
-	info.ColumnWidths = columnWidths
+	info.columnWidths = columnWidths
 
 	height := 0
-	textStyle := Style{
-		FontSize:  opt.FontSize,
-		FontColor: opt.HeaderFontColor,
+	style := chartdraw.Style{
+		FontStyle: chartdraw.FontStyle{
+			FontSize:  opt.FontSize,
+			FontColor: opt.HeaderFontColor,
+			Font:      opt.Font,
+		},
 		FillColor: opt.HeaderFontColor,
-		Font:      opt.Font,
 	}
 
-	headerHeight := 0
-	if opt.Padding.IsZero() {
-		if opt.Theme.IsDark() {
-			opt.Padding = TableDarkThemeSetting.CellPadding
-		} else {
-			opt.Padding = TableLightThemeSetting.CellPadding
-		}
-	}
-	getCellTextStyle := opt.CellTextStyle
-	if getCellTextStyle == nil {
-		getCellTextStyle = func(_ TableCell) *Style {
-			return nil
-		}
-	}
 	// textAligns := opt.TextAligns
 	getTextAlign := func(index int) string {
 		if len(opt.TextAligns) <= index {
@@ -212,26 +191,36 @@ func (t *tableChart) render() (*renderInfo, error) {
 
 	// processing of the table cells
 	renderTableCells := func(
-		currentStyle Style,
+		style chartdraw.Style,
 		rowIndex int,
 		textList []string,
 		currentHeight int,
 		cellPadding Box,
-	) int {
+	) ([]TableCell, int) {
 		cellMaxHeight := 0
 		paddingHeight := cellPadding.Top + cellPadding.Bottom
 		paddingWidth := cellPadding.Left + cellPadding.Right
+		cells := make([]TableCell, len(textList))
 		for index, text := range textList {
-			cellStyle := getCellTextStyle(TableCell{
-				Text:   text,
-				Row:    rowIndex,
-				Column: index,
-				Style:  currentStyle,
-			})
-			if cellStyle == nil {
-				cellStyle = &currentStyle
+			tc := TableCell{
+				Text:      text,
+				Row:       rowIndex,
+				Column:    index,
+				FontColor: style.FontColor,
+				FontSize:  style.FontSize,
+				Font:      style.Font,
+				FillColor: style.FillColor,
 			}
-			p.SetStyle(*cellStyle)
+			if opt.CellModifier != nil {
+				tc = opt.CellModifier(tc)
+				// Update style values to capture any changes
+				style.FontColor = tc.FontColor
+				style.FontSize = tc.FontSize
+				style.Font = tc.Font
+				style.FillColor = tc.FillColor
+			}
+			cells[index] = tc
+			p.SetStyle(style)
 			x := values[index]
 			y := currentHeight + cellPadding.Top
 			width := values[index+1] - x
@@ -243,25 +232,29 @@ func (t *tableChart) render() (*renderInfo, error) {
 				cellMaxHeight = box.Height() + paddingHeight
 			}
 		}
-		return cellMaxHeight
+		return cells, cellMaxHeight
 	}
 
+	info.tableCells = make([][]TableCell, len(opt.Data)+1)
+
 	// processing of the table headers
-	headerHeight = renderTableCells(textStyle, 0, opt.Header, height, opt.Padding)
+	headerCells, headerHeight := renderTableCells(style, 0, opt.Header, height, opt.Padding)
+	info.tableCells[0] = headerCells
 	height += headerHeight
-	info.HeaderHeight = headerHeight
+	info.headerHeight = headerHeight
 
 	// processing of the table contents
-	textStyle.FontColor = opt.FontColor
-	textStyle.FillColor = opt.FontColor
+	style.FontColor = opt.FontColor
+	style.FillColor = opt.FontColor
 	for index, textList := range opt.Data {
-		cellHeight := renderTableCells(textStyle, index+1, textList, height, opt.Padding)
-		info.RowHeights = append(info.RowHeights, cellHeight)
+		newCells, cellHeight := renderTableCells(style, index+1, textList, height, opt.Padding)
+		info.tableCells[index+1] = newCells
+		info.rowHeights = append(info.rowHeights, cellHeight)
 		height += cellHeight
 	}
 
-	info.Width = p.Width()
-	info.Height = height
+	info.width = p.Width()
+	info.height = height
 	return &info, nil
 }
 
@@ -274,6 +267,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 	if !opt.BackgroundColor.IsZero() {
 		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
 	}
+
 	if opt.HeaderBackgroundColor.IsZero() {
 		if opt.Theme.IsDark() {
 			opt.HeaderBackgroundColor = TableDarkThemeSetting.HeaderColor
@@ -281,10 +275,8 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			opt.HeaderBackgroundColor = TableLightThemeSetting.HeaderColor
 		}
 	}
+	p.SetBackground(info.width, info.headerHeight, opt.HeaderBackgroundColor, true)
 
-	// if the header background colors is set
-	p.SetBackground(info.Width, info.HeaderHeight, opt.HeaderBackgroundColor, true)
-	currentHeight := info.HeaderHeight
 	if opt.RowBackgroundColors == nil {
 		if opt.Theme.IsDark() {
 			opt.RowBackgroundColors = TableDarkThemeSetting.RowColors
@@ -292,7 +284,9 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			opt.RowBackgroundColors = TableLightThemeSetting.RowColors
 		}
 	}
-	for index, h := range info.RowHeights {
+
+	currentHeight := info.headerHeight
+	for index, h := range info.rowHeights {
 		color := opt.RowBackgroundColors[index%len(opt.RowBackgroundColors)]
 		child := p.Child(PainterPaddingOption(Box{
 			Top: currentHeight,
@@ -301,35 +295,29 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 		currentHeight += h
 	}
 	// adjust the background color according to the set table style
-	getCellStyle := opt.CellStyle
-	if getCellStyle != nil {
+	if opt.CellModifier != nil {
 		arr := [][]string{
 			opt.Header,
 		}
 		arr = append(arr, opt.Data...)
 		top := 0
-		heights := []int{info.HeaderHeight}
-		heights = append(heights, info.RowHeights...)
+		heights := []int{info.headerHeight}
+		heights = append(heights, info.rowHeights...)
 		// loop through all table cells to generate background color
-		for i, textList := range arr {
+		for i, _ := range arr {
 			left := 0
-			for j, v := range textList {
-				style := getCellStyle(TableCell{
-					Text:   v,
-					Row:    i,
-					Column: j,
-				})
-				if style != nil && !style.FillColor.IsZero() {
-					padding := style.Padding
+			for j, tc := range info.tableCells[i] {
+				if !tc.FillColor.IsZero() {
+					padding := opt.Padding
 					child := p.Child(PainterPaddingOption(Box{
 						Top:  top + padding.Top,
 						Left: left + padding.Left,
 					}))
-					w := info.ColumnWidths[j] - padding.Left - padding.Top
+					w := info.columnWidths[j] - padding.Left - padding.Top
 					h := heights[i] - padding.Top - padding.Bottom
-					child.SetBackground(w, h, style.FillColor, true)
+					child.SetBackground(w, h, tc.FillColor, true)
 				}
-				left += info.ColumnWidths[j]
+				left += info.columnWidths[j]
 			}
 			top += heights[i]
 		}
@@ -340,8 +328,8 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 	}
 
 	return Box{
-		Right:  info.Width,
-		Bottom: info.Height,
+		Right:  info.width,
+		Bottom: info.height,
 	}, nil
 }
 

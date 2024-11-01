@@ -35,15 +35,19 @@ func Shown() Style {
 func StyleTextDefaults() Style {
 	font, _ := GetDefaultFont()
 	return Style{
-		Hidden:    false,
-		Font:      font,
-		FontColor: DefaultTextColor,
-		FontSize:  DefaultTitleFontSize,
+		Hidden: false,
+		FontStyle: FontStyle{
+			Font:      font,
+			FontColor: DefaultTextColor,
+			FontSize:  DefaultTitleFontSize,
+		},
 	}
 }
 
 // Style is a simple style set.
 type Style struct {
+	FontStyle
+
 	Hidden  bool
 	Padding Box
 
@@ -61,15 +65,18 @@ type Style struct {
 
 	FillColor drawing.Color
 
-	FontSize  float64
-	FontColor drawing.Color
-	Font      *truetype.Font
-
 	TextHorizontalAlign TextHorizontalAlign
 	TextVerticalAlign   TextVerticalAlign
 	TextWrap            TextWrap
 	TextLineSpacing     int
 	TextRotationDegrees float64 //0 is unset or normal
+}
+
+// FontStyle contains the font specific style aspects.
+type FontStyle struct { // TODO - cleanup
+	FontSize  float64
+	FontColor drawing.Color
+	Font      *truetype.Font
 }
 
 // IsZero returns if the object is set or not.
@@ -251,7 +258,7 @@ func (s Style) GetStrokeDashArray(defaults ...[]float64) []float64 {
 }
 
 // GetFontSize gets the font size.
-func (s Style) GetFontSize(defaults ...float64) float64 {
+func (s FontStyle) GetFontSize(defaults ...float64) float64 {
 	if s.FontSize == 0 {
 		if len(defaults) > 0 {
 			return defaults[0]
@@ -262,7 +269,7 @@ func (s Style) GetFontSize(defaults ...float64) float64 {
 }
 
 // GetFontColor gets the font size.
-func (s Style) GetFontColor(defaults ...drawing.Color) drawing.Color {
+func (s FontStyle) GetFontColor(defaults ...drawing.Color) drawing.Color {
 	if s.FontColor.IsZero() {
 		if len(defaults) > 0 {
 			return defaults[0]
@@ -273,7 +280,7 @@ func (s Style) GetFontColor(defaults ...drawing.Color) drawing.Color {
 }
 
 // GetFont returns the font face.
-func (s Style) GetFont(defaults ...*truetype.Font) *truetype.Font {
+func (s FontStyle) GetFont(defaults ...*truetype.Font) *truetype.Font {
 	if s.Font == nil {
 		if len(defaults) > 0 {
 			return defaults[0]
@@ -375,8 +382,7 @@ func (s Style) WriteDrawingOptionsToRenderer(r Renderer) {
 }
 
 // WriteTextOptionsToRenderer passes just the text style options to a renderer.
-func (s Style) WriteTextOptionsToRenderer(r Renderer) {
-	r.SetClassName(s.GetClassName())
+func (s FontStyle) WriteTextOptionsToRenderer(r Renderer) {
 	r.SetFont(s.GetFont())
 	r.SetFontColor(s.GetFontColor())
 	r.SetFontSize(s.GetFontSize())
@@ -453,10 +459,12 @@ func (s Style) GetFillAndStrokeOptions() Style {
 // GetTextOptions returns just the text components of the style.
 func (s Style) GetTextOptions() Style {
 	return Style{
-		ClassName:           s.ClassName,
-		FontColor:           s.FontColor,
-		FontSize:            s.FontSize,
-		Font:                s.Font,
+		ClassName: s.ClassName,
+		FontStyle: FontStyle{
+			FontColor: s.FontColor,
+			FontSize:  s.FontSize,
+			Font:      s.Font,
+		},
 		TextHorizontalAlign: s.TextHorizontalAlign,
 		TextVerticalAlign:   s.TextVerticalAlign,
 		TextWrap:            s.TextWrap,

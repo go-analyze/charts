@@ -106,7 +106,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 	divideRadius := float64(int(radius / float64(divideCount)))
 	radius = divideRadius * float64(divideCount)
 
-	seriesPainter.OverrideDrawingStyle(Style{
+	seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 		StrokeColor: theme.GetAxisSplitLineColor(),
 		StrokeWidth: 1,
 	})
@@ -120,7 +120,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		seriesPainter.LineTo(p.X, p.Y)
 		seriesPainter.Stroke()
 	}
-	seriesPainter.OverrideTextStyle(Style{
+	seriesPainter.OverrideFontStyle(chartdraw.FontStyle{
 		FontColor: theme.GetTextColor(),
 		FontSize:  labelFontSize,
 		Font:      opt.Font,
@@ -189,7 +189,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			dotFillColor = color
 		}
 		linePoints = append(linePoints, linePoints[0])
-		seriesPainter.OverrideDrawingStyle(Style{
+		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 			StrokeColor: color,
 			StrokeWidth: defaultStrokeWidth,
 			DotWidth:    defaultDotWidth,
@@ -199,7 +199,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		seriesPainter.LineStroke(linePoints).
 			FillArea(linePoints)
 		dotWith := 2.0
-		seriesPainter.OverrideDrawingStyle(Style{
+		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 			StrokeWidth: defaultStrokeWidth,
 			StrokeColor: color,
 			FillColor:   dotFillColor,

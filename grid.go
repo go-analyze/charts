@@ -1,5 +1,9 @@
 package charts
 
+import (
+	"github.com/go-analyze/charts/chartdraw"
+)
+
 type gridPainter struct {
 	p   *Painter
 	opt *GridPainterOption
@@ -55,7 +59,7 @@ func (g *gridPainter) Render() (Box, error) {
 		strokeWidth = 1
 	}
 
-	g.p.SetDrawingStyle(Style{
+	g.p.SetDrawingStyle(chartdraw.Style{
 		StrokeWidth: strokeWidth,
 		StrokeColor: opt.StrokeColor,
 	})

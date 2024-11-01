@@ -43,7 +43,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorMariner,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -52,7 +54,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorLightSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -61,7 +65,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorPoloBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -70,7 +76,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 				},
@@ -85,7 +93,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorMariner,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -94,7 +104,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorLightSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -103,7 +115,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorPoloBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -112,7 +126,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 				},
@@ -127,7 +143,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorMariner,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -136,7 +154,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorLightSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -145,7 +165,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorPoloBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -154,7 +176,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 				},
@@ -169,7 +193,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorMariner,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -178,7 +204,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorLightSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -187,7 +215,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorPoloBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 					{
@@ -196,7 +226,9 @@ func main() {
 						Style: chartdraw.Style{
 							StrokeWidth: .01,
 							FillColor:   colorSteelBlue,
-							FontColor:   colorWhite,
+							FontStyle: chartdraw.FontStyle{
+								FontColor: colorWhite,
+							},
 						},
 					},
 				},

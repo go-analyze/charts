@@ -4,6 +4,8 @@ import (
 	"strings"
 
 	"github.com/golang/freetype/truetype"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type TitleOption struct {
@@ -37,7 +39,7 @@ type titleMeasureOption struct {
 	width  int
 	height int
 	text   string
-	style  Style
+	style  chartdraw.FontStyle
 }
 
 func splitTitleText(text string) []string {
@@ -99,7 +101,7 @@ func (t *titlePainter) Render() (Box, error) {
 		opt.SubtextFontSize = opt.FontSize
 	}
 
-	titleTextStyle := Style{
+	titleTextStyle := chartdraw.FontStyle{
 		Font:      opt.Font,
 		FontSize:  opt.FontSize,
 		FontColor: opt.FontColor,
@@ -111,7 +113,7 @@ func (t *titlePainter) Render() (Box, error) {
 			style: titleTextStyle,
 		})
 	}
-	subtextStyle := Style{
+	subtextStyle := chartdraw.FontStyle{
 		Font:      opt.Font,
 		FontSize:  opt.SubtextFontSize,
 		FontColor: opt.SubtextFontColor,
@@ -126,7 +128,7 @@ func (t *titlePainter) Render() (Box, error) {
 	textMaxWidth := 0
 	textMaxHeight := 0
 	for index, item := range measureOptions {
-		p.OverrideTextStyle(item.style)
+		p.OverrideFontStyle(item.style)
 		textBox := p.MeasureText(item.text)
 
 		w := textBox.Width()
@@ -166,7 +168,7 @@ func (t *titlePainter) Render() (Box, error) {
 		}
 	}
 	for _, item := range measureOptions {
-		p.OverrideTextStyle(item.style)
+		p.OverrideFontStyle(item.style)
 		x := titleX + (textMaxWidth-item.width)>>1
 		y := titleY + item.height
 		p.Text(item.text, x, y)

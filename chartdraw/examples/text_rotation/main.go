@@ -14,22 +14,28 @@ func main() {
 	r, _ := chartdraw.PNG(1024, 1024)
 
 	chartdraw.Draw.Text(r, "Test", 64, 64, chartdraw.Style{
-		FontColor: drawing.ColorBlack,
-		FontSize:  18,
-		Font:      f,
+		FontStyle: chartdraw.FontStyle{
+			FontColor: drawing.ColorBlack,
+			FontSize:  18,
+			Font:      f,
+		},
 	})
 
 	chartdraw.Draw.Text(r, "Test", 64, 64, chartdraw.Style{
-		FontColor:           drawing.ColorBlack,
-		FontSize:            18,
-		Font:                f,
+		FontStyle: chartdraw.FontStyle{
+			FontColor: drawing.ColorBlack,
+			FontSize:  18,
+			Font:      f,
+		},
 		TextRotationDegrees: 45.0,
 	})
 
 	tb := chartdraw.Draw.MeasureText(r, "Test", chartdraw.Style{
-		FontColor: drawing.ColorBlack,
-		FontSize:  18,
-		Font:      f,
+		FontStyle: chartdraw.FontStyle{
+			FontColor: drawing.ColorBlack,
+			FontSize:  18,
+			Font:      f,
+		},
 	}).Shift(64, 64)
 
 	tbc := tb.Corners().Rotate(45)

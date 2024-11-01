@@ -23,13 +23,13 @@ func TestStyleIsZero(t *testing.T) {
 	strokeWidth := Style{StrokeWidth: 5.0}
 	assert.False(t, strokeWidth.IsZero())
 
-	fontSize := Style{FontSize: 12.0}
+	fontSize := Style{FontStyle: FontStyle{FontSize: 12.0}}
 	assert.False(t, fontSize.IsZero())
 
-	fontColor := Style{FontColor: drawing.ColorWhite}
+	fontColor := Style{FontStyle: FontStyle{FontColor: drawing.ColorWhite}}
 	assert.False(t, fontColor.IsZero())
 
-	font := Style{Font: &truetype.Font{}}
+	font := Style{FontStyle: FontStyle{Font: &truetype.Font{}}}
 	assert.False(t, font.IsZero())
 }
 
@@ -68,7 +68,7 @@ func TestStyleGetFontSize(t *testing.T) {
 	assert.Equal(t, DefaultFontSize, unset.GetFontSize())
 	assert.Equal(t, DefaultFontSize+1, unset.GetFontSize(DefaultFontSize+1))
 
-	set := Style{FontSize: DefaultFontSize + 2}
+	set := Style{FontStyle: FontStyle{FontSize: DefaultFontSize + 2}}
 	assert.Equal(t, DefaultFontSize+2, set.GetFontSize())
 	assert.Equal(t, DefaultFontSize+2, set.GetFontSize(DefaultFontSize+1))
 }
@@ -78,7 +78,7 @@ func TestStyleGetFontColor(t *testing.T) {
 	assert.Equal(t, drawing.ColorTransparent, unset.GetFontColor())
 	assert.Equal(t, drawing.ColorWhite, unset.GetFontColor(drawing.ColorWhite))
 
-	set := Style{FontColor: drawing.ColorWhite}
+	set := Style{FontStyle: FontStyle{FontColor: drawing.ColorWhite}}
 	assert.Equal(t, drawing.ColorWhite, set.GetFontColor())
 	assert.Equal(t, drawing.ColorWhite, set.GetFontColor(drawing.ColorBlack))
 }
@@ -91,7 +91,7 @@ func TestStyleGetFont(t *testing.T) {
 	require.Nil(t, unset.GetFont())
 	assert.Equal(t, f, unset.GetFont(f))
 
-	set := Style{Font: f}
+	set := Style{FontStyle: FontStyle{Font: f}}
 	require.NotNil(t, set.GetFont())
 }
 
@@ -121,9 +121,11 @@ func TestStyleWithDefaultsFrom(t *testing.T) {
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
 		FillColor:   drawing.ColorWhite,
-		FontColor:   drawing.ColorWhite,
-		Font:        f,
-		Padding:     DefaultBackgroundPadding,
+		FontStyle: FontStyle{
+			FontColor: drawing.ColorWhite,
+			Font:      f,
+		},
+		Padding: DefaultBackgroundPadding,
 	}
 
 	coalesced := unset.InheritFrom(set)
@@ -135,8 +137,10 @@ func TestStyleGetStrokeOptions(t *testing.T) {
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
 		FillColor:   drawing.ColorWhite,
-		FontColor:   drawing.ColorWhite,
-		Padding:     DefaultBackgroundPadding,
+		FontStyle: FontStyle{
+			FontColor: drawing.ColorWhite,
+		},
+		Padding: DefaultBackgroundPadding,
 	}
 	svgStroke := set.GetStrokeOptions()
 	assert.False(t, svgStroke.StrokeColor.IsZero())
@@ -150,8 +154,10 @@ func TestStyleGetFillOptions(t *testing.T) {
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
 		FillColor:   drawing.ColorWhite,
-		FontColor:   drawing.ColorWhite,
-		Padding:     DefaultBackgroundPadding,
+		FontStyle: FontStyle{
+			FontColor: drawing.ColorWhite,
+		},
+		Padding: DefaultBackgroundPadding,
 	}
 	svgFill := set.GetFillOptions()
 	assert.False(t, svgFill.FillColor.IsZero())
@@ -165,8 +171,10 @@ func TestStyleGetFillAndStrokeOptions(t *testing.T) {
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
 		FillColor:   drawing.ColorWhite,
-		FontColor:   drawing.ColorWhite,
-		Padding:     DefaultBackgroundPadding,
+		FontStyle: FontStyle{
+			FontColor: drawing.ColorWhite,
+		},
+		Padding: DefaultBackgroundPadding,
 	}
 	svgFillAndStroke := set.GetFillAndStrokeOptions()
 	assert.False(t, svgFillAndStroke.FillColor.IsZero())
@@ -180,8 +188,10 @@ func TestStyleGetTextOptions(t *testing.T) {
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
 		FillColor:   drawing.ColorWhite,
-		FontColor:   drawing.ColorWhite,
-		Padding:     DefaultBackgroundPadding,
+		FontStyle: FontStyle{
+			FontColor: drawing.ColorWhite,
+		},
+		Padding: DefaultBackgroundPadding,
 	}
 	svgStroke := set.GetTextOptions()
 	assert.True(t, svgStroke.StrokeColor.IsZero())

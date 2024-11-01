@@ -13,7 +13,7 @@ func TestTextWrapWord(t *testing.T) {
 	f, err := GetDefaultFont()
 	require.NoError(t, err)
 
-	basicTextStyle := Style{Font: f, FontSize: 24}
+	basicTextStyle := Style{FontStyle: FontStyle{Font: f, FontSize: 24}}
 
 	output := Text.WrapFitWord(r, "this is a test string", 100, basicTextStyle)
 	assert.NotEmpty(t, output)
@@ -47,7 +47,7 @@ func TestTextWrapRune(t *testing.T) {
 	f, err := GetDefaultFont()
 	require.NoError(t, err)
 
-	basicTextStyle := Style{Font: f, FontSize: 24}
+	basicTextStyle := Style{FontStyle: FontStyle{Font: f, FontSize: 24}}
 
 	output := Text.WrapFitRune(r, "this is a test string", 150, basicTextStyle)
 	assert.NotEmpty(t, output)

@@ -7,11 +7,11 @@ import (
 )
 
 type labelRenderValue struct {
-	Text    string
-	Style   Style
-	X       int
-	Y       int
-	Radians float64
+	Text      string
+	FontStyle chartdraw.FontStyle
+	X         int
+	Y         int
+	Radians   float64
 }
 
 type LabelValue struct {
@@ -61,7 +61,7 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 		distance = 5
 	}
 	text := NewValueLabelFormatter(o.seriesNames, label.Formatter)(value.Index, value.Value, -1)
-	labelStyle := Style{
+	labelStyle := chartdraw.FontStyle{
 		FontColor: o.theme.GetTextColor(),
 		FontSize:  labelFontSize,
 		Font:      o.font,
@@ -76,18 +76,18 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 		labelStyle.FontColor = label.Color
 	}
 	p := o.p
-	p.OverrideDrawingStyle(labelStyle)
+	p.OverrideDrawingStyle(chartdraw.Style{FontStyle: labelStyle})
 	rotated := value.Radians != 0
 	if rotated {
 		p.SetTextRotation(value.Radians)
 	}
 	textBox := p.MeasureText(text)
 	renderValue := labelRenderValue{
-		Text:    text,
-		Style:   labelStyle,
-		X:       value.X,
-		Y:       value.Y,
-		Radians: value.Radians,
+		Text:      text,
+		FontStyle: labelStyle,
+		X:         value.X,
+		Y:         value.Y,
+		Radians:   value.Radians,
 	}
 	if value.Orient != OrientHorizontal {
 		renderValue.X -= textBox.Width() >> 1
@@ -110,7 +110,7 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 
 func (o *SeriesLabelPainter) Render() (Box, error) {
 	for _, item := range o.values {
-		o.p.OverrideTextStyle(item.Style)
+		o.p.OverrideFontStyle(item.FontStyle)
 		if item.Radians != 0 {
 			o.p.TextRotation(item.Text, item.X, item.Y, item.Radians)
 		} else {

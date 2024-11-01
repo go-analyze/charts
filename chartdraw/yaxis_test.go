@@ -17,8 +17,10 @@ func TestYAxisGetTicks(t *testing.T) {
 	ya := YAxis{}
 	yr := &ContinuousRange{Min: 10, Max: 100, Domain: 1024}
 	styleDefaults := Style{
-		Font:     f,
-		FontSize: 10.0,
+		FontStyle: FontStyle{
+			Font:     f,
+			FontSize: 10.0,
+		},
 	}
 	vf := FloatValueFormatter
 	ticks := ya.GetTicks(r, yr, styleDefaults, vf)
@@ -37,8 +39,10 @@ func TestYAxisGetTicksWithUserDefaults(t *testing.T) {
 	}
 	yr := &ContinuousRange{Min: 10, Max: 100, Domain: 1024}
 	styleDefaults := Style{
-		Font:     f,
-		FontSize: 10.0,
+		FontStyle: FontStyle{
+			Font:     f,
+			FontSize: 10.0,
+		},
 	}
 	vf := FloatValueFormatter
 	ticks := ya.GetTicks(r, yr, styleDefaults, vf)
@@ -49,8 +53,10 @@ func TestYAxisMeasure(t *testing.T) {
 	f, err := GetDefaultFont()
 	require.NoError(t, err)
 	style := Style{
-		Font:     f,
-		FontSize: 10.0,
+		FontStyle: FontStyle{
+			Font:     f,
+			FontSize: 10.0,
+		},
 	}
 	r, err := PNG(100, 100)
 	require.NoError(t, err)
@@ -65,8 +71,10 @@ func TestYAxisSecondaryMeasure(t *testing.T) {
 	f, err := GetDefaultFont()
 	require.NoError(t, err)
 	style := Style{
-		Font:     f,
-		FontSize: 10.0,
+		FontStyle: FontStyle{
+			Font:     f,
+			FontSize: 10.0,
+		},
 	}
 	r, err := PNG(100, 100)
 	require.NoError(t, err)

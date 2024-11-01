@@ -35,7 +35,11 @@ type rasterRenderer struct {
 }
 
 func (rr *rasterRenderer) ResetStyle() {
-	rr.s = Style{Font: rr.s.Font}
+	rr.s = Style{
+		FontStyle: FontStyle{
+			Font: rr.s.Font,
+		},
+	}
 	rr.ClearTextRotation()
 }
 

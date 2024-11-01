@@ -38,15 +38,6 @@ type EChartStyle struct {
 	Color string `json:"color"`
 }
 
-func (es *EChartStyle) ToStyle() Style {
-	color := parseColor(es.Color)
-	return Style{
-		FillColor:   color,
-		FontColor:   color,
-		StrokeColor: color,
-	}
-}
-
 type EChartsSeriesDataValue struct {
 	values []float64
 }
@@ -359,8 +350,10 @@ type EChartsTextStyle struct {
 
 func (et *EChartsTextStyle) ToStyle() chartdraw.Style {
 	s := chartdraw.Style{
-		FontSize:  et.FontSize,
-		FontColor: parseColor(et.Color),
+		FontStyle: chartdraw.FontStyle{
+			FontSize:  et.FontSize,
+			FontColor: parseColor(et.Color),
+		},
 	}
 	if et.FontFamily != "" {
 		s.Font = GetFont(et.FontFamily)

@@ -2,6 +2,8 @@ package charts
 
 import (
 	"github.com/golang/freetype/truetype"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 // NewMarkLine returns a series mark line
@@ -57,7 +59,7 @@ func (m *markLinePainter) Render() (Box, error) {
 		summary := s.Summary()
 		for _, markLine := range s.MarkLine.Data {
 			// since the mark line will modify the style, it must be reset every time
-			painter.OverrideDrawingStyle(Style{
+			painter.OverrideDrawingStyle(chartdraw.Style{
 				FillColor:   opt.FillColor,
 				StrokeColor: opt.StrokeColor,
 				StrokeWidth: 1,
@@ -65,7 +67,7 @@ func (m *markLinePainter) Render() (Box, error) {
 					4,
 					2,
 				},
-			}).OverrideTextStyle(Style{
+			}).OverrideFontStyle(chartdraw.FontStyle{
 				Font:      font,
 				FontColor: opt.FontColor,
 				FontSize:  labelFontSize,

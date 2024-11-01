@@ -103,7 +103,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			w := xRange.getHeight(item.Value)
 			fillColor := seriesColor
 			right := w
-			seriesPainter.OverrideDrawingStyle(Style{
+			seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 				FillColor: fillColor,
 			}).Rect(chartdraw.Box{
 				Top:    y,

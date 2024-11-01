@@ -2,6 +2,8 @@ package charts
 
 import (
 	"github.com/golang/freetype/truetype"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 // NewMarkPoint returns a series mark point
@@ -53,22 +55,24 @@ func (m *markPointPainter) Render() (Box, error) {
 		if symbolSize == 0 {
 			symbolSize = 28
 		}
-		textStyle := Style{
-			FontSize:    labelFontSize,
+		textStyle := chartdraw.Style{
+			FontStyle: chartdraw.FontStyle{
+				FontSize: labelFontSize,
+				Font:     opt.Font,
+			},
 			StrokeWidth: 1,
-			Font:        opt.Font,
 		}
 		if isLightColor(opt.FillColor) {
 			textStyle.FontColor = defaultLightFontColor
 		} else {
 			textStyle.FontColor = defaultDarkFontColor
 		}
-		painter.OverrideDrawingStyle(Style{
+		painter.OverrideDrawingStyle(chartdraw.Style{
 			FillColor: opt.FillColor,
-		}).OverrideTextStyle(textStyle)
+		}).OverrideFontStyle(textStyle.FontStyle)
 		for _, markPointData := range opt.Series.MarkPoint.Data {
 			textStyle.FontSize = labelFontSize
-			painter.OverrideTextStyle(textStyle)
+			painter.OverrideFontStyle(textStyle.FontStyle)
 			p := points[summary.MinIndex]
 			value := summary.MinValue
 			switch markPointData.Type {
@@ -82,7 +86,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			textBox := painter.MeasureText(text)
 			if textBox.Width() > symbolSize {
 				textStyle.FontSize = smallLabelFontSize
-				painter.OverrideTextStyle(textStyle)
+				painter.OverrideFontStyle(textStyle.FontStyle)
 				textBox = painter.MeasureText(text)
 			}
 			painter.Text(text, p.X-textBox.Width()>>1, p.Y-symbolSize>>1-2)

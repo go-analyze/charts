@@ -399,8 +399,8 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 
 	p, err = NewPainter(PainterOptions{
 		OutputFormat: opt.OutputFormat,
-		Width:        info.Width,
-		Height:       info.Height,
+		Width:        info.width,
+		Height:       info.height,
 		Font:         opt.Font,
 	})
 	if err != nil {

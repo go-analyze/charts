@@ -16,7 +16,7 @@ type Painter struct {
 	render         chartdraw.Renderer
 	box            Box
 	parent         *Painter
-	style          Style
+	style          chartdraw.Style
 	theme          ColorPalette
 	font           *truetype.Font
 	outputFormat   string
@@ -102,7 +102,7 @@ func PainterFontOption(font *truetype.Font) PainterOption {
 }
 
 // PainterStyleOption sets the style of draw painter
-func PainterStyleOption(style Style) PainterOption {
+func PainterStyleOption(style chartdraw.Style) PainterOption {
 	return func(p *Painter) {
 		p.SetStyle(style)
 	}
@@ -186,7 +186,7 @@ func (p *Painter) Child(opt ...PainterOption) *Painter {
 	return child
 }
 
-func (p *Painter) SetStyle(style Style) {
+func (p *Painter) SetStyle(style chartdraw.Style) {
 	if style.Font == nil {
 		style.Font = p.font
 	}
@@ -194,7 +194,7 @@ func (p *Painter) SetStyle(style Style) {
 	style.WriteToRenderer(p.render)
 }
 
-func overrideStyle(defaultStyle Style, style Style) Style {
+func overrideStyle(defaultStyle chartdraw.Style, style chartdraw.Style) chartdraw.Style {
 	if style.StrokeWidth == 0 {
 		style.StrokeWidth = defaultStyle.StrokeWidth
 	}
@@ -225,27 +225,33 @@ func overrideStyle(defaultStyle Style, style Style) Style {
 	return style
 }
 
-func (p *Painter) OverrideDrawingStyle(style Style) *Painter {
+func (p *Painter) OverrideDrawingStyle(style chartdraw.Style) *Painter {
 	s := overrideStyle(p.style, style)
 	p.SetDrawingStyle(s)
 	return p
 }
 
-func (p *Painter) SetDrawingStyle(style Style) *Painter {
+func (p *Painter) SetDrawingStyle(style chartdraw.Style) *Painter {
 	style.WriteDrawingOptionsToRenderer(p.render)
 	return p
 }
 
-func (p *Painter) SetTextStyle(style Style) *Painter {
+func (p *Painter) SetFontStyle(style chartdraw.FontStyle) *Painter {
 	if style.Font == nil {
 		style.Font = p.font
+	}
+	if style.FontColor.IsZero() {
+		style.FontColor = p.style.FontColor
+	}
+	if style.FontSize == 0 {
+		style.FontSize = p.style.FontSize
 	}
 	style.WriteTextOptionsToRenderer(p.render)
 	return p
 }
-func (p *Painter) OverrideTextStyle(style Style) *Painter {
-	s := overrideStyle(p.style, style)
-	p.SetTextStyle(s)
+func (p *Painter) OverrideFontStyle(style chartdraw.FontStyle) *Painter {
+	s := overrideStyle(p.style, chartdraw.Style{FontStyle: style})
+	p.SetFontStyle(s.FontStyle)
 	return p
 }
 
@@ -557,7 +563,7 @@ func (p *Painter) TextFit(body string, x, y, width int, textAligns ...string) ch
 	style.TextWrap = chartdraw.TextWrapWord
 	r := p.render
 	lines := chartdraw.Text.WrapFit(r, body, width, style)
-	p.SetTextStyle(style)
+	p.SetFontStyle(style.FontStyle)
 	var output chartdraw.Box
 
 	textAlign := ""

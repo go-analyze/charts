@@ -115,26 +115,22 @@ func main() {
 			charts.AlignRight,
 			charts.AlignRight,
 		},
-		CellStyle: func(tc charts.TableCell) *charts.Style {
+		CellModifier: func(tc charts.TableCell) charts.TableCell {
 			column := tc.Column
 			if column != 2 {
-				return nil
+				return tc
 			}
 			value, _ := strconv.ParseFloat(strings.Replace(tc.Text, "%", "", 1), 64)
 			if value == 0 {
-				return nil
+				return tc
 			}
-			style := charts.Style{
-				Padding: charts.Box{
-					Bottom: 5,
-				},
-			}
+
 			if value > 0 {
-				style.FillColor = charts.Color{R: 179, G: 53, B: 20, A: 255}
+				tc.FillColor = charts.Color{R: 179, G: 53, B: 20, A: 255}
 			} else {
-				style.FillColor = charts.Color{R: 33, G: 124, B: 50, A: 255}
+				tc.FillColor = charts.Color{R: 33, G: 124, B: 50, A: 255}
 			}
-			return &style
+			return tc
 		},
 	})
 	if err != nil {

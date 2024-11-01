@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/golang/freetype/truetype"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type axisPainter struct {
@@ -106,14 +108,16 @@ func (a *axisPainter) Render() (Box, error) {
 	tickLength := getDefaultInt(opt.TickLength, 5)
 	labelMargin := getDefaultInt(opt.LabelMargin, 5)
 
-	style := Style{
+	style := chartdraw.Style{
 		StrokeColor: theme.GetAxisStrokeColor(),
 		StrokeWidth: strokeWidth,
-		Font:        font,
-		FontColor:   fontColor,
-		FontSize:    fontSize,
+		FontStyle: chartdraw.FontStyle{
+			Font:      font,
+			FontColor: fontColor,
+			FontSize:  fontSize,
+		},
 	}
-	top.SetDrawingStyle(style).OverrideTextStyle(style)
+	top.SetDrawingStyle(style).OverrideFontStyle(style.FontStyle)
 
 	isTextRotation := opt.TextRotation != 0
 

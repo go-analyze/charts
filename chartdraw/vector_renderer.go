@@ -58,7 +58,11 @@ type vectorRenderer struct {
 }
 
 func (vr *vectorRenderer) ResetStyle() {
-	vr.s = &Style{Font: vr.s.Font}
+	vr.s = &Style{
+		FontStyle: FontStyle{
+			Font: vr.s.Font,
+		},
+	}
 	vr.fc = nil
 }
 

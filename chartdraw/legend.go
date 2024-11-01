@@ -8,9 +8,11 @@ import (
 func Legend(c *Chart, userDefaults ...Style) Renderable {
 	return func(r Renderer, cb Box, chartDefaults Style) {
 		legendDefaults := Style{
-			FillColor:   drawing.ColorWhite,
-			FontColor:   DefaultTextColor,
-			FontSize:    8.0,
+			FillColor: drawing.ColorWhite,
+			FontStyle: FontStyle{
+				FontColor: DefaultTextColor,
+				FontSize:  8.0,
+			},
 			StrokeColor: DefaultAxisColor,
 			StrokeWidth: DefaultAxisLineWidth,
 		}
@@ -122,9 +124,11 @@ func Legend(c *Chart, userDefaults ...Style) Renderable {
 func LegendThin(c *Chart, userDefaults ...Style) Renderable {
 	return func(r Renderer, cb Box, chartDefaults Style) {
 		legendDefaults := Style{
-			FillColor:   drawing.ColorWhite,
-			FontColor:   DefaultTextColor,
-			FontSize:    8.0,
+			FillColor: drawing.ColorWhite,
+			FontStyle: FontStyle{
+				FontColor: DefaultTextColor,
+				FontSize:  8.0,
+			},
 			StrokeColor: DefaultAxisColor,
 			StrokeWidth: DefaultAxisLineWidth,
 			Padding: Box{
@@ -220,9 +224,11 @@ func LegendThin(c *Chart, userDefaults ...Style) Renderable {
 func LegendLeft(c *Chart, userDefaults ...Style) Renderable {
 	return func(r Renderer, cb Box, chartDefaults Style) {
 		legendDefaults := Style{
-			FillColor:   drawing.ColorWhite,
-			FontColor:   DefaultTextColor,
-			FontSize:    8.0,
+			FillColor: drawing.ColorWhite,
+			FontStyle: FontStyle{
+				FontColor: DefaultTextColor,
+				FontSize:  8.0,
+			},
 			StrokeColor: DefaultAxisColor,
 			StrokeWidth: DefaultAxisLineWidth,
 		}

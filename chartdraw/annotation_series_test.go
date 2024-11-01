@@ -44,8 +44,10 @@ func TestAnnotationSeriesMeasure(t *testing.T) {
 		Bottom: 105,
 	}
 	sd := Style{
-		FontSize: 10.0,
-		Font:     f,
+		FontStyle: FontStyle{
+			FontSize: 10.0,
+			Font:     f,
+		},
 	}
 
 	box := as.Measure(r, cb, xrange, yrange, sd)
@@ -94,8 +96,10 @@ func TestAnnotationSeriesRender(t *testing.T) {
 		Bottom: 105,
 	}
 	sd := Style{
-		FontSize: 10.0,
-		Font:     f,
+		FontStyle: FontStyle{
+			FontSize: 10.0,
+			Font:     f,
+		},
 	}
 
 	as.Render(r, cb, xrange, yrange, sd)

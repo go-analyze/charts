@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/golang/freetype/truetype"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type legendPainter struct {
@@ -96,7 +98,7 @@ func (l *legendPainter) Render() (Box, error) {
 		padding.Top = 5
 	}
 	p := l.p.Child(PainterPaddingOption(padding))
-	p.SetTextStyle(Style{
+	p.SetFontStyle(chartdraw.FontStyle{
 		FontSize:  opt.FontSize,
 		FontColor: opt.FontColor,
 	})
@@ -196,7 +198,7 @@ func (l *legendPainter) Render() (Box, error) {
 	lastIndex := len(opt.Data) - 1
 	for index, text := range opt.Data {
 		color := theme.GetSeriesColor(index)
-		p.SetDrawingStyle(Style{
+		p.SetDrawingStyle(chartdraw.Style{
 			FillColor:   color,
 			StrokeColor: color,
 		})
