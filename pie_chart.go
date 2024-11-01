@@ -240,13 +240,13 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		seriesPainter.MoveTo(s.lineBranchX, s.lineBranchY)
 		seriesPainter.LineTo(s.lineEndX, s.lineEndY)
 		seriesPainter.Stroke()
-		textStyle := chartdraw.FontStyle{
+		textStyle := FontStyle{
 			FontColor: theme.GetTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,
 		}
-		if !s.series.Label.Color.IsZero() {
-			textStyle.FontColor = s.series.Label.Color
+		if !s.series.Label.FontStyle.FontColor.IsZero() {
+			textStyle.FontColor = s.series.Label.FontStyle.FontColor
 		}
 		seriesPainter.OverrideFontStyle(textStyle)
 		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label))

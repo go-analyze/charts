@@ -8,7 +8,7 @@ import (
 
 type labelRenderValue struct {
 	Text      string
-	FontStyle chartdraw.FontStyle
+	FontStyle FontStyle
 	X         int
 	Y         int
 	Radians   float64
@@ -20,8 +20,7 @@ type LabelValue struct {
 	X         int
 	Y         int
 	Radians   float64
-	FontColor Color
-	FontSize  float64
+	FontStyle FontStyle
 	Orient    string
 	Offset    Offset
 }
@@ -61,19 +60,20 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 		distance = 5
 	}
 	text := NewValueLabelFormatter(o.seriesNames, label.Formatter)(value.Index, value.Value, -1)
-	labelStyle := chartdraw.FontStyle{
+	labelStyle := FontStyle{
 		FontColor: o.theme.GetTextColor(),
 		FontSize:  labelFontSize,
-		Font:      o.font,
+		Font:      getPreferredFont(label.FontStyle.Font, value.FontStyle.Font, o.font),
 	}
-	if value.FontSize != 0 {
-		labelStyle.FontSize = value.FontSize
+	if label.FontStyle.FontSize != 0 {
+		labelStyle.FontSize = label.FontStyle.FontSize
+	} else if value.FontStyle.FontSize != 0 {
+		labelStyle.FontSize = value.FontStyle.FontSize
 	}
-	if !value.FontColor.IsZero() {
-		label.Color = value.FontColor
-	}
-	if !label.Color.IsZero() {
-		labelStyle.FontColor = label.Color
+	if !label.FontStyle.FontColor.IsZero() {
+		labelStyle.FontColor = label.FontStyle.FontColor
+	} else if !value.FontStyle.FontColor.IsZero() {
+		labelStyle.FontColor = value.FontStyle.FontColor
 	}
 	p := o.p
 	p.OverrideDrawingStyle(chartdraw.Style{FontStyle: labelStyle})

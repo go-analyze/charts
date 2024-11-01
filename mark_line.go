@@ -67,7 +67,7 @@ func (m *markLinePainter) Render() (Box, error) {
 					4,
 					2,
 				},
-			}).OverrideFontStyle(chartdraw.FontStyle{
+			}).OverrideFontStyle(FontStyle{
 				Font:      font,
 				FontColor: opt.FontColor,
 				FontSize:  labelFontSize,

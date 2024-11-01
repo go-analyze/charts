@@ -3,8 +3,6 @@ package charts
 import (
 	"errors"
 
-	"github.com/golang/freetype/truetype"
-
 	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
@@ -25,12 +23,8 @@ func NewTableChart(p *Painter, opt TableChartOption) *tableChart {
 type TableCell struct {
 	// Text the text of table cell
 	Text string
-	// The font size of table contents.
-	FontSize float64
-	// Font is the font used to render the table.
-	Font *truetype.Font
-	// FontColor is the color used for text on the table.
-	FontColor Color
+	// FontStyle contains the configuration for the cell text font.
+	FontStyle FontStyle
 	// FillColor sets a color for this table cell.
 	FillColor drawing.Color
 	// Row the row index of table cell.
@@ -56,12 +50,8 @@ type TableChartOption struct {
 	Spans []int
 	// TextAligns specifies the text alignment for each cell on the table.
 	TextAligns []string
-	// The font size of table contents.
-	FontSize float64
-	// Font is the font used to render the table.
-	Font *truetype.Font
-	// FontColor is the color used for text on the table.
-	FontColor Color
+	// FontStyle contains the configuration for the table text font.
+	FontStyle FontStyle
 	// HeaderBackgroundColor provides a background color of header row.
 	HeaderBackgroundColor Color
 	// HeaderFontColor specifies a text color for the header text.
@@ -74,32 +64,32 @@ type TableChartOption struct {
 	CellModifier func(TableCell) TableCell
 }
 
-type TableSetting struct {
-	// HeaderColor specifies the color of the header.
-	HeaderColor Color
-	// HeaderFontColor specifies the color of header text.
-	HeaderFontColor Color
-	// FontColor specifies the color of table text.
-	FontColor Color
-	// RowColors specifies an array of colors for each row.
-	RowColors []Color
+type tableSetting struct {
+	// headerColor specifies the color of the header.
+	headerColor Color
+	// headerFontColor specifies the color of header text.
+	headerFontColor Color
+	// fontColor specifies the color of table text.
+	fontColor Color
+	// rowColors specifies an array of colors for each row.
+	rowColors []Color
 }
 
-var TableLightThemeSetting = TableSetting{
-	HeaderColor:     Color{R: 220, G: 220, B: 220, A: 255},
-	HeaderFontColor: Color{R: 80, G: 80, B: 80, A: 255},
-	FontColor:       Color{R: 50, G: 50, B: 50, A: 255},
-	RowColors: []Color{
+var tableLightThemeSetting = tableSetting{
+	headerColor:     Color{R: 220, G: 220, B: 220, A: 255},
+	headerFontColor: Color{R: 80, G: 80, B: 80, A: 255},
+	fontColor:       Color{R: 50, G: 50, B: 50, A: 255},
+	rowColors: []Color{
 		drawing.ColorWhite,
 		{R: 245, G: 245, B: 245, A: 255},
 	},
 }
 
-var TableDarkThemeSetting = TableSetting{
-	HeaderColor:     Color{R: 38, G: 38, B: 42, A: 255},
-	HeaderFontColor: Color{R: 216, G: 217, B: 218, A: 255},
-	FontColor:       Color{R: 216, G: 217, B: 218, A: 255},
-	RowColors: []Color{
+var tableDarkThemeSetting = tableSetting{
+	headerColor:     Color{R: 38, G: 38, B: 42, A: 255},
+	headerFontColor: Color{R: 216, G: 217, B: 218, A: 255},
+	fontColor:       Color{R: 216, G: 217, B: 218, A: 255},
+	rowColors: []Color{
 		{R: 24, G: 24, B: 28, A: 255},
 		{R: 38, G: 38, B: 42, A: 255},
 	},
@@ -126,24 +116,25 @@ func (t *tableChart) render() (*renderInfo, error) {
 	if len(opt.Header) == 0 {
 		return nil, errors.New("header can not be nil")
 	}
-	if opt.FontSize <= 0 {
-		opt.FontSize = 12
+	fontStyle := opt.FontStyle
+	if fontStyle.FontSize <= 0 {
+		fontStyle.FontSize = 12
 	}
-	if opt.FontColor.IsZero() {
+	if fontStyle.FontColor.IsZero() {
 		if opt.Theme.IsDark() {
-			opt.FontColor = TableDarkThemeSetting.FontColor
+			fontStyle.FontColor = tableDarkThemeSetting.fontColor
 		} else {
-			opt.FontColor = TableLightThemeSetting.FontColor
+			fontStyle.FontColor = tableLightThemeSetting.fontColor
 		}
 	}
-	if opt.Font == nil {
-		opt.Font = GetDefaultFont()
+	if fontStyle.Font == nil {
+		fontStyle.Font = GetDefaultFont()
 	}
 	if opt.HeaderFontColor.IsZero() {
 		if opt.Theme.IsDark() {
-			opt.HeaderFontColor = TableDarkThemeSetting.HeaderFontColor
+			opt.HeaderFontColor = tableDarkThemeSetting.headerFontColor
 		} else {
-			opt.HeaderFontColor = TableLightThemeSetting.HeaderFontColor
+			opt.HeaderFontColor = tableLightThemeSetting.headerFontColor
 		}
 	}
 
@@ -173,10 +164,10 @@ func (t *tableChart) render() (*renderInfo, error) {
 
 	height := 0
 	style := chartdraw.Style{
-		FontStyle: chartdraw.FontStyle{
-			FontSize:  opt.FontSize,
+		FontStyle: FontStyle{
+			FontSize:  fontStyle.FontSize,
 			FontColor: opt.HeaderFontColor,
-			Font:      opt.Font,
+			Font:      fontStyle.Font,
 		},
 		FillColor: opt.HeaderFontColor,
 	}
@@ -206,17 +197,13 @@ func (t *tableChart) render() (*renderInfo, error) {
 				Text:      text,
 				Row:       rowIndex,
 				Column:    index,
-				FontColor: style.FontColor,
-				FontSize:  style.FontSize,
-				Font:      style.Font,
+				FontStyle: style.FontStyle,
 				FillColor: style.FillColor,
 			}
 			if opt.CellModifier != nil {
 				tc = opt.CellModifier(tc)
 				// Update style values to capture any changes
-				style.FontColor = tc.FontColor
-				style.FontSize = tc.FontSize
-				style.Font = tc.Font
+				style.FontStyle = tc.FontStyle
 				style.FillColor = tc.FillColor
 			}
 			cells[index] = tc
@@ -226,7 +213,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 			width := values[index+1] - x
 			x += cellPadding.Left
 			width -= paddingWidth
-			box := p.TextFit(text, x, y+int(opt.FontSize), width, getTextAlign(index))
+			box := p.TextFit(text, x, y+int(fontStyle.FontSize), width, getTextAlign(index))
 			// calculate the highest height
 			if box.Height()+paddingHeight > cellMaxHeight {
 				cellMaxHeight = box.Height() + paddingHeight
@@ -244,8 +231,8 @@ func (t *tableChart) render() (*renderInfo, error) {
 	info.headerHeight = headerHeight
 
 	// processing of the table contents
-	style.FontColor = opt.FontColor
-	style.FillColor = opt.FontColor
+	style.FontColor = fontStyle.FontColor
+	style.FillColor = fontStyle.FontColor
 	for index, textList := range opt.Data {
 		newCells, cellHeight := renderTableCells(style, index+1, textList, height, opt.Padding)
 		info.tableCells[index+1] = newCells
@@ -270,18 +257,18 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 
 	if opt.HeaderBackgroundColor.IsZero() {
 		if opt.Theme.IsDark() {
-			opt.HeaderBackgroundColor = TableDarkThemeSetting.HeaderColor
+			opt.HeaderBackgroundColor = tableDarkThemeSetting.headerColor
 		} else {
-			opt.HeaderBackgroundColor = TableLightThemeSetting.HeaderColor
+			opt.HeaderBackgroundColor = tableLightThemeSetting.headerColor
 		}
 	}
 	p.SetBackground(info.width, info.headerHeight, opt.HeaderBackgroundColor, true)
 
 	if opt.RowBackgroundColors == nil {
 		if opt.Theme.IsDark() {
-			opt.RowBackgroundColors = TableDarkThemeSetting.RowColors
+			opt.RowBackgroundColors = tableDarkThemeSetting.rowColors
 		} else {
-			opt.RowBackgroundColors = TableLightThemeSetting.RowColors
+			opt.RowBackgroundColors = tableLightThemeSetting.rowColors
 		}
 	}
 

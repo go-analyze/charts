@@ -86,7 +86,9 @@ func main() {
 		HeaderBackgroundColor: charts.Color{R: 80, G: 80, B: 80, A: 255},
 		RowBackgroundColors:   []charts.Color{bgColor},
 		HeaderFontColor:       drawing.ColorWhite,
-		FontColor:             drawing.ColorWhite,
+		FontStyle: charts.FontStyle{
+			FontColor: drawing.ColorWhite,
+		},
 		Padding: charts.Box{
 			Top:    15,
 			Right:  10,

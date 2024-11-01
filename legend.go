@@ -3,8 +3,6 @@ package charts
 import (
 	"fmt"
 
-	"github.com/golang/freetype/truetype"
-
 	"github.com/go-analyze/charts/chartdraw"
 )
 
@@ -25,12 +23,8 @@ type LegendOption struct {
 	Padding Box
 	// Data provides text for the legend.
 	Data []string
-	// FontSize specifies the font size of each label.
-	FontSize float64
-	// Font is the font used to render each label.
-	Font *truetype.Font
-	// FontColor is the color used for text rendered.
-	FontColor Color
+	// FontStyle specifies the font, size, and style for rendering the legend.
+	FontStyle FontStyle
 	// Left is the distance between legend component and the left side of the container.
 	// It can be pixel value (20), percentage value (20%), or position description: 'left', 'right', 'center'.
 	Left string
@@ -84,11 +78,12 @@ func (l *legendPainter) Render() (Box, error) {
 	if theme == nil {
 		theme = getPreferredTheme(l.p.theme)
 	}
-	if opt.FontSize == 0 {
-		opt.FontSize = defaultFontSize
+	fontStyle := opt.FontStyle
+	if fontStyle.FontSize == 0 {
+		fontStyle.FontSize = defaultFontSize
 	}
-	if opt.FontColor.IsZero() {
-		opt.FontColor = theme.GetTextColor()
+	if fontStyle.FontColor.IsZero() {
+		fontStyle.FontColor = theme.GetTextColor()
 	}
 	if opt.Left == "" { // default a center legend
 		opt.Left = PositionCenter
@@ -98,10 +93,7 @@ func (l *legendPainter) Render() (Box, error) {
 		padding.Top = 5
 	}
 	p := l.p.Child(PainterPaddingOption(padding))
-	p.SetFontStyle(chartdraw.FontStyle{
-		FontSize:  opt.FontSize,
-		FontColor: opt.FontColor,
-	})
+	p.SetFontStyle(fontStyle)
 	measureList := make([]Box, len(opt.Data))
 	maxTextWidth := 0
 	for index, text := range opt.Data {

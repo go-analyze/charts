@@ -2,10 +2,6 @@ package charts
 
 import (
 	"strings"
-
-	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type TitleOption struct {
@@ -23,23 +19,17 @@ type TitleOption struct {
 	// Top is the distance between title component and the top side of the container.
 	// It can be pixel value (20) or percentage value (20%).
 	Top string
-	// The font size of title.
-	FontSize float64
-	// Font is the font used to render the title.
-	Font *truetype.Font
-	// FontColor is the color used for text on the title.
-	FontColor Color
-	// SubtextFontSize specifies the size of the subtext.
-	SubtextFontSize float64
-	// SubtextFontColor specifies a unique color for the subtext.
-	SubtextFontColor Color
+	// FontStyle specifies the font, size, and style for rendering the title.
+	FontStyle FontStyle
+	// SubtextFontStyle specifies the font, size, and style for rendering the subtext.
+	SubtextFontStyle FontStyle
 }
 
 type titleMeasureOption struct {
 	width  int
 	height int
 	text   string
-	style  chartdraw.FontStyle
+	style  FontStyle
 }
 
 func splitTitleText(text string) []string {
@@ -85,44 +75,39 @@ func (t *titlePainter) Render() (Box, error) {
 
 	measureOptions := make([]titleMeasureOption, 0)
 
-	if opt.Font == nil {
-		opt.Font = GetDefaultFont()
+	fontStyle := opt.FontStyle
+	if fontStyle.Font == nil {
+		fontStyle.Font = GetDefaultFont()
 	}
-	if opt.FontColor.IsZero() {
-		opt.FontColor = theme.GetTextColor()
+	if fontStyle.FontColor.IsZero() {
+		fontStyle.FontColor = theme.GetTextColor()
 	}
-	if opt.FontSize == 0 {
-		opt.FontSize = defaultFontSize
+	if fontStyle.FontSize == 0 {
+		fontStyle.FontSize = defaultFontSize
 	}
-	if opt.SubtextFontColor.IsZero() {
-		opt.SubtextFontColor = opt.FontColor
+	subtextFontStyle := opt.SubtextFontStyle
+	if subtextFontStyle.Font == nil {
+		subtextFontStyle.Font = fontStyle.Font
 	}
-	if opt.SubtextFontSize == 0 {
-		opt.SubtextFontSize = opt.FontSize
+	if subtextFontStyle.FontColor.IsZero() {
+		subtextFontStyle.FontColor = fontStyle.FontColor
+	}
+	if subtextFontStyle.FontSize == 0 {
+		subtextFontStyle.FontSize = fontStyle.FontSize
 	}
 
-	titleTextStyle := chartdraw.FontStyle{
-		Font:      opt.Font,
-		FontSize:  opt.FontSize,
-		FontColor: opt.FontColor,
-	}
 	// main title
 	for _, v := range splitTitleText(opt.Text) {
 		measureOptions = append(measureOptions, titleMeasureOption{
 			text:  v,
-			style: titleTextStyle,
+			style: fontStyle,
 		})
-	}
-	subtextStyle := chartdraw.FontStyle{
-		Font:      opt.Font,
-		FontSize:  opt.SubtextFontSize,
-		FontColor: opt.SubtextFontColor,
 	}
 	// subtitle
 	for _, v := range splitTitleText(opt.Subtext) {
 		measureOptions = append(measureOptions, titleMeasureOption{
 			text:  v,
-			style: subtextStyle,
+			style: subtextFontStyle,
 		})
 	}
 	textMaxWidth := 0

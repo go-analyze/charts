@@ -4,8 +4,6 @@ import (
 	"math"
 	"strings"
 
-	"github.com/golang/freetype/truetype"
-
 	"github.com/go-analyze/charts/chartdraw"
 )
 
@@ -43,12 +41,8 @@ type AxisOption struct {
 	TickLength int
 	// LabelMargin specifies the margin value of each label.
 	LabelMargin int
-	// FontSize specifies the font size of each label.
-	FontSize float64
-	// Font is the font used to render each label.
-	Font *truetype.Font
-	// FontColor is the color used for text rendered.
-	FontColor Color
+	// FontStyle specifies the font configuration for each label.
+	FontStyle FontStyle
 	// SplitLineShow, set this to true will show axis split line.
 	SplitLineShow bool
 	// TextRotation are the radians for rotating the label.
@@ -83,14 +77,13 @@ func (a *axisPainter) Render() (Box, error) {
 		strokeWidth = 1
 	}
 
-	font := getPreferredFont(opt.Font, a.p.font)
-	fontColor := opt.FontColor
-	if fontColor.IsZero() {
-		fontColor = theme.GetTextColor()
+	fontStyle := opt.FontStyle
+	fontStyle.Font = getPreferredFont(fontStyle.Font, a.p.font)
+	if fontStyle.FontColor.IsZero() {
+		fontStyle.FontColor = theme.GetTextColor()
 	}
-	fontSize := opt.FontSize
-	if fontSize == 0 {
-		fontSize = defaultFontSize
+	if fontStyle.FontSize == 0 {
+		fontStyle.FontSize = defaultFontSize
 	}
 
 	formatter := opt.Formatter
@@ -111,11 +104,7 @@ func (a *axisPainter) Render() (Box, error) {
 	style := chartdraw.Style{
 		StrokeColor: theme.GetAxisStrokeColor(),
 		StrokeWidth: strokeWidth,
-		FontStyle: chartdraw.FontStyle{
-			Font:      font,
-			FontColor: fontColor,
-			FontSize:  fontSize,
-		},
+		FontStyle:   fontStyle,
 	}
 	top.SetDrawingStyle(style).OverrideFontStyle(style.FontStyle)
 
@@ -168,8 +157,8 @@ func (a *axisPainter) Render() (Box, error) {
 	case PositionTop:
 		labelPaddingTop = 0
 		x1 = p.Width()
-		y0 = labelMargin + int(opt.FontSize)
-		ticksPaddingTop = int(opt.FontSize)
+		y0 = labelMargin + int(opt.FontStyle.FontSize)
+		ticksPaddingTop = int(opt.FontStyle.FontSize)
 		y1 = y0
 		orient = OrientHorizontal
 	case PositionLeft:

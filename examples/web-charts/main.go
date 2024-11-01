@@ -148,8 +148,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 	chartOptions := []charts.ChartOption{
 		{
 			Title: charts.TitleOption{
-				Text:     "Line",
-				FontSize: 18,
+				Text: "Line",
+				FontStyle: charts.FontStyle{
+					FontSize: 18,
+				},
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
@@ -272,8 +274,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		},
 		{
 			Title: charts.TitleOption{
-				Text:     "Line Area",
-				FontSize: 18,
+				Text: "Line Area",
+				FontStyle: charts.FontStyle{
+					FontSize: 18,
+				},
 			},
 			Legend: charts.NewLegendOption([]string{
 				"Email",
@@ -306,8 +310,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// histogram
 		{
 			Title: charts.TitleOption{
-				Text:     "Bar",
-				FontSize: 18,
+				Text: "Bar",
+				FontStyle: charts.FontStyle{
+					FontSize: 18,
+				},
 			},
 			XAxis: charts.NewXAxisOption([]string{
 				"Mon",
@@ -370,8 +376,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// horizontal bar chart
 		{
 			Title: charts.TitleOption{
-				Text:     "World Population",
-				FontSize: 18,
+				Text: "World Population",
+				FontStyle: charts.FontStyle{
+					FontSize: 18,
+				},
 			},
 			Padding: charts.Box{
 				Top:    20,
@@ -419,10 +427,14 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// histogram+marker
 		{
 			Title: charts.TitleOption{
-				Text:            "Rainfall vs Evaporation",
-				Subtext:         "(Fake Data)",
-				FontSize:        16,
-				SubtextFontSize: 10,
+				Text:    "Rainfall vs Evaporation",
+				Subtext: "(Fake Data)",
+				FontStyle: charts.FontStyle{
+					FontSize: 16,
+				},
+				SubtextFontStyle: charts.FontStyle{
+					FontSize: 10,
+				},
 			},
 			Padding: charts.Box{
 				Top:    20,
@@ -502,8 +514,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// dual y-axis
 		{
 			Title: charts.TitleOption{
-				Text:     "Temperature",
-				FontSize: 16,
+				Text: "Temperature",
+				FontStyle: charts.FontStyle{
+					FontSize: 16,
+				},
 			},
 			XAxis: charts.NewXAxisOption([]string{
 				"Jan",
@@ -594,11 +608,15 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// pie chart
 		{
 			Title: charts.TitleOption{
-				Text:            "Referer of a Website",
-				Subtext:         "(Fake Data)",
-				Left:            charts.PositionCenter,
-				FontSize:        16,
-				SubtextFontSize: 10,
+				Text:    "Referer of a Website",
+				Subtext: "(Fake Data)",
+				Left:    charts.PositionCenter,
+				FontStyle: charts.FontStyle{
+					FontSize: 16,
+				},
+				SubtextFontStyle: charts.FontStyle{
+					FontSize: 10,
+				},
 			},
 			Legend: charts.LegendOption{
 				Orient: charts.OrientVertical,
@@ -627,8 +645,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// radar chart
 		{
 			Title: charts.TitleOption{
-				Text:     "Basic Radar Chart",
-				FontSize: 16,
+				Text: "Basic Radar Chart",
+				FontStyle: charts.FontStyle{
+					FontSize: 16,
+				},
 			},
 			Legend: charts.LegendOption{
 				Data: []string{

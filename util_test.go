@@ -73,7 +73,7 @@ func TestMeasureTextMaxWidthHeight(t *testing.T) {
 		Height: 300,
 	})
 	require.NoError(t, err)
-	style := chartdraw.FontStyle{
+	style := FontStyle{
 		FontSize: 10,
 	}
 	p.SetStyle(chartdraw.Style{FontStyle: style})

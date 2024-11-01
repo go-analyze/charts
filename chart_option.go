@@ -387,7 +387,7 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 		OutputFormat: opt.OutputFormat,
 		Width:        opt.Width,
 		Height:       100, // is only used to calculate the height of the table
-		Font:         opt.Font,
+		Font:         opt.FontStyle.Font,
 	})
 	if err != nil {
 		return nil, err
@@ -401,7 +401,7 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 		OutputFormat: opt.OutputFormat,
 		Width:        info.width,
 		Height:       info.height,
-		Font:         opt.Font,
+		Font:         opt.FontStyle.Font,
 	})
 	if err != nil {
 		return nil, err

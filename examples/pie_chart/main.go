@@ -32,11 +32,15 @@ func main() {
 	p, err := charts.PieRender(
 		values,
 		charts.TitleOptionFunc(charts.TitleOption{
-			Text:            "Rainfall vs Evaporation",
-			Subtext:         "(Fake Data)",
-			Left:            charts.PositionCenter,
-			FontSize:        16,
-			SubtextFontSize: 10,
+			Text:    "Rainfall vs Evaporation",
+			Subtext: "(Fake Data)",
+			Left:    charts.PositionCenter,
+			FontStyle: charts.FontStyle{
+				FontSize: 16,
+			},
+			SubtextFontStyle: charts.FontStyle{
+				FontSize: 10,
+			},
 		}),
 		charts.PaddingOptionFunc(charts.Box{
 			Top:    20,
@@ -53,8 +57,10 @@ func main() {
 				"Union Ads",
 				"Video Ads",
 			},
-			Left:     charts.PositionLeft,
-			FontSize: 12,
+			Left: charts.PositionLeft,
+			FontStyle: charts.FontStyle{
+				FontSize: 12,
+			},
 		}),
 		charts.PieSeriesShowLabel(),
 	)

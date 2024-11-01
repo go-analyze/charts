@@ -1,9 +1,5 @@
 package charts
 
-import (
-	"github.com/golang/freetype/truetype"
-)
-
 type XAxisOption struct {
 	// Show specifies if the x-axis should be rendered, set this to *false (through False()) to hide the axis.
 	Show *bool
@@ -18,12 +14,8 @@ type XAxisOption struct {
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks.  Enabled by default, specify *false (through False()) to change the spacing.
 	BoundaryGap *bool
-	// FontSize specifies the font size of each label.
-	FontSize float64
-	// Font is the font used to render each label.
-	Font *truetype.Font
-	// FontColor is the color used for text rendered.
-	FontColor Color
+	// FontStyle specifies the font configuration for each label.
+	FontStyle FontStyle
 	// TextRotation are the radians for rotating the label.
 	TextRotation float64
 	// LabelOffset is the offset of each label.
@@ -62,9 +54,7 @@ func (opt *XAxisOption) ToAxisOption() AxisOption {
 		DataStartIndex:       opt.DataStartIndex,
 		BoundaryGap:          opt.BoundaryGap,
 		Position:             position,
-		FontSize:             opt.FontSize,
-		Font:                 opt.Font,
-		FontColor:            opt.FontColor,
+		FontStyle:            opt.FontStyle,
 		Show:                 opt.Show,
 		Unit:                 opt.Unit,
 		LabelCount:           opt.LabelCount,

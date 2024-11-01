@@ -56,7 +56,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			symbolSize = 28
 		}
 		textStyle := chartdraw.Style{
-			FontStyle: chartdraw.FontStyle{
+			FontStyle: FontStyle{
 				FontSize: labelFontSize,
 				Font:     opt.Font,
 			},

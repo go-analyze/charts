@@ -115,6 +115,14 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			if labelPainter == nil {
 				continue
 			}
+			fontStyle := series.Label.FontStyle
+			if fontStyle.FontColor.IsZero() {
+				if isLightColor(fillColor) {
+					fontStyle.FontColor = defaultLightFontColor
+				} else {
+					fontStyle.FontColor = defaultDarkFontColor
+				}
+			}
 			labelValue := LabelValue{
 				Orient:    OrientHorizontal,
 				Index:     index,
@@ -122,18 +130,10 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				X:         right,
 				Y:         y + barHeight>>1,
 				Offset:    series.Label.Offset,
-				FontColor: series.Label.Color,
-				FontSize:  series.Label.FontSize,
+				FontStyle: fontStyle,
 			}
 			if series.Label.Position == PositionLeft {
 				labelValue.X = 0
-				if labelValue.FontColor.IsZero() {
-					if isLightColor(fillColor) {
-						labelValue.FontColor = defaultLightFontColor
-					} else {
-						labelValue.FontColor = defaultDarkFontColor
-					}
-				}
 			}
 			labelPainter.Add(labelValue)
 		}

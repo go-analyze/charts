@@ -120,7 +120,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		seriesPainter.LineTo(p.X, p.Y)
 		seriesPainter.Stroke()
 	}
-	seriesPainter.OverrideFontStyle(chartdraw.FontStyle{
+	seriesPainter.OverrideFontStyle(FontStyle{
 		FontColor: theme.GetTextColor(),
 		FontSize:  labelFontSize,
 		Font:      opt.Font,

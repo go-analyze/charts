@@ -35,14 +35,16 @@ func TestCustomFontSizeRender(t *testing.T) {
 	require.NoError(t, err)
 
 	opt := makeBasicLineChartOption()
-	opt.XAxis.FontSize = 4.0
+	opt.XAxis.FontStyle.FontSize = 4.0
 	opt.YAxis = []YAxisOption{
 		{
-			FontSize: 4.0,
+			FontStyle: FontStyle{
+				FontSize: 4.0,
+			},
 		},
 	}
-	opt.Title.FontSize = 4.0
-	opt.Legend.FontSize = 4.0
+	opt.Title.FontStyle.FontSize = 4.0
+	opt.Legend.FontStyle.FontSize = 4.0
 
 	_, err = NewLineChart(p, opt).Render()
 	require.NoError(t, err)

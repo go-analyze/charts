@@ -123,11 +123,11 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				continue
 			}
 			labelPainter.Add(LabelValue{
-				Index:    index,
-				Value:    item.Value,
-				X:        p.X,
-				Y:        p.Y,
-				FontSize: series.Label.FontSize,
+				Index:     index,
+				Value:     item.Value,
+				X:         p.X,
+				Y:         p.Y,
+				FontStyle: series.Label.FontStyle,
 			})
 		}
 		if opt.FillArea {

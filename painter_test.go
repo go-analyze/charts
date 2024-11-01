@@ -296,7 +296,7 @@ func TestPainterTextFit(t *testing.T) {
 		Height:       300,
 	})
 	require.NoError(t, err)
-	style := chartdraw.FontStyle{
+	style := FontStyle{
 		FontSize:  12,
 		FontColor: chartdraw.ColorBlack,
 		Font:      GetDefaultFont(),

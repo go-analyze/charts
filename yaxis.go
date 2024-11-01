@@ -1,9 +1,5 @@
 package charts
 
-import (
-	"github.com/golang/freetype/truetype"
-)
-
 type YAxisOption struct {
 	// Show specifies if the y-axis should be rendered, set this to *false (through False()) to hide the axis.
 	Show *bool
@@ -21,12 +17,8 @@ type YAxisOption struct {
 	Data []string
 	// Position describes the position of y-axis, it can be 'left' or 'right'.
 	Position string
-	// FontSize specifies the font size of each label.
-	FontSize float64
-	// Font is the font used to render each label.
-	Font *truetype.Font
-	// FontColor is the color used for text rendered.
-	FontColor Color
+	// FontStyle specifies the font configuration for each label.
+	FontStyle FontStyle
 	// Formatter for replacing y-axis text values.
 	Formatter string
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
@@ -72,10 +64,8 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 		Theme:                theme,
 		Data:                 opt.Data,
 		Position:             position,
-		FontSize:             opt.FontSize,
+		FontStyle:            opt.FontStyle,
 		StrokeWidth:          -1,
-		Font:                 opt.Font,
-		FontColor:            opt.FontColor,
 		BoundaryGap:          False(),
 		Unit:                 opt.Unit,
 		LabelCount:           opt.LabelCount,
@@ -85,7 +75,9 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 		Show:                 opt.Show,
 	}
 	if !opt.AxisColor.IsZero() {
-		axisOpt.FontColor = opt.AxisColor
+		if axisOpt.FontStyle.FontColor.IsZero() {
+			axisOpt.FontStyle.FontColor = opt.AxisColor
+		}
 		axisOpt.Theme = theme.WithAxisColor(opt.AxisColor)
 	}
 	if opt.isCategoryAxis {

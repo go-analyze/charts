@@ -7,6 +7,7 @@ import (
 
 type Box = chartdraw.Box
 type Color = drawing.Color
+type FontStyle = chartdraw.FontStyle
 
 var BoxZero = chartdraw.BoxZero
 

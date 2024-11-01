@@ -44,21 +44,25 @@ func main() {
 			Right:  12,
 		}),
 		charts.YAxisOptionFunc(charts.YAxisOption{
-			Min:            charts.FloatPointer(0.0), // force min to be zero
-			FontSize:       axisFontSize,
+			Min: charts.FloatPointer(0.0), // force min to be zero
+			FontStyle: charts.FontStyle{
+				FontSize: axisFontSize,
+			},
 			Unit:           10,
 			LabelSkipCount: 1,
 		}),
 		charts.XAxisOptionFunc(charts.XAxisOption{
-			Data:        generateLabels(dataPointCount, "foo "),
-			FontSize:    axisFontSize,
+			Data: generateLabels(dataPointCount, "foo "),
+			FontStyle: charts.FontStyle{
+				FontSize: axisFontSize,
+			},
 			BoundaryGap: charts.True(),
 			LabelCount:  10,
 		}),
 		func(opt *charts.ChartOption) {
 			opt.Legend.Left = "680"
 			opt.Legend.Orient = "vertical"
-			opt.Legend.FontSize = 6
+			opt.Legend.FontStyle.FontSize = 6
 			opt.Title.Left = "center"
 			opt.SymbolShow = charts.False()
 			opt.LineStrokeWidth = 1.6

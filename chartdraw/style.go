@@ -73,7 +73,7 @@ type Style struct {
 }
 
 // FontStyle contains the font specific style aspects.
-type FontStyle struct { // TODO - cleanup
+type FontStyle struct {
 	FontSize  float64
 	FontColor drawing.Color
 	Font      *truetype.Font

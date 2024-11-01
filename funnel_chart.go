@@ -128,7 +128,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 
 		// text
 		text := textList[index]
-		seriesPainter.OverrideFontStyle(chartdraw.FontStyle{
+		seriesPainter.OverrideFontStyle(FontStyle{
 			FontColor: theme.GetTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,

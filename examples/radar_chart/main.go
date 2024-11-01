@@ -43,8 +43,10 @@ func main() {
 	p, err := charts.RadarRender(
 		values,
 		charts.TitleOptionFunc(charts.TitleOption{
-			Text:     "Basic Radar Chart",
-			FontSize: 16,
+			Text: "Basic Radar Chart",
+			FontStyle: charts.FontStyle{
+				FontSize: 16,
+			},
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{

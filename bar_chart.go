@@ -143,28 +143,27 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 			y := barMaxHeight - h
 			radians := float64(0)
-			fontColor := series.Label.Color
+			fontStyle := series.Label.FontStyle
 			if series.Label.Position == PositionBottom {
 				y = barMaxHeight
 				radians = -math.Pi / 2
-				if fontColor.IsZero() {
+				if fontStyle.FontColor.IsZero() {
 					if isLightColor(fillColor) {
-						fontColor = defaultLightFontColor
+						fontStyle.FontColor = defaultLightFontColor
 					} else {
-						fontColor = defaultDarkFontColor
+						fontStyle.FontColor = defaultDarkFontColor
 					}
 				}
 			}
 			labelPainter.Add(LabelValue{
-				Index: index,
-				Value: item.Value,
-				X:     x + barWidth>>1,
-				Y:     y,
+				Index:     index,
+				Value:     item.Value,
+				FontStyle: fontStyle,
+				X:         x + barWidth>>1,
+				Y:         y,
 				// rotate
-				Radians:   radians,
-				FontColor: fontColor,
-				Offset:    series.Label.Offset,
-				FontSize:  series.Label.FontSize,
+				Radians: radians,
+				Offset:  series.Label.Offset,
 			})
 		}
 

@@ -91,7 +91,7 @@ func main() {
 			"Search Engine",
 		}),
 		func(opt *charts.ChartOption) {
-			opt.Title.FontSize = 16
+			opt.Title.FontStyle.FontSize = 16
 			opt.Legend.Padding = charts.Box{
 				Left: 100,
 			}
