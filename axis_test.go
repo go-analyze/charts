@@ -12,6 +12,17 @@ import (
 func TestAxis(t *testing.T) {
 	t.Parallel()
 
+	dayLabels := []string{
+		"Mon",
+		"Tue",
+		"Wed",
+		"Thu",
+		"Fri",
+		"Sat",
+		"Sun",
+	}
+	letterLabels := []string{"A", "B", "C", "D", "E", "F", "G"}
+
 	tests := []struct {
 		name   string
 		render func(*Painter) ([]byte, error)
@@ -21,15 +32,7 @@ func TestAxis(t *testing.T) {
 			name: "x-axis_bottom",
 			render: func(p *Painter) ([]byte, error) {
 				_, _ = NewAxisPainter(p, AxisOption{
-					Data: []string{
-						"Mon",
-						"Tue",
-						"Wed",
-						"Thu",
-						"Fri",
-						"Sat",
-						"Sun",
-					},
+					Data:          dayLabels,
 					SplitLineShow: true,
 				}).Render()
 				return p.Bytes()
@@ -40,15 +43,7 @@ func TestAxis(t *testing.T) {
 			name: "x-axis_bottom_left",
 			render: func(p *Painter) ([]byte, error) {
 				_, _ = NewAxisPainter(p, AxisOption{
-					Data: []string{
-						"Mon",
-						"Tue",
-						"Wed",
-						"Thu",
-						"Fri",
-						"Sat",
-						"Sun",
-					},
+					Data:        dayLabels,
 					BoundaryGap: False(),
 				}).Render()
 				return p.Bytes()
@@ -59,15 +54,7 @@ func TestAxis(t *testing.T) {
 			name: "y-axis_left",
 			render: func(p *Painter) ([]byte, error) {
 				_, _ = NewAxisPainter(p, AxisOption{
-					Data: []string{
-						"Mon",
-						"Tue",
-						"Wed",
-						"Thu",
-						"Fri",
-						"Sat",
-						"Sun",
-					},
+					Data:     dayLabels,
 					Position: PositionLeft,
 				}).Render()
 				return p.Bytes()
@@ -78,15 +65,7 @@ func TestAxis(t *testing.T) {
 			name: "y-axis_center",
 			render: func(p *Painter) ([]byte, error) {
 				_, _ = NewAxisPainter(p, AxisOption{
-					Data: []string{
-						"Mon",
-						"Tue",
-						"Wed",
-						"Thu",
-						"Fri",
-						"Sat",
-						"Sun",
-					},
+					Data:          dayLabels,
 					Position:      PositionLeft,
 					BoundaryGap:   False(),
 					SplitLineShow: true,
@@ -99,15 +78,7 @@ func TestAxis(t *testing.T) {
 			name: "y-axis_right",
 			render: func(p *Painter) ([]byte, error) {
 				_, _ = NewAxisPainter(p, AxisOption{
-					Data: []string{
-						"Mon",
-						"Tue",
-						"Wed",
-						"Thu",
-						"Fri",
-						"Sat",
-						"Sun",
-					},
+					Data:          dayLabels,
 					Position:      PositionRight,
 					BoundaryGap:   False(),
 					SplitLineShow: true,
@@ -120,15 +91,7 @@ func TestAxis(t *testing.T) {
 			name: "top",
 			render: func(p *Painter) ([]byte, error) {
 				_, _ = NewAxisPainter(p, AxisOption{
-					Data: []string{
-						"Mon",
-						"Tue",
-						"Wed",
-						"Thu",
-						"Fri",
-						"Sat",
-						"Sun",
-					},
+					Data:      dayLabels,
 					Formatter: "{value} --",
 					Position:  PositionTop,
 				}).Render()
@@ -140,13 +103,27 @@ func TestAxis(t *testing.T) {
 			name: "reduced_label_count",
 			render: func(p *Painter) ([]byte, error) {
 				_, _ = NewAxisPainter(p, AxisOption{
-					Data:                 []string{"A", "B", "C", "D", "E", "F", "G"},
+					Data:                 letterLabels,
 					SplitLineShow:        false,
 					LabelCountAdjustment: -1,
 				}).Render()
 				return p.Bytes()
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 375\nL 0 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 85 375\nL 85 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 171 375\nL 171 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 342 375\nL 342 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 428 375\nL 428 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 514 375\nL 514 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 600 375\nL 600 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 0 370\nL 600 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><text x=\"-1\" y=\"395\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><text x=\"123\" y=\"395\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><text x=\"209\" y=\"395\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><text x=\"381\" y=\"395\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">E</text><text x=\"467\" y=\"395\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">F</text><text x=\"589\" y=\"395\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">G</text></svg>",
+		},
+		{
+			name: "custom_font",
+			render: func(p *Painter) ([]byte, error) {
+				_, _ = NewAxisPainter(p, AxisOption{
+					Data: letterLabels,
+					FontStyle: FontStyle{
+						FontSize:  40.0,
+						FontColor: drawing.ColorBlue,
+					},
+				}).Render()
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 375\nL 0 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 85 375\nL 85 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 171 375\nL 171 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 257 375\nL 257 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 342 375\nL 342 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 428 375\nL 428 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 514 375\nL 514 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 600 375\nL 600 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><path  d=\"M 0 370\nL 600 370\" style=\"stroke-width:1;stroke:rgba(110,112,121,1.0);fill:none\"/><text x=\"25\" y=\"431\" style=\"stroke-width:0;stroke:none;fill:rgba(0,0,255,1.0);font-size:51.1px;font-family:'Roboto Medium',sans-serif\">A</text><text x=\"112\" y=\"431\" style=\"stroke-width:0;stroke:none;fill:rgba(0,0,255,1.0);font-size:51.1px;font-family:'Roboto Medium',sans-serif\">B</text><text x=\"197\" y=\"431\" style=\"stroke-width:0;stroke:none;fill:rgba(0,0,255,1.0);font-size:51.1px;font-family:'Roboto Medium',sans-serif\">C</text><text x=\"282\" y=\"431\" style=\"stroke-width:0;stroke:none;fill:rgba(0,0,255,1.0);font-size:51.1px;font-family:'Roboto Medium',sans-serif\">D</text><text x=\"371\" y=\"431\" style=\"stroke-width:0;stroke:none;fill:rgba(0,0,255,1.0);font-size:51.1px;font-family:'Roboto Medium',sans-serif\">E</text><text x=\"457\" y=\"431\" style=\"stroke-width:0;stroke:none;fill:rgba(0,0,255,1.0);font-size:51.1px;font-family:'Roboto Medium',sans-serif\">F</text><text x=\"540\" y=\"431\" style=\"stroke-width:0;stroke:none;fill:rgba(0,0,255,1.0);font-size:51.1px;font-family:'Roboto Medium',sans-serif\">G</text></svg>",
 		},
 	}
 

@@ -12,7 +12,7 @@ type legendPainter struct {
 }
 
 const IconRect = "rect"
-const IconLineDot = "lineDot"
+const IconDot = "dot"
 
 type LegendOption struct {
 	// Show specifies if the legend should be rendered, set this to *false (through False()) to hide the legend.
