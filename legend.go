@@ -85,8 +85,17 @@ func (l *legendPainter) Render() (Box, error) {
 	if fontStyle.FontColor.IsZero() {
 		fontStyle.FontColor = theme.GetTextColor()
 	}
-	if opt.Left == "" { // default a center legend
-		opt.Left = PositionCenter
+	if opt.Left == "" {
+		if opt.Orient == OrientVertical {
+			// in the vertical orientation it's more visually appealing to default to the right side or left side
+			if opt.Align != "" {
+				opt.Left = opt.Align
+			} else {
+				opt.Left = PositionLeft
+			}
+		} else {
+			opt.Left = PositionCenter
+		}
 	}
 	padding := opt.Padding
 	if padding.IsZero() {
@@ -94,36 +103,34 @@ func (l *legendPainter) Render() (Box, error) {
 	}
 	p := l.p.Child(PainterPaddingOption(padding))
 	p.SetFontStyle(fontStyle)
-	measureList := make([]Box, len(opt.Data))
-	maxTextWidth := 0
-	for index, text := range opt.Data {
-		b := p.MeasureText(text)
-		if b.Width() > maxTextWidth {
-			maxTextWidth = b.Width()
-		}
-		measureList[index] = b
-	}
 
 	// calculate the width and height of the display
+	measureList := make([]Box, len(opt.Data))
 	width := 0
 	height := 0
 	offset := 20
 	textOffset := 2
 	legendWidth := 30
 	legendHeight := 20
+	maxTextWidth := 0
 	itemMaxHeight := 0
-	for _, item := range measureList {
-		if item.Height() > itemMaxHeight {
-			itemMaxHeight = item.Height()
+	for index, text := range opt.Data {
+		b := p.MeasureText(text)
+		if b.Width() > maxTextWidth {
+			maxTextWidth = b.Width()
+		}
+		if b.Height() > itemMaxHeight {
+			itemMaxHeight = b.Height()
 		}
 		if opt.Orient == OrientVertical {
-			height += item.Height()
+			height += b.Height()
 		} else {
-			width += item.Width()
+			width += b.Width()
 		}
+		measureList[index] = b
 	}
+
 	// add padding
-	itemMaxHeight += 10
 	if opt.Orient == OrientVertical {
 		width = maxTextWidth + textOffset + legendWidth
 		height = offset * len(opt.Data)
@@ -169,24 +176,29 @@ func (l *legendPainter) Render() (Box, error) {
 	x0 := x
 	y0 := y
 
-	drawIcon := func(top, left int) int {
-		if opt.Icon == IconRect {
+	var drawIcon func(top, left int) int
+	if opt.Icon == IconRect {
+		drawIcon = func(top, left int) int {
 			p.Rect(Box{
 				Top:    top - legendHeight + 8,
 				Left:   left,
 				Right:  left + legendWidth,
 				Bottom: top + 1,
 			})
-		} else {
+			return left + legendWidth
+		}
+	} else {
+		drawIcon = func(top, left int) int {
 			p.LegendLineDot(Box{
 				Top:    top + 1,
 				Left:   left,
 				Right:  left + legendWidth,
 				Bottom: top + legendHeight + 1,
 			})
+			return left + legendWidth
 		}
-		return left + legendWidth
 	}
+
 	lastIndex := len(opt.Data) - 1
 	for index, text := range opt.Data {
 		color := theme.GetSeriesColor(index)
@@ -194,15 +206,24 @@ func (l *legendPainter) Render() (Box, error) {
 			FillColor:   color,
 			StrokeColor: color,
 		})
-		itemWidth := x0 + measureList[index].Width() + textOffset + offset + legendWidth
-		if lastIndex == index {
-			itemWidth = x0 + measureList[index].Width() + legendWidth
+		if opt.Orient == OrientVertical {
+			if opt.Align == AlignRight {
+				// adjust x0 so that the text will start with a right alignment to the longest line
+				x0 += maxTextWidth - measureList[index].Width()
+			}
+		} else {
+			// check if item will overrun the right side boundary
+			itemWidth := x0 + measureList[index].Width() + textOffset + offset + legendWidth
+			if lastIndex == index {
+				itemWidth = x0 + measureList[index].Width() + legendWidth
+			}
+			if itemWidth > p.Width() {
+				x0 = 0
+				y += itemMaxHeight
+				y0 = y
+			}
 		}
-		if itemWidth > p.Width() {
-			x0 = 0
-			y += itemMaxHeight
-			y0 = y
-		}
+
 		if opt.Align != AlignRight {
 			x0 = drawIcon(y0, x0)
 			x0 += textOffset
@@ -213,6 +234,7 @@ func (l *legendPainter) Render() (Box, error) {
 			x0 += textOffset
 			x0 = drawIcon(y0, x0)
 		}
+
 		if opt.Orient == OrientVertical {
 			y0 += offset
 			x0 = x

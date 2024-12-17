@@ -60,10 +60,11 @@ func main() {
 			LabelCount:  10,
 		}),
 		func(opt *charts.ChartOption) {
-			opt.Legend.Left = "680"
-			opt.Legend.Orient = "vertical"
+			opt.Legend.Left = charts.PositionRight
+			opt.Legend.Align = charts.AlignRight
+			opt.Legend.Orient = charts.OrientVertical
 			opt.Legend.FontStyle.FontSize = 6
-			opt.Title.Left = "center"
+			opt.Title.Left = charts.PositionCenter
 			opt.SymbolShow = charts.False()
 			opt.LineStrokeWidth = 1.6
 			opt.ValueFormatter = func(f float64) string {
