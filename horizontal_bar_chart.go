@@ -110,6 +110,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				Left:   0,
 				Right:  right,
 				Bottom: y + barHeight,
+				IsSet:  true,
 			})
 			// if the label does not need to be displayed, return
 			if labelPainter == nil {

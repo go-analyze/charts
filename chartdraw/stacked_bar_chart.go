@@ -162,6 +162,7 @@ func (sbc StackedBarChart) drawBackground(r Renderer) {
 	Draw.Box(r, Box{
 		Right:  sbc.GetWidth(),
 		Bottom: sbc.GetHeight(),
+		IsSet:  true,
 	}, sbc.getBackgroundStyle())
 }
 
@@ -199,6 +200,7 @@ func (sbc StackedBarChart) drawBar(r Renderer, canvasBox Box, xoffset int, bar S
 			Left:   bxl,
 			Right:  bxr,
 			Bottom: MinInt(yoffset+barHeight, canvasBox.Bottom-DefaultStrokeWidth),
+			IsSet:  true,
 		}
 		Draw.Box(r, barBox, bv.Style.InheritFrom(sbc.styleDefaultsStackedBarValue(index)))
 		yoffset += barHeight
@@ -250,6 +252,7 @@ func (sbc StackedBarChart) drawHorizontalBar(r Renderer, canvasBox Box, yoffset 
 			Left:   MinInt(xOffset-barHeight, canvasBox.Left+DefaultStrokeWidth),
 			Right:  xOffset,
 			Bottom: boxBottom,
+			IsSet:  true,
 		}
 		Draw.Box(r, barBox, bv.Style.InheritFrom(sbc.styleDefaultsStackedBarValue(index)))
 		xOffset -= barHeight
@@ -304,6 +307,7 @@ func (sbc StackedBarChart) drawXAxis(r Renderer, canvasBox Box) {
 				Left:   cursor,
 				Right:  cursor + bar.GetWidth() + sbc.GetBarSpacing(),
 				Bottom: sbc.GetHeight(),
+				IsSet:  true,
 			}
 			if len(bar.Name) > 0 {
 				Draw.TextWithin(r, bar.Name, barLabelBox, axisStyle)
@@ -402,6 +406,7 @@ func (sbc StackedBarChart) drawHorizontalYAxis(r Renderer, canvasBox Box) {
 				Left:   0,
 				Right:  canvasBox.Left - DefaultYAxisMargin,
 				Bottom: cursor + bar.GetWidth() + sbc.GetBarSpacing(),
+				IsSet:  true,
 			}
 			if len(bar.Name) > 0 {
 				Draw.TextWithin(r, bar.Name, barLabelBox, axisStyle)
@@ -478,6 +483,7 @@ func (sbc StackedBarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box) Box {
 					Left:   cursor,
 					Right:  cursor + bar.GetWidth() + sbc.GetBarSpacing(),
 					Bottom: sbc.GetHeight(),
+					IsSet:  true,
 				}
 				lines := Text.WrapFit(r, bar.Name, barLabelBox.Width(), axisStyle)
 				linesBox := Text.MeasureLines(r, lines, axisStyle)
@@ -490,6 +496,7 @@ func (sbc StackedBarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box) Box {
 			Left:   canvasBox.Left,
 			Right:  canvasBox.Left + totalWidth,
 			Bottom: sbc.GetHeight() - xaxisHeight,
+			IsSet:  true,
 		}
 	}
 	return Box{
@@ -497,6 +504,7 @@ func (sbc StackedBarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box) Box {
 		Left:   canvasBox.Left,
 		Right:  canvasBox.Left + totalWidth,
 		Bottom: canvasBox.Bottom,
+		IsSet:  true,
 	}
 }
 
@@ -520,6 +528,7 @@ func (sbc StackedBarChart) getHorizontalAdjustedCanvasBox(r Renderer, canvasBox 
 					Left:   0,
 					Right:  canvasBox.Left + DefaultYAxisMargin,
 					Bottom: cursor + bar.GetWidth() + sbc.GetBarSpacing(),
+					IsSet:  true,
 				}
 				lines := Text.WrapFit(r, bar.Name, barLabelBox.Width(), axisStyle)
 				linesBox := Text.MeasureLines(r, lines, axisStyle)
@@ -532,6 +541,7 @@ func (sbc StackedBarChart) getHorizontalAdjustedCanvasBox(r Renderer, canvasBox 
 			Left:   canvasBox.Left + yAxisWidth,
 			Right:  canvasBox.Right,
 			Bottom: canvasBox.Top + totalHeight,
+			IsSet:  true,
 		}
 	}
 	return Box{
@@ -539,6 +549,7 @@ func (sbc StackedBarChart) getHorizontalAdjustedCanvasBox(r Renderer, canvasBox 
 		Left:   canvasBox.Left,
 		Right:  canvasBox.Right,
 		Bottom: canvasBox.Top + totalHeight,
+		IsSet:  true,
 	}
 }
 
@@ -552,6 +563,7 @@ func (sbc StackedBarChart) Box() Box {
 		Left:   sbc.Background.Padding.GetLeft(20),
 		Right:  sbc.GetWidth() - dpr,
 		Bottom: sbc.GetHeight() - dpb,
+		IsSet:  true,
 	}
 }
 

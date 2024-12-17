@@ -246,6 +246,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		child := p.Child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
 			Right: rangeWidthRight,
+			IsSet: true,
 		}))
 		var yAxis *axisPainter
 		if index == 0 {
@@ -265,15 +266,17 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	xAxis := NewBottomXAxis(p.Child(PainterPaddingOption(Box{
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
+		IsSet: true,
 	})), opt.XAxis)
 	if _, err := xAxis.Render(); err != nil {
 		return nil, err
 	}
 
 	result.seriesPainter = p.Child(PainterPaddingOption(Box{
-		Bottom: defaultXAxisHeight,
 		Left:   rangeWidthLeft,
 		Right:  rangeWidthRight,
+		Bottom: defaultXAxisHeight,
+		IsSet:  true,
 	}))
 	return &result, nil
 }

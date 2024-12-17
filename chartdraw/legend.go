@@ -30,6 +30,7 @@ func Legend(c *Chart, userDefaults ...Style) Renderable {
 			Left:   5,
 			Right:  5,
 			Bottom: 5,
+			IsSet:  true,
 		}
 		lineTextGap := 5
 		lineLengthMinimum := 25
@@ -49,6 +50,7 @@ func Legend(c *Chart, userDefaults ...Style) Renderable {
 			Top:  cb.Top,
 			Left: cb.Left,
 			// bottom and right will be sized by the legend content + relevant padding.
+			IsSet: true,
 		}
 
 		legendContent := Box{
@@ -56,6 +58,7 @@ func Legend(c *Chart, userDefaults ...Style) Renderable {
 			Left:   legend.Left + legendPadding.Left,
 			Right:  legend.Left + legendPadding.Left,
 			Bottom: legend.Top + legendPadding.Top,
+			IsSet:  true,
 		}
 
 		legendStyle.GetTextOptions().WriteToRenderer(r)
@@ -136,6 +139,7 @@ func LegendThin(c *Chart, userDefaults ...Style) Renderable {
 				Left:   7,
 				Right:  7,
 				Bottom: 5,
+				IsSet:  true,
 			},
 		}
 
@@ -181,6 +185,7 @@ func LegendThin(c *Chart, userDefaults ...Style) Renderable {
 			Right:  cb.Right,
 			Top:    legendYMargin,
 			Bottom: legendYMargin + legendBoxHeight,
+			IsSet:  true,
 		}
 
 		Draw.Box(r, legendBox, legendDefaults)
@@ -246,6 +251,7 @@ func LegendLeft(c *Chart, userDefaults ...Style) Renderable {
 			Left:   5,
 			Right:  5,
 			Bottom: 5,
+			IsSet:  true,
 		}
 		lineTextGap := 5
 		lineLengthMinimum := 25
@@ -265,6 +271,7 @@ func LegendLeft(c *Chart, userDefaults ...Style) Renderable {
 			Top:  5,
 			Left: 5,
 			// bottom and right will be sized by the legend content + relevant padding.
+			IsSet: true,
 		}
 
 		legendContent := Box{
@@ -272,6 +279,7 @@ func LegendLeft(c *Chart, userDefaults ...Style) Renderable {
 			Left:   legend.Left + legendPadding.Left,
 			Right:  legend.Left + legendPadding.Left,
 			Bottom: legend.Top + legendPadding.Top,
+			IsSet:  true,
 		}
 
 		legendStyle.GetTextOptions().WriteToRenderer(r)

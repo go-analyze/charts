@@ -195,6 +195,7 @@ func (rr *rasterRenderer) MeasureText(body string) Box {
 		Left:   int(math.Ceil(l)),
 		Right:  int(math.Ceil(r)),
 		Bottom: int(math.Ceil(b)),
+		IsSet:  true,
 	}
 	if rr.rotateRadians == nil {
 		return textBox

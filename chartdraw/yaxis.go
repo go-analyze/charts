@@ -133,6 +133,7 @@ func (ya YAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 		Left:   minx,
 		Right:  maxx,
 		Bottom: maxy,
+		IsSet:  true,
 	}
 }
 

@@ -108,6 +108,7 @@ func (pc PieChart) drawBackground(r Renderer) {
 	Draw.Box(r, Box{
 		Right:  pc.GetWidth(),
 		Bottom: pc.GetHeight(),
+		IsSet:  true,
 	}, pc.getBackgroundStyle())
 }
 
@@ -196,6 +197,7 @@ func (pc PieChart) getCircleAdjustedCanvasBox(canvasBox Box) Box {
 	square := Box{
 		Right:  circleDiameter,
 		Bottom: circleDiameter,
+		IsSet:  true,
 	}
 
 	return canvasBox.Fit(square)
@@ -305,5 +307,6 @@ func (pc PieChart) Box() Box {
 		Left:   pc.Background.Padding.GetLeft(DefaultBackgroundPadding.Left),
 		Right:  pc.GetWidth() - dpr,
 		Bottom: pc.GetHeight() - dpb,
+		IsSet:  true,
 	}
 }

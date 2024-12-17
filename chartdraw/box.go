@@ -30,6 +30,46 @@ type Box struct {
 	IsSet  bool
 }
 
+func (b Box) WithTop(val int) Box {
+	return Box{
+		Top:    val,
+		Left:   b.Left,
+		Right:  b.Right,
+		Bottom: b.Bottom,
+		IsSet:  true,
+	}
+}
+
+func (b Box) WithLeft(val int) Box {
+	return Box{
+		Top:    b.Top,
+		Left:   val,
+		Right:  b.Right,
+		Bottom: b.Bottom,
+		IsSet:  true,
+	}
+}
+
+func (b Box) WithRight(val int) Box {
+	return Box{
+		Top:    b.Top,
+		Left:   b.Left,
+		Right:  val,
+		Bottom: b.Bottom,
+		IsSet:  true,
+	}
+}
+
+func (b Box) WithBottom(val int) Box {
+	return Box{
+		Top:    b.Top,
+		Left:   b.Left,
+		Right:  b.Right,
+		Bottom: val,
+		IsSet:  true,
+	}
+}
+
 // IsZero returns if the box is set or not.
 func (b Box) IsZero() bool {
 	if b.IsSet {
@@ -150,6 +190,7 @@ func (b Box) Grow(other Box) Box {
 		Left:   MinInt(b.Left, other.Left),
 		Right:  MaxInt(b.Right, other.Right),
 		Bottom: MaxInt(b.Bottom, other.Bottom),
+		IsSet:  true,
 	}
 }
 
@@ -160,6 +201,7 @@ func (b Box) Shift(x, y int) Box {
 		Left:   b.Left + x,
 		Right:  b.Right + x,
 		Bottom: b.Bottom + y,
+		IsSet:  true,
 	}
 }
 
@@ -199,6 +241,7 @@ func (b Box) Fit(other Box) Box {
 			Left:   b.Left,
 			Right:  b.Right,
 			Bottom: (b.Top + bh2) + noh2,
+			IsSet:  true,
 		}
 	}
 	var now2 int
@@ -212,6 +255,7 @@ func (b Box) Fit(other Box) Box {
 		Left:   (b.Left + bw2) - now2,
 		Right:  (b.Left + bw2) + now2,
 		Bottom: b.Bottom,
+		IsSet:  true,
 	}
 }
 
@@ -282,6 +326,7 @@ func (bc BoxCorners) Box() Box {
 		Left:   MinInt(bc.TopLeft.X, bc.BottomLeft.X),
 		Right:  MaxInt(bc.TopRight.X, bc.BottomRight.X),
 		Bottom: MaxInt(bc.BottomLeft.Y, bc.BottomRight.Y),
+		IsSet:  true,
 	}
 }
 

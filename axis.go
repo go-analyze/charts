@@ -127,7 +127,7 @@ func (a *axisPainter) Render() (Box, error) {
 		width = top.Width()
 		height = tickLength<<1 + textMaxHeight
 	}
-	padding := Box{}
+	padding := Box{IsSet: true}
 	switch opt.Position {
 	case PositionTop:
 		padding.Top = top.Height() - height
@@ -220,8 +220,9 @@ func (a *axisPainter) Render() (Box, error) {
 
 	if strokeWidth > 0 {
 		p.Child(PainterPaddingOption(Box{
-			Top:  ticksPaddingTop,
-			Left: ticksPaddingLeft,
+			Top:   ticksPaddingTop,
+			Left:  ticksPaddingLeft,
+			IsSet: true,
 		})).Ticks(TicksOption{
 			LabelCount: labelCount,
 			TickSpaces: tickSpaces,
@@ -239,6 +240,7 @@ func (a *axisPainter) Render() (Box, error) {
 		Left:  labelPaddingLeft,
 		Top:   labelPaddingTop,
 		Right: labelPaddingRight,
+		IsSet: true,
 	})).MultiText(MultiTextOption{
 		First:          opt.DataStartIndex,
 		Align:          textAlign,
@@ -286,5 +288,9 @@ func (a *axisPainter) Render() (Box, error) {
 		}
 	}
 
-	return Box{Bottom: height, Right: width}, nil
+	return Box{
+		Bottom: height,
+		Right:  width,
+		IsSet:  true,
+	}, nil
 }

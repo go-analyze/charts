@@ -156,19 +156,9 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 	}
 	switch len(arr) {
 	case 1:
-		eb.Box = chartdraw.Box{
-			Left:   arr[0],
-			Top:    arr[0],
-			Bottom: arr[0],
-			Right:  arr[0],
-		}
+		eb.Box = chartdraw.NewBox(arr[0], arr[0], arr[0], arr[0])
 	case 2:
-		eb.Box = chartdraw.Box{
-			Top:    arr[0],
-			Bottom: arr[0],
-			Left:   arr[1],
-			Right:  arr[1],
-		}
+		eb.Box = chartdraw.NewBox(arr[0], arr[1], arr[1], arr[0])
 	default:
 		result := make([]int, 4)
 		copy(result, arr)
@@ -176,12 +166,7 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 			result[3] = result[1]
 		}
 		// top right, bottom left
-		eb.Box = chartdraw.Box{
-			Top:    result[0],
-			Right:  result[1],
-			Bottom: result[2],
-			Left:   result[3],
-		}
+		eb.Box = chartdraw.NewBox(result[0], result[3], result[1], result[2])
 	}
 	return nil
 }

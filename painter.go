@@ -156,6 +156,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 		box: Box{
 			Right:  opts.Width,
 			Bottom: opts.Height,
+			IsSet:  true,
 		},
 		font:         font,
 		outputFormat: opts.OutputFormat,

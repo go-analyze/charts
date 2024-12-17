@@ -75,6 +75,7 @@ func TestEChartsPadding(t *testing.T) {
 		Top:    1,
 		Right:  1,
 		Bottom: 1,
+		IsSet:  true,
 	}, eb.Box)
 
 	require.NoError(t, eb.UnmarshalJSON([]byte(`[2, 3]`)))
@@ -83,6 +84,7 @@ func TestEChartsPadding(t *testing.T) {
 		Top:    2,
 		Right:  3,
 		Bottom: 2,
+		IsSet:  true,
 	}, eb.Box)
 
 	require.NoError(t, eb.UnmarshalJSON([]byte(`[4, 5, 6]`)))
@@ -91,6 +93,7 @@ func TestEChartsPadding(t *testing.T) {
 		Top:    4,
 		Right:  5,
 		Bottom: 6,
+		IsSet:  true,
 	}, eb.Box)
 
 	require.NoError(t, eb.UnmarshalJSON([]byte(`[4, 5, 6, 7]`)))
@@ -99,6 +102,7 @@ func TestEChartsPadding(t *testing.T) {
 		Top:    4,
 		Right:  5,
 		Bottom: 6,
+		IsSet:  true,
 	}, eb.Box)
 }
 

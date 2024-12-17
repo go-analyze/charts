@@ -184,6 +184,7 @@ func (l *legendPainter) Render() (Box, error) {
 				Left:   left,
 				Right:  left + legendWidth,
 				Bottom: top + 1,
+				IsSet:  true,
 			})
 			return left + legendWidth
 		}
@@ -194,6 +195,7 @@ func (l *legendPainter) Render() (Box, error) {
 				Left:   left,
 				Right:  left + legendWidth,
 				Bottom: top + legendHeight + 1,
+				IsSet:  true,
 			})
 			return left + legendWidth
 		}
@@ -248,5 +250,6 @@ func (l *legendPainter) Render() (Box, error) {
 	return Box{
 		Right:  width,
 		Bottom: height + padding.Bottom + padding.Top,
+		IsSet:  true,
 	}, nil
 }

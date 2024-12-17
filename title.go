@@ -163,5 +163,6 @@ func (t *titlePainter) Render() (Box, error) {
 	return Box{
 		Bottom: titleY,
 		Right:  titleX + width,
+		IsSet:  true,
 	}, nil
 }

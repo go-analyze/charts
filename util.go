@@ -153,7 +153,7 @@ func convertPercent(value string) (float64, error) {
 	if !strings.HasSuffix(value, "%") {
 		return -1, fmt.Errorf("not a percent input: %s", value)
 	}
-	v, err := strconv.ParseFloat(strings.ReplaceAll(value, "%", ""), 64)
+	v, err := strconv.ParseFloat(strings.TrimSuffix(value, "%"), 64)
 	if err != nil {
 		return -1, err
 	}
