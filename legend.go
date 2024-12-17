@@ -29,8 +29,8 @@ type LegendOption struct {
 	Offset OffsetStr
 	// Align is the legend marker and text alignment, it can be 'left' or 'right', default is 'left'.
 	Align string
-	// Orient is the layout orientation of legend, it can be 'horizontal' or 'vertical', default is 'horizontal'.
-	Orient string
+	// Vertical can be set to true to set the orientation to be vertical.
+	Vertical bool
 	// Icon to show next to the labels.	Can be 'rect' or 'dot'.
 	Icon string
 }
@@ -80,7 +80,7 @@ func (l *legendPainter) Render() (Box, error) {
 	}
 	offset := opt.Offset
 	if offset.Left == "" {
-		if opt.Orient == OrientVertical {
+		if opt.Vertical {
 			// in the vertical orientation it's more visually appealing to default to the right side or left side
 			if opt.Align != "" {
 				offset.Left = opt.Align
@@ -116,7 +116,7 @@ func (l *legendPainter) Render() (Box, error) {
 		if b.Height() > itemMaxHeight {
 			itemMaxHeight = b.Height()
 		}
-		if opt.Orient == OrientVertical {
+		if opt.Vertical {
 			height += b.Height()
 		} else {
 			width += b.Width()
@@ -125,7 +125,7 @@ func (l *legendPainter) Render() (Box, error) {
 	}
 
 	// add padding
-	if opt.Orient == OrientVertical {
+	if opt.Vertical {
 		width = maxTextWidth + textOffset + legendWidth
 		height = builtInSpacing * len(opt.Data)
 	} else {
@@ -202,7 +202,7 @@ func (l *legendPainter) Render() (Box, error) {
 			FillColor:   color,
 			StrokeColor: color,
 		})
-		if opt.Orient == OrientVertical {
+		if opt.Vertical {
 			if opt.Align == AlignRight {
 				// adjust x0 so that the text will start with a right alignment to the longest line
 				x0 += maxTextWidth - measureList[index].Width()
@@ -231,7 +231,7 @@ func (l *legendPainter) Render() (Box, error) {
 			x0 = drawIcon(y0, x0)
 		}
 
-		if opt.Orient == OrientVertical {
+		if opt.Vertical {
 			y0 += builtInSpacing
 			x0 = x
 		} else {

@@ -49,7 +49,7 @@ func main() {
 			Left:   20,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Orient: charts.OrientVertical,
+			Vertical: true,
 			Data: []string{
 				"Search Engine",
 				"Direct",

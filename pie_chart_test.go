@@ -33,7 +33,7 @@ func makeBasicPieChartOption() PieChartOption {
 			Left:   20,
 		},
 		Legend: LegendOption{
-			Orient: OrientVertical,
+			Vertical: true,
 			Data: []string{
 				"Search Engine",
 				"Direct",

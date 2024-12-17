@@ -316,7 +316,7 @@ func TestPieRender(t *testing.T) {
 			Left:   20,
 		}),
 		LegendOptionFunc(LegendOption{
-			Orient: OrientVertical,
+			Vertical: true,
 			Data: []string{
 				"Search Engine",
 				"Direct",

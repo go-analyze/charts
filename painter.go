@@ -40,14 +40,14 @@ type TicksOption struct {
 	// the first tick index
 	First      int
 	Length     int
-	Orient     string
+	Vertical   bool
 	LabelCount int
 	TickSpaces int
 }
 
 type MultiTextOption struct {
 	TextList     []string
-	Orient       string
+	Vertical     bool
 	CenterLabels bool
 	Align        string
 	TextRotation float64
@@ -621,8 +621,7 @@ func (p *Painter) Ticks(opt TicksOption) *Painter {
 		return p
 	}
 	var values []int
-	isVertical := opt.Orient == OrientVertical
-	if isVertical {
+	if opt.Vertical {
 		values = autoDivide(p.Height(), opt.TickSpaces)
 	} else {
 		values = autoDivide(p.Width(), opt.TickSpaces)
@@ -633,7 +632,7 @@ func (p *Painter) Ticks(opt TicksOption) *Painter {
 		} else if !isTick(len(values)-opt.First, opt.LabelCount+1, index-opt.First) {
 			continue
 		}
-		if isVertical {
+		if opt.Vertical {
 			p.LineStroke([]Point{
 				{X: 0, Y: value},
 				{X: opt.Length, Y: value},
@@ -656,8 +655,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 	width := p.Width()
 	height := p.Height()
 	var positions []int
-	isVertical := opt.Orient == OrientVertical
-	if isVertical {
+	if opt.Vertical {
 		if opt.CenterLabels {
 			positions = autoDivide(height, count)
 		} else {
@@ -679,7 +677,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 			break // positions have one item more than we can map to text, this extra value is used to center against
 		} else if index < opt.First {
 			continue
-		} else if !isVertical &&
+		} else if !opt.Vertical &&
 			index != count-1 && // one off case for last label due to values and label qty difference
 			!isTick(positionCount-opt.First, opt.LabelCount+1, index-opt.First) {
 			continue
@@ -699,7 +697,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 		box := p.MeasureText(text)
 		x := 0
 		y := 0
-		if isVertical {
+		if opt.Vertical {
 			if opt.CenterLabels {
 				start = (positions[index] + positions[index+1]) >> 1
 			} else {

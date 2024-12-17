@@ -106,8 +106,3 @@ const (
 	AlignRight  = "right"
 	AlignCenter = "center"
 )
-
-const (
-	OrientHorizontal = "horizontal"
-	OrientVertical   = "vertical"
-)

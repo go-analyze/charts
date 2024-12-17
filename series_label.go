@@ -21,7 +21,7 @@ type LabelValue struct {
 	Y         int
 	Radians   float64
 	FontStyle FontStyle
-	Orient    string
+	Vertical  bool
 	Offset    OffsetInt
 }
 
@@ -89,7 +89,7 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 		Y:         value.Y,
 		Radians:   value.Radians,
 	}
-	if value.Orient != OrientHorizontal {
+	if value.Vertical {
 		renderValue.X -= textBox.Width() >> 1
 		renderValue.Y -= distance
 	} else {

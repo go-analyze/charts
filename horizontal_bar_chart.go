@@ -125,7 +125,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				}
 			}
 			labelValue := LabelValue{
-				Orient:    OrientHorizontal,
+				Vertical:  false,
 				Index:     index,
 				Value:     item.Value,
 				X:         right,

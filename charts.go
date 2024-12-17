@@ -135,7 +135,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 		top := chartdraw.MaxInt(legendHeight, titleBox.Height())
 		// if in vertical mode, the legend height is not calculated
-		if opt.Legend.Orient == OrientVertical {
+		if opt.Legend.Vertical {
 			top = titleBox.Height()
 		}
 		p = p.Child(PainterPaddingOption(Box{

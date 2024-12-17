@@ -150,7 +150,6 @@ func (a *axisPainter) Render() (Box, error) {
 	labelPaddingTop := 0
 	labelPaddingLeft := 0
 	labelPaddingRight := 0
-	orient := ""
 	textAlign := ""
 
 	switch opt.Position {
@@ -160,31 +159,27 @@ func (a *axisPainter) Render() (Box, error) {
 		y0 = labelMargin + int(opt.FontStyle.FontSize)
 		ticksPaddingTop = int(opt.FontStyle.FontSize)
 		y1 = y0
-		orient = OrientHorizontal
 	case PositionLeft:
 		x0 = p.Width()
 		y0 = 0
 		x1 = p.Width()
 		y1 = p.Height()
-		orient = OrientVertical
 		textAlign = AlignRight
 		ticksPaddingLeft = textMaxWidth + tickLength
 		labelPaddingRight = width - textMaxWidth
 	case PositionRight:
-		orient = OrientVertical
 		y1 = p.Height()
 		labelPaddingLeft = width - textMaxWidth
 	default:
 		labelPaddingTop = height
 		x1 = p.Width()
-		orient = OrientHorizontal
 	}
 
 	labelCount := opt.LabelCount
 	if labelCount <= 0 {
 		var maxLabelCount int
 		// Add 10px and remove one for some minimal extra padding so that letters don't collide
-		if orient == OrientVertical {
+		if isVertical {
 			maxLabelCount = (top.Height() / (textMaxHeight + 10)) - 1
 		} else {
 			maxLabelCount = (top.Width() / (textMaxWidth + 10)) - 1
@@ -227,7 +222,7 @@ func (a *axisPainter) Render() (Box, error) {
 			LabelCount: labelCount,
 			TickSpaces: tickSpaces,
 			Length:     tickLength,
-			Orient:     orient,
+			Vertical:   isVertical,
 			First:      opt.DataStartIndex,
 		})
 		p.LineStroke([]Point{
@@ -245,7 +240,7 @@ func (a *axisPainter) Render() (Box, error) {
 		First:          opt.DataStartIndex,
 		Align:          textAlign,
 		TextList:       opt.Data,
-		Orient:         orient,
+		Vertical:       isVertical,
 		LabelCount:     labelCount,
 		LabelSkipCount: opt.LabelSkipCount,
 		CenterLabels:   centerLabels,

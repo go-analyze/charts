@@ -62,7 +62,7 @@ func main() {
 		func(opt *charts.ChartOption) {
 			opt.Legend.Offset = charts.OffsetRight
 			opt.Legend.Align = charts.AlignRight
-			opt.Legend.Orient = charts.OrientVertical
+			opt.Legend.Vertical = true
 			opt.Legend.FontStyle.FontSize = 6
 			opt.Title.Offset = charts.OffsetCenter
 			opt.SymbolShow = charts.False()

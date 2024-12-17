@@ -49,9 +49,9 @@ func TestNewLegend(t *testing.T) {
 			name: "position_vertical_with_rect",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data:   []string{"One", "Two", "Three"},
-					Orient: OrientVertical,
-					Icon:   IconRect,
+					Data:     []string{"One", "Two", "Three"},
+					Vertical: true,
+					Icon:     IconRect,
 					Offset: OffsetStr{
 						Left: "10%",
 					},
@@ -99,9 +99,9 @@ func TestNewLegend(t *testing.T) {
 			name: "vertical_right_position",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data:   []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Orient: OrientVertical,
-					Offset: OffsetRight,
+					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
+					Vertical: true,
+					Offset:   OffsetRight,
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -114,9 +114,9 @@ func TestNewLegend(t *testing.T) {
 			name: "vertical_right_position_custom_font_size",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data:   []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Orient: OrientVertical,
-					Offset: OffsetRight,
+					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
+					Vertical: true,
+					Offset:   OffsetRight,
 					FontStyle: FontStyle{
 						FontSize: 6.0,
 					},
@@ -132,10 +132,10 @@ func TestNewLegend(t *testing.T) {
 			name: "vertical_right_position_with_padding",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data:    []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Orient:  OrientVertical,
-					Offset:  OffsetRight,
-					Padding: Box{Top: 120, Left: 120, Right: 120, Bottom: 120},
+					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
+					Vertical: true,
+					Offset:   OffsetRight,
+					Padding:  Box{Top: 120, Left: 120, Right: 120, Bottom: 120},
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -165,7 +165,7 @@ func TestNewLegend(t *testing.T) {
 				_, err := NewLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
-					Orient: OrientVertical,
+					Vertical: true,
 					Offset: OffsetStr{
 						Left: "440",
 					},
@@ -195,9 +195,9 @@ func TestNewLegend(t *testing.T) {
 			name: "vertical_right_alignment",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data:   []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Orient: OrientVertical,
-					Align:  AlignRight,
+					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
+					Vertical: true,
+					Align:    AlignRight,
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -210,10 +210,10 @@ func TestNewLegend(t *testing.T) {
 			name: "vertical_right_alignment_left_position",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data:   []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Orient: OrientVertical,
-					Offset: OffsetLeft,
-					Align:  AlignRight,
+					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
+					Vertical: true,
+					Offset:   OffsetLeft,
+					Align:    AlignRight,
 				}).Render()
 				if err != nil {
 					return nil, err

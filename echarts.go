@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -415,8 +416,8 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				Left: string(eo.Legend.Left),
 				Top:  string(eo.Legend.Top),
 			},
-			Align:  eo.Legend.Align,
-			Orient: eo.Legend.Orient,
+			Align:    eo.Legend.Align,
+			Vertical: strings.EqualFold(eo.Legend.Orient, "vertical"),
 		},
 		RadarIndicators: eo.Radar.Indicator,
 		Width:           eo.Width,

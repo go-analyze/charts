@@ -117,18 +117,20 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				FillColor: fillColor,
 			})
 			if flagIs(true, opt.RoundedBarCaps) {
-				seriesPainter.RoundedRect(chartdraw.Box{
+				seriesPainter.RoundedRect(Box{
 					Top:    top,
 					Left:   x,
 					Right:  x + barWidth,
 					Bottom: barMaxHeight - 1,
+					IsSet:  true,
 				}, barWidth, true, false)
 			} else {
-				seriesPainter.Rect(chartdraw.Box{
+				seriesPainter.Rect(Box{
 					Top:    top,
 					Left:   x,
 					Right:  x + barWidth,
 					Bottom: barMaxHeight - 1,
+					IsSet:  true,
 				})
 			}
 			// generate marker point by hand
@@ -156,6 +158,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				}
 			}
 			labelPainter.Add(LabelValue{
+				Vertical:  true, // label is above bar
 				Index:     index,
 				Value:     item.Value,
 				FontStyle: fontStyle,

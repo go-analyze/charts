@@ -619,7 +619,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 			Legend: charts.LegendOption{
-				Orient: charts.OrientVertical,
+				Vertical: true,
 				Data: []string{
 					"Search Engine",
 					"Direct",
