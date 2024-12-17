@@ -120,9 +120,9 @@ func LegendOptionFunc(legend LegendOption) OptionFunc {
 }
 
 // LegendLabelsOptionFunc set legend labels of chart
-func LegendLabelsOptionFunc(labels []string, left ...string) OptionFunc {
+func LegendLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.Legend = NewLegendOption(labels, left...)
+		opt.Legend = NewLegendOption(labels)
 	}
 }
 

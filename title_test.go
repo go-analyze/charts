@@ -23,8 +23,10 @@ func TestTitleRenderer(t *testing.T) {
 				_, err := NewTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
-					Left:    "20",
-					Top:     "20",
+					Offset: OffsetStr{
+						Left: "20",
+						Top:  "20",
+					},
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -39,8 +41,10 @@ func TestTitleRenderer(t *testing.T) {
 				_, err := NewTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
-					Left:    "20%",
-					Top:     "20",
+					Offset: OffsetStr{
+						Left: "20%",
+						Top:  "20",
+					},
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -55,7 +59,7 @@ func TestTitleRenderer(t *testing.T) {
 				_, err := NewTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
-					Left:    PositionRight,
+					Offset:  OffsetRight,
 				}).Render()
 				if err != nil {
 					return nil, err

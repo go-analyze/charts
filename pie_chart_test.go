@@ -24,7 +24,7 @@ func makeBasicPieChartOption() PieChartOption {
 		Title: TitleOption{
 			Text:    "Rainfall vs Evaporation",
 			Subtext: "Fake Data",
-			Left:    PositionCenter,
+			Offset:  OffsetCenter,
 		},
 		Padding: Box{
 			Top:    20,
@@ -41,7 +41,7 @@ func makeBasicPieChartOption() PieChartOption {
 				"Union Ads",
 				"Video Ads",
 			},
-			Left: PositionLeft,
+			Offset: OffsetLeft,
 		},
 	}
 }
@@ -297,8 +297,8 @@ func TestPieChart(t *testing.T) {
 						Radius: "150",
 					}),
 					Title: TitleOption{
-						Text: "Fix label K (72586)",
-						Left: PositionRight,
+						Text:   "Fix label K (72586)",
+						Offset: OffsetRight,
 					},
 					Padding: Box{
 						Top:    20,

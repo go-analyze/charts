@@ -123,6 +123,7 @@ func (xa XAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 		Left:   left,
 		Right:  right,
 		Bottom: bottom,
+		IsSet:  true,
 	}
 }
 
@@ -174,6 +175,7 @@ func (xa XAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 					Right:  tx,
 					Top:    canvasBox.Bottom + DefaultXAxisMargin,
 					Bottom: canvasBox.Bottom + DefaultXAxisMargin,
+					IsSet:  true,
 				}, finalTickStyle)
 
 				ftb := Text.MeasureLines(r, Text.WrapFit(r, t.Label, tx-ltx, finalTickStyle), finalTickStyle)

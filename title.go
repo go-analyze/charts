@@ -13,12 +13,8 @@ type TitleOption struct {
 	Text string
 	// Subtext to the title, supporting \n for new lines.
 	Subtext string
-	// Left is the distance between title component and the left side of the container.
-	// It can be pixel value (20) or percentage value (20%), or position description: 'left', 'right', 'center'.
-	Left string
-	// Top is the distance between title component and the top side of the container.
-	// It can be pixel value (20) or percentage value (20%).
-	Top string
+	// Offset allows you to specify the position of the title component relative to the left and top side.
+	Offset OffsetStr
 	// FontStyle specifies the font, size, and style for rendering the title.
 	FontStyle FontStyle
 	// SubtextFontStyle specifies the font, size, and style for rendering the subtext.
@@ -129,8 +125,9 @@ func (t *titlePainter) Render() (Box, error) {
 	}
 	width := textMaxWidth
 
+	offset := opt.Offset
 	titleX := 0
-	switch opt.Left {
+	switch offset.Left {
 	case "", PositionLeft:
 		// no-op
 	case PositionRight:
@@ -138,15 +135,15 @@ func (t *titlePainter) Render() (Box, error) {
 	case PositionCenter:
 		titleX = p.Width()>>1 - (textMaxWidth >> 1)
 	default:
-		if v, err := parseFlexibleValue(opt.Left, float64(p.Width())); err != nil {
+		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
 			return BoxZero, err
 		} else {
 			titleX = int(v)
 		}
 	}
 	titleY := 0
-	if opt.Top != "" {
-		if v, err := parseFlexibleValue(opt.Top, float64(p.Height())); err != nil {
+	if offset.Top != "" {
+		if v, err := parseFlexibleValue(offset.Top, float64(p.Height())); err != nil {
 			return BoxZero, err
 		} else {
 			titleY = int(v)

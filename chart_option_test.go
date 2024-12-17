@@ -159,7 +159,7 @@ func TestLineRender(t *testing.T) {
 			"Video Ads",
 			"Direct",
 			"Search Engine",
-		}, PositionCenter),
+		}),
 	)
 	require.NoError(t, err)
 	data, err := p.Bytes()
@@ -220,11 +220,12 @@ func TestBarRender(t *testing.T) {
 		LegendLabelsOptionFunc([]string{
 			"Rainfall",
 			"Evaporation",
-		}, PositionRight),
+		}),
 		MarkLineOptionFunc(0, SeriesMarkDataTypeAverage),
 		MarkPointOptionFunc(0, SeriesMarkDataTypeMax, SeriesMarkDataTypeMin),
 		// custom option func
 		func(opt *ChartOption) {
+			opt.Legend.Offset = OffsetRight
 			opt.SeriesList[1].MarkPoint = NewMarkPoint(
 				SeriesMarkDataTypeMax,
 				SeriesMarkDataTypeMin,
@@ -306,7 +307,7 @@ func TestPieRender(t *testing.T) {
 		TitleOptionFunc(TitleOption{
 			Text:    "Rainfall vs Evaporation",
 			Subtext: "Fake Data",
-			Left:    PositionCenter,
+			Offset:  OffsetCenter,
 		}),
 		PaddingOptionFunc(Box{
 			Top:    20,
@@ -323,7 +324,7 @@ func TestPieRender(t *testing.T) {
 				"Union Ads",
 				"Video Ads",
 			},
-			Left: PositionLeft,
+			Offset: OffsetLeft,
 		}),
 		PieSeriesShowLabel(),
 	)

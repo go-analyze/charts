@@ -12,7 +12,9 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 		opt := ChartOption{
 			OutputFormat: ChartOutputPNG,
 			Legend: LegendOption{
-				Top: "-90",
+				Offset: OffsetStr{
+					Top: "-90",
+				},
 				Data: []string{
 					"Milk Tea",
 					"Matcha Latte",
@@ -121,7 +123,9 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		opt := ChartOption{
 			Legend: LegendOption{
-				Top: "-90",
+				Offset: OffsetStr{
+					Top: "-90",
+				},
 				Data: []string{
 					"Milk Tea",
 					"Matcha Latte",

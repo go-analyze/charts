@@ -22,7 +22,7 @@ type LabelValue struct {
 	Radians   float64
 	FontStyle FontStyle
 	Orient    string
-	Offset    Offset
+	Offset    OffsetInt
 }
 
 type SeriesLabelPainter struct {

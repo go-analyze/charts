@@ -35,8 +35,8 @@ func TestNewLegend(t *testing.T) {
 			name: "position_left",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewLegendPainter(p, LegendOption{
-					Data: []string{"One", "Two", "Three"},
-					Left: PositionLeft,
+					Data:   []string{"One", "Two", "Three"},
+					Offset: OffsetLeft,
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -52,7 +52,9 @@ func TestNewLegend(t *testing.T) {
 					Data:   []string{"One", "Two", "Three"},
 					Orient: OrientVertical,
 					Icon:   IconRect,
-					Left:   "10%",
+					Offset: OffsetStr{
+						Left: "10%",
+					},
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -99,7 +101,7 @@ func TestNewLegend(t *testing.T) {
 				_, err := NewLegendPainter(p, LegendOption{
 					Data:   []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
 					Orient: OrientVertical,
-					Left:   PositionRight,
+					Offset: OffsetRight,
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -114,7 +116,7 @@ func TestNewLegend(t *testing.T) {
 				_, err := NewLegendPainter(p, LegendOption{
 					Data:   []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
 					Orient: OrientVertical,
-					Left:   PositionRight,
+					Offset: OffsetRight,
 					FontStyle: FontStyle{
 						FontSize: 6.0,
 					},
@@ -132,7 +134,7 @@ func TestNewLegend(t *testing.T) {
 				_, err := NewLegendPainter(p, LegendOption{
 					Data:    []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
 					Orient:  OrientVertical,
-					Left:    PositionRight,
+					Offset:  OffsetRight,
 					Padding: Box{Top: 120, Left: 120, Right: 120, Bottom: 120},
 				}).Render()
 				if err != nil {
@@ -148,7 +150,7 @@ func TestNewLegend(t *testing.T) {
 				_, err := NewLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
-					Left: PositionLeft,
+					Offset: OffsetLeft,
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -164,7 +166,9 @@ func TestNewLegend(t *testing.T) {
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
 					Orient: OrientVertical,
-					Left:   "440",
+					Offset: OffsetStr{
+						Left: "440",
+					},
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -208,7 +212,7 @@ func TestNewLegend(t *testing.T) {
 				_, err := NewLegendPainter(p, LegendOption{
 					Data:   []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
 					Orient: OrientVertical,
-					Left:   PositionLeft,
+					Offset: OffsetLeft,
 					Align:  AlignRight,
 				}).Render()
 				if err != nil {

@@ -47,7 +47,7 @@ func main() {
 		}),
 		charts.LegendLabelsOptionFunc([]string{
 			"Email",
-		}, "50"),
+		}),
 		func(opt *charts.ChartOption) {
 			opt.Legend.Padding = charts.Box{
 				Top:    5,

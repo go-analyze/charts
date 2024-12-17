@@ -95,7 +95,7 @@ func main() {
 			"视频广告",
 			"直接访问",
 			"搜索引擎",
-		}, charts.PositionCenter),
+		}),
 	)
 	if err != nil {
 		panic(err)

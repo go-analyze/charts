@@ -234,7 +234,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			Legend: charts.NewLegendOption([]string{
 				"Highest",
 				"Lowest",
-			}, charts.PositionRight),
+			}),
 			XAxis: charts.NewXAxisOption([]string{
 				"Mon",
 				"Tue",
@@ -459,7 +459,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			Legend: charts.NewLegendOption([]string{
 				"Rainfall",
 				"Evaporation",
-			}, charts.PositionRight),
+			}),
 			SeriesList: []charts.Series{
 				{
 					Type: charts.ChartTypeBar,
@@ -610,7 +610,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			Title: charts.TitleOption{
 				Text:    "Referer of a Website",
 				Subtext: "(Fake Data)",
-				Left:    charts.PositionCenter,
+				Offset:  charts.OffsetCenter,
 				FontStyle: charts.FontStyle{
 					FontSize: 16,
 				},
@@ -627,7 +627,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					"Union Ads",
 					"Video Ads",
 				},
-				Left: charts.PositionLeft,
+				Offset: charts.OffsetLeft,
 			},
 			SeriesList: charts.NewPieSeriesList([]float64{
 				1048,
@@ -761,7 +761,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// multiple picture
 		{
 			Legend: charts.LegendOption{
-				Top: "-90",
+				Offset: charts.OffsetStr{
+					Top: "-90",
+				},
 				Data: []string{
 					"Milk Tea",
 					"Matcha Latte",

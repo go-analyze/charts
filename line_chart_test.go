@@ -82,7 +82,7 @@ func makeFullLineChartOption() LineChartOption {
 			"Video Ads",
 			"Direct",
 			"Search Engine",
-		}, PositionCenter),
+		}),
 		SeriesList: NewSeriesListDataFromValues(values),
 	}
 }
@@ -127,7 +127,7 @@ func makeBasicLineChartOption() LineChartOption {
 			"F",
 			"G",
 		}),
-		Legend:     NewLegendOption([]string{"1", "2"}, PositionCenter),
+		Legend:     NewLegendOption([]string{"1", "2"}),
 		SeriesList: NewSeriesListDataFromValues(values),
 	}
 }

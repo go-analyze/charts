@@ -48,7 +48,7 @@ type AxisOption struct {
 	// TextRotation are the radians for rotating the label.
 	TextRotation float64
 	// LabelOffset is the offset of each label.
-	LabelOffset Offset
+	LabelOffset OffsetInt
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions. This value takes priority over Unit.

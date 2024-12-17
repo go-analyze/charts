@@ -34,7 +34,7 @@ func main() {
 		charts.TitleOptionFunc(charts.TitleOption{
 			Text:    "Rainfall vs Evaporation",
 			Subtext: "(Fake Data)",
-			Left:    charts.PositionCenter,
+			Offset:  charts.OffsetCenter,
 			FontStyle: charts.FontStyle{
 				FontSize: 16,
 			},
@@ -57,7 +57,7 @@ func main() {
 				"Union Ads",
 				"Video Ads",
 			},
-			Left: charts.PositionLeft,
+			Offset: charts.OffsetLeft,
 			FontStyle: charts.FontStyle{
 				FontSize: 12,
 			},

@@ -19,18 +19,14 @@ type LegendOption struct {
 	Show *bool
 	// Theme specifies the colors used for the legend.
 	Theme ColorPalette
-	// Padding specifies space padding around the legend.
-	Padding Box
 	// Data provides text for the legend.
 	Data []string
 	// FontStyle specifies the font, size, and style for rendering the legend.
 	FontStyle FontStyle
-	// Left is the distance between legend component and the left side of the container.
-	// It can be pixel value (20), percentage value (20%), or position description: 'left', 'right', 'center'.
-	Left string
-	// Top is the distance between legend component and the top side of the container.
-	// It can be pixel value (20), or percentage value (20%).
-	Top string
+	// Padding specifies space padding around the legend.
+	Padding Box
+	// Offset allows you to specify the position of the legend component relative to the left and top side.
+	Offset OffsetStr
 	// Align is the legend marker and text alignment, it can be 'left' or 'right', default is 'left'.
 	Align string
 	// Orient is the layout orientation of legend, it can be 'horizontal' or 'vertical', default is 'horizontal'.
@@ -40,12 +36,9 @@ type LegendOption struct {
 }
 
 // NewLegendOption returns a legend option
-func NewLegendOption(labels []string, left ...string) LegendOption {
+func NewLegendOption(labels []string) LegendOption {
 	opt := LegendOption{
 		Data: labels,
-	}
-	if len(left) != 0 {
-		opt.Left = left[0]
 	}
 	return opt
 }
@@ -85,16 +78,17 @@ func (l *legendPainter) Render() (Box, error) {
 	if fontStyle.FontColor.IsZero() {
 		fontStyle.FontColor = theme.GetTextColor()
 	}
-	if opt.Left == "" {
+	offset := opt.Offset
+	if offset.Left == "" {
 		if opt.Orient == OrientVertical {
 			// in the vertical orientation it's more visually appealing to default to the right side or left side
 			if opt.Align != "" {
-				opt.Left = opt.Align
+				offset.Left = opt.Align
 			} else {
-				opt.Left = PositionLeft
+				offset.Left = PositionLeft
 			}
 		} else {
-			opt.Left = PositionCenter
+			offset.Left = PositionCenter
 		}
 	}
 	padding := opt.Padding
@@ -108,7 +102,7 @@ func (l *legendPainter) Render() (Box, error) {
 	measureList := make([]Box, len(opt.Data))
 	width := 0
 	height := 0
-	offset := 20
+	builtInSpacing := 20
 	textOffset := 2
 	legendWidth := 30
 	legendHeight := 20
@@ -133,17 +127,17 @@ func (l *legendPainter) Render() (Box, error) {
 	// add padding
 	if opt.Orient == OrientVertical {
 		width = maxTextWidth + textOffset + legendWidth
-		height = offset * len(opt.Data)
+		height = builtInSpacing * len(opt.Data)
 	} else {
 		height = legendHeight
-		offsetValue := (len(opt.Data) - 1) * (offset + textOffset)
+		offsetValue := (len(opt.Data) - 1) * (builtInSpacing + textOffset)
 		allLegendWidth := len(opt.Data) * legendWidth
 		width += offsetValue + allLegendWidth
 	}
 
 	// calculate starting position
 	var left int
-	switch opt.Left {
+	switch offset.Left {
 	case PositionLeft:
 		// no-op
 	case PositionRight:
@@ -151,7 +145,7 @@ func (l *legendPainter) Render() (Box, error) {
 	case PositionCenter:
 		left = (p.Width() - width) >> 1
 	default:
-		if v, err := parseFlexibleValue(opt.Left, float64(p.Width())); err != nil {
+		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
 			return BoxZero, err
 		} else {
 			left = int(v)
@@ -162,8 +156,8 @@ func (l *legendPainter) Render() (Box, error) {
 	}
 
 	var top int
-	if opt.Top != "" {
-		if v, err := parseFlexibleValue(opt.Top, float64(p.Height())); err != nil {
+	if offset.Top != "" {
+		if v, err := parseFlexibleValue(offset.Top, float64(p.Height())); err != nil {
 			return BoxZero, fmt.Errorf("unexpected parsing error: %v", err)
 		} else {
 			top = int(v)
@@ -215,7 +209,7 @@ func (l *legendPainter) Render() (Box, error) {
 			}
 		} else {
 			// check if item will overrun the right side boundary
-			itemWidth := x0 + measureList[index].Width() + textOffset + offset + legendWidth
+			itemWidth := x0 + measureList[index].Width() + textOffset + builtInSpacing + legendWidth
 			if lastIndex == index {
 				itemWidth = x0 + measureList[index].Width() + legendWidth
 			}
@@ -238,10 +232,10 @@ func (l *legendPainter) Render() (Box, error) {
 		}
 
 		if opt.Orient == OrientVertical {
-			y0 += offset
+			y0 += builtInSpacing
 			x0 = x
 		} else {
-			x0 += offset
+			x0 += builtInSpacing
 			y0 = y
 		}
 		height = y0 - startY + 10

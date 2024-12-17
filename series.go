@@ -58,7 +58,7 @@ type SeriesLabel struct {
 	// Position defines the label position.
 	Position string
 	// Offset specifies an offset from the position.
-	Offset Offset
+	Offset OffsetInt
 }
 
 const (

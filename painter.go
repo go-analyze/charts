@@ -51,7 +51,7 @@ type MultiTextOption struct {
 	CenterLabels bool
 	Align        string
 	TextRotation float64
-	Offset       Offset
+	Offset       OffsetInt
 	// The first text index
 	First          int
 	LabelCount     int

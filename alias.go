@@ -1,27 +1,81 @@
 package charts
 
 import (
+	"strconv"
+
 	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type Box = chartdraw.Box
+type Point = chartdraw.Point
 type Color = drawing.Color
 type FontStyle = chartdraw.FontStyle
 
 var BoxZero = chartdraw.BoxZero
 
-// Offset provides an ability to configure a shift from the top or left alignments.
-type Offset struct {
+// OffsetInt provides an ability to configure a shift from the top or left alignments.
+type OffsetInt struct {
 	// Left indicates a vertical spacing adjustment from the top.
 	Top int
 	// Left indicates a horizontal spacing adjustment from the left.
 	Left int
 }
 
-type Point struct {
-	X int
-	Y int
+func (o OffsetInt) WithTop(val int) OffsetInt {
+	return OffsetInt{
+		Left: o.Left,
+		Top:  val,
+	}
+}
+
+func (o OffsetInt) WithLeft(val int) OffsetInt {
+	return OffsetInt{
+		Left: val,
+		Top:  o.Top,
+	}
+}
+
+// OffsetStr provides an ability to configure a shift from the top or left alignments using flexible string inputs.
+type OffsetStr struct {
+	// Left is the distance between the component and the left side of the container.
+	// It can be pixel value (20), percentage value (20%), or position description: 'left', 'right', 'center'.
+	Left string
+	// Top is the distance between the component and the top side of the container.
+	// It can be pixel value (20), or percentage value (20%).
+	Top string
+}
+
+var OffsetLeft = OffsetStr{Left: PositionLeft}
+var OffsetRight = OffsetStr{Left: PositionRight}
+var OffsetCenter = OffsetStr{Left: PositionCenter}
+
+func (o OffsetStr) WithTop(val string) OffsetStr {
+	return OffsetStr{
+		Left: o.Left,
+		Top:  val,
+	}
+}
+
+func (o OffsetStr) WithTopI(val int) OffsetStr {
+	return OffsetStr{
+		Left: o.Left,
+		Top:  strconv.Itoa(val),
+	}
+}
+
+func (o OffsetStr) WithLeft(val string) OffsetStr {
+	return OffsetStr{
+		Left: val,
+		Top:  o.Top,
+	}
+}
+
+func (o OffsetStr) WithLeftI(val int) OffsetStr {
+	return OffsetStr{
+		Left: strconv.Itoa(val),
+		Top:  o.Top,
+	}
 }
 
 const (

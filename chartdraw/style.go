@@ -290,6 +290,30 @@ func (s FontStyle) GetFont(defaults ...*truetype.Font) *truetype.Font {
 	return s.Font
 }
 
+func (s FontStyle) WithSize(size float64) FontStyle {
+	return FontStyle{
+		FontSize:  size,
+		FontColor: s.FontColor,
+		Font:      s.Font,
+	}
+}
+
+func (s FontStyle) WithColor(color drawing.Color) FontStyle {
+	return FontStyle{
+		FontSize:  s.FontSize,
+		FontColor: color,
+		Font:      s.Font,
+	}
+}
+
+func (s FontStyle) WithFont(font *truetype.Font) FontStyle {
+	return FontStyle{
+		FontSize:  s.FontSize,
+		FontColor: s.FontColor,
+		Font:      font,
+	}
+}
+
 // GetPadding returns the padding.
 func (s Style) GetPadding(defaults ...Box) Box {
 	if s.Padding.IsZero() {

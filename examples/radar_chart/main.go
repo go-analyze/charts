@@ -53,7 +53,7 @@ func main() {
 				"Allocated Budget",
 				"Actual Spending",
 			},
-			Left: charts.PositionRight,
+			Offset: charts.OffsetRight,
 		}),
 		charts.RadarIndicatorOptionFunc([]string{
 			"Sales",

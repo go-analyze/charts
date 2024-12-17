@@ -21,7 +21,7 @@ Notable improvements in our fork include:
 
 * **Axis Improvements:** Significant enhancements to axis rendering, data range selection, and configuration simplification were made in PR [#3](https://github.com/go-analyze/charts/pull/3).
 * **Theming:** In PR [#4](https://github.com/go-analyze/charts/pull/4) (and some subsequent changes) we introduced `vivid-light` and `vivid-dark` themes for more vibrant visualizations, alongside API changes for greater theme and font control. Long term we plan to make themes easier to mutate and define.
-* **Configuration Simplification:** PR [#5](https://github.com/go-analyze/charts/pull/5) began our effort to streamline chart configuration, making names more descriptive and specific while focusing on a theme-centric approach. Documentation on configuration and use is also being improved. (See also [#15](https://github.com/go-analyze/charts/pull/15))
+* **Configuration Simplification:** PR [#5](https://github.com/go-analyze/charts/pull/5) began our effort to streamline chart configuration, making names more descriptive and specific while focusing on a theme-centric approach. Documentation on configuration and use is also being improved. (See also [#15](https://github.com/go-analyze/charts/pull/15), [#20](https://github.com/go-analyze/charts/pull/20))
 * **Expanded Testing:** Ongoing test coverage expansions have led to bug discoveries and fixes. This will continue to help ensure that our charts render perfectly for a wide range of configurations and use.
 
 Our library is a work in progress, aiming to become a standout choice for Go developers seeking powerful, yet easy-to-use charting tools. We welcome contributions and feedback as we continue to enhance our library's functionality, configurability, and reliability.
@@ -89,7 +89,7 @@ func main() {
 		charts.LegendLabelsOptionFunc([]string{
 			"Email",
 			"Search Engine",
-		}, charts.PositionCenter),
+		}),
 	)
 	// snip...
 }
@@ -146,7 +146,7 @@ func main() {
 		charts.LegendLabelsOptionFunc([]string{
 			"Rainfall",
 			"Evaporation",
-		}, charts.PositionRight),
+		}),
 		charts.MarkLineOptionFunc(0, charts.SeriesMarkDataTypeAverage),
 		charts.MarkPointOptionFunc(0, charts.SeriesMarkDataTypeMax,
 			charts.SeriesMarkDataTypeMin),
@@ -240,7 +240,7 @@ func main() {
 		charts.TitleOptionFunc(charts.TitleOption{
 			Text:    "Rainfall vs Evaporation",
 			Subtext: "Fake Data",
-			Left:    charts.PositionCenter,
+			Offset:  charts.OffsetCenter,
 		}),
 		charts.PaddingOptionFunc(charts.Box{
 			Top:    20,
@@ -249,7 +249,7 @@ func main() {
 			Left:   20,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Orient: charts.OrientVertical,
+			Veritcal: true,
 			Data: []string{
 				"Search Engine",
 				"Direct",
@@ -257,7 +257,7 @@ func main() {
 				"Union Ads",
 				"Video Ads",
 			},
-			Left: charts.PositionLeft,
+			Offset: charts.OffsetLeft,
 		}),
 		charts.PieSeriesShowLabel(),
 	)

@@ -399,8 +399,10 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				FontSize:  titleSubtextStyle.FontSize,
 				FontColor: titleSubtextStyle.FontColor,
 			},
-			Left: string(eo.Title.Left),
-			Top:  string(eo.Title.Top),
+			Offset: OffsetStr{
+				Left: string(eo.Title.Left),
+				Top:  string(eo.Title.Top),
+			},
 		},
 		Legend: LegendOption{
 			Show: eo.Legend.Show,
@@ -408,9 +410,11 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				FontSize:  legendTextStyle.FontSize,
 				FontColor: legendTextStyle.FontColor,
 			},
-			Data:   eo.Legend.Data,
-			Left:   string(eo.Legend.Left),
-			Top:    string(eo.Legend.Top),
+			Data: eo.Legend.Data,
+			Offset: OffsetStr{
+				Left: string(eo.Legend.Left),
+				Top:  string(eo.Legend.Top),
+			},
 			Align:  eo.Legend.Align,
 			Orient: eo.Legend.Orient,
 		},

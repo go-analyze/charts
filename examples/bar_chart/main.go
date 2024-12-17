@@ -71,12 +71,13 @@ func main() {
 		charts.LegendLabelsOptionFunc([]string{
 			"Rainfall",
 			"Evaporation",
-		}, charts.PositionRight),
+		}),
 		charts.MarkLineOptionFunc(0, charts.SeriesMarkDataTypeAverage),
 		charts.MarkPointOptionFunc(0, charts.SeriesMarkDataTypeMax,
 			charts.SeriesMarkDataTypeMin),
 		// custom option func
 		func(opt *charts.ChartOption) {
+			opt.Legend.Offset = charts.OffsetRight
 			opt.SeriesList[1].MarkPoint = charts.NewMarkPoint(
 				charts.SeriesMarkDataTypeMax,
 				charts.SeriesMarkDataTypeMin,
