@@ -32,17 +32,6 @@ type XAxisOption struct {
 
 const defaultXAxisHeight = 30
 
-// NewXAxisOption returns a x axis option
-func NewXAxisOption(data []string, boundaryGap ...*bool) XAxisOption {
-	opt := XAxisOption{
-		Data: data,
-	}
-	if len(boundaryGap) != 0 {
-		opt.BoundaryGap = boundaryGap[0]
-	}
-	return opt
-}
-
 func (opt *XAxisOption) ToAxisOption() AxisOption {
 	position := PositionBottom
 	if opt.Position == PositionTop {

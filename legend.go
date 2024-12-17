@@ -35,14 +35,6 @@ type LegendOption struct {
 	Icon string
 }
 
-// NewLegendOption returns a legend option
-func NewLegendOption(labels []string) LegendOption {
-	opt := LegendOption{
-		Data: labels,
-	}
-	return opt
-}
-
 // IsEmpty checks legend is empty
 func (opt *LegendOption) IsEmpty() bool {
 	for _, v := range opt.Data {

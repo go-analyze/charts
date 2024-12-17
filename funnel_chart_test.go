@@ -16,13 +16,15 @@ func makeBasicFunnelChartOption() FunnelChartOption {
 			40,
 			20,
 		}),
-		Legend: NewLegendOption([]string{
-			"Show",
-			"Click",
-			"Visit",
-			"Inquiry",
-			"Order",
-		}),
+		Legend: LegendOption{
+			Data: []string{
+				"Show",
+				"Click",
+				"Visit",
+				"Inquiry",
+				"Order",
+			},
+		},
 		Title: TitleOption{
 			Text: "Funnel",
 		},

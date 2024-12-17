@@ -122,7 +122,9 @@ func LegendOptionFunc(legend LegendOption) OptionFunc {
 // LegendLabelsOptionFunc set legend labels of chart
 func LegendLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.Legend = NewLegendOption(labels)
+		opt.Legend = LegendOption{
+			Data: labels,
+		}
 	}
 }
 
@@ -134,9 +136,11 @@ func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 }
 
 // XAxisDataOptionFunc set x-axis data of chart
-func XAxisDataOptionFunc(data []string, boundaryGap ...*bool) OptionFunc {
+func XAxisDataOptionFunc(data []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.XAxis = NewXAxisOption(data, boundaryGap...)
+		opt.XAxis = XAxisOption{
+			Data: data,
+		}
 	}
 }
 
@@ -150,7 +154,11 @@ func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 // YAxisDataOptionFunc set y-axis data of chart
 func YAxisDataOptionFunc(data []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.YAxis = NewYAxisOptions(data)
+		opt.YAxis = []YAxisOption{
+			{
+				Data: data,
+			},
+		}
 	}
 }
 

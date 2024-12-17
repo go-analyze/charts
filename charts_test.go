@@ -28,14 +28,16 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 				Bottom: 10,
 				Left:   10,
 			},
-			XAxis: NewXAxisOption([]string{
-				"2012",
-				"2013",
-				"2014",
-				"2015",
-				"2016",
-				"2017",
-			}),
+			XAxis: XAxisOption{
+				Data: []string{
+					"2012",
+					"2013",
+					"2014",
+					"2015",
+					"2016",
+					"2017",
+				},
+			},
 			YAxis: []YAxisOption{
 				{
 
@@ -139,14 +141,16 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 				Bottom: 10,
 				Left:   10,
 			},
-			XAxis: NewXAxisOption([]string{
-				"2012",
-				"2013",
-				"2014",
-				"2015",
-				"2016",
-				"2017",
-			}),
+			XAxis: XAxisOption{
+				Data: []string{
+					"2012",
+					"2013",
+					"2014",
+					"2015",
+					"2016",
+					"2017",
+				},
+			},
 			YAxis: []YAxisOption{
 				{
 					Min: FloatPointer(0),

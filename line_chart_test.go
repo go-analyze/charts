@@ -67,22 +67,26 @@ func makeFullLineChartOption() LineChartOption {
 			Bottom: 10,
 			Left:   10,
 		},
-		XAxis: NewXAxisOption([]string{
-			"Mon",
-			"Tue",
-			"Wed",
-			"Thu",
-			"Fri",
-			"Sat",
-			"Sun",
-		}),
-		Legend: NewLegendOption([]string{
-			"Email",
-			"Union Ads",
-			"Video Ads",
-			"Direct",
-			"Search Engine",
-		}),
+		XAxis: XAxisOption{
+			Data: []string{
+				"Mon",
+				"Tue",
+				"Wed",
+				"Thu",
+				"Fri",
+				"Sat",
+				"Sun",
+			},
+		},
+		Legend: LegendOption{
+			Data: []string{
+				"Email",
+				"Union Ads",
+				"Video Ads",
+				"Direct",
+				"Search Engine",
+			},
+		},
 		SeriesList: NewSeriesListDataFromValues(values),
 	}
 }
@@ -118,16 +122,20 @@ func makeBasicLineChartOption() LineChartOption {
 			Bottom: 10,
 			Left:   10,
 		},
-		XAxis: NewXAxisOption([]string{
-			"A",
-			"B",
-			"C",
-			"D",
-			"E",
-			"F",
-			"G",
-		}),
-		Legend:     NewLegendOption([]string{"1", "2"}),
+		XAxis: XAxisOption{
+			Data: []string{
+				"A",
+				"B",
+				"C",
+				"D",
+				"E",
+				"F",
+				"G",
+			},
+		},
+		Legend: LegendOption{
+			Data: []string{"1", "2"},
+		},
 		SeriesList: NewSeriesListDataFromValues(values),
 	}
 }

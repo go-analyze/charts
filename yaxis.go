@@ -35,21 +35,6 @@ type YAxisOption struct {
 	SplitLineShow *bool
 }
 
-// NewYAxisOptions returns a y-axis option
-func NewYAxisOptions(data []string, others ...[]string) []YAxisOption {
-	arr := [][]string{
-		data,
-	}
-	arr = append(arr, others...)
-	opts := make([]YAxisOption, 0)
-	for _, data := range arr {
-		opts = append(opts, YAxisOption{
-			Data: data,
-		})
-	}
-	return opts
-}
-
 func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 	position := PositionLeft
 	if opt.Position == PositionRight {

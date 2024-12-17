@@ -51,24 +51,30 @@ func makeBasicBarChartOption() BarChartOption {
 			Bottom: 10,
 		},
 		SeriesList: seriesList,
-		XAxis: NewXAxisOption([]string{
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
-		}),
-		YAxis: NewYAxisOptions([]string{
-			"Rainfall",
-			"Evaporation",
-		}),
+		XAxis: XAxisOption{
+			Data: []string{
+				"Jan",
+				"Feb",
+				"Mar",
+				"Apr",
+				"May",
+				"Jun",
+				"Jul",
+				"Aug",
+				"Sep",
+				"Oct",
+				"Nov",
+				"Dec",
+			},
+		},
+		YAxis: []YAxisOption{
+			{
+				Data: []string{
+					"Rainfall",
+					"Evaporation",
+				},
+			},
+		},
 	}
 }
 

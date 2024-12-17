@@ -163,15 +163,17 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 				Padding: charts.Box{Left: 100},
 			},
-			XAxis: charts.NewXAxisOption([]string{
-				"Mon",
-				"Tue",
-				"Wed",
-				"Thu",
-				"Fri",
-				"Sat",
-				"Sun",
-			}),
+			XAxis: charts.XAxisOption{
+				Data: []string{
+					"Mon",
+					"Tue",
+					"Wed",
+					"Thu",
+					"Fri",
+					"Sat",
+					"Sun",
+				},
+			},
 			SeriesList: []charts.Series{
 				charts.NewSeriesFromValues([]float64{
 					120,
@@ -231,19 +233,24 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Right:  30,
 				Bottom: 20,
 			},
-			Legend: charts.NewLegendOption([]string{
-				"Highest",
-				"Lowest",
-			}),
-			XAxis: charts.NewXAxisOption([]string{
-				"Mon",
-				"Tue",
-				"Wed",
-				"Thu",
-				"Fri",
-				"Sat",
-				"Sun",
-			}, charts.False()),
+			Legend: charts.LegendOption{
+				Data: []string{
+					"Highest",
+					"Lowest",
+				},
+			},
+			XAxis: charts.XAxisOption{
+				Data: []string{
+					"Mon",
+					"Tue",
+					"Wed",
+					"Thu",
+					"Fri",
+					"Sat",
+					"Sun",
+				},
+				BoundaryGap: charts.False(),
+			},
 			SeriesList: []charts.Series{
 				{
 					Data: charts.NewSeriesDataFromValues([]float64{
@@ -279,18 +286,20 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					FontSize: 18,
 				},
 			},
-			Legend: charts.NewLegendOption([]string{
-				"Email",
-			}),
-			XAxis: charts.NewXAxisOption([]string{
-				"Mon",
-				"Tue",
-				"Wed",
-				"Thu",
-				"Fri",
-				"Sat",
-				"Sun",
-			}),
+			Legend: charts.LegendOption{
+				Data: []string{"Email"},
+			},
+			XAxis: charts.XAxisOption{
+				Data: []string{
+					"Mon",
+					"Tue",
+					"Wed",
+					"Thu",
+					"Fri",
+					"Sat",
+					"Sun",
+				},
+			},
 			YAxis: []charts.YAxisOption{{
 				Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
 			}},
@@ -315,15 +324,17 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					FontSize: 18,
 				},
 			},
-			XAxis: charts.NewXAxisOption([]string{
-				"Mon",
-				"Tue",
-				"Wed",
-				"Thu",
-				"Fri",
-				"Sat",
-				"Sun",
-			}),
+			XAxis: charts.XAxisOption{
+				Data: []string{
+					"Mon",
+					"Tue",
+					"Wed",
+					"Thu",
+					"Fri",
+					"Sat",
+					"Sun",
+				},
+			},
 			Legend: charts.LegendOption{
 				Data: []string{
 					"Rainfall",
@@ -387,18 +398,24 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Bottom: 20,
 				Left:   20,
 			},
-			Legend: charts.NewLegendOption([]string{
-				"2011",
-				"2012",
-			}),
-			YAxis: charts.NewYAxisOptions([]string{
-				"Brazil",
-				"Indonesia",
-				"USA",
-				"India",
-				"China",
-				"World",
-			}),
+			Legend: charts.LegendOption{
+				Data: []string{
+					"2011",
+					"2012",
+				},
+			},
+			YAxis: []charts.YAxisOption{
+				{
+					Data: []string{
+						"Brazil",
+						"Indonesia",
+						"USA",
+						"India",
+						"China",
+						"World",
+					},
+				},
+			},
 			SeriesList: []charts.Series{
 				{
 					Type: charts.ChartTypeHorizontalBar,
@@ -442,24 +459,28 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Bottom: 20,
 				Left:   20,
 			},
-			XAxis: charts.NewXAxisOption([]string{
-				"Jan",
-				"Feb",
-				"Mar",
-				"Apr",
-				"May",
-				"Jun",
-				"Jul",
-				"Aug",
-				"Sep",
-				"Oct",
-				"Nov",
-				"Dec",
-			}),
-			Legend: charts.NewLegendOption([]string{
-				"Rainfall",
-				"Evaporation",
-			}),
+			XAxis: charts.XAxisOption{
+				Data: []string{
+					"Jan",
+					"Feb",
+					"Mar",
+					"Apr",
+					"May",
+					"Jun",
+					"Jul",
+					"Aug",
+					"Sep",
+					"Oct",
+					"Nov",
+					"Dec",
+				},
+			},
+			Legend: charts.LegendOption{
+				Data: []string{
+					"Rainfall",
+					"Evaporation",
+				},
+			},
 			SeriesList: []charts.Series{
 				{
 					Type: charts.ChartTypeBar,
@@ -519,20 +540,22 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					FontSize: 16,
 				},
 			},
-			XAxis: charts.NewXAxisOption([]string{
-				"Jan",
-				"Feb",
-				"Mar",
-				"Apr",
-				"May",
-				"Jun",
-				"Jul",
-				"Aug",
-				"Sep",
-				"Oct",
-				"Nov",
-				"Dec",
-			}),
+			XAxis: charts.XAxisOption{
+				Data: []string{
+					"Jan",
+					"Feb",
+					"Mar",
+					"Apr",
+					"May",
+					"Jun",
+					"Jul",
+					"Aug",
+					"Sep",
+					"Oct",
+					"Nov",
+					"Dec",
+				},
+			},
 			Legend: charts.LegendOption{
 				Data: []string{
 					"Evaporation",
@@ -713,13 +736,15 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			Title: charts.TitleOption{
 				Text: "Funnel",
 			},
-			Legend: charts.NewLegendOption([]string{
-				"Show",
-				"Click",
-				"Visit",
-				"Inquiry",
-				"Order",
-			}),
+			Legend: charts.LegendOption{
+				Data: []string{
+					"Show",
+					"Click",
+					"Visit",
+					"Inquiry",
+					"Order",
+				},
+			},
 			SeriesList: []charts.Series{
 				{
 					Type: charts.ChartTypeFunnel,
@@ -777,14 +802,16 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Bottom: 10,
 				Left:   10,
 			},
-			XAxis: charts.NewXAxisOption([]string{
-				"2012",
-				"2013",
-				"2014",
-				"2015",
-				"2016",
-				"2017",
-			}),
+			XAxis: charts.XAxisOption{
+				Data: []string{
+					"2012",
+					"2013",
+					"2014",
+					"2015",
+					"2016",
+					"2017",
+				},
+			},
 			YAxis: []charts.YAxisOption{
 				{
 
