@@ -83,7 +83,7 @@ func (m *markLinePainter) Render() (Box, error) {
 			}
 			y := opt.Range.getRestHeight(value)
 			width := painter.Width()
-			text := commafWithDigits(value)
+			text := defaultValueFormatter(value)
 			textBox := painter.MeasureText(text)
 			painter.MarkLine(0, y, width-2)
 			painter.Text(text, width, y+textBox.Height()>>1-2)

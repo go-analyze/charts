@@ -12,6 +12,10 @@ import (
 
 type ValueFormatter func(float64) string
 
+var defaultValueFormatter = func(val float64) string {
+	return FormatValueHumanizeShort(val, 2, false)
+}
+
 type Painter struct {
 	render         chartdraw.Renderer
 	box            Box

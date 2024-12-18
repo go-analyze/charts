@@ -160,26 +160,48 @@ func convertPercent(value string) (float64, error) {
 	return v / 100.0, nil
 }
 
-const K_VALUE = float64(1000)
-const M_VALUE = K_VALUE * K_VALUE
-const G_VALUE = M_VALUE * K_VALUE
-const T_VALUE = G_VALUE * K_VALUE
+const kValue = float64(1000)
+const mValue = kValue * kValue
+const gValue = mValue * kValue
+const tValue = gValue * kValue
 
-func commafWithDigits(value float64) string {
-	decimals := 2
-	if value >= T_VALUE {
-		return humanize.CommafWithDigits(value/T_VALUE, decimals) + "T"
+// FormatValueHumanizeShort takes in a value and a specified precision, rounding to the specified precision and
+// returning a human friendly number string including commas.  If the value is over 1,000 it will be reduced to a
+// shorter version with the appropriate k, M, G, T suffix.
+func FormatValueHumanizeShort(value float64, decimals int, ensureTrailingZeros bool) string {
+	if value >= tValue {
+		return FormatValueHumanize(value/tValue, decimals, ensureTrailingZeros) + "T"
+	} else if value >= gValue {
+		return FormatValueHumanize(value/gValue, decimals, ensureTrailingZeros) + "G"
+	} else if value >= mValue {
+		return FormatValueHumanize(value/mValue, decimals, ensureTrailingZeros) + "M"
+	} else if value >= kValue {
+		return FormatValueHumanize(value/kValue, decimals, ensureTrailingZeros) + "k"
+	} else {
+		return FormatValueHumanize(value, decimals, ensureTrailingZeros)
 	}
-	if value >= G_VALUE {
-		return humanize.CommafWithDigits(value/G_VALUE, decimals) + "G"
+}
+
+// FormatValueHumanize takes in a value and a specified precision, rounding to the specified precision and returning a
+// human friendly number string including commas.
+func FormatValueHumanize(value float64, decimals int, ensureTrailingZeros bool) string {
+	if decimals < 0 {
+		decimals = 0
 	}
-	if value >= M_VALUE {
-		return humanize.CommafWithDigits(value/M_VALUE, decimals) + "M"
+	multiplier := math.Pow(10, float64(decimals))
+	roundedValue := math.Round(value*multiplier) / multiplier
+
+	result := humanize.CommafWithDigits(roundedValue, decimals)
+
+	if ensureTrailingZeros && decimals > 0 {
+		if decimalIndex := strings.IndexAny(result, "."); decimalIndex == -1 {
+			return result + "." + strings.Repeat("0", decimals)
+		} else if existingDecimals := len(result) - decimalIndex - 1; existingDecimals < decimals {
+			return result + strings.Repeat("0", decimals-existingDecimals)
+		}
 	}
-	if value >= K_VALUE {
-		return humanize.CommafWithDigits(value/K_VALUE, decimals) + "k"
-	}
-	return humanize.CommafWithDigits(value, decimals)
+
+	return result
 }
 
 const defaultRadiusPercent = 0.4

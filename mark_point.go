@@ -82,7 +82,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			}
 
 			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize)
-			text := commafWithDigits(value)
+			text := defaultValueFormatter(value)
 			textBox := painter.MeasureText(text)
 			if textBox.Width() > symbolSize {
 				textStyle.FontSize = smallLabelFontSize

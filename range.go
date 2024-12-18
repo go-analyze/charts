@@ -159,7 +159,7 @@ func friendlyRound(val, increment, defaultMultiplier, minMultiplier, maxMultipli
 // Values returns values of range
 func (r axisRange) Values() []string {
 	offset := (r.max - r.min) / float64(r.divideCount-1)
-	formatter := commafWithDigits
+	formatter := defaultValueFormatter
 	if r.p != nil && r.p.valueFormatter != nil {
 		formatter = r.p.valueFormatter
 	}

@@ -24,12 +24,58 @@ func TestCeilFloatToInt(t *testing.T) {
 	assert.Equal(t, math.MinInt, ceilFloatToInt(float64(math.MinInt)-1))
 }
 
-func TestCommafWithDigits(t *testing.T) {
-	assert.Equal(t, "1.2", commafWithDigits(1.2))
-	assert.Equal(t, "1.21", commafWithDigits(1.21231))
+func TestFormatValueHumanizeShort(t *testing.T) {
+	assert.Equal(t, "1", FormatValueHumanizeShort(1.2, 0, false))
+	assert.Equal(t, "1.2", FormatValueHumanizeShort(1.2, 2, false))
+	assert.Equal(t, "1.20", FormatValueHumanizeShort(1.2, 2, true))
+	assert.Equal(t, "1.21", FormatValueHumanizeShort(1.21, 2, false))
+	assert.Equal(t, "1.21", FormatValueHumanizeShort(1.21231, 2, false))
+	assert.Equal(t, "1.22", FormatValueHumanizeShort(1.216, 2, false))
 
-	assert.Equal(t, "1.20k", commafWithDigits(1200.121))
-	assert.Equal(t, "1.20M", commafWithDigits(1200000.121))
+	assert.Equal(t, "1.2k", FormatValueHumanizeShort(1200.121, 2, false))
+	assert.Equal(t, "1.20k", FormatValueHumanizeShort(1200.121, 2, true))
+	assert.Equal(t, "1.21k", FormatValueHumanizeShort(1211.121, 2, false))
+	assert.Equal(t, "1.22k", FormatValueHumanizeShort(1216.121, 2, false))
+	assert.Equal(t, "1.2M", FormatValueHumanizeShort(1200000.121, 2, false))
+	assert.Equal(t, "1.20M", FormatValueHumanizeShort(1200000.121, 2, true))
+}
+
+func TestFormatValueHumanize(t *testing.T) {
+	assert.Equal(t, "1,234,567,890", FormatValueHumanize(1234567890, 2, false))
+	assert.Equal(t, "1", FormatValueHumanize(1.2, 0, false))
+	assert.Equal(t, "1.2", FormatValueHumanize(1.2, 2, false))
+	assert.Equal(t, "1.21", FormatValueHumanize(1.21, 2, false))
+	assert.Equal(t, "1.21", FormatValueHumanize(1.21231, 2, false))
+	assert.Equal(t, "1.22", FormatValueHumanize(1.216, 2, false))
+	assert.Equal(t, "1,200.12", FormatValueHumanize(1200.121, 2, false))
+	assert.Equal(t, "1,200.13", FormatValueHumanize(1200.126, 2, false))
+
+	assert.Equal(t, "1.00", FormatValueHumanize(1, 2, true))
+	assert.Equal(t, "1.20", FormatValueHumanize(1.2, 2, true))
+}
+
+func BenchmarkFormatValueHumanizeAppend(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = FormatValueHumanize(float64(i), 8, true)
+		_ = FormatValueHumanize(float64(i*11), 8, true)
+		_ = FormatValueHumanize(float64(i*41024320), 8, true)
+		_ = FormatValueHumanize(1234567890, 8, true)
+		_ = FormatValueHumanize(1234567890.2, 8, true)
+		_ = FormatValueHumanize(123456789.012, 8, true)
+		_ = FormatValueHumanize(122333444455555666666777777788888888999999999, 8, true)
+		_ = FormatValueHumanize(122333444455555666666777777788888888999999999.012, 8, true)
+		_ = FormatValueHumanize(122333444455555666666777777788888888999999999.987654321, 10, true)
+	}
+}
+
+func BenchmarkFormatValueHumanizeTruncate(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = FormatValueHumanize(1234567890.21, 2, true)
+		_ = FormatValueHumanize(1.21231, 2, true)
+		_ = FormatValueHumanize(1200.126, 2, true)
+		_ = FormatValueHumanize(1200.0123456789, 8, true)
+		_ = FormatValueHumanize(122333444455555666666777777788888888999999999.0123456789, 8, true)
+	}
 }
 
 func TestAutoDivide(t *testing.T) {
