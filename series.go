@@ -140,7 +140,7 @@ func (sl SeriesList) GetMinMax(axisIndex int) (float64, float64) {
 			continue
 		}
 		for _, item := range series.Data {
-			if item.Value == nullValue {
+			if item.Value == GetNullValue() {
 				continue
 			}
 			if item.Value > max {

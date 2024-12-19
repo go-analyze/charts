@@ -55,6 +55,7 @@ func TestFormatValueHumanize(t *testing.T) {
 	assert.Equal(t, "1.21", FormatValueHumanize(1.21, 2, false))
 	assert.Equal(t, "1.21", FormatValueHumanize(1.21231, 2, false))
 	assert.Equal(t, "1.22", FormatValueHumanize(1.216, 2, false))
+	assert.Equal(t, "1", FormatValueHumanize(1.216, -1, false)) // invalid decimal count reset to zero
 	assert.Equal(t, "1,200.12", FormatValueHumanize(1200.121, 2, false))
 	assert.Equal(t, "1,200.13", FormatValueHumanize(1200.126, 2, false))
 

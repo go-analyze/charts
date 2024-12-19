@@ -18,6 +18,20 @@ func TestTitleRenderer(t *testing.T) {
 		result string
 	}{
 		{
+			name: "no_content",
+			render: func(p *Painter) ([]byte, error) {
+				_, err := NewTitlePainter(p, TitleOption{
+					Text:    "",
+					Subtext: "",
+				}).Render()
+				if err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"></svg>",
+		},
+		{
 			name: "padding_number",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := NewTitlePainter(p, TitleOption{

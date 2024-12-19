@@ -109,7 +109,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		}
 		for i, item := range series.Data {
 			h := yRange.getRestHeight(item.Value)
-			if item.Value == nullValue {
+			if item.Value == GetNullValue() {
 				h = math.MaxInt32
 			}
 			p := Point{

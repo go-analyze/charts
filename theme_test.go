@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -12,9 +13,12 @@ import (
 func TestInstallGetTheme(t *testing.T) {
 	t.Parallel()
 
-	InstallTheme("test", ThemeOption{IsDarkMode: true})
-	assert.NotNil(t, GetTheme("test"))
-	assert.NotEqual(t, GetDefaultTheme(), GetTheme("test"))
+	name := "TestInstallGetTheme"
+	InstallTheme(name, ThemeOption{IsDarkMode: true})
+	getThemeResult := GetTheme(name)
+	assert.NotNil(t, getThemeResult)
+	assert.NotEqual(t, GetDefaultTheme(), getThemeResult)
+	assert.Equal(t, name, fmt.Sprintf("%s", getThemeResult))
 }
 
 func TestGetPreferredTheme(t *testing.T) {
@@ -34,6 +38,12 @@ func TestDefaultTheme(t *testing.T) {
 
 	assert.Equal(t, GetTheme(ThemeLight), GetDefaultTheme())
 	assert.Equal(t, GetTheme("Unknown Theme"), GetDefaultTheme())
+}
+
+func TestSetDefaultThemeError(t *testing.T) {
+	t.Parallel()
+
+	assert.Error(t, SetDefaultFont("not a theme"))
 }
 
 func renderTestLineChartWithThemeName(t *testing.T, fullChart bool, themeName string) string {

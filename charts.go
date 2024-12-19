@@ -32,16 +32,9 @@ func SetDefaultHeight(height int) {
 	}
 }
 
-var nullValue = math.MaxFloat64
-
-// SetNullValue sets the null value, default is MaxFloat64
-func SetNullValue(v float64) {
-	nullValue = v
-}
-
 // GetNullValue gets the null value
 func GetNullValue() float64 {
-	return nullValue
+	return math.MaxFloat64
 }
 
 func defaultYAxisLabelCount(span float64, decimalData bool) int {

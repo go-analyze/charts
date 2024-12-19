@@ -16,6 +16,49 @@ func TestBoxClone(t *testing.T) {
 	assert.True(t, b.Equals(a))
 }
 
+func TestBoxWith(t *testing.T) {
+	t.Parallel()
+
+	base := Box{
+		Top:    100,
+		Left:   100,
+		Right:  100,
+		Bottom: 100,
+	}
+	t.Run("top", func(t *testing.T) {
+		updated := base.WithTop(200)
+		assert.True(t, updated.IsSet)
+		assert.Equal(t, 200, updated.Top)
+		assert.Equal(t, 100, updated.Left)
+		assert.Equal(t, 100, updated.Right)
+		assert.Equal(t, 100, updated.Bottom)
+	})
+	t.Run("left", func(t *testing.T) {
+		updated := base.WithLeft(200)
+		assert.True(t, updated.IsSet)
+		assert.Equal(t, 100, updated.Top)
+		assert.Equal(t, 200, updated.Left)
+		assert.Equal(t, 100, updated.Right)
+		assert.Equal(t, 100, updated.Bottom)
+	})
+	t.Run("right", func(t *testing.T) {
+		updated := base.WithRight(200)
+		assert.True(t, updated.IsSet)
+		assert.Equal(t, 100, updated.Top)
+		assert.Equal(t, 100, updated.Left)
+		assert.Equal(t, 200, updated.Right)
+		assert.Equal(t, 100, updated.Bottom)
+	})
+	t.Run("bottom", func(t *testing.T) {
+		updated := base.WithBottom(200)
+		assert.True(t, updated.IsSet)
+		assert.Equal(t, 100, updated.Top)
+		assert.Equal(t, 100, updated.Left)
+		assert.Equal(t, 100, updated.Right)
+		assert.Equal(t, 200, updated.Bottom)
+	})
+}
+
 func TestBoxEquals(t *testing.T) {
 	t.Parallel()
 
@@ -186,4 +229,29 @@ func TestBoxCornersRotate(t *testing.T) {
 
 	rotated := bc.Rotate(45)
 	assert.True(t, rotated.TopLeft.Equals(Point{10, 3}), rotated.String())
+}
+
+func TestDistanceTo(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		p1       Point
+		p2       Point
+		expected float64
+	}{
+		{"same_point", Point{0, 0}, Point{0, 0}, 0},
+		{"positive_int", Point{0, 0}, Point{3, 4}, 5},
+		{"negative_and_positive", Point{-1, -1}, Point{1, 1}, 2.8284271247461903},
+		{"negative_int", Point{-3, -4}, Point{0, 0}, 5},
+		{"one_axis_zero", Point{0, 5}, Point{0, -5}, 10},
+		{"both_axes_same", Point{2, 2}, Point{-2, -2}, 5.656854249492381},
+		{"large_numbers", Point{100000, 100000}, Point{-100000, -100000}, 282842.71247461904},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, tc.p1.DistanceTo(tc.p2))
+		})
+	}
 }
