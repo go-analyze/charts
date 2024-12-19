@@ -2,9 +2,6 @@ package charts
 
 import (
 	"math"
-	"regexp"
-	"strconv"
-	"strings"
 
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
@@ -16,40 +13,8 @@ func isLightColor(c Color) bool {
 	return math.Sqrt(r+g+b) > 127.5
 }
 
-var rgbReg = regexp.MustCompile(`\((\S+)\)`)
-
-// TODO - de-duplicate with chartdraw/drawing/color.go:ParseColor
-func parseColor(color string) Color {
-	c := Color{}
-	if color == "" {
-		return c
-	}
-	if strings.HasPrefix(color, "#") {
-		return drawing.ColorFromHex(color[1:])
-	}
-	result := rgbReg.FindAllStringSubmatch(color, 1)
-	if len(result) == 0 || len(result[0]) != 2 {
-		return c
-	}
-	arr := strings.Split(result[0][1], ",")
-	if len(arr) < 3 {
-		return c
-	}
-	// set the default value to 255
-	c.A = 255
-	for index, v := range arr {
-		value, _ := strconv.ParseInt(strings.TrimSpace(v), 10, 16)
-		ui8 := uint8(value)
-		switch index {
-		case 0:
-			c.R = ui8
-		case 1:
-			c.G = ui8
-		case 2:
-			c.B = ui8
-		default:
-			c.A = ui8
-		}
-	}
-	return c
+// ParseColor parses a color from a string. The color can be specified in hex with a `#` prefix (for example '#313233'),
+// in rgb(i,i,i) or rgba(i,i,i,f) format, or as a common name (for example 'red').
+func ParseColor(color string) Color {
+	return drawing.ParseColor(color)
 }

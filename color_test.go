@@ -22,18 +22,30 @@ func TestIsLightColor(t *testing.T) {
 func TestParseColor(t *testing.T) {
 	t.Parallel()
 
-	c := parseColor("")
+	c := ParseColor("")
 	assert.True(t, c.IsZero())
 
-	c = parseColor("#333")
+	c = ParseColor("#333")
 	assert.Equal(t, drawing.Color{R: 51, G: 51, B: 51, A: 255}, c)
 
-	c = parseColor("#313233")
+	c = ParseColor("#313233")
 	assert.Equal(t, drawing.Color{R: 49, G: 50, B: 51, A: 255}, c)
 
-	c = parseColor("rgb(31,32,33)")
+	c = ParseColor("rgb(31,32,33)")
 	assert.Equal(t, drawing.Color{R: 31, G: 32, B: 33, A: 255}, c)
 
-	c = parseColor("rgba(50,51,52,250)")
+	c = ParseColor("rgba(50,51,52,.981)")
 	assert.Equal(t, drawing.Color{R: 50, G: 51, B: 52, A: 250}, c)
+
+	c = ParseColor("rgba(50,51,52,250)")
+	assert.Equal(t, drawing.Color{R: 50, G: 51, B: 52, A: 250}, c)
+}
+
+func BenchmarkParseColor(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = ParseColor("#333")
+		_ = ParseColor("#313233")
+		_ = ParseColor("rgb(31,32,33)")
+		_ = ParseColor("rgba(50,51,52,250)")
+	}
 }

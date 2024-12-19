@@ -44,91 +44,62 @@ var (
 	ColorAqua = Color{R: 0, G: 255, B: 255, A: 255}
 )
 
-func parseHex(hex string) uint8 {
-	v, _ := strconv.ParseInt(hex, 16, 16)
-	return uint8(v)
-}
-
 // ParseColor parses a color from a string.
 func ParseColor(rawColor string) Color {
 	if strings.HasPrefix(rawColor, "#") {
 		return ColorFromHex(rawColor)
-	} else if strings.HasPrefix(rawColor, "rgba") {
-		return ColorFromRGBA(rawColor)
 	} else if strings.HasPrefix(rawColor, "rgb") {
-		return ColorFromRGB(rawColor)
+		return ColorFromRGBA(rawColor)
 	}
 	return ColorFromKnown(rawColor)
 }
 
-var rgbaexpr = regexp.MustCompile(`rgba\((?P<R>.+),(?P<G>.+),(?P<B>.+),(?P<A>.+)\)`)
+var rgbReg = regexp.MustCompile(`\(([^)]+)\)`)
 
-// ColorFromRGBA returns a color from an `rgba()` css function.
-func ColorFromRGBA(rgba string) (output Color) {
-	values := rgbaexpr.FindStringSubmatch(rgba)
-	for i, name := range rgbaexpr.SubexpNames() {
-		if i == 0 {
-			continue
-		}
-		if i >= len(values) {
-			break
-		}
-		switch name {
-		case "R":
-			value := strings.TrimSpace(values[i])
-			parsed, _ := strconv.ParseInt(value, 10, 16)
-			output.R = uint8(parsed)
-		case "G":
-			value := strings.TrimSpace(values[i])
-			parsed, _ := strconv.ParseInt(value, 10, 16)
-			output.G = uint8(parsed)
-		case "B":
-			value := strings.TrimSpace(values[i])
-			parsed, _ := strconv.ParseInt(value, 10, 16)
-			output.B = uint8(parsed)
-		case "A":
-			value := strings.TrimSpace(values[i])
-			parsed, _ := strconv.ParseFloat(value, 32)
-			if parsed > 1 {
-				parsed = 1
-			} else if parsed < 0 {
-				parsed = 0
-			}
-			output.A = uint8(parsed * 255)
-		}
+// ColorFromRGBA returns a color from a `rgb(i,i,i)` or `rgba(i,i,i,f)` css function.
+func ColorFromRGBA(color string) Color {
+	var c Color
+
+	// Attempt to parse rgb(...) or rgba(...)
+	result := rgbReg.FindAllStringSubmatch(color, 1)
+	if len(result) == 0 || len(result[0]) != 2 {
+		return c
 	}
-	return
+	arr := strings.Split(result[0][1], ",")
+	if len(arr) < 3 { // at a minimum we expect r,g,b to be specified
+		return c
+	}
+
+	rVal, _ := strconv.ParseInt(strings.TrimSpace(arr[0]), 10, 16)
+	c.R = uint8(rVal)
+	gVal, _ := strconv.ParseInt(strings.TrimSpace(arr[1]), 10, 16)
+	c.G = uint8(gVal)
+	bVal, _ := strconv.ParseInt(strings.TrimSpace(arr[2]), 10, 16)
+	c.B = uint8(bVal)
+	if len(arr) > 3 { // if alpha channel is specified
+		aVal, _ := strconv.ParseFloat(strings.TrimSpace(arr[3]), 64)
+		if aVal < 0 {
+			aVal = 0
+		} else if aVal <= 1 {
+			// correctly specified decimal, convert it to an integer scale
+			aVal *= 255
+		} // else, incorrectly specified value over 1, accept the value directly
+		c.A = uint8(aVal)
+	} else {
+		c.A = 255 // default alpha channel to 255
+	}
+
+	return c
 }
 
-var rgbexpr = regexp.MustCompile(`rgb\((?P<R>.+),(?P<G>.+),(?P<B>.+)\)`)
-
-// ColorFromRGB returns a color from an `rgb()` css function.
+// Deprecated: ColorFromRGB is deprecated, use ColorFromRGBA to get colors from RGB or RGBA format strings.
 func ColorFromRGB(rgb string) (output Color) {
-	output.A = 255
-	values := rgbexpr.FindStringSubmatch(rgb)
-	for i, name := range rgbaexpr.SubexpNames() {
-		if i == 0 {
-			continue
-		}
-		if i >= len(values) {
-			break
-		}
-		switch name {
-		case "R":
-			value := strings.TrimSpace(values[i])
-			parsed, _ := strconv.ParseInt(value, 10, 16)
-			output.R = uint8(parsed)
-		case "G":
-			value := strings.TrimSpace(values[i])
-			parsed, _ := strconv.ParseInt(value, 10, 16)
-			output.G = uint8(parsed)
-		case "B":
-			value := strings.TrimSpace(values[i])
-			parsed, _ := strconv.ParseInt(value, 10, 16)
-			output.B = uint8(parsed)
-		}
-	}
-	return
+	return ColorFromRGBA(rgb)
+}
+
+func parseHex(hex string) uint8 {
+	v, _ := strconv.ParseInt(hex, 16, 16)
+	return uint8(v)
 }
 
 // ColorFromHex returns a color from a css hex code.
@@ -136,7 +107,7 @@ func ColorFromRGB(rgb string) (output Color) {
 // NOTE: it will trim a leading '#' character if present.
 func ColorFromHex(hex string) Color {
 	hex = strings.TrimPrefix(hex, "#")
-	var c Color
+	c := Color{A: 255}
 	if len(hex) == 3 {
 		c.R = parseHex(string(hex[0])) * 0x11
 		c.G = parseHex(string(hex[1])) * 0x11
@@ -146,7 +117,6 @@ func ColorFromHex(hex string) Color {
 		c.G = parseHex(hex[2:4])
 		c.B = parseHex(hex[4:6])
 	}
-	c.A = 255
 	return c
 }
 
@@ -193,12 +163,12 @@ func ColorFromKnown(known string) Color {
 // ColorFromAlphaMixedRGBA returns the system alpha mixed rgba values.
 func ColorFromAlphaMixedRGBA(r, g, b, a uint32) Color {
 	fa := float64(a) / 255.0
-	var c Color
-	c.R = uint8(float64(r) / fa)
-	c.G = uint8(float64(g) / fa)
-	c.B = uint8(float64(b) / fa)
-	c.A = uint8(a | (a >> 8))
-	return c
+	return Color{
+		R: uint8(float64(r) / fa),
+		G: uint8(float64(g) / fa),
+		B: uint8(float64(b) / fa),
+		A: uint8(a | (a >> 8)),
+	}
 }
 
 // ColorChannelFromFloat returns a normalized byte from a given float value.

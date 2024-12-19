@@ -298,7 +298,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 					Min:  item.Min,
 					Label: SeriesLabel{
 						FontStyle: FontStyle{
-							FontColor: parseColor(item.Label.Color),
+							FontColor: ParseColor(item.Label.Color),
 						},
 						Show:     item.Label.Show,
 						Distance: item.Label.Distance,
@@ -319,7 +319,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 			YAxisIndex: item.YAxisIndex,
 			Label: SeriesLabel{
 				FontStyle: FontStyle{
-					FontColor: parseColor(item.Label.Color),
+					FontColor: ParseColor(item.Label.Color),
 				},
 				Show:     item.Label.Show,
 				Distance: item.Label.Distance,
@@ -342,7 +342,7 @@ func (et *EChartsTextStyle) ToStyle() chartdraw.Style {
 	s := chartdraw.Style{
 		FontStyle: chartdraw.FontStyle{
 			FontSize:  et.FontSize,
-			FontColor: parseColor(et.Color),
+			FontColor: ParseColor(et.Color),
 		},
 	}
 	if et.FontFamily != "" {
@@ -455,7 +455,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			Min:       item.Min,
 			Max:       item.Max,
 			Formatter: item.AxisLabel.Formatter,
-			AxisColor: parseColor(item.AxisLine.LineStyle.Color),
+			AxisColor: ParseColor(item.AxisLine.LineStyle.Color),
 			Data:      item.Data,
 		}
 	}

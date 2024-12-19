@@ -73,7 +73,7 @@ func Test_ColorFromRGBA(t *testing.T) {
 	parsed = ColorFromRGBA(value)
 	assert.Equal(t, ColorSilver, parsed)
 
-	value = "rgba(192,192,192,1.5)"
+	value = "rgba(192,192,192,255)"
 	parsed = ColorFromRGBA(value)
 	assert.Equal(t, ColorSilver, parsed)
 }
