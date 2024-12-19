@@ -9,14 +9,17 @@ import (
 )
 
 func TestTimeSeriesGetValue(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
 	ts := TimeSeries{
 		Name: "Test",
 		XValues: []time.Time{
-			time.Now().AddDate(0, 0, -5),
-			time.Now().AddDate(0, 0, -4),
-			time.Now().AddDate(0, 0, -3),
-			time.Now().AddDate(0, 0, -2),
-			time.Now().AddDate(0, 0, -1),
+			now.AddDate(0, 0, -5),
+			now.AddDate(0, 0, -4),
+			now.AddDate(0, 0, -3),
+			now.AddDate(0, 0, -2),
+			now.AddDate(0, 0, -1),
 		},
 		YValues: []float64{
 			1.0, 2.0, 3.0, 4.0, 5.0,
@@ -29,14 +32,17 @@ func TestTimeSeriesGetValue(t *testing.T) {
 }
 
 func TestTimeSeriesValidate(t *testing.T) {
+	t.Parallel()
+
+	now := time.Now()
 	cs := TimeSeries{
 		Name: "Test Series",
 		XValues: []time.Time{
-			time.Now().AddDate(0, 0, -5),
-			time.Now().AddDate(0, 0, -4),
-			time.Now().AddDate(0, 0, -3),
-			time.Now().AddDate(0, 0, -2),
-			time.Now().AddDate(0, 0, -1),
+			now.AddDate(0, 0, -5),
+			now.AddDate(0, 0, -4),
+			now.AddDate(0, 0, -3),
+			now.AddDate(0, 0, -2),
+			now.AddDate(0, 0, -1),
 		},
 		YValues: []float64{
 			1.0, 2.0, 3.0, 4.0, 5.0,
@@ -47,11 +53,11 @@ func TestTimeSeriesValidate(t *testing.T) {
 	cs = TimeSeries{
 		Name: "Test Series",
 		XValues: []time.Time{
-			time.Now().AddDate(0, 0, -5),
-			time.Now().AddDate(0, 0, -4),
-			time.Now().AddDate(0, 0, -3),
-			time.Now().AddDate(0, 0, -2),
-			time.Now().AddDate(0, 0, -1),
+			now.AddDate(0, 0, -5),
+			now.AddDate(0, 0, -4),
+			now.AddDate(0, 0, -3),
+			now.AddDate(0, 0, -2),
+			now.AddDate(0, 0, -1),
 		},
 	}
 	require.Error(t, cs.Validate())

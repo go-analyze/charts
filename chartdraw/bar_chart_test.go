@@ -10,6 +10,8 @@ import (
 )
 
 func TestBarChartRender(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		Width: 1024,
 		Title: "Test Title",
@@ -28,6 +30,8 @@ func TestBarChartRender(t *testing.T) {
 }
 
 func TestBarChartRenderZero(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		Width: 1024,
 		Title: "Test Title",
@@ -42,6 +46,8 @@ func TestBarChartRenderZero(t *testing.T) {
 }
 
 func TestBarChartProps(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{}
 
 	assert.Equal(t, DefaultDPI, bc.GetDPI())
@@ -49,9 +55,7 @@ func TestBarChartProps(t *testing.T) {
 	assert.Equal(t, float64(100), bc.GetDPI())
 
 	assert.Nil(t, bc.GetFont())
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
-	bc.Font = f
+	bc.Font = GetDefaultFont()
 	assert.NotNil(t, bc.GetFont())
 
 	assert.Equal(t, DefaultChartWidth, bc.GetWidth())
@@ -72,11 +76,15 @@ func TestBarChartProps(t *testing.T) {
 }
 
 func TestBarChartRenderNoBars(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{}
 	require.Error(t, bc.Render(PNG, bytes.NewBuffer([]byte{})))
 }
 
 func TestBarChartGetRanges(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{}
 
 	yr := bc.getRanges()
@@ -88,6 +96,8 @@ func TestBarChartGetRanges(t *testing.T) {
 }
 
 func TestBarChartGetRangesBarsMinMax(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		Bars: []Value{
 			{Value: 1.0},
@@ -104,6 +114,8 @@ func TestBarChartGetRangesBarsMinMax(t *testing.T) {
 }
 
 func TestBarChartGetRangesMinMax(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		YAxis: YAxis{
 			Range: &ContinuousRange{
@@ -130,6 +142,8 @@ func TestBarChartGetRangesMinMax(t *testing.T) {
 }
 
 func TestBarChartGetRangesTicksMinMax(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		YAxis: YAxis{
 			Ticks: []Tick{
@@ -152,6 +166,8 @@ func TestBarChartGetRangesTicksMinMax(t *testing.T) {
 }
 
 func TestBarChartHasAxes(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{}
 	assert.True(t, bc.hasAxes())
 	bc.YAxis = YAxis{
@@ -161,12 +177,16 @@ func TestBarChartHasAxes(t *testing.T) {
 }
 
 func TestBarChartGetDefaultCanvasBox(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{}
 	b := bc.getDefaultCanvasBox()
 	assert.False(t, b.IsZero())
 }
 
 func TestBarChartSetRangeDomains(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{}
 	cb := bc.box()
 	yr := bc.getRanges()
@@ -175,6 +195,8 @@ func TestBarChartSetRangeDomains(t *testing.T) {
 }
 
 func TestBarChartGetValueFormatters(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{}
 	vf := bc.getValueFormatters()
 	assert.NotNil(t, vf)
@@ -185,6 +207,8 @@ func TestBarChartGetValueFormatters(t *testing.T) {
 }
 
 func TestBarChartGetAxesTicks(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		Bars: []Value{
 			{Value: 1.0},
@@ -208,6 +232,8 @@ func TestBarChartGetAxesTicks(t *testing.T) {
 }
 
 func TestBarChartCalculateEffectiveBarSpacing(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		Width:    1024,
 		BarWidth: 10,
@@ -229,6 +255,8 @@ func TestBarChartCalculateEffectiveBarSpacing(t *testing.T) {
 }
 
 func TestBarChartCalculateEffectiveBarWidth(t *testing.T) {
+	t.Parallel()
+
 	bc := BarChart{
 		Width:    1024,
 		BarWidth: 10,
@@ -264,6 +292,8 @@ func TestBarChartCalculateEffectiveBarWidth(t *testing.T) {
 }
 
 func TestBarChatGetTitleFontSize(t *testing.T) {
+	t.Parallel()
+
 	size := BarChart{Width: 2049, Height: 2049}.getTitleFontSize()
 	assert.Equal(t, float64(48), size)
 	size = BarChart{Width: 1025, Height: 1025}.getTitleFontSize()

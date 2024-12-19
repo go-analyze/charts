@@ -9,6 +9,8 @@ import (
 )
 
 func TestBollingerBandSeries(t *testing.T) {
+	t.Parallel()
+
 	s1 := mockValuesProvider{
 		X: LinearRange(1.0, 100.0),
 		Y: RandomValuesWithMax(100, 1024),
@@ -32,6 +34,8 @@ func TestBollingerBandSeries(t *testing.T) {
 }
 
 func TestBollingerBandLastValue(t *testing.T) {
+	t.Parallel()
+
 	s1 := mockValuesProvider{
 		X: LinearRange(1.0, 100.0),
 		Y: LinearRange(1.0, 100.0),

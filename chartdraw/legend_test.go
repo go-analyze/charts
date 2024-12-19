@@ -9,6 +9,8 @@ import (
 )
 
 func TestLegend(t *testing.T) {
+	t.Parallel()
+
 	graph := Chart{
 		Series: []Series{
 			ContinuousSeries{

@@ -9,6 +9,8 @@ import (
 )
 
 func TestContinuousSeries(t *testing.T) {
+	t.Parallel()
+
 	cs := ContinuousSeries{
 		Name:    "Test Series",
 		XValues: LinearRange(1.0, 10.0),
@@ -31,6 +33,8 @@ func TestContinuousSeries(t *testing.T) {
 }
 
 func TestContinuousSeriesValueFormatter(t *testing.T) {
+	t.Parallel()
+
 	cs := ContinuousSeries{
 		XValueFormatter: func(v interface{}) string {
 			return fmt.Sprintf("%f foo", v)
@@ -46,6 +50,8 @@ func TestContinuousSeriesValueFormatter(t *testing.T) {
 }
 
 func TestContinuousSeriesValidate(t *testing.T) {
+	t.Parallel()
+
 	cs := ContinuousSeries{
 		Name:    "Test Series",
 		XValues: LinearRange(1.0, 10.0),

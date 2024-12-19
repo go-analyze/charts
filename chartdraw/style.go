@@ -33,11 +33,10 @@ func Shown() Style {
 // StyleTextDefaults returns a style for drawing outside a
 // chart context.
 func StyleTextDefaults() Style {
-	font, _ := GetDefaultFont()
 	return Style{
 		Hidden: false,
 		FontStyle: FontStyle{
-			Font:      font,
+			Font:      GetDefaultFont(),
 			FontColor: DefaultTextColor,
 			FontSize:  DefaultTitleFontSize,
 		},

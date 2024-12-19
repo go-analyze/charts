@@ -9,6 +9,8 @@ import (
 )
 
 func TestPieChart(t *testing.T) {
+	t.Parallel()
+
 	pie := PieChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -30,6 +32,8 @@ func TestPieChart(t *testing.T) {
 }
 
 func TestPieChartDropsZeroValues(t *testing.T) {
+	t.Parallel()
+
 	pie := PieChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -46,6 +50,8 @@ func TestPieChartDropsZeroValues(t *testing.T) {
 }
 
 func TestPieChartAllZeroValues(t *testing.T) {
+	t.Parallel()
+
 	pie := PieChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,

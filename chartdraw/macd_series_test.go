@@ -63,6 +63,8 @@ var (
 )
 
 func TestMACDSeries(t *testing.T) {
+	t.Parallel()
+
 	mockSeries := mockValuesProvider{
 		emaXValues,
 		emaYValues,

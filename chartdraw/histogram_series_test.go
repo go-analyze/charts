@@ -7,6 +7,8 @@ import (
 )
 
 func TestHistogramSeries(t *testing.T) {
+	t.Parallel()
+
 	cs := ContinuousSeries{
 		Name:    "Test Series",
 		XValues: LinearRange(1.0, 20.0),

@@ -4,9 +4,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestValuesValues(t *testing.T) {
+	t.Parallel()
+
 	vs := []Value{
 		{Value: 10, Label: "Blue"},
 		{Value: 9, Label: "Green"},
@@ -18,7 +21,7 @@ func TestValuesValues(t *testing.T) {
 	}
 
 	values := Values(vs).Values()
-	assert.Len(t, values, 7)
+	require.Len(t, values, 7)
 	assert.Equal(t, float64(10), values[0])
 	assert.Equal(t, float64(9), values[1])
 	assert.Equal(t, float64(8), values[2])
@@ -29,6 +32,8 @@ func TestValuesValues(t *testing.T) {
 }
 
 func TestValuesValuesNormalized(t *testing.T) {
+	t.Parallel()
+
 	vs := []Value{
 		{Value: 10, Label: "Blue"},
 		{Value: 9, Label: "Green"},
@@ -40,12 +45,14 @@ func TestValuesValuesNormalized(t *testing.T) {
 	}
 
 	values := Values(vs).ValuesNormalized()
-	assert.Len(t, values, 7)
+	require.Len(t, values, 7)
 	assert.Equal(t, 0.2127, values[0])
 	assert.Equal(t, 0.0425, values[6])
 }
 
 func TestValuesNormalize(t *testing.T) {
+	t.Parallel()
+
 	vs := []Value{
 		{Value: 10, Label: "Blue"},
 		{Value: 9, Label: "Green"},
@@ -57,7 +64,7 @@ func TestValuesNormalize(t *testing.T) {
 	}
 
 	values := Values(vs).Normalize()
-	assert.Len(t, values, 7)
+	require.Len(t, values, 7)
 	assert.Equal(t, 0.2127, values[0].Value)
 	assert.Equal(t, 0.0425, values[6].Value)
 }

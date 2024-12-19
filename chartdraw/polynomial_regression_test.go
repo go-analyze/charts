@@ -9,6 +9,8 @@ import (
 )
 
 func TestPolynomialRegression(t *testing.T) {
+	t.Parallel()
+
 	var xv []float64
 	var yv []float64
 

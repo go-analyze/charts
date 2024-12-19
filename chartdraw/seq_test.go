@@ -4,9 +4,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSeqEach(t *testing.T) {
+	t.Parallel()
+
 	values := Seq{NewArray(1, 2, 3, 4)}
 	values.Each(func(i int, v float64) {
 		assert.Equal(t, float64(i), v-1)
@@ -14,6 +17,8 @@ func TestSeqEach(t *testing.T) {
 }
 
 func TestSeqMap(t *testing.T) {
+	t.Parallel()
+
 	values := Seq{NewArray(1, 2, 3, 4)}
 	mapped := values.Map(func(i int, v float64) float64 {
 		assert.Equal(t, float64(i), v-1)
@@ -23,6 +28,8 @@ func TestSeqMap(t *testing.T) {
 }
 
 func TestSeqFoldLeft(t *testing.T) {
+	t.Parallel()
+
 	values := Seq{NewArray(1, 2, 3, 4)}
 	ten := values.FoldLeft(func(_ int, vp, v float64) float64 {
 		return vp + v
@@ -37,6 +44,8 @@ func TestSeqFoldLeft(t *testing.T) {
 }
 
 func TestSeqFoldRight(t *testing.T) {
+	t.Parallel()
+
 	values := Seq{NewArray(1, 2, 3, 4)}
 	ten := values.FoldRight(func(_ int, vp, v float64) float64 {
 		return vp + v
@@ -51,11 +60,15 @@ func TestSeqFoldRight(t *testing.T) {
 }
 
 func TestSeqSum(t *testing.T) {
+	t.Parallel()
+
 	values := Seq{NewArray(1, 2, 3, 4)}
 	assert.Equal(t, float64(10), values.Sum())
 }
 
 func TestSeqAverage(t *testing.T) {
+	t.Parallel()
+
 	values := Seq{NewArray(1, 2, 3, 4)}
 	assert.Equal(t, 2.5, values.Average())
 
@@ -64,41 +77,53 @@ func TestSeqAverage(t *testing.T) {
 }
 
 func TestSequenceVariance(t *testing.T) {
+	t.Parallel()
+
 	values := Seq{NewArray(1, 2, 3, 4, 5)}
 	assert.Equal(t, float64(2), values.Variance())
 }
 
 func TestSequenceNormalize(t *testing.T) {
+	t.Parallel()
+
 	normalized := ValueSequence(1, 2, 3, 4, 5).Normalize().Values()
 
 	assert.NotEmpty(t, normalized)
-	assert.Len(t, normalized, 5)
+	require.Len(t, normalized, 5)
 	assert.Equal(t, 0.0, normalized[0])
 	assert.Equal(t, 0.25, normalized[1])
 	assert.Equal(t, 1.0, normalized[4])
 }
 
 func TestLinearRange(t *testing.T) {
+	t.Parallel()
+
 	values := LinearRange(1, 100)
-	assert.Len(t, values, 100)
+	require.Len(t, values, 100)
 	assert.Equal(t, float64(1), values[0])
 	assert.Equal(t, float64(100), values[99])
 }
 
 func TestLinearRangeWithStep(t *testing.T) {
+	t.Parallel()
+
 	values := LinearRangeWithStep(0, 100, 5)
 	assert.Equal(t, float64(100), values[20])
 	assert.Len(t, values, 21)
 }
 
 func TestLinearRangeReversed(t *testing.T) {
+	t.Parallel()
+
 	values := LinearRange(10.0, 1.0)
-	assert.Equal(t, 10, len(values))
+	require.Len(t, values, 10)
 	assert.Equal(t, 10.0, values[0])
 	assert.Equal(t, 1.0, values[9])
 }
 
 func TestLinearSequenceRegression(t *testing.T) {
+	t.Parallel()
+
 	// note; this assumes a 1.0 step is implicitly set in the constructor.
 	linearProvider := NewLinearSequence().WithStart(1.0).WithEnd(100.0)
 	assert.Equal(t, float64(1), linearProvider.Start())
@@ -106,7 +131,7 @@ func TestLinearSequenceRegression(t *testing.T) {
 	assert.Equal(t, 100, linearProvider.Len())
 
 	values := Seq{linearProvider}.Values()
-	assert.Len(t, values, 100)
+	require.Len(t, values, 100)
 	assert.Equal(t, 1.0, values[0])
 	assert.Equal(t, 100.0, values[99])
 }

@@ -107,11 +107,7 @@ func (sbc StackedBarChart) Render(rp RendererProvider, w io.Writer) error {
 	}
 
 	if sbc.Font == nil {
-		defaultFont, err := GetDefaultFont()
-		if err != nil {
-			return err
-		}
-		sbc.defaultFont = defaultFont
+		sbc.defaultFont = GetDefaultFont()
 	}
 	r.SetDPI(sbc.GetDPI(DefaultDPI))
 

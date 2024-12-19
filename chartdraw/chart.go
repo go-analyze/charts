@@ -86,11 +86,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 	}
 
 	if c.Font == nil {
-		defaultFont, err := GetDefaultFont()
-		if err != nil {
-			return err
-		}
-		c.defaultFont = defaultFont
+		c.defaultFont = GetDefaultFont()
 	}
 	r.SetDPI(c.GetDPI(DefaultDPI))
 

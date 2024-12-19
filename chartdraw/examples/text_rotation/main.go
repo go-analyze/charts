@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	f, _ := chartdraw.GetDefaultFont()
+	f := chartdraw.GetDefaultFont()
 	r, _ := chartdraw.PNG(1024, 1024)
 
 	chartdraw.Draw.Text(r, "Test", 64, 64, chartdraw.Style{

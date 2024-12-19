@@ -8,6 +8,8 @@ import (
 )
 
 func TestPoly(t *testing.T) {
+	t.Parallel()
+
 	var xGiven = []float64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	var yGiven = []float64{1, 6, 17, 34, 57, 86, 121, 162, 209, 262, 321}
 	var degree = 2

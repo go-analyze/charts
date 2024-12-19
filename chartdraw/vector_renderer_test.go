@@ -13,6 +13,8 @@ import (
 )
 
 func TestVectorRendererPath(t *testing.T) {
+	t.Parallel()
+
 	vr, err := SVG(100, 100)
 	require.NoError(t, err)
 
@@ -34,14 +36,13 @@ func TestVectorRendererPath(t *testing.T) {
 }
 
 func TestVectorRendererMeasureText(t *testing.T) {
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
+	t.Parallel()
 
 	vr, err := SVG(100, 100)
 	require.NoError(t, err)
 
 	vr.SetDPI(DefaultDPI)
-	vr.SetFont(f)
+	vr.SetFont(GetDefaultFont())
 	vr.SetFontSize(12.0)
 
 	tb := vr.MeasureText("Ljp")
@@ -50,8 +51,7 @@ func TestVectorRendererMeasureText(t *testing.T) {
 }
 
 func TestCanvasStyleSVG(t *testing.T) {
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
+	t.Parallel()
 
 	set := Style{
 		StrokeColor: drawing.ColorWhite,
@@ -59,7 +59,7 @@ func TestCanvasStyleSVG(t *testing.T) {
 		FillColor:   drawing.ColorWhite,
 		FontStyle: FontStyle{
 			FontColor: drawing.ColorWhite,
-			Font:      f,
+			Font:      GetDefaultFont(),
 		},
 		Padding: DefaultBackgroundPadding,
 	}
@@ -76,6 +76,8 @@ func TestCanvasStyleSVG(t *testing.T) {
 }
 
 func TestCanvasClassSVG(t *testing.T) {
+	t.Parallel()
+
 	set := Style{
 		ClassName: "test-class",
 	}
@@ -86,6 +88,8 @@ func TestCanvasClassSVG(t *testing.T) {
 }
 
 func TestCanvasCustomInlineStylesheet(t *testing.T) {
+	t.Parallel()
+
 	b := strings.Builder{}
 
 	canvas := &canvas{
@@ -99,6 +103,8 @@ func TestCanvasCustomInlineStylesheet(t *testing.T) {
 }
 
 func TestCanvasCustomInlineStylesheetWithNonce(t *testing.T) {
+	t.Parallel()
+
 	b := strings.Builder{}
 
 	canvas := &canvas{

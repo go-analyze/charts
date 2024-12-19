@@ -73,6 +73,8 @@ var (
 )
 
 func TestEMASeries(t *testing.T) {
+	t.Parallel()
+
 	mockSeries := mockValuesProvider{
 		emaXValues,
 		emaYValues,

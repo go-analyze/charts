@@ -7,6 +7,8 @@ import (
 )
 
 func TestLinearRegressionSeries(t *testing.T) {
+	t.Parallel()
+
 	mainSeries := ContinuousSeries{
 		Name:    "A test series",
 		XValues: LinearRange(1.0, 100.0),
@@ -27,6 +29,8 @@ func TestLinearRegressionSeries(t *testing.T) {
 }
 
 func TestLinearRegressionSeriesDesc(t *testing.T) {
+	t.Parallel()
+
 	mainSeries := ContinuousSeries{
 		Name:    "A test series",
 		XValues: LinearRange(100.0, 1.0),
@@ -47,6 +51,8 @@ func TestLinearRegressionSeriesDesc(t *testing.T) {
 }
 
 func TestLinearRegressionSeriesWindowAndOffset(t *testing.T) {
+	t.Parallel()
+
 	mainSeries := ContinuousSeries{
 		Name:    "A test series",
 		XValues: LinearRange(100.0, 1.0),

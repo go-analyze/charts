@@ -7,6 +7,8 @@ import (
 )
 
 func TestPercentageDifferenceSeries(t *testing.T) {
+	t.Parallel()
+
 	cs := ContinuousSeries{
 		XValues: LinearRange(1.0, 10.0),
 		YValues: LinearRange(1.0, 10.0),

@@ -100,11 +100,7 @@ func (bc BarChart) Render(rp RendererProvider, w io.Writer) error {
 	}
 
 	if bc.Font == nil {
-		defaultFont, err := GetDefaultFont()
-		if err != nil {
-			return err
-		}
-		bc.defaultFont = defaultFont
+		bc.defaultFont = GetDefaultFont()
 	}
 	r.SetDPI(bc.GetDPI())
 

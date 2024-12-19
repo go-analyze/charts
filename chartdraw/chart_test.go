@@ -15,6 +15,8 @@ import (
 )
 
 func TestChartGetDPI(t *testing.T) {
+	t.Parallel()
+
 	unset := Chart{}
 	assert.Equal(t, DefaultDPI, unset.GetDPI())
 	assert.Equal(t, float64(192), unset.GetDPI(192))
@@ -25,17 +27,18 @@ func TestChartGetDPI(t *testing.T) {
 }
 
 func TestChartGetFont(t *testing.T) {
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
+	t.Parallel()
 
 	unset := Chart{}
 	require.Nil(t, unset.GetFont())
 
-	set := Chart{Font: f}
+	set := Chart{Font: GetDefaultFont()}
 	require.NotNil(t, set.GetFont())
 }
 
 func TestChartGetWidth(t *testing.T) {
+	t.Parallel()
+
 	unset := Chart{}
 	assert.Equal(t, DefaultChartWidth, unset.GetWidth())
 
@@ -44,6 +47,8 @@ func TestChartGetWidth(t *testing.T) {
 }
 
 func TestChartGetHeight(t *testing.T) {
+	t.Parallel()
+
 	unset := Chart{}
 	assert.Equal(t, DefaultChartHeight, unset.GetHeight())
 
@@ -52,6 +57,8 @@ func TestChartGetHeight(t *testing.T) {
 }
 
 func TestChartGetRanges(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -119,6 +126,8 @@ func TestChartGetRanges(t *testing.T) {
 }
 
 func TestChartGetRangesUseTicks(t *testing.T) {
+	t.Parallel()
+
 	// this test asserts that ticks should supercede manual ranges when generating the overall ranges.
 
 	c := Chart{
@@ -153,6 +162,8 @@ func TestChartGetRangesUseTicks(t *testing.T) {
 }
 
 func TestChartGetRangesUseUserRanges(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		YAxis: YAxis{
 			Range: &ContinuousRange{
@@ -177,6 +188,8 @@ func TestChartGetRangesUseUserRanges(t *testing.T) {
 }
 
 func TestChartGetBackgroundStyle(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Background: Style{
 			FillColor: drawing.ColorBlack,
@@ -199,6 +212,8 @@ func TestChartGetCanvasStyle(t *testing.T) {
 }
 
 func TestChartGetDefaultCanvasBox(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{}
 	canvasBoxDefault := c.getDefaultCanvasBox()
 	assert.False(t, canvasBoxDefault.IsZero())
@@ -226,6 +241,8 @@ func TestChartGetDefaultCanvasBox(t *testing.T) {
 }
 
 func TestChartGetValueFormatters(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -251,6 +268,8 @@ func TestChartGetValueFormatters(t *testing.T) {
 }
 
 func TestChartHasAxes(t *testing.T) {
+	t.Parallel()
+
 	assert.True(t, Chart{}.hasAxes())
 	assert.False(t, Chart{XAxis: XAxis{Style: Hidden()}, YAxis: YAxis{Style: Hidden()}, YAxisSecondary: YAxis{Style: Hidden()}}.hasAxes())
 
@@ -295,6 +314,8 @@ func TestChartHasAxes(t *testing.T) {
 }
 
 func TestChartGetAxesTicks(t *testing.T) {
+	t.Parallel()
+
 	r, err := PNG(1024, 1024)
 	require.NoError(t, err)
 
@@ -318,6 +339,8 @@ func TestChartGetAxesTicks(t *testing.T) {
 }
 
 func TestChartSingleSeries(t *testing.T) {
+	t.Parallel()
+
 	now := time.Now()
 	c := Chart{
 		Title:  "Hello!",
@@ -344,6 +367,8 @@ func TestChartSingleSeries(t *testing.T) {
 }
 
 func TestChartRegressionBadRanges(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -357,6 +382,8 @@ func TestChartRegressionBadRanges(t *testing.T) {
 }
 
 func TestChartRegressionBadRangesByUser(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		YAxis: YAxis{
 			Range: &ContinuousRange{
@@ -376,6 +403,8 @@ func TestChartRegressionBadRangesByUser(t *testing.T) {
 }
 
 func TestChartValidatesSeries(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -399,6 +428,8 @@ func TestChartValidatesSeries(t *testing.T) {
 }
 
 func TestChartCheckRanges(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Series: []Series{
 			ContinuousSeries{
@@ -413,6 +444,8 @@ func TestChartCheckRanges(t *testing.T) {
 }
 
 func TestChartCheckRangesWithRanges(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		XAxis: XAxis{
 			Range: &ContinuousRange{
@@ -443,6 +476,8 @@ func at(i image.Image, x, y int) drawing.Color {
 }
 
 func TestChartE2ELine(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Height:         50,
 		Width:          50,
@@ -476,7 +511,7 @@ func TestChartE2ELine(t *testing.T) {
 	assert.Equal(t, drawing.ColorWhite, at(i, 0, 0))
 	assert.Equal(t, drawing.ColorWhite, at(i, 49, 49))
 
-	// test a line mid point
+	// test a line mid-point
 	defaultSeriesColor := GetDefaultColor(0)
 	assert.Equal(t, defaultSeriesColor, at(i, 0, 49))
 	assert.Equal(t, defaultSeriesColor, at(i, 49, 0))
@@ -484,6 +519,8 @@ func TestChartE2ELine(t *testing.T) {
 }
 
 func TestChartE2ELineWithFill(t *testing.T) {
+	t.Parallel()
+
 	c := Chart{
 		Height: 50,
 		Width:  50,
@@ -509,8 +546,8 @@ func TestChartE2ELineWithFill(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, 5, len(c.Series[0].(ContinuousSeries).XValues))
-	assert.Equal(t, 5, len(c.Series[0].(ContinuousSeries).YValues))
+	assert.Len(t, c.Series[0].(ContinuousSeries).XValues, 5)
+	assert.Len(t, c.Series[0].(ContinuousSeries).YValues, 5)
 
 	var buffer = &bytes.Buffer{}
 	require.NoError(t, c.Render(PNG, buffer))
@@ -522,13 +559,15 @@ func TestChartE2ELineWithFill(t *testing.T) {
 	assert.Equal(t, drawing.ColorWhite, at(i, 0, 0))
 	assert.Equal(t, drawing.ColorRed, at(i, 49, 49))
 
-	// test a line mid point
+	// test a line mid-point
 	defaultSeriesColor := drawing.ColorBlue
 	assert.Equal(t, defaultSeriesColor, at(i, 0, 49))
 	assert.Equal(t, defaultSeriesColor, at(i, 49, 0))
 }
 
 func Test_Chart_cve(t *testing.T) {
+	t.Parallel()
+
 	poc := StackedBarChart{
 		Title: "poc",
 		Bars: []StackedBar{
@@ -544,5 +583,5 @@ func Test_Chart_cve(t *testing.T) {
 
 	var imgContent bytes.Buffer
 	err := poc.Render(PNG, &imgContent)
-	assert.NotNil(t, err)
+	assert.Error(t, err)
 }

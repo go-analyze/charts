@@ -9,6 +9,8 @@ import (
 )
 
 func TestDonutChart(t *testing.T) {
+	t.Parallel()
+
 	pie := DonutChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -30,6 +32,8 @@ func TestDonutChart(t *testing.T) {
 }
 
 func TestDonutChartDropsZeroValues(t *testing.T) {
+	t.Parallel()
+
 	pie := DonutChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,
@@ -46,6 +50,8 @@ func TestDonutChartDropsZeroValues(t *testing.T) {
 }
 
 func TestDonutChartAllZeroValues(t *testing.T) {
+	t.Parallel()
+
 	pie := DonutChart{
 		Canvas: Style{
 			FillColor: ColorLightGray,

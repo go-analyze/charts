@@ -28,6 +28,8 @@ func (m mockValuesProvider) GetValues(index int) (x, y float64) {
 }
 
 func TestSMASeriesGetValue(t *testing.T) {
+	t.Parallel()
+
 	mockSeries := mockValuesProvider{
 		LinearRange(1.0, 10.0),
 		LinearRange(10, 1.0),
@@ -57,6 +59,8 @@ func TestSMASeriesGetValue(t *testing.T) {
 }
 
 func TestSMASeriesGetLastValueWindowOverlap(t *testing.T) {
+	t.Parallel()
+
 	mockSeries := mockValuesProvider{
 		LinearRange(1.0, 10.0),
 		LinearRange(10, 1.0),
@@ -81,6 +85,8 @@ func TestSMASeriesGetLastValueWindowOverlap(t *testing.T) {
 }
 
 func TestSMASeriesGetLastValue(t *testing.T) {
+	t.Parallel()
+
 	mockSeries := mockValuesProvider{
 		LinearRange(1.0, 100.0),
 		LinearRange(100, 1.0),

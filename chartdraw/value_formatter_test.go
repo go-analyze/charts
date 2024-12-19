@@ -1,6 +1,7 @@
 package chartdraw
 
 import (
+	"strconv"
 	"testing"
 	"time"
 
@@ -8,6 +9,8 @@ import (
 )
 
 func TestTimeValueFormatterWithFormat(t *testing.T) {
+	t.Parallel()
+
 	d := time.Now()
 	df := TimeToFloat64(d)
 
@@ -22,22 +25,40 @@ func TestTimeValueFormatterWithFormat(t *testing.T) {
 }
 
 func TestFloatValueFormatter(t *testing.T) {
-	assert.Equal(t, "1234.00", FloatValueFormatter(1234.00))
-}
+	t.Parallel()
 
-func TestFloatValueFormatterWithFloat32Input(t *testing.T) {
-	assert.Equal(t, "1234.00", FloatValueFormatter(float32(1234.00)))
-}
+	testCases := []struct {
+		name  string
+		input interface{}
+	}{
+		{
+			name:  "basic_float",
+			input: 1234.00,
+		},
+		{
+			name:  "float32",
+			input: float32(1234.00),
+		},
+		{
+			name:  "int",
+			input: 1234,
+		},
+		{
+			name:  "int64",
+			input: int64(1234),
+		},
+	}
 
-func TestFloatValueFormatterWithIntegerInput(t *testing.T) {
-	assert.Equal(t, "1234.00", FloatValueFormatter(1234))
-}
-
-func TestFloatValueFormatterWithInt64Input(t *testing.T) {
-	assert.Equal(t, "1234.00", FloatValueFormatter(int64(1234)))
+	for i, tc := range testCases {
+		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
+			assert.Equal(t, "1234.00", FloatValueFormatter(tc.input))
+		})
+	}
 }
 
 func TestFloatValueFormatterWithFormat(t *testing.T) {
+	t.Parallel()
+
 	v := 123.456
 	sv := FloatValueFormatterWithFormat(v, "%.3f")
 	assert.Equal(t, "123.456", sv)
@@ -45,6 +66,8 @@ func TestFloatValueFormatterWithFormat(t *testing.T) {
 }
 
 func TestExponentialValueFormatter(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "1.23e+02", ExponentialValueFormatter(123.456))
 	assert.Equal(t, "1.24e+07", ExponentialValueFormatter(12421243.424))
 	assert.Equal(t, "4.50e-01", ExponentialValueFormatter(0.45))

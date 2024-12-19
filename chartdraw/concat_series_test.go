@@ -7,6 +7,8 @@ import (
 )
 
 func TestConcatSeries(t *testing.T) {
+	t.Parallel()
+
 	s1 := ContinuousSeries{
 		XValues: LinearRange(1.0, 10.0),
 		YValues: LinearRange(1.0, 10.0),

@@ -8,6 +8,8 @@ import (
 )
 
 func TestBoxClone(t *testing.T) {
+	t.Parallel()
+
 	a := Box{Top: 5, Left: 5, Right: 15, Bottom: 15}
 	b := a.Clone()
 	assert.True(t, a.Equals(b))
@@ -15,6 +17,8 @@ func TestBoxClone(t *testing.T) {
 }
 
 func TestBoxEquals(t *testing.T) {
+	t.Parallel()
+
 	a := Box{Top: 5, Left: 5, Right: 15, Bottom: 15}
 	b := Box{Top: 10, Left: 10, Right: 30, Bottom: 30}
 	c := Box{Top: 5, Left: 5, Right: 15, Bottom: 15}
@@ -28,6 +32,8 @@ func TestBoxEquals(t *testing.T) {
 }
 
 func TestBoxIsBiggerThan(t *testing.T) {
+	t.Parallel()
+
 	a := Box{Top: 5, Left: 5, Right: 25, Bottom: 25}
 	b := Box{Top: 10, Left: 10, Right: 20, Bottom: 20} // only half bigger
 	c := Box{Top: 1, Left: 1, Right: 30, Bottom: 30}   //bigger
@@ -37,6 +43,8 @@ func TestBoxIsBiggerThan(t *testing.T) {
 }
 
 func TestBoxIsSmallerThan(t *testing.T) {
+	t.Parallel()
+
 	a := Box{Top: 5, Left: 5, Right: 25, Bottom: 25}
 	b := Box{Top: 10, Left: 10, Right: 20, Bottom: 20} // only half bigger
 	c := Box{Top: 1, Left: 1, Right: 30, Bottom: 30}   //bigger
@@ -46,6 +54,8 @@ func TestBoxIsSmallerThan(t *testing.T) {
 }
 
 func TestBoxGrow(t *testing.T) {
+	t.Parallel()
+
 	a := Box{Top: 1, Left: 2, Right: 15, Bottom: 15}
 	b := Box{Top: 4, Left: 5, Right: 30, Bottom: 35}
 	c := a.Grow(b)
@@ -58,6 +68,8 @@ func TestBoxGrow(t *testing.T) {
 }
 
 func TestBoxFit(t *testing.T) {
+	t.Parallel()
+
 	a := Box{Top: 64, Left: 64, Right: 192, Bottom: 192}
 	b := Box{Top: 16, Left: 16, Right: 256, Bottom: 170}
 	c := Box{Top: 16, Left: 16, Right: 170, Bottom: 256}
@@ -76,6 +88,8 @@ func TestBoxFit(t *testing.T) {
 }
 
 func TestBoxConstrain(t *testing.T) {
+	t.Parallel()
+
 	a := Box{Top: 64, Left: 64, Right: 192, Bottom: 192}
 	b := Box{Top: 16, Left: 16, Right: 256, Bottom: 170}
 	c := Box{Top: 16, Left: 16, Right: 170, Bottom: 256}
@@ -94,6 +108,8 @@ func TestBoxConstrain(t *testing.T) {
 }
 
 func TestBoxOuterConstrain(t *testing.T) {
+	t.Parallel()
+
 	box := NewBox(0, 0, 100, 100)
 	canvas := NewBox(5, 5, 95, 95)
 	taller := NewBox(-10, 5, 50, 50)
@@ -113,6 +129,8 @@ func TestBoxOuterConstrain(t *testing.T) {
 }
 
 func TestBoxShift(t *testing.T) {
+	t.Parallel()
+
 	b := Box{
 		Top:    5,
 		Left:   5,
@@ -128,6 +146,8 @@ func TestBoxShift(t *testing.T) {
 }
 
 func TestBoxCenter(t *testing.T) {
+	t.Parallel()
+
 	b := Box{
 		Top:    10,
 		Left:   10,
@@ -140,6 +160,8 @@ func TestBoxCenter(t *testing.T) {
 }
 
 func TestBoxCornersCenter(t *testing.T) {
+	t.Parallel()
+
 	bc := BoxCorners{
 		TopLeft:     Point{5, 5},
 		TopRight:    Point{15, 5},
@@ -153,6 +175,8 @@ func TestBoxCornersCenter(t *testing.T) {
 }
 
 func TestBoxCornersRotate(t *testing.T) {
+	t.Parallel()
+
 	bc := BoxCorners{
 		TopLeft:     Point{5, 5},
 		TopRight:    Point{15, 5},

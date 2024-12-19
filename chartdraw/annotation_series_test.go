@@ -11,6 +11,8 @@ import (
 )
 
 func TestAnnotationSeriesMeasure(t *testing.T) {
+	t.Parallel()
+
 	as := AnnotationSeries{
 		Annotations: []Value2{
 			{XValue: 1.0, YValue: 1.0, Label: "1.0"},
@@ -21,9 +23,6 @@ func TestAnnotationSeriesMeasure(t *testing.T) {
 	}
 
 	r, err := PNG(110, 110)
-	require.NoError(t, err)
-
-	f, err := GetDefaultFont()
 	require.NoError(t, err)
 
 	xrange := &ContinuousRange{
@@ -46,7 +45,7 @@ func TestAnnotationSeriesMeasure(t *testing.T) {
 	sd := Style{
 		FontStyle: FontStyle{
 			FontSize: 10.0,
-			Font:     f,
+			Font:     GetDefaultFont(),
 		},
 	}
 
@@ -59,6 +58,8 @@ func TestAnnotationSeriesMeasure(t *testing.T) {
 }
 
 func TestAnnotationSeriesRender(t *testing.T) {
+	t.Parallel()
+
 	as := AnnotationSeries{
 		Style: Style{
 			FillColor:   drawing.ColorWhite,
@@ -75,9 +76,6 @@ func TestAnnotationSeriesRender(t *testing.T) {
 	r, err := PNG(110, 110)
 	require.NoError(t, err)
 
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
-
 	xrange := &ContinuousRange{
 		Min:    1.0,
 		Max:    4.0,
@@ -98,7 +96,7 @@ func TestAnnotationSeriesRender(t *testing.T) {
 	sd := Style{
 		FontStyle: FontStyle{
 			FontSize: 10.0,
-			Font:     f,
+			Font:     GetDefaultFont(),
 		},
 	}
 

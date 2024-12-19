@@ -77,11 +77,7 @@ func (pc DonutChart) Render(rp RendererProvider, w io.Writer) error {
 	}
 
 	if pc.Font == nil {
-		defaultFont, err := GetDefaultFont()
-		if err != nil {
-			return err
-		}
-		pc.defaultFont = defaultFont
+		pc.defaultFont = GetDefaultFont()
 	}
 	r.SetDPI(pc.GetDPI(DefaultDPI))
 

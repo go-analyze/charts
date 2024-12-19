@@ -8,16 +8,16 @@ import (
 )
 
 func TestTextWrapWord(t *testing.T) {
+	t.Parallel()
+
 	r, err := PNG(1024, 1024)
 	require.NoError(t, err)
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
 
-	basicTextStyle := Style{FontStyle: FontStyle{Font: f, FontSize: 24}}
+	basicTextStyle := Style{FontStyle: FontStyle{Font: GetDefaultFont(), FontSize: 24}}
 
 	output := Text.WrapFitWord(r, "this is a test string", 100, basicTextStyle)
 	assert.NotEmpty(t, output)
-	assert.Len(t, output, 3)
+	require.Len(t, output, 3)
 
 	for _, line := range output {
 		basicTextStyle.WriteToRenderer(r)
@@ -29,7 +29,7 @@ func TestTextWrapWord(t *testing.T) {
 	assert.Equal(t, "string", output[2])
 
 	output = Text.WrapFitWord(r, "foo", 100, basicTextStyle)
-	assert.Len(t, output, 1)
+	require.Len(t, output, 1)
 	assert.Equal(t, "foo", output[0])
 
 	// test that it handles newlines.
@@ -42,16 +42,16 @@ func TestTextWrapWord(t *testing.T) {
 }
 
 func TestTextWrapRune(t *testing.T) {
+	t.Parallel()
+
 	r, err := PNG(1024, 1024)
 	require.NoError(t, err)
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
 
-	basicTextStyle := Style{FontStyle: FontStyle{Font: f, FontSize: 24}}
+	basicTextStyle := Style{FontStyle: FontStyle{Font: GetDefaultFont(), FontSize: 24}}
 
 	output := Text.WrapFitRune(r, "this is a test string", 150, basicTextStyle)
 	assert.NotEmpty(t, output)
-	assert.Len(t, output, 2)
+	require.Len(t, output, 2)
 	assert.Equal(t, "this is a t", output[0])
 	assert.Equal(t, "est string", output[1])
 }

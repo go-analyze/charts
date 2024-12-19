@@ -23,6 +23,8 @@ func (ml *mockLine) Len() int {
 }
 
 func TestTraceQuad(t *testing.T) {
+	t.Parallel()
+
 	// Quad
 	// x1, y1, cpx1, cpy2, x2, y2 float64
 	// do the 9->12 circle segment

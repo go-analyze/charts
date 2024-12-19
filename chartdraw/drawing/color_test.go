@@ -9,6 +9,8 @@ import (
 )
 
 func TestColorFromHex(t *testing.T) {
+	t.Parallel()
+
 	white := ColorFromHex("FFFFFF")
 	assert.Equal(t, ColorWhite, white)
 
@@ -41,6 +43,8 @@ func TestColorFromHex(t *testing.T) {
 }
 
 func TestColorFromHex_handlesHash(t *testing.T) {
+	t.Parallel()
+
 	withHash := ColorFromHex("#FF0000")
 	assert.Equal(t, ColorRed, withHash)
 
@@ -49,6 +53,8 @@ func TestColorFromHex_handlesHash(t *testing.T) {
 }
 
 func TestColorFromAlphaMixedRGBA(t *testing.T) {
+	t.Parallel()
+
 	black := ColorFromAlphaMixedRGBA(color.Black.RGBA())
 	assert.True(t, black.Equals(ColorBlack), black.String())
 
@@ -57,6 +63,8 @@ func TestColorFromAlphaMixedRGBA(t *testing.T) {
 }
 
 func Test_ColorFromRGBA(t *testing.T) {
+	t.Parallel()
+
 	value := "rgba(192, 192, 192, 1.0)"
 	parsed := ColorFromRGBA(value)
 	assert.Equal(t, ColorSilver, parsed)
@@ -71,6 +79,8 @@ func Test_ColorFromRGBA(t *testing.T) {
 }
 
 func TestParseColor(t *testing.T) {
+	t.Parallel()
+
 	testCases := [...]struct {
 		Input    string
 		Expected Color

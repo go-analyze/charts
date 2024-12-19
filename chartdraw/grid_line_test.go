@@ -4,9 +4,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGenerateGridLines(t *testing.T) {
+	t.Parallel()
+
 	ticks := []Tick{
 		{Value: 1.0, Label: "1.0"},
 		{Value: 2.0, Label: "2.0"},
@@ -15,7 +18,7 @@ func TestGenerateGridLines(t *testing.T) {
 	}
 
 	gl := GenerateGridLines(ticks, Style{}, Style{})
-	assert.Len(t, gl, 2)
+	require.Len(t, gl, 2)
 
 	assert.Equal(t, 2.0, gl[0].Value)
 	assert.Equal(t, 3.0, gl[1].Value)

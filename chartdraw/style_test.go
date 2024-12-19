@@ -11,6 +11,8 @@ import (
 )
 
 func TestStyleIsZero(t *testing.T) {
+	t.Parallel()
+
 	zero := Style{}
 	assert.True(t, zero.IsZero())
 
@@ -34,6 +36,8 @@ func TestStyleIsZero(t *testing.T) {
 }
 
 func TestStyleGetStrokeColor(t *testing.T) {
+	t.Parallel()
+
 	unset := Style{}
 	assert.Equal(t, drawing.ColorTransparent, unset.GetStrokeColor())
 	assert.Equal(t, drawing.ColorWhite, unset.GetStrokeColor(drawing.ColorWhite))
@@ -44,6 +48,8 @@ func TestStyleGetStrokeColor(t *testing.T) {
 }
 
 func TestStyleGetFillColor(t *testing.T) {
+	t.Parallel()
+
 	unset := Style{}
 	assert.Equal(t, drawing.ColorTransparent, unset.GetFillColor())
 	assert.Equal(t, drawing.ColorWhite, unset.GetFillColor(drawing.ColorWhite))
@@ -54,6 +60,8 @@ func TestStyleGetFillColor(t *testing.T) {
 }
 
 func TestStyleGetStrokeWidth(t *testing.T) {
+	t.Parallel()
+
 	unset := Style{}
 	assert.Equal(t, DefaultStrokeWidth, unset.GetStrokeWidth())
 	assert.Equal(t, DefaultStrokeWidth+1, unset.GetStrokeWidth(DefaultStrokeWidth+1))
@@ -64,6 +72,8 @@ func TestStyleGetStrokeWidth(t *testing.T) {
 }
 
 func TestStyleGetFontSize(t *testing.T) {
+	t.Parallel()
+
 	unset := Style{}
 	assert.Equal(t, DefaultFontSize, unset.GetFontSize())
 	assert.Equal(t, DefaultFontSize+1, unset.GetFontSize(DefaultFontSize+1))
@@ -74,6 +84,8 @@ func TestStyleGetFontSize(t *testing.T) {
 }
 
 func TestStyleGetFontColor(t *testing.T) {
+	t.Parallel()
+
 	unset := Style{}
 	assert.Equal(t, drawing.ColorTransparent, unset.GetFontColor())
 	assert.Equal(t, drawing.ColorWhite, unset.GetFontColor(drawing.ColorWhite))
@@ -84,8 +96,9 @@ func TestStyleGetFontColor(t *testing.T) {
 }
 
 func TestStyleGetFont(t *testing.T) {
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
+	t.Parallel()
+
+	f := GetDefaultFont()
 
 	unset := Style{}
 	require.Nil(t, unset.GetFont())
@@ -96,6 +109,8 @@ func TestStyleGetFont(t *testing.T) {
 }
 
 func TestStyleGetPadding(t *testing.T) {
+	t.Parallel()
+
 	unset := Style{}
 	assert.True(t, unset.GetPadding().IsZero())
 	assert.False(t, unset.GetPadding(DefaultBackgroundPadding).IsZero())
@@ -113,8 +128,7 @@ func TestStyleGetPadding(t *testing.T) {
 }
 
 func TestStyleWithDefaultsFrom(t *testing.T) {
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
+	t.Parallel()
 
 	unset := Style{}
 	set := Style{
@@ -123,7 +137,7 @@ func TestStyleWithDefaultsFrom(t *testing.T) {
 		FillColor:   drawing.ColorWhite,
 		FontStyle: FontStyle{
 			FontColor: drawing.ColorWhite,
-			Font:      f,
+			Font:      GetDefaultFont(),
 		},
 		Padding: DefaultBackgroundPadding,
 	}
@@ -133,6 +147,8 @@ func TestStyleWithDefaultsFrom(t *testing.T) {
 }
 
 func TestStyleGetStrokeOptions(t *testing.T) {
+	t.Parallel()
+
 	set := Style{
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
@@ -150,6 +166,8 @@ func TestStyleGetStrokeOptions(t *testing.T) {
 }
 
 func TestStyleGetFillOptions(t *testing.T) {
+	t.Parallel()
+
 	set := Style{
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
@@ -167,6 +185,8 @@ func TestStyleGetFillOptions(t *testing.T) {
 }
 
 func TestStyleGetFillAndStrokeOptions(t *testing.T) {
+	t.Parallel()
+
 	set := Style{
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,
@@ -184,6 +204,8 @@ func TestStyleGetFillAndStrokeOptions(t *testing.T) {
 }
 
 func TestStyleGetTextOptions(t *testing.T) {
+	t.Parallel()
+
 	set := Style{
 		StrokeColor: drawing.ColorWhite,
 		StrokeWidth: 5.0,

@@ -7,6 +7,8 @@ import (
 )
 
 func TestNew(t *testing.T) {
+	t.Parallel()
+
 	m := New(10, 5)
 	rows, cols := m.Size()
 	assert.Equal(t, 10, rows)
@@ -16,6 +18,8 @@ func TestNew(t *testing.T) {
 }
 
 func TestNewWithValues(t *testing.T) {
+	t.Parallel()
+
 	m := New(5, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 	rows, cols := m.Size()
 	assert.Equal(t, 5, rows)
@@ -24,7 +28,9 @@ func TestNewWithValues(t *testing.T) {
 	assert.Equal(t, float64(10), m.Get(4, 1))
 }
 
-func TestIdentitiy(t *testing.T) {
+func TestIdentity(t *testing.T) {
+	t.Parallel()
+
 	id := Identity(5)
 	rows, cols := id.Size()
 	assert.Equal(t, 5, rows)
@@ -41,6 +47,8 @@ func TestIdentitiy(t *testing.T) {
 }
 
 func TestNewFromArrays(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3, 4},
 		{5, 6, 7, 8},
@@ -53,6 +61,8 @@ func TestNewFromArrays(t *testing.T) {
 }
 
 func TestOnes(t *testing.T) {
+	t.Parallel()
+
 	ones := Ones(5, 10)
 	rows, cols := ones.Size()
 	assert.Equal(t, 5, rows)
@@ -66,12 +76,16 @@ func TestOnes(t *testing.T) {
 }
 
 func TestMatrixEpsilon(t *testing.T) {
+	t.Parallel()
+
 	ones := Ones(2, 2)
 	ones = ones.WithEpsilon(0.001)
 	assert.Equal(t, 0.001, ones.Epsilon())
 }
 
 func TestMatrixArrays(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -88,6 +102,8 @@ func TestMatrixArrays(t *testing.T) {
 }
 
 func TestMatrixIsSquare(t *testing.T) {
+	t.Parallel()
+
 	assert.False(t, NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -106,6 +122,8 @@ func TestMatrixIsSquare(t *testing.T) {
 }
 
 func TestMatrixIsSymmetric(t *testing.T) {
+	t.Parallel()
+
 	assert.False(t, NewFromArrays([][]float64{
 		{1, 2, 3},
 		{2, 1, 2},
@@ -126,6 +144,8 @@ func TestMatrixIsSymmetric(t *testing.T) {
 }
 
 func TestMatrixGet(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -144,6 +164,8 @@ func TestMatrixGet(t *testing.T) {
 }
 
 func TestMatrixSet(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -155,6 +177,8 @@ func TestMatrixSet(t *testing.T) {
 }
 
 func TestMatrixCol(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -167,6 +191,8 @@ func TestMatrixCol(t *testing.T) {
 }
 
 func TestMatrixRow(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -179,6 +205,8 @@ func TestMatrixRow(t *testing.T) {
 }
 
 func TestMatrixSwapRows(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -193,6 +221,8 @@ func TestMatrixSwapRows(t *testing.T) {
 }
 
 func TestMatrixCopy(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -205,6 +235,8 @@ func TestMatrixCopy(t *testing.T) {
 }
 
 func TestMatrixDiagonalVector(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 4, 7},
 		{4, 2, 8},
@@ -216,6 +248,8 @@ func TestMatrixDiagonalVector(t *testing.T) {
 }
 
 func TestMatrixDiagonalVectorLandscape(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 4, 7, 99},
 		{4, 2, 8, 99},
@@ -226,6 +260,8 @@ func TestMatrixDiagonalVectorLandscape(t *testing.T) {
 }
 
 func TestMatrixDiagonalVectorPortrait(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 4},
 		{4, 2},
@@ -237,6 +273,8 @@ func TestMatrixDiagonalVectorPortrait(t *testing.T) {
 }
 
 func TestMatrixDiagonal(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 4, 7},
 		{4, 2, 8},
@@ -253,6 +291,8 @@ func TestMatrixDiagonal(t *testing.T) {
 }
 
 func TestMatrixEquals(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 4, 7},
 		{4, 2, 8},
@@ -268,6 +308,8 @@ func TestMatrixEquals(t *testing.T) {
 }
 
 func TestMatrixL(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -279,6 +321,8 @@ func TestMatrixL(t *testing.T) {
 }
 
 func TestMatrixU(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -290,6 +334,8 @@ func TestMatrixU(t *testing.T) {
 }
 
 func TestMatrixString(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
@@ -300,6 +346,8 @@ func TestMatrixString(t *testing.T) {
 }
 
 func TestMatrixLU(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 3, 5},
 		{2, 4, 7},
@@ -325,6 +373,8 @@ func TestMatrixQR(t *testing.T) {
 }
 
 func TestMatrixTranspose(t *testing.T) {
+	t.Parallel()
+
 	m := NewFromArrays([][]float64{
 		{1, 2, 3},
 		{4, 5, 6},

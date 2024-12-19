@@ -8,17 +8,16 @@ import (
 )
 
 func TestYAxisGetTicks(t *testing.T) {
-	r, err := PNG(1024, 1024)
-	require.NoError(t, err)
+	t.Parallel()
 
-	f, err := GetDefaultFont()
+	r, err := PNG(1024, 1024)
 	require.NoError(t, err)
 
 	ya := YAxis{}
 	yr := &ContinuousRange{Min: 10, Max: 100, Domain: 1024}
 	styleDefaults := Style{
 		FontStyle: FontStyle{
-			Font:     f,
+			Font:     GetDefaultFont(),
 			FontSize: 10.0,
 		},
 	}
@@ -28,10 +27,9 @@ func TestYAxisGetTicks(t *testing.T) {
 }
 
 func TestYAxisGetTicksWithUserDefaults(t *testing.T) {
-	r, err := PNG(1024, 1024)
-	require.NoError(t, err)
+	t.Parallel()
 
-	f, err := GetDefaultFont()
+	r, err := PNG(1024, 1024)
 	require.NoError(t, err)
 
 	ya := YAxis{
@@ -40,7 +38,7 @@ func TestYAxisGetTicksWithUserDefaults(t *testing.T) {
 	yr := &ContinuousRange{Min: 10, Max: 100, Domain: 1024}
 	styleDefaults := Style{
 		FontStyle: FontStyle{
-			Font:     f,
+			Font:     GetDefaultFont(),
 			FontSize: 10.0,
 		},
 	}
@@ -50,11 +48,11 @@ func TestYAxisGetTicksWithUserDefaults(t *testing.T) {
 }
 
 func TestYAxisMeasure(t *testing.T) {
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
+	t.Parallel()
+
 	style := Style{
 		FontStyle: FontStyle{
-			Font:     f,
+			Font:     GetDefaultFont(),
 			FontSize: 10.0,
 		},
 	}
@@ -68,11 +66,11 @@ func TestYAxisMeasure(t *testing.T) {
 }
 
 func TestYAxisSecondaryMeasure(t *testing.T) {
-	f, err := GetDefaultFont()
-	require.NoError(t, err)
+	t.Parallel()
+
 	style := Style{
 		FontStyle: FontStyle{
-			Font:     f,
+			Font:     GetDefaultFont(),
 			FontSize: 10.0,
 		},
 	}
