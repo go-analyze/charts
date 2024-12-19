@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewSeriesListDataFromValues(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, SeriesList{
 		{
 			Type: ChartTypeBar,
@@ -24,6 +26,8 @@ func TestNewSeriesListDataFromValues(t *testing.T) {
 }
 
 func TestSeriesLists(t *testing.T) {
+	t.Parallel()
+
 	seriesList := NewSeriesListDataFromValues([][]float64{
 		{1, 2},
 		{10},
@@ -46,6 +50,8 @@ func TestSeriesLists(t *testing.T) {
 }
 
 func TestFormatter(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "a: 12%", NewPieLabelFormatter([]string{
 		"a",
 		"b",

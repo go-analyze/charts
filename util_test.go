@@ -11,11 +11,15 @@ import (
 )
 
 func TestGetDefaultInt(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, 1, getDefaultInt(0, 1))
 	assert.Equal(t, 10, getDefaultInt(10, 1))
 }
 
 func TestCeilFloatToInt(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, 1, ceilFloatToInt(0.8))
 	assert.Equal(t, 1, ceilFloatToInt(1.0))
 	assert.Equal(t, 2, ceilFloatToInt(1.2))
@@ -25,6 +29,8 @@ func TestCeilFloatToInt(t *testing.T) {
 }
 
 func TestFormatValueHumanizeShort(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "1", FormatValueHumanizeShort(1.2, 0, false))
 	assert.Equal(t, "1.2", FormatValueHumanizeShort(1.2, 2, false))
 	assert.Equal(t, "1.20", FormatValueHumanizeShort(1.2, 2, true))
@@ -41,6 +47,8 @@ func TestFormatValueHumanizeShort(t *testing.T) {
 }
 
 func TestFormatValueHumanize(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "1,234,567,890", FormatValueHumanize(1234567890, 2, false))
 	assert.Equal(t, "1", FormatValueHumanize(1.2, 0, false))
 	assert.Equal(t, "1.2", FormatValueHumanize(1.2, 2, false))
@@ -92,6 +100,8 @@ func TestAutoDivide(t *testing.T) {
 }
 
 func TestSumInt(t *testing.T) {
+	t.Parallel()
+
 	t.Run("basic", func(t *testing.T) {
 		assert.Equal(t, 3, sumInt([]int{1, 2}))
 	})
@@ -108,12 +118,16 @@ func TestSumInt(t *testing.T) {
 }
 
 func TestGetRadius(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, 50.0, getRadius(100, "50%"))
 	assert.Equal(t, 30.0, getRadius(100, "30"))
 	assert.Equal(t, 40.0, getRadius(100, ""))
 }
 
 func TestMeasureTextMaxWidthHeight(t *testing.T) {
+	t.Parallel()
+
 	p, err := NewPainter(PainterOptions{
 		Width:  400,
 		Height: 300,
@@ -138,6 +152,8 @@ func TestMeasureTextMaxWidthHeight(t *testing.T) {
 }
 
 func TestReverseSlice(t *testing.T) {
+	t.Parallel()
+
 	arr := []string{
 		"Mon",
 		"Tue",
@@ -164,6 +180,8 @@ func TestReverseSlice(t *testing.T) {
 }
 
 func TestParseFlexibleValue(t *testing.T) {
+	t.Parallel()
+
 	t.Run("percent", func(t *testing.T) {
 		result, err := parseFlexibleValue("10%", 200)
 		assert.NoError(t, err)
@@ -177,6 +195,8 @@ func TestParseFlexibleValue(t *testing.T) {
 }
 
 func TestConvertPercent(t *testing.T) {
+	t.Parallel()
+
 	verifyConvertPercent(t, -1.0, "1")
 	verifyConvertPercent(t, -1.0, "a%")
 	verifyConvertPercent(t, 0.1, "10%")

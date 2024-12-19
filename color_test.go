@@ -9,6 +9,8 @@ import (
 )
 
 func TestIsLightColor(t *testing.T) {
+	t.Parallel()
+
 	assert.True(t, isLightColor(drawing.Color{R: 255, G: 255, B: 255}))
 	assert.True(t, isLightColor(drawing.Color{R: 145, G: 204, B: 117}))
 
@@ -18,6 +20,8 @@ func TestIsLightColor(t *testing.T) {
 }
 
 func TestParseColor(t *testing.T) {
+	t.Parallel()
+
 	c := parseColor("")
 	assert.True(t, c.IsZero())
 

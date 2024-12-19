@@ -51,14 +51,12 @@ func parseHex(hex string) uint8 {
 
 // ParseColor parses a color from a string.
 func ParseColor(rawColor string) Color {
-	if strings.HasPrefix(rawColor, "rgba") {
-		return ColorFromRGBA(rawColor)
-	}
-	if strings.HasPrefix(rawColor, "rgb") {
-		return ColorFromRGB(rawColor)
-	}
 	if strings.HasPrefix(rawColor, "#") {
 		return ColorFromHex(rawColor)
+	} else if strings.HasPrefix(rawColor, "rgba") {
+		return ColorFromRGBA(rawColor)
+	} else if strings.HasPrefix(rawColor, "rgb") {
+		return ColorFromRGB(rawColor)
 	}
 	return ColorFromKnown(rawColor)
 }

@@ -10,11 +10,15 @@ import (
 )
 
 func TestConvertToArray(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, []byte(`[1]`), convertToArray([]byte("1")))
 	assert.Equal(t, []byte(`[1]`), convertToArray([]byte("[1]")))
 }
 
 func TestEChartsPosition(t *testing.T) {
+	t.Parallel()
+
 	var p EChartsPosition
 	require.NoError(t, p.UnmarshalJSON([]byte("1")))
 	assert.Equal(t, EChartsPosition("1"), p)
@@ -23,6 +27,8 @@ func TestEChartsPosition(t *testing.T) {
 }
 
 func TestEChartsSeriesDataValue(t *testing.T) {
+	t.Parallel()
+
 	es := EChartsSeriesDataValue{}
 	require.NoError(t, es.UnmarshalJSON([]byte(`[1, 2]`)))
 	assert.Equal(t, EChartsSeriesDataValue{
@@ -33,6 +39,8 @@ func TestEChartsSeriesDataValue(t *testing.T) {
 }
 
 func TestEChartsSeriesData(t *testing.T) {
+	t.Parallel()
+
 	es := EChartsSeriesData{}
 	require.NoError(t, es.UnmarshalJSON([]byte("1.1")))
 	assert.Equal(t, EChartsSeriesDataValue{
@@ -51,6 +59,8 @@ func TestEChartsSeriesData(t *testing.T) {
 }
 
 func TestEChartsXAxis(t *testing.T) {
+	t.Parallel()
+
 	ex := EChartsXAxis{}
 	require.NoError(t, ex.UnmarshalJSON([]byte(`{"boundaryGap": true, "splitNumber": 5, "data": ["a", "b"], "type": "value"}`)))
 
@@ -67,6 +77,8 @@ func TestEChartsXAxis(t *testing.T) {
 }
 
 func TestEChartsPadding(t *testing.T) {
+	t.Parallel()
+
 	eb := EChartsPadding{}
 
 	require.NoError(t, eb.UnmarshalJSON([]byte(`1`)))
@@ -107,6 +119,8 @@ func TestEChartsPadding(t *testing.T) {
 }
 
 func TestEChartsMarkPoint(t *testing.T) {
+	t.Parallel()
+
 	emp := EChartsMarkPoint{
 		SymbolSize: 30,
 		Data: []EChartsMarkData{
@@ -126,6 +140,8 @@ func TestEChartsMarkPoint(t *testing.T) {
 }
 
 func TestEChartsMarkLine(t *testing.T) {
+	t.Parallel()
+
 	eml := EChartsMarkLine{
 		Data: []EChartsMarkData{
 			{

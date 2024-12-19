@@ -16,6 +16,9 @@ func isLightColor(c Color) bool {
 	return math.Sqrt(r+g+b) > 127.5
 }
 
+var rgbReg = regexp.MustCompile(`\((\S+)\)`)
+
+// TODO - de-duplicate with chartdraw/drawing/color.go:ParseColor
 func parseColor(color string) Color {
 	c := Color{}
 	if color == "" {
@@ -24,8 +27,7 @@ func parseColor(color string) Color {
 	if strings.HasPrefix(color, "#") {
 		return drawing.ColorFromHex(color[1:])
 	}
-	reg := regexp.MustCompile(`\((\S+)\)`)
-	result := reg.FindAllStringSubmatch(color, 1)
+	result := rgbReg.FindAllStringSubmatch(color, 1)
 	if len(result) == 0 || len(result[0]) != 2 {
 		return c
 	}
@@ -36,7 +38,7 @@ func parseColor(color string) Color {
 	// set the default value to 255
 	c.A = 255
 	for index, v := range arr {
-		value, _ := strconv.Atoi(strings.TrimSpace(v))
+		value, _ := strconv.ParseInt(strings.TrimSpace(v), 10, 16)
 		ui8 := uint8(value)
 		switch index {
 		case 0:
