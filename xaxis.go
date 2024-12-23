@@ -12,7 +12,8 @@ type XAxisOption struct {
 	// Position describes the position of x-axis, it can be 'top' or 'bottom'.
 	Position string
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
-	// centered between two axis ticks.  Enabled by default, specify *false (through False()) to change the spacing.
+	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
+	// graph. Specify a *bool (through charts.False() or charts.True()) to enforce a spacing.
 	BoundaryGap *bool
 	// FontStyle specifies the font configuration for each label.
 	FontStyle FontStyle
@@ -31,6 +32,7 @@ type XAxisOption struct {
 }
 
 const defaultXAxisHeight = 30
+const boundaryGapDefaultThreshold = 10
 
 func (opt *XAxisOption) ToAxisOption() AxisOption {
 	position := PositionBottom

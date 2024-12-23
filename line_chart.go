@@ -58,9 +58,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 
 	boundaryGap := !flagIs(false, opt.XAxis.BoundaryGap)
 	xDivideCount := len(opt.XAxis.Data)
-	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= 10 {
-		// boundary gap would be so small it's visually better to disable the line spacing adjustment and just keep
-		// the label changes only
+	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= boundaryGapDefaultThreshold {
+		// boundary gap would be so small it's visually better to disable the line spacing adjustment.
+		// Although label changes can be forced to center, this behavior is unconditional for the line
 		boundaryGap = false
 	}
 	if !boundaryGap {

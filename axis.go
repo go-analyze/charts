@@ -33,7 +33,8 @@ type AxisOption struct {
 	// Position describes the position of axis, it can be 'left', 'top', 'right' or 'bottom'.
 	Position string
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
-	// centered between two axis ticks.  Enabled by default, specify *false (through False()) to change the spacing.
+	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
+	// graph. Specify a *bool (through charts.False() or charts.True()) to enforce a spacing.
 	BoundaryGap *bool
 	// StrokeWidth is the axis line width.
 	StrokeWidth float64
@@ -92,9 +93,7 @@ func (a *axisPainter) Render() (Box, error) {
 			opt.Data[index] = strings.ReplaceAll(formatter, "{value}", text)
 		}
 	}
-	dataCount := len(opt.Data)
 
-	centerLabels := !flagIs(false, opt.BoundaryGap)
 	isVertical := opt.Position == PositionLeft || opt.Position == PositionRight
 
 	// if less than zero, it means not processing
@@ -175,6 +174,7 @@ func (a *axisPainter) Render() (Box, error) {
 		x1 = p.Width()
 	}
 
+	dataCount := len(opt.Data)
 	labelCount := opt.LabelCount
 	if labelCount <= 0 {
 		var maxLabelCount int
@@ -205,6 +205,16 @@ func (a *axisPainter) Render() (Box, error) {
 	if labelCount < 2 {
 		labelCount = 2
 	}
+
+	centerLabels := true
+	if opt.BoundaryGap != nil {
+		centerLabels = *opt.BoundaryGap
+	} else if dataCount > 1 && a.p.Width()/dataCount <= boundaryGapDefaultThreshold {
+		// for dense datasets it's visually better to have the label aligned to the tick mark
+		// this default is also handled in the chart rendering to ensure data aligns with the labels
+		centerLabels = false
+	}
+
 	tickSpaces := dataCount
 	tickCount := labelCount
 	if centerLabels {
