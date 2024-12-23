@@ -448,6 +448,11 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			Data:        xAxisData.Data,
 			LabelCount:  xAxisData.SplitNumber,
 		}
+		if o.XAxis.BoundaryGap == nil {
+			// Ensure default ECharts behavior of centering labels and sets a "BoundaryGap"
+			// https://echarts.apache.org/en/option.html#xAxis.boundaryGap
+			o.XAxis.BoundaryGap = True()
+		}
 	}
 	yAxisOptions := make([]YAxisOption, len(eo.YAxis.Data))
 	for index, item := range eo.YAxis.Data {

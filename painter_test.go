@@ -189,7 +189,7 @@ func TestPainter(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 105 60\nL 148 85\nL 148 134\nL 105 160\nL 62 135\nL 62 86\nL 105 60\" style=\"stroke-width:1;stroke:rgba(84,112,198,1.0);fill:none\"/></svg>",
 		},
 		{
-			name: "fillArea",
+			name: "fill_area",
 			fn: func(p *Painter) {
 				p.SetDrawingStyle(chartdraw.Style{
 					FillColor: Color{R: 84, G: 112, B: 198, A: 255},
@@ -229,7 +229,7 @@ func TestRoundedRect(t *testing.T) {
 		result string
 	}{
 		{
-			name: "RoundFully",
+			name: "round_fully",
 			fn: func(p *Painter) {
 				p.RoundedRect(Box{
 					Left:   10,
@@ -241,7 +241,7 @@ func TestRoundedRect(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 15 10\nL 25 10\nL 25 10\nA 5 5 90.00 0 1 30 15\nL 30 145\nL 30 145\nA 5 5 90.00 0 1 25 150\nL 15 150\nL 15 150\nA 5 5 90.00 0 1 10 145\nL 10 15\nL 10 15\nA 5 5 90.00 0 1 15 10\nZ\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/><path  d=\"\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/></svg>",
 		},
 		{
-			name: "SquareTop",
+			name: "square_top",
 			fn: func(p *Painter) {
 				p.RoundedRect(Box{
 					Left:   10,
@@ -253,7 +253,7 @@ func TestRoundedRect(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 10 10\nL 30 10\nL 30 145\nL 30 145\nA 5 5 90.00 0 1 25 150\nL 15 150\nL 15 150\nA 5 5 90.00 0 1 10 145\nL 10 10\nZ\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/><path  d=\"\" style=\"stroke-width:1;stroke:rgba(0,0,255,1.0);fill:rgba(0,0,255,1.0)\"/></svg>",
 		},
 		{
-			name: "SquareBottom",
+			name: "square_bottom",
 			fn: func(p *Painter) {
 				p.RoundedRect(Box{
 					Left:   10,

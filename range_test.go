@@ -19,7 +19,7 @@ func TestPadRange(t *testing.T) {
 		labelCount       int
 	}{
 		{
-			name:             "PadMaxOnly",
+			name:             "pad_max_only",
 			expectedMinValue: 0.0,
 			expectedMaxValue: 10.5,
 			minValue:         0.0,
@@ -27,7 +27,7 @@ func TestPadRange(t *testing.T) {
 			labelCount:       10,
 		},
 		{
-			name:             "PadMinToZero",
+			name:             "pad_min_to_zero",
 			expectedMinValue: 0.0,
 			expectedMaxValue: 21.0,
 			minValue:         1.0,
@@ -35,7 +35,7 @@ func TestPadRange(t *testing.T) {
 			labelCount:       10,
 		},
 		{
-			name:             "PadNegativeMinPositiveMax",
+			name:             "pad_negative_min_positive_max",
 			expectedMinValue: -5.0,
 			expectedMaxValue: 12.0,
 			minValue:         -3.0,
@@ -43,7 +43,7 @@ func TestPadRange(t *testing.T) {
 			labelCount:       10,
 		},
 		{
-			name:             "PadNegativeMinNegativeMax",
+			name:             "pad_negative_min_negative_max",
 			expectedMinValue: -20.0,
 			expectedMaxValue: -9.0,
 			minValue:         -20.0,
@@ -51,7 +51,7 @@ func TestPadRange(t *testing.T) {
 			labelCount:       10,
 		},
 		{
-			name:             "PadPositiveMinPositiveMax",
+			name:             "pad_positive_min_positive_max",
 			expectedMinValue: 100.0,
 			expectedMaxValue: 214.0,
 			minValue:         100.0,
@@ -82,7 +82,7 @@ func TestFriendlyRound(t *testing.T) {
 		add           bool
 	}{
 		{
-			name:          "OriginalZeroSub",
+			name:          "original_zero_sub",
 			expectedValue: 0.0,
 			value:         0.0,
 			minMultiplier: 0.0,
@@ -90,7 +90,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "OriginalZeroAdd",
+			name:          "original_zero_add",
 			expectedValue: 0.0,
 			value:         0.0,
 			minMultiplier: 0.0,
@@ -98,7 +98,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           true,
 		},
 		{
-			name:          "RoundFractionSub",
+			name:          "round_fraction_sub",
 			expectedValue: -2.0,
 			value:         -1.2,
 			minMultiplier: 0.0,
@@ -106,7 +106,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "RoundFractionAdd",
+			name:          "round_fraction_add",
 			expectedValue: 2.0,
 			value:         1.2,
 			minMultiplier: 0.0,
@@ -114,7 +114,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           true,
 		},
 		{
-			name:          "RoundVeryCloseToZeroSub",
+			name:          "round_very_close_to_zero_sub",
 			expectedValue: -1.0,
 			value:         -0.01,
 			minMultiplier: 0.0,
@@ -122,7 +122,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "RoundVeryCloseToZeroAdd",
+			name:          "round_very_close_to_zero_add",
 			expectedValue: 0.0,
 			value:         -0.01,
 			minMultiplier: 0.0,
@@ -130,7 +130,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           true,
 		},
 		{
-			name:          "OriginalLargeSub",
+			name:          "original_large_sub",
 			expectedValue: 1337,
 			value:         1337,
 			minMultiplier: 0.0,
@@ -138,7 +138,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "OriginalLargeAdd",
+			name:          "original_large_add",
 			expectedValue: 1337,
 			value:         1337,
 			minMultiplier: 0.0,
@@ -146,7 +146,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           true,
 		},
 		{
-			name:          "RoundThousandLargeSub",
+			name:          "round_thousand_large_sub",
 			expectedValue: 1000,
 			value:         1337,
 			minMultiplier: 0.0,
@@ -154,7 +154,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "RoundThousandLargeAdd",
+			name:          "round_thousand_large_add",
 			expectedValue: 2000,
 			value:         1337,
 			minMultiplier: 0.0,
@@ -162,7 +162,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           true,
 		},
 		{
-			name:          "RoundHundredLargeSub",
+			name:          "round_hundred_large_sub",
 			expectedValue: 1300,
 			value:         1337,
 			minMultiplier: 0.0,
@@ -170,7 +170,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "RoundHundredLargeAdd",
+			name:          "round_hundred_large_add",
 			expectedValue: 1400,
 			value:         1337,
 			minMultiplier: 0.0,
@@ -178,7 +178,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           true,
 		},
 		{
-			name:          "RoundNegativeSmallSub",
+			name:          "round_negative_small_sub",
 			expectedValue: -1.0,
 			value:         -0.5,
 			minMultiplier: 0.0,
@@ -186,7 +186,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "RoundHalfwayPointSub",
+			name:          "round_halfway_point_sub",
 			expectedValue: 100.0,
 			value:         150.0,
 			minMultiplier: 0.0,
@@ -194,7 +194,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "RoundHalfwayPointAdd",
+			name:          "round_halfway_point_add",
 			expectedValue: 200.0,
 			value:         150.0,
 			minMultiplier: 0.0,
@@ -202,7 +202,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           true,
 		},
 		{
-			name:          "RoundThousandsNegativeLargeSub",
+			name:          "round_thousands_negative_large_sub",
 			expectedValue: -2000.0,
 			value:         -1337.0,
 			minMultiplier: 0.0,
@@ -210,7 +210,7 @@ func TestFriendlyRound(t *testing.T) {
 			add:           false,
 		},
 		{
-			name:          "RoundHundredsNegativeLargeSub",
+			name:          "round_hundreds_negative_large_sub",
 			expectedValue: -1400.0,
 			value:         -1337.0,
 			minMultiplier: 0.0,
