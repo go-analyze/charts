@@ -46,6 +46,7 @@ type TicksOption struct {
 	Length     int
 	Vertical   bool
 	LabelCount int
+	TickCount  int
 	TickSpaces int
 }
 
@@ -59,6 +60,7 @@ type MultiTextOption struct {
 	// The first text index
 	First          int
 	LabelCount     int
+	TickCount      int
 	LabelSkipCount int
 }
 
@@ -606,18 +608,16 @@ func isTick(totalRange int, numTicks int, index int) bool {
 		return true // shortcut to always define tick at start and end of range
 	}
 	step := float64(totalRange-1) / float64(numTicks-1)
-	for i := int(float64(index) / step); i < numTicks; i++ {
-		value := int((float64(i) * step) + 0.5)
-		if value == index {
-			if nextValue := int((float64(i+1) * step) + 0.5); nextValue > totalRange {
-				break // rare rounding condition where we need to just wait for the last index instead
-			}
-			return true
-		} else if value > index {
-			break
-		}
-	}
-	return false
+	// predictedTickIndex calculates the nearest theoretical tick position based on a continuous scale.
+	// It divides the current index by the step size to determine how many ticks fit into the index,
+	// then rounds to the nearest whole number to find the closest tick index.
+	predictedTickIndex := int(float64(index)/step + 0.5)
+	// actualTickIndex translates the predictedTickIndex back to the actual data index.
+	// It does this by multiplying the predictedTickIndex by the step size, effectively finding
+	// the actual position of this tick on the discrete scale of data indices, and rounds it
+	// to ensure it aligns with an exact index in the array.
+	actualTickIndex := int(float64(predictedTickIndex)*step + 0.5)
+	return actualTickIndex == index
 }
 
 func (p *Painter) Ticks(opt TicksOption) *Painter {
@@ -633,7 +633,7 @@ func (p *Painter) Ticks(opt TicksOption) *Painter {
 	for index, value := range values {
 		if index < opt.First {
 			continue
-		} else if !isTick(len(values)-opt.First, opt.LabelCount+1, index-opt.First) {
+		} else if !isTick(len(values)-opt.First, opt.TickCount, index-opt.First) {
 			continue
 		}
 		if opt.Vertical {
@@ -683,7 +683,7 @@ func (p *Painter) MultiText(opt MultiTextOption) *Painter {
 			continue
 		} else if !opt.Vertical &&
 			index != count-1 && // one off case for last label due to values and label qty difference
-			!isTick(positionCount-opt.First, opt.LabelCount+1, index-opt.First) {
+			!isTick(positionCount-opt.First, opt.TickCount, index-opt.First) {
 			continue
 		} else if index != count-1 && // ensure the bottom value is always printed
 			skippedLabels < opt.LabelSkipCount {

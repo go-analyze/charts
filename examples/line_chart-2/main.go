@@ -35,8 +35,19 @@ func main() {
 		charts.ThemeNameOptionFunc(charts.ThemeVividLight),
 		charts.WidthOptionFunc(800),
 		charts.HeightOptionFunc(600),
-		charts.TitleTextOptionFunc("Line Chart Demo"),
-		charts.LegendLabelsOptionFunc([]string{"Critical", "High", "Medium", "Low"}),
+		charts.TitleOptionFunc(charts.TitleOption{
+			Text:   "Line Chart Demo",
+			Offset: charts.OffsetCenter,
+		}),
+		charts.LegendOptionFunc(charts.LegendOption{
+			Data:     []string{"Critical", "High", "Medium", "Low"},
+			Offset:   charts.OffsetRight,
+			Align:    charts.AlignRight,
+			Vertical: true,
+			FontStyle: charts.FontStyle{
+				FontSize: 6.0,
+			},
+		}),
 		charts.PaddingOptionFunc(charts.Box{
 			Top:    12,
 			Bottom: 12,
@@ -60,11 +71,6 @@ func main() {
 			LabelCount:  10,
 		}),
 		func(opt *charts.ChartOption) {
-			opt.Legend.Offset = charts.OffsetRight
-			opt.Legend.Align = charts.AlignRight
-			opt.Legend.Vertical = true
-			opt.Legend.FontStyle.FontSize = 6
-			opt.Title.Offset = charts.OffsetCenter
 			opt.SymbolShow = charts.False()
 			opt.LineStrokeWidth = 1.6
 			opt.ValueFormatter = func(f float64) string {

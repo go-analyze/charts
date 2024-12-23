@@ -11,7 +11,7 @@ func HideYAxis() YAxis {
 	}
 }
 
-// YAxis is a veritcal rule of the range.
+// YAxis is a vertical rule of the range.
 // There can be (2) y-axes; a primary and secondary.
 type YAxis struct {
 	Name      string

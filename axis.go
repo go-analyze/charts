@@ -206,7 +206,11 @@ func (a *axisPainter) Render() (Box, error) {
 		labelCount = 2
 	}
 	tickSpaces := dataCount
-	if !centerLabels {
+	tickCount := labelCount
+	if centerLabels {
+		// In order to center the labels we need an extra tick mark to center the labels between
+		tickCount++
+	} else {
 		// there is always one more tick than data sample, and if we are centering labels we use that extra tick to
 		// center the label against, if not centering then we need one less tick spacing
 		// passing the tickSpaces reduces the need to copy the logic from painter.go:MultiText
@@ -220,6 +224,7 @@ func (a *axisPainter) Render() (Box, error) {
 			IsSet: true,
 		})).Ticks(TicksOption{
 			LabelCount: labelCount,
+			TickCount:  tickCount,
 			TickSpaces: tickSpaces,
 			Length:     tickLength,
 			Vertical:   isVertical,
@@ -242,6 +247,7 @@ func (a *axisPainter) Render() (Box, error) {
 		TextList:       opt.Data,
 		Vertical:       isVertical,
 		LabelCount:     labelCount,
+		TickCount:      tickCount,
 		LabelSkipCount: opt.LabelSkipCount,
 		CenterLabels:   centerLabels,
 		TextRotation:   opt.TextRotation,
