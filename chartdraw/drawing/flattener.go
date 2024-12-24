@@ -65,7 +65,7 @@ func Flatten(path *Path, flattener Flattener, scale float64) {
 	flattener.End()
 }
 
-// SegmentedPath is a path of disparate point sectinos.
+// SegmentedPath is a path of disparate point sections.
 type SegmentedPath struct {
 	Points []float64
 }

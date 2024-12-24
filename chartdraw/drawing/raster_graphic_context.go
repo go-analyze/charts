@@ -156,7 +156,7 @@ func (rgc *RasterGraphicContext) GetStringBounds(s string) (left, top, right, bo
 		err = errors.New("no font loaded, cannot continue")
 		return
 	}
-	rgc.recalc() // TODO - recalc necessary?
+	rgc.recalc()
 
 	left = math.MaxFloat64
 	top = math.MaxFloat64

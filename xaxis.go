@@ -32,7 +32,7 @@ type XAxisOption struct {
 }
 
 const defaultXAxisHeight = 30
-const boundaryGapDefaultThreshold = 10
+const boundaryGapDefaultThreshold = 40
 
 func (opt *XAxisOption) ToAxisOption() AxisOption {
 	position := PositionBottom
