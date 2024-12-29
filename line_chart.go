@@ -39,7 +39,7 @@ type LineChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// SymbolShow set this to *false (through False()) to hide symbols.
+	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
 	SymbolShow *bool
 	// StrokeWidth is the width of the rendered line.
 	StrokeWidth float64
@@ -50,6 +50,8 @@ type LineChartOption struct {
 	// backgroundIsFilled is set to true if the background is filled.
 	backgroundIsFilled bool
 }
+
+const showSymbolDefaultThreshold = 100
 
 func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	p := l.p
@@ -84,6 +86,17 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	strokeWidth := opt.StrokeWidth
 	if strokeWidth == 0 {
 		strokeWidth = defaultStrokeWidth
+	}
+	var dataCount int
+	for _, s := range seriesList {
+		l := len(s.Data)
+		if l > dataCount {
+			dataCount = l
+		}
+	}
+	showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
+	if opt.SymbolShow != nil {
+		showSymbol = *opt.SymbolShow
 	}
 	seriesNames := seriesList.Names()
 	for index := range seriesList {
@@ -163,7 +176,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		}
 		drawingStyle.StrokeWidth = 1
 		seriesPainter.SetDrawingStyle(drawingStyle)
-		if !flagIs(false, opt.SymbolShow) {
+		if showSymbol {
 			seriesPainter.Dots(points)
 		}
 		markPointPainter.Add(markPointRenderOption{

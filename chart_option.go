@@ -35,7 +35,7 @@ type ChartOption struct {
 	SeriesList SeriesList
 	// RadarIndicators are radar indicator list for radar charts
 	RadarIndicators []RadarIndicator
-	// SymbolShow set this to *false (using False()) to hide symbols.
+	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
 	SymbolShow *bool
 	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
