@@ -3,21 +3,21 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/go-analyze/charts/blob/master/LICENSE)
 [![Build Status](https://github.com/go-analyze/charts/workflows/Test/badge.svg)](https://github.com/go-analyze/charts/actions)
 
-`go-analyze/charts` is a fork from [vicanso/go-charts](https://github.com/vicanso/go-charts) and [wcharczuk/go-chart](https://github.com/wcharczuk/go-chart). Our library focuses on simplifying the generation of beautiful charts and graphs.
+Our library focuses on generating beautiful charts and graphs within Go. Graphs are used to show a lot of different types of data, needing to be represented in a unique in order to convey the meaning behind the data. This Go module attempts to use sophisticated defaults to try and render this data in a simple way, while still offering intuitive options to update the graph rendering as you see fit.
 
 ## Current Project Status
 
-Leveraging the strengths of [vicanso/go-charts](https://github.com/vicanso/go-charts) and [wcharczuk/go-chart](https://github.com/wcharczuk/go-chart), our project introduces enhancements for rendering under challenging conditions and expands functionality with minimal setup. We aim to build upon their solid foundation to offer a more versatile and user-friendly charting solution.
+Forked from [vicanso/go-charts](https://github.com/vicanso/go-charts) and the archived [wcharczuk/go-chart](https://github.com/wcharczuk/go-chart), our project introduces enhancements for rendering challenging datasets. We aim to build upon their solid foundation to offer a more versatile and user-friendly charting solution.
 
 ### API Stability
 
 We're committed to refining the API, incorporating feedback and new ideas to enhance flexibility and ease of use.
 
-Until the `v1.0.0` release, API changes should be anticipated. If you require a library with minimal user facing changes this project has not yet reached that level of maturity.
+Until the `v1.0.0` release, API changes should be anticipated. We detail needed API changes on our wiki [Version Migration Guide](https://github.com/go-analyze/charts/wiki/Version-Migration-Guide).
 
 ### Changes
 
-Notable improvements in our fork include:
+Notable early improvements in our fork include:
 
 * **Axis Improvements:** Significant enhancements to axis rendering, data range selection, and configuration simplification were made in PR [#3](https://github.com/go-analyze/charts/pull/3).
 * **Theming:** In PR [#4](https://github.com/go-analyze/charts/pull/4) (and some subsequent changes) we introduced `vivid-light` and `vivid-dark` themes for more vibrant visualizations, alongside API changes for greater theme and font control. Long term we plan to make themes easier to mutate and define.
@@ -28,8 +28,7 @@ Our library is a work in progress, aiming to become a standout choice for Go dev
 
 #### `wcharczuk/go-chart` Changes
 
-If you are a former user of `wcharczuk/go-chart`, you should be able to use this project with reasonable changes. The `wcharczuk/go-chart` project was forked under our `chartdraw` package. Since that inclusion we have made the following API changes:
-* `Font` configuration has been moved out of `Style`, and instead requires the `FontStyle` struct to be initialized to define Font specifics. (see PR [#15](https://github.com/go-analyze/charts/pull/15))
+If you are a former user of `wcharczuk/go-chart`, you should be able to use this project with reasonable changes. The `wcharczuk/go-chart` project was forked under our `chartdraw` package. Any code changes necessary are documented on our [wcharczuk/go‐chart Migration Guide](https://github.com/go-analyze/charts/wiki/wcharczuk-go%E2%80%90chart-Migration-Guide).
 
 ## Functionality
 
