@@ -11,7 +11,7 @@ import (
 )
 
 /*
-Another line chart example with more significant theming and other configuration changes.
+Another line chart example with large data point counts, and more significant theming and other customization.
 */
 
 const dataPointCount = 100
@@ -28,11 +28,14 @@ func writeFile(buf []byte) error {
 
 func main() {
 	values := generateRandomData(4, dataPointCount, 10)
-	axisFontSize := 6.0
+	xAxisLabels := generateLabels(dataPointCount, "foo ")
+	axisFont := charts.FontStyle{
+		FontSize: 6.0,
+	}
 
 	p, err := charts.LineRender(
 		values,
-		charts.ThemeNameOptionFunc(charts.ThemeVividLight),
+		charts.ThemeNameOptionFunc(charts.ThemeVividLight), // custom color theme
 		charts.WidthOptionFunc(800),
 		charts.HeightOptionFunc(600),
 		charts.TitleOptionFunc(charts.TitleOption{
@@ -40,10 +43,11 @@ func main() {
 			Offset: charts.OffsetCenter,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data:     []string{"Critical", "High", "Medium", "Low"},
+			Data: []string{"Critical", "High", "Medium", "Low"},
+			// Legend Vertical, on the right, and with smaller font to give more space for data
+			Vertical: true,
 			Offset:   charts.OffsetRight,
 			Align:    charts.AlignRight,
-			Vertical: true,
 			FontStyle: charts.FontStyle{
 				FontSize: 6.0,
 			},
@@ -55,22 +59,20 @@ func main() {
 			Right:  12,
 		}),
 		charts.YAxisOptionFunc(charts.YAxisOption{
-			Min: charts.FloatPointer(0.0), // force min to be zero
-			FontStyle: charts.FontStyle{
-				FontSize: axisFontSize,
-			},
+			Min:       charts.FloatPointer(0.0), // force min to be zero
+			FontStyle: axisFont,
+			// y-axis labels well spaced to keep a clean look
 			Unit:           10,
 			LabelSkipCount: 1,
 		}),
 		charts.XAxisOptionFunc(charts.XAxisOption{
-			Data: generateLabels(dataPointCount, "foo "),
-			FontStyle: charts.FontStyle{
-				FontSize: axisFontSize,
-			},
+			Data:        xAxisLabels,
+			FontStyle:   axisFont,
 			BoundaryGap: charts.True(),
 			LabelCount:  10,
 		}),
 		func(opt *charts.ChartOption) {
+			// disable the symbols and reduce the stroke width to give more fidelity on the line
 			opt.SymbolShow = charts.False()
 			opt.LineStrokeWidth = 1.6
 			opt.ValueFormatter = func(f float64) string {

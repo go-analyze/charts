@@ -95,7 +95,7 @@ func main() {
 			opt.Legend.Padding = charts.Box{
 				Left: 100,
 			}
-			opt.SymbolShow = charts.False()
+			opt.SymbolShow = charts.True()
 			opt.LineStrokeWidth = 1.2
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)

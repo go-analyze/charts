@@ -32,6 +32,12 @@ If you are a former user of `wcharczuk/go-chart`, you should be able to use this
 
 ## Functionality
 
+### Chart Types
+
+These chart types are supported: `line`, `bar`, `horizontal bar`, `pie`, `radar` or `funnel` and `table`.
+
+Please see the [./examples/](./examples/) directory and the [README](./examples/README.md) within it to see a variety of implementations of our different chart types and configurations.
+
 ### Themes
 
 Our built in themes are: `light`, `dark`, `vivid-light`, `vivid-dark`, `ant`, `grafana`
@@ -39,12 +45,6 @@ Our built in themes are: `light`, `dark`, `vivid-light`, `vivid-dark`, `ant`, `g
 <p align="center">
     <img src="./assets/themes.png" alt="themes">
 </p>
-
-### Chart Types
-
-These chart types are supported: `line`, `bar`, `horizontal bar`, `pie`, `radar` or `funnel` and `table`.
-
-Please see a variety of examples in the [./examples/](./examples/) directory.
 
 ### Line Chart
 

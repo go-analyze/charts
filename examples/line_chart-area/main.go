@@ -45,19 +45,21 @@ func main() {
 			"Sat",
 			"Sun",
 		}),
-		charts.LegendLabelsOptionFunc([]string{
-			"Email",
-		}),
-		func(opt *charts.ChartOption) {
-			opt.Legend.Padding = charts.Box{
+		charts.LegendOptionFunc(charts.LegendOption{
+			Data: []string{"Email"},
+			Padding: charts.Box{
 				Top:    5,
 				Bottom: 10,
-			}
-			opt.FillArea = true
-			opt.XAxis.BoundaryGap = charts.False()
-			opt.YAxis = []charts.YAxisOption{{
-				Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
-			}}
+			},
+		}),
+		charts.YAxisOptionFunc(charts.YAxisOption{
+			Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
+		}),
+		// setup fill styling below
+		func(opt *charts.ChartOption) {
+			opt.FillArea = true                    // shade the area under the line
+			opt.FillOpacity = 150                  // set the fill opacity a little lighter than default
+			opt.XAxis.BoundaryGap = charts.False() // BoundaryGap is less appealing when enabling FillArea
 		},
 	)
 	if err != nil {
