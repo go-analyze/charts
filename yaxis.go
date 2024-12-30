@@ -31,8 +31,11 @@ type YAxisOption struct {
 	// LabelSkipCount specifies a number of lines between labels where there will be no label and instead just a horizontal line.
 	LabelSkipCount int
 	isCategoryAxis bool
-	// The flag for show axis split line, set this to true will show axis split line
+	// SplitLineShow for showing axis split line, set this to true to show the horizontal axis split lines.
 	SplitLineShow *bool
+	// SpineLineShow can be set to enforce if the vertical spine on the axis should be shown or not.
+	// By default, not shown unless a category axis.
+	SpineLineShow *bool
 }
 
 func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
@@ -72,6 +75,13 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 	}
 	if opt.SplitLineShow != nil {
 		axisOpt.SplitLineShow = *opt.SplitLineShow
+	}
+	if opt.SpineLineShow != nil {
+		if *opt.SpineLineShow {
+			axisOpt.StrokeWidth = 1
+		} else {
+			axisOpt.StrokeWidth = -1
+		}
 	}
 	return axisOpt
 }
