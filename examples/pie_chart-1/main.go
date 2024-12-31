@@ -49,7 +49,6 @@ func main() {
 			Left:   20,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Vertical: true,
 			Data: []string{
 				"Search Engine",
 				"Direct",
@@ -57,9 +56,13 @@ func main() {
 				"Union Ads",
 				"Video Ads",
 			},
-			Offset: charts.OffsetLeft,
+			Vertical: true,
+			Offset: charts.OffsetStr{
+				Left: "80%",
+				Top:  "75%",
+			},
 			FontStyle: charts.FontStyle{
-				FontSize: 12,
+				FontSize: 10,
 			},
 		}),
 		charts.PieSeriesShowLabel(),

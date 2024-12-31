@@ -11,7 +11,7 @@ Examples are our primary method for demonstrating the starting point our use and
 * [line_chart-1](./line_chart-1) - Basic line chart with some simple styling changes and a demonstration of `null` values.
 * [line_chart-2](./line_chart-2) - Line chart with dense data and more custom styling configured.
 * [line_chart-area](./line_chart-area) - Example line chart with the area below the line shaded.
-* [pie_chart-1](./pie_chart-1) - Pie chart with a variety of customization demonstrated.
+* [pie_chart-1](./pie_chart-1) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
 * [radar_chart-1](./radar_chart-1) - Basic radar chart.
 * [table-1](./table-1) - Table with a variety of table specific configuration and styling demonstrated.
 * [web-1](./web-1) - Hosts an example http server which will render the charts to the web page.
