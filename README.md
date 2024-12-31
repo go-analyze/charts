@@ -51,8 +51,6 @@ Our built in themes are: `light`, `dark`, `vivid-light`, `vivid-dark`, `ant`, `g
 <img src="./assets/chart-line.png" alt="Line Chart">
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -75,7 +73,7 @@ func main() {
 	}
 	p, err := charts.LineRender(
 		values,
-		charts.TitleTextOptionFunc("Line"),
+		charts.TitleTextOptionFunc("Line Chart Demo"),
 		charts.XAxisDataOptionFunc([]string{
 			"Mon",	// notice the 7 labels here match to the 7 samples above
 			"Tue",
@@ -89,9 +87,7 @@ func main() {
 			"Email",
 			"Search Engine",
 		}),
-	)
-	// snip...
-}
+		// other options as desired...
 ```
 
 ### Bar Chart
@@ -99,8 +95,6 @@ func main() {
 <img src="./assets/chart-bar.png" alt="Bar Chart">
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -159,9 +153,7 @@ func main() {
 				charts.SeriesMarkDataTypeAverage,
 			)
 		},
-	)
-	// snip...
-}
+		// other options as desired...
 ```
 
 ### Horizontal Bar Chart
@@ -169,8 +161,6 @@ func main() {
 <img src="./assets/chart-horizontal-bar.png" alt="Horizontal Bar Chart">
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -210,9 +200,7 @@ func main() {
 			"China",
 			"World",
 		}),
-	)
-	// snip...
-}
+		// other options as desired...
 ```
 
 ### Pie Chart
@@ -220,8 +208,6 @@ func main() {
 <img src="./assets/chart-pie.png" alt="Pie Chart">
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -241,14 +227,7 @@ func main() {
 			Subtext: "Fake Data",
 			Offset:  charts.OffsetCenter,
 		}),
-		charts.PaddingOptionFunc(charts.Box{
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-			Left:   20,
-		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Veritcal: true,
 			Data: []string{
 				"Search Engine",
 				"Direct",
@@ -256,12 +235,9 @@ func main() {
 				"Union Ads",
 				"Video Ads",
 			},
-			Offset: charts.OffsetLeft,
 		}),
 		charts.PieSeriesShowLabel(),
-	)
-	// snip...	
-}
+		// other options as desired...
 ```
 
 ### Radar Chart
@@ -269,8 +245,6 @@ func main() {
 <img src="./assets/chart-radar.png" alt="Radar Chart">
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -311,9 +285,7 @@ func main() {
 			52000,
 			25000,
 		}),
-	)
-	// snip...
-}
+		// other options as desired...
 ```
 
 ### Table
@@ -321,8 +293,6 @@ func main() {
 <img src="./assets/chart-table.png" alt="Table">
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -371,14 +341,11 @@ func main() {
 		spans,
 	)
 	// snip...
-}
 ```
 
 ### Funnel Chart
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -403,14 +370,11 @@ func main() {
 		}),
 	)
 	// snip...
-}
 ```
 
 ### ECharts Render
 
 ```go
-package main
-
 import (
 	"github.com/go-analyze/charts"
 )
@@ -430,5 +394,4 @@ func main() {
 		]
 	}`)
 	// snip...
-}
 ```
