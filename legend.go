@@ -33,6 +33,8 @@ type LegendOption struct {
 	Vertical bool
 	// Icon to show next to the labels.	Can be 'rect' or 'dot'.
 	Icon string
+	// OverlayChart can be set to *true to render the legend over the chart. Ignored if Vertical is set to true (always overlapped).
+	OverlayChart *bool
 }
 
 // IsEmpty checks legend is empty
@@ -131,14 +133,14 @@ func (l *legendPainter) Render() (Box, error) {
 	var left int
 	switch offset.Left {
 	case PositionLeft:
-		// no-op
+		// leave default of zero
 	case PositionRight:
 		left = p.Width() - width
 	case PositionCenter:
 		left = (p.Width() - width) >> 1
 	default:
 		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
-			return BoxZero, err
+			return BoxZero, fmt.Errorf("error parsing legend position: %v", err)
 		} else {
 			left = int(v)
 		}
@@ -148,18 +150,23 @@ func (l *legendPainter) Render() (Box, error) {
 	}
 
 	var top int
-	if offset.Top != "" {
+	switch offset.Top {
+	case "", PositionTop:
+		// leave default of zero
+	case PositionBottom:
+		top = p.Height() - height
+	default:
 		if v, err := parseFlexibleValue(offset.Top, float64(p.Height())); err != nil {
-			return BoxZero, fmt.Errorf("unexpected parsing error: %v", err)
+			return BoxZero, fmt.Errorf("error parsing legend position: %v", err)
 		} else {
 			top = int(v)
 		}
 	}
 
-	x := left
+	startX := left
 	y := top + 10
 	startY := y
-	x0 := x
+	x0 := startX
 	y0 := y
 
 	var drawIcon func(top, left int) int
@@ -225,17 +232,18 @@ func (l *legendPainter) Render() (Box, error) {
 
 		if opt.Vertical {
 			y0 += builtInSpacing
-			x0 = x
+			x0 = startX
 		} else {
 			x0 += builtInSpacing
 			y0 = y
 		}
-		height = y0 - startY + 10
 	}
 
 	return Box{
+		Top:    startY,
+		Bottom: y0 + itemMaxHeight + padding.Bottom + padding.Top,
+		Left:   startX,
 		Right:  width,
-		Bottom: height + padding.Bottom + padding.Top,
 		IsSet:  true,
 	}, nil
 }

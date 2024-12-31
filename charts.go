@@ -111,29 +111,49 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		p = p.Child(PainterPaddingOption(opt.Padding))
 	}
 
-	legendHeight := 0
-	if len(opt.Legend.Data) != 0 {
-		legendResult, err := NewLegendPainter(p, opt.Legend).Render()
-		if err != nil {
-			return nil, err
+	const legendTitlePadding = 15
+	legendTopSpacing := 0
+	legendResult, err := NewLegendPainter(p, opt.Legend).Render()
+	if err != nil {
+		return nil, err
+	}
+	if !legendResult.IsZero() && !opt.Legend.Vertical && !flagIs(true, opt.Legend.OverlayChart) {
+		legendHeight := legendResult.Height()
+		if legendResult.Bottom < p.Height()/2 {
+			// horizontal legend at the top, set the spacing based on the height
+			legendTopSpacing = legendHeight + legendTitlePadding
+		} else {
+			// horizontal legend at the bottom, raise the chart above it
+			p = p.Child(PainterPaddingOption(Box{
+				Bottom: legendHeight + legendTitlePadding,
+				IsSet:  true,
+			}))
 		}
-		legendHeight = legendResult.Height()
 	}
 
-	if opt.Title.Text != "" {
-		titleBox, err := NewTitlePainter(p, opt.Title).Render()
-		if err != nil {
-			return nil, err
+	titleBox, err := NewTitlePainter(p, opt.Title).Render()
+	if err != nil {
+		return nil, err
+	}
+	if !titleBox.IsZero() {
+		var top, bottom int
+		if titleBox.Bottom < p.Height()/2 {
+			top = chartdraw.MaxInt(legendTopSpacing, titleBox.Bottom+legendTitlePadding)
+		} else {
+			// title is at the bottom, raise the chart to be above the title
+			bottom = titleBox.Height()
+			top = legendTopSpacing // the legend may still need space on the top, set to whatever the legend requested
 		}
 
-		top := chartdraw.MaxInt(legendHeight, titleBox.Height())
-		// if in vertical mode, the legend height is not calculated
-		if opt.Legend.Vertical {
-			top = titleBox.Height()
-		}
 		p = p.Child(PainterPaddingOption(Box{
-			// leave space under the title
-			Top: top + 20,
+			Top:    top,
+			Bottom: bottom,
+			IsSet:  true,
+		}))
+	} else if legendTopSpacing > 0 { // apply chart spacing below legend
+		p = p.Child(PainterPaddingOption(Box{
+			Top:   legendTopSpacing,
+			IsSet: true,
 		}))
 	}
 

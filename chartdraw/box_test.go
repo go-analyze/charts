@@ -96,6 +96,58 @@ func TestBoxIsSmallerThan(t *testing.T) {
 	assert.False(t, c.IsSmallerThan(a))
 }
 
+func TestOverlaps(t *testing.T) {
+	t.Parallel()
+
+	t.Run("identical_box", func(t *testing.T) {
+		box1 := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		box2 := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		assert.True(t, box1.Overlaps(box2))
+		assert.True(t, box2.Overlaps(box1))
+	})
+	t.Run("partial_overlap", func(t *testing.T) {
+		box1 := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		box2 := Box{Top: 5, Left: 5, Right: 15, Bottom: 15}
+		assert.True(t, box1.Overlaps(box2))
+		assert.True(t, box2.Overlaps(box1))
+	})
+	t.Run("corner_touch_not_overlap", func(t *testing.T) {
+		box1 := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		// This box starts exactly where box1 ends (corner at 10,10)
+		box2 := Box{Top: 10, Left: 10, Right: 20, Bottom: 20}
+		assert.False(t, box1.Overlaps(box2))
+		assert.False(t, box2.Overlaps(box1))
+	})
+	t.Run("completely_inside", func(t *testing.T) {
+		outer := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		inner := Box{Top: 2, Left: 2, Right: 8, Bottom: 8}
+		assert.True(t, outer.Overlaps(inner))
+		assert.True(t, inner.Overlaps(outer))
+	})
+	t.Run("no_overlap_zero", func(t *testing.T) {
+		box := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		assert.False(t, box.Overlaps(BoxZero))
+		assert.False(t, BoxZero.Overlaps(box))
+	})
+	t.Run("no_overlap_zero_center", func(t *testing.T) {
+		box := Box{Top: 10, Left: 10, Right: 20, Bottom: 20}
+		assert.False(t, box.Overlaps(BoxZero))
+		assert.False(t, BoxZero.Overlaps(box))
+	})
+	t.Run("no_overlap_horizontally", func(t *testing.T) {
+		box1 := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		box2 := Box{Top: 0, Left: 11, Right: 20, Bottom: 10}
+		assert.False(t, box1.Overlaps(box2))
+		assert.False(t, box2.Overlaps(box1))
+	})
+	t.Run("no_overlap_vertically", func(t *testing.T) {
+		box1 := Box{Top: 0, Left: 0, Right: 10, Bottom: 10}
+		box2 := Box{Top: 11, Left: 0, Right: 10, Bottom: 20}
+		assert.False(t, box1.Overlaps(box2))
+		assert.False(t, box2.Overlaps(box1))
+	})
+}
+
 func TestBoxGrow(t *testing.T) {
 	t.Parallel()
 

@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -108,6 +109,7 @@ func (t *titlePainter) Render() (Box, error) {
 	}
 	textMaxWidth := 0
 	textMaxHeight := 0
+	textTotalHeight := 0
 	for index, item := range measureOptions {
 		p.OverrideFontStyle(item.style)
 		textBox := p.MeasureText(item.text)
@@ -120,6 +122,7 @@ func (t *titlePainter) Render() (Box, error) {
 		if h > textMaxHeight {
 			textMaxHeight = h
 		}
+		textTotalHeight += h
 		measureOptions[index].height = h
 		measureOptions[index].width = w
 	}
@@ -136,29 +139,37 @@ func (t *titlePainter) Render() (Box, error) {
 		titleX = p.Width()>>1 - (textMaxWidth >> 1)
 	default:
 		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
-			return BoxZero, err
+			return BoxZero, fmt.Errorf("error parsing title position: %v", err)
 		} else {
 			titleX = int(v)
 		}
 	}
 	titleY := 0
-	if offset.Top != "" {
+	switch offset.Top {
+	case "", PositionTop:
+		// leave default of zero
+	case PositionBottom:
+		titleY = p.Height() - textTotalHeight
+	default:
 		if v, err := parseFlexibleValue(offset.Top, float64(p.Height())); err != nil {
-			return BoxZero, err
+			return BoxZero, fmt.Errorf("error parsing title position: %v", err)
 		} else {
 			titleY = int(v)
 		}
 	}
+	startY := titleY
 	for _, item := range measureOptions {
 		p.OverrideFontStyle(item.style)
 		x := titleX + (textMaxWidth-item.width)>>1
 		y := titleY + item.height
 		p.Text(item.text, x, y)
-		titleY += item.height
+		titleY = y
 	}
 
 	return Box{
+		Top:    startY,
 		Bottom: titleY,
+		Left:   titleX,
 		Right:  titleX + width,
 		IsSet:  true,
 	}, nil

@@ -72,9 +72,6 @@ func (b Box) WithBottom(val int) Box {
 
 // IsZero returns if the box is set or not.
 func (b Box) IsZero() bool {
-	if b.IsSet {
-		return false
-	}
 	return b.Top == 0 && b.Left == 0 && b.Right == 0 && b.Bottom == 0
 }
 
@@ -159,7 +156,7 @@ func (b Box) Clone() Box {
 	}
 }
 
-// IsBiggerThan returns if a box is bigger than another box.
+// IsBiggerThan returns true if a box is bigger than another box.
 func (b Box) IsBiggerThan(other Box) bool {
 	return b.Top < other.Top ||
 		b.Bottom > other.Bottom ||
@@ -167,12 +164,20 @@ func (b Box) IsBiggerThan(other Box) bool {
 		b.Right > other.Right
 }
 
-// IsSmallerThan returns if a box is smaller than another box.
+// IsSmallerThan returns true if a box is smaller than another box.
 func (b Box) IsSmallerThan(other Box) bool {
 	return b.Top > other.Top &&
 		b.Bottom < other.Bottom &&
 		b.Left > other.Left &&
 		b.Right < other.Right
+}
+
+// Overlaps returns true if the two boxes overlap each other.
+func (b Box) Overlaps(other Box) bool {
+	return b.Left < other.Right &&
+		b.Right > other.Left &&
+		b.Top < other.Bottom &&
+		b.Bottom > other.Top
 }
 
 // Equals returns if the box equals another box.

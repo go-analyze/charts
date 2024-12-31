@@ -42,7 +42,7 @@ type OffsetStr struct {
 	// It can be pixel value (20), percentage value (20%), or position description: 'left', 'right', 'center'.
 	Left string
 	// Top is the distance between the component and the top side of the container.
-	// It can be pixel value (20), or percentage value (20%).
+	// It can be pixel value (20), or percentage value (20%), or position description: 'top', 'bottom'.
 	Top string
 }
 

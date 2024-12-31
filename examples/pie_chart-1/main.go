@@ -59,7 +59,7 @@ func main() {
 			Vertical: true,
 			Offset: charts.OffsetStr{
 				Left: "80%",
-				Top:  "75%",
+				Top:  charts.PositionBottom,
 			},
 			FontStyle: charts.FontStyle{
 				FontSize: 10,
