@@ -34,12 +34,12 @@ type XAxisOption struct {
 const defaultXAxisHeight = 30
 const boundaryGapDefaultThreshold = 40
 
-func (opt *XAxisOption) ToAxisOption() AxisOption {
+func (opt *XAxisOption) ToAxisOption() axisOption {
 	position := PositionBottom
 	if opt.Position == PositionTop {
 		position = PositionTop
 	}
-	axisOpt := AxisOption{
+	axisOpt := axisOption{
 		Theme:                opt.Theme,
 		Data:                 opt.Data,
 		DataStartIndex:       opt.DataStartIndex,
@@ -61,7 +61,7 @@ func (opt *XAxisOption) ToAxisOption() AxisOption {
 	return axisOpt
 }
 
-// NewBottomXAxis returns a bottom x axis renderer
-func NewBottomXAxis(p *Painter, opt XAxisOption) *axisPainter {
-	return NewAxisPainter(p, opt.ToAxisOption())
+// newBottomXAxis returns a bottom x-axis renderer.
+func newBottomXAxis(p *Painter, opt XAxisOption) *axisPainter {
+	return newAxisPainter(p, opt.ToAxisOption())
 }

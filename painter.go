@@ -38,7 +38,7 @@ type PainterOptions struct {
 	Font *truetype.Font
 }
 
-type PainterOption func(*Painter)
+type PainterOptionFunc func(*Painter)
 
 type TicksOption struct {
 	// the first tick index
@@ -77,8 +77,8 @@ type GridOption struct {
 	IgnoreRowLines []int
 }
 
-// PainterPaddingOption sets the padding of draw painter
-func PainterPaddingOption(padding Box) PainterOption {
+// PainterPaddingOption sets the padding of draw painter.
+func PainterPaddingOption(padding Box) PainterOptionFunc {
 	return func(p *Painter) {
 		p.box.Left += padding.Left
 		p.box.Top += padding.Top
@@ -87,8 +87,8 @@ func PainterPaddingOption(padding Box) PainterOption {
 	}
 }
 
-// PainterBoxOption sets the box of draw painter
-func PainterBoxOption(box Box) PainterOption {
+// PainterBoxOption sets the box for the painter to draw within.
+func PainterBoxOption(box Box) PainterOptionFunc {
 	return func(p *Painter) {
 		if box.IsZero() {
 			return
@@ -97,48 +97,19 @@ func PainterBoxOption(box Box) PainterOption {
 	}
 }
 
-// PainterFontOption sets the font of draw painter
-func PainterFontOption(font *truetype.Font) PainterOption {
-	return func(p *Painter) {
-		if font == nil {
-			return
-		}
-		p.font = font
-	}
-}
-
-// PainterStyleOption sets the style of draw painter
-func PainterStyleOption(style chartdraw.Style) PainterOption {
-	return func(p *Painter) {
-		p.SetStyle(style)
-	}
-}
-
-// PainterThemeOption sets the theme of draw painter
-func PainterThemeOption(theme ColorPalette) PainterOption {
+// PainterThemeOption sets the theme of draw painter.
+func PainterThemeOption(theme ColorPalette) PainterOptionFunc {
 	return func(p *Painter) {
 		if theme == nil {
-			return
+			theme = GetDefaultTheme()
 		}
 		p.theme = theme
 	}
 }
 
-// PainterWidthHeightOption set width or height of draw painter
-func PainterWidthHeightOption(width, height int) PainterOption {
-	return func(p *Painter) {
-		if width > 0 {
-			p.box.Right = p.box.Left + width
-		}
-		if height > 0 {
-			p.box.Bottom = p.box.Top + height
-		}
-	}
-}
-
 // TODO - try to remove the error return
-// NewPainter creates a painter
-func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
+// NewPainter creates a painter which can be used to render charts to (using for example NewLineChart).
+func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) (*Painter, error) {
 	if opts.Width <= 0 {
 		opts.Width = defaultChartWidth
 	}
@@ -176,13 +147,16 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 	}
 	return p, nil
 }
-func (p *Painter) setOptions(opts ...PainterOption) {
+
+func (p *Painter) setOptions(opts ...PainterOptionFunc) {
 	for _, fn := range opts {
 		fn(p)
 	}
 }
 
-func (p *Painter) Child(opt ...PainterOption) *Painter {
+// Child returns a painter with the passed in options applied to it. This can be most useful when you want to render
+// relative to only a portion of the canvas using PainterBoxOption.
+func (p *Painter) Child(opt ...PainterOptionFunc) *Painter {
 	child := &Painter{
 		valueFormatter: p.valueFormatter,
 		render:         p.render,
@@ -236,6 +210,7 @@ func overrideStyle(defaultStyle chartdraw.Style, style chartdraw.Style) chartdra
 }
 
 func (p *Painter) OverrideDrawingStyle(style chartdraw.Style) *Painter {
+	// TODO - we should alias parts of Style we want to support drawing on
 	s := overrideStyle(p.style, style)
 	p.SetDrawingStyle(s)
 	return p

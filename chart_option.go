@@ -8,16 +8,16 @@ import (
 )
 
 type ChartOption struct {
-	// OutputFormat specifies the output type of chart, "svg" or "png", default value is "png"
+	// OutputFormat specifies the output type of chart, "svg" or "png", default value is "png".
 	OutputFormat string
 	// Width is the width of chart, default width is 600.
 	Width int
-	// Height is the height of chart, default height is 400
+	// Height is the height of chart, default height is 400.
 	Height int
 	// Theme specifies the colors used for the chart. Built in themes can be loaded using GetTheme with
 	// "light", "dark", "vivid-light", "vivid-dark", "ant" or "grafana".
 	Theme ColorPalette
-	// Padding specifies the padding for chart, default padding is [20, 10, 10, 10]
+	// Padding specifies the padding for chart, default padding is [20, 10, 10, 10].
 	Padding Box
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
@@ -33,7 +33,7 @@ type ChartOption struct {
 	Box Box
 	// SeriesList provides the data series.
 	SeriesList SeriesList
-	// RadarIndicators are radar indicator list for radar charts
+	// RadarIndicators are radar indicator list for radar charts.
 	RadarIndicators []RadarIndicator
 	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
 	SymbolShow *bool
@@ -47,7 +47,7 @@ type ChartOption struct {
 	BarWidth int
 	// BarHeight is the height of the bars for horizontal bar charts.
 	BarHeight int
-	// Children are child charts to render together.
+	// Children are Child charts to render together.
 	Children []ChartOption
 	parent   *Painter
 	// TODO - review how this is set on other Option structs
@@ -58,18 +58,18 @@ type ChartOption struct {
 // OptionFunc option function
 type OptionFunc func(opt *ChartOption)
 
-// SVGOutputOption set svg type of chart's output.
-func SVGOutputOption() OptionFunc {
-	return OutputFormatOptionFunc(ChartOutputSVG)
+// SVGOutputOptionFunc set svg type of chart's output.
+func SVGOutputOptionFunc() OptionFunc {
+	return outputFormatOptionFunc(ChartOutputSVG)
 }
 
-// PNGOutputOption set png type of chart's output.
-func PNGOutputOption() OptionFunc {
-	return OutputFormatOptionFunc(ChartOutputPNG)
+// PNGOutputOptionFunc set png type of chart's output.
+func PNGOutputOptionFunc() OptionFunc {
+	return outputFormatOptionFunc(ChartOutputPNG)
 }
 
-// OutputFormatOptionFunc set type of chart's output.
-func OutputFormatOptionFunc(t string) OptionFunc {
+// outputFormatOptionFunc set type of chart's output.
+func outputFormatOptionFunc(t string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.OutputFormat = t
 	}
@@ -163,16 +163,10 @@ func YAxisDataOptionFunc(data []string) OptionFunc {
 	}
 }
 
-// WidthOptionFunc set width of chart
-func WidthOptionFunc(width int) OptionFunc {
+// DimensionsOptionFunc sets the width and height dimensions of the chart.
+func DimensionsOptionFunc(width, height int) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Width = width
-	}
-}
-
-// HeightOptionFunc set height of chart
-func HeightOptionFunc(height int) OptionFunc {
-	return func(opt *ChartOption) {
 		opt.Height = height
 	}
 }
@@ -184,14 +178,7 @@ func PaddingOptionFunc(padding Box) OptionFunc {
 	}
 }
 
-// BoxOptionFunc set box of chart
-func BoxOptionFunc(box Box) OptionFunc {
-	return func(opt *ChartOption) {
-		opt.Box = box
-	}
-}
-
-// PieSeriesShowLabel set pie series show label
+// PieSeriesShowLabel set pie series show label.
 func PieSeriesShowLabel() OptionFunc {
 	return func(opt *ChartOption) {
 		for index := range opt.SeriesList {
@@ -200,7 +187,7 @@ func PieSeriesShowLabel() OptionFunc {
 	}
 }
 
-// ChildOptionFunc add child chart
+// ChildOptionFunc adds a Child chart on top of the current one. Use Padding and Box for positioning.
 func ChildOptionFunc(child ...ChartOption) OptionFunc {
 	return func(opt *ChartOption) {
 		if opt.Children == nil {

@@ -9,17 +9,17 @@ import (
 
 type axisPainter struct {
 	p   *Painter
-	opt *AxisOption
+	opt *axisOption
 }
 
-func NewAxisPainter(p *Painter, opt AxisOption) *axisPainter {
+func newAxisPainter(p *Painter, opt axisOption) *axisPainter {
 	return &axisPainter{
 		p:   p,
 		opt: &opt,
 	}
 }
 
-type AxisOption struct {
+type axisOption struct {
 	// Show specifies if the axis should be rendered, set this to *false (through False()) to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the axis.

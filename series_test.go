@@ -52,13 +52,13 @@ func TestSeriesLists(t *testing.T) {
 func TestFormatter(t *testing.T) {
 	t.Parallel()
 
-	assert.Equal(t, "a: 12%", NewPieLabelFormatter([]string{
+	assert.Equal(t, "a: 12%", labelFormatPie([]string{
 		"a",
 		"b",
-	}, "")(0, 10, 0.12))
+	}, "", 0, 10, 0.12))
 
-	assert.Equal(t, "10", NewValueLabelFormatter([]string{
+	assert.Equal(t, "10", labelFormatValue([]string{
 		"a",
 		"b",
-	}, "")(0, 10, 0.12))
+	}, "", 0, 10, 0.12))
 }

@@ -21,7 +21,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "basic",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two", "Three"},
 				}).Render()
 				if err != nil {
@@ -34,7 +34,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "position_left",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:   []string{"One", "Two", "Three"},
 					Offset: OffsetLeft,
 				}).Render()
@@ -48,9 +48,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "position_vertical_with_rect",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two", "Three"},
-					Vertical: true,
+					Vertical: True(),
 					Icon:     IconRect,
 					Offset: OffsetStr{
 						Left: "10%",
@@ -66,7 +66,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "custom_padding_and_font",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two", "Three"},
 					FontStyle: FontStyle{
 						FontSize:  20.0,
@@ -84,7 +84,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "hidden",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"A", "B", "C"},
 					Show: False(),
 				}).Render()
@@ -98,7 +98,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "bottom_position",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
 					Offset: OffsetStr{
 						Top: PositionBottom,
@@ -114,9 +114,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_right_position",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: true,
+					Vertical: True(),
 					Offset:   OffsetRight,
 				}).Render()
 				if err != nil {
@@ -129,9 +129,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_bottom_position",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: true,
+					Vertical: True(),
 					Offset: OffsetStr{
 						Top: PositionBottom,
 					},
@@ -146,9 +146,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_right_bottom_position",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: true,
+					Vertical: True(),
 					Offset: OffsetStr{
 						Left: PositionRight,
 						Top:  PositionBottom,
@@ -164,9 +164,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_right_position_custom_font_size",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: true,
+					Vertical: True(),
 					Offset:   OffsetRight,
 					FontStyle: FontStyle{
 						FontSize: 6.0,
@@ -182,9 +182,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_right_position_with_padding",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: true,
+					Vertical: True(),
 					Offset:   OffsetRight,
 					Padding:  Box{Top: 120, Left: 120, Right: 120, Bottom: 120},
 				}).Render()
@@ -198,7 +198,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "left_position_overflow",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
 					Offset: OffsetLeft,
@@ -213,7 +213,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "center_position_overflow",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
 					Offset: OffsetCenter,
@@ -228,7 +228,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "center_position_center_align_overflow",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
 					Offset: OffsetCenter,
@@ -244,7 +244,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "50%_position_overflow",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
 					Offset: OffsetStr{
@@ -261,10 +261,10 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_right_position_overflow",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data: []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer",
 						"Five Words Is Even Longer", "Six Words Is The Longest Tested"},
-					Vertical: true,
+					Vertical: True(),
 					Offset: OffsetStr{
 						Left: "440",
 					},
@@ -279,7 +279,7 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "right_alignment",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:  []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
 					Align: AlignRight,
 				}).Render()
@@ -293,9 +293,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_right_alignment",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: true,
+					Vertical: True(),
 					Align:    AlignRight,
 				}).Render()
 				if err != nil {
@@ -308,9 +308,9 @@ func TestNewLegend(t *testing.T) {
 		{
 			name: "vertical_right_alignment_left_position",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewLegendPainter(p, LegendOption{
+				_, err := newLegendPainter(p, LegendOption{
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: true,
+					Vertical: True(),
 					Offset:   OffsetLeft,
 					Align:    AlignRight,
 				}).Render()

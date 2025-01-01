@@ -29,7 +29,7 @@ func makeBasicPieChartOption() PieChartOption {
 			Left:   20,
 		},
 		Legend: LegendOption{
-			Vertical: true,
+			Vertical: True(),
 			Data: []string{
 				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 			},

@@ -35,8 +35,8 @@ type markPointRenderOption struct {
 	Points    []Point
 }
 
-// NewMarkPointPainter returns a mark point renderer
-func NewMarkPointPainter(p *Painter) *markPointPainter {
+// newMarkPointPainter returns a mark point renderer
+func newMarkPointPainter(p *Painter) *markPointPainter {
 	return &markPointPainter{
 		p:       p,
 		options: make([]markPointRenderOption, 0),

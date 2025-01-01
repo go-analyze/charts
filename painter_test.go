@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/golang/freetype/truetype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -16,7 +15,6 @@ import (
 func TestPainterOption(t *testing.T) {
 	t.Parallel()
 
-	font := &truetype.Font{}
 	d, err := NewPainter(PainterOptions{
 		OutputFormat: ChartOutputSVG,
 		Width:        800,
@@ -24,8 +22,6 @@ func TestPainterOption(t *testing.T) {
 	},
 		PainterBoxOption(Box{Right: 400, Bottom: 300}),
 		PainterPaddingOption(Box{Left: 1, Top: 2, Right: 3, Bottom: 4}),
-		PainterFontOption(font),
-		PainterStyleOption(chartdraw.Style{ClassName: "test"}),
 	)
 	require.NoError(t, err)
 	assert.Equal(t, Box{
@@ -34,8 +30,6 @@ func TestPainterOption(t *testing.T) {
 		Right:  397,
 		Bottom: 296,
 	}, d.box)
-	assert.Equal(t, font, d.font)
-	assert.Equal(t, "test", d.style.ClassName)
 }
 
 func TestPainter(t *testing.T) {

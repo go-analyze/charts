@@ -28,8 +28,8 @@ func (m *markLinePainter) Add(opt markLineRenderOption) {
 	m.options = append(m.options, opt)
 }
 
-// NewMarkLinePainter returns a mark line renderer
-func NewMarkLinePainter(p *Painter) *markLinePainter {
+// newMarkLinePainter returns a mark line renderer
+func newMarkLinePainter(p *Painter) *markLinePainter {
 	return &markLinePainter{
 		p:       p,
 		options: make([]markLineRenderOption, 0),
@@ -52,10 +52,7 @@ func (m *markLinePainter) Render() (Box, error) {
 		if len(s.MarkLine.Data) == 0 {
 			continue
 		}
-		font := opt.Font
-		if font == nil {
-			font = GetDefaultFont()
-		}
+		font := getPreferredFont(opt.Font)
 		summary := s.Summary()
 		for _, markLine := range s.MarkLine.Data {
 			// since the mark line will modify the style, it must be reset every time

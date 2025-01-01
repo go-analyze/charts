@@ -25,7 +25,7 @@ func writeFile(buf []byte, filename string) error {
 }
 
 func main() {
-	charts.SetDefaultWidth(810)
+	charts.SetDefaultChartDimensions(810, 0) // 0 for height will leave it unchanged
 	header := []string{
 		"Name",
 		"Age",

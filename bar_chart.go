@@ -49,7 +49,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	opt := b.opt
 	seriesPainter := result.seriesPainter
 
-	xRange := NewRange(b.p, seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
+	xRange := newRange(b.p, seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
 	// margin between each block
@@ -74,8 +74,8 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	theme := opt.Theme
 	seriesNames := seriesList.Names()
 
-	markPointPainter := NewMarkPointPainter(seriesPainter)
-	markLinePainter := NewMarkLinePainter(seriesPainter)
+	markPointPainter := newMarkPointPainter(seriesPainter)
+	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []Renderer{
 		markPointPainter,
 		markLinePainter,
@@ -87,15 +87,9 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 
 		divideValues := xRange.AutoDivide()
 		points := make([]Point, len(series.Data))
-		var labelPainter *SeriesLabelPainter
+		var labelPainter *seriesLabelPainter
 		if series.Label.Show {
-			labelPainter = NewSeriesLabelPainter(SeriesLabelPainterParams{
-				P:           seriesPainter,
-				SeriesNames: seriesNames,
-				Label:       series.Label,
-				Theme:       opt.Theme,
-				Font:        opt.Font,
-			})
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
 

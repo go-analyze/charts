@@ -6,10 +6,10 @@ import (
 
 type gridPainter struct {
 	p   *Painter
-	opt *GridPainterOption
+	opt *gridPainterOption
 }
 
-type GridPainterOption struct {
+type gridPainterOption struct {
 	// StrokeWidth is the grid line width.
 	StrokeWidth float64
 	// StrokeColor is the grid line color.
@@ -30,8 +30,8 @@ type GridPainterOption struct {
 	IgnoreLastColumn bool
 }
 
-// NewGridPainter returns new a grid renderer
-func NewGridPainter(p *Painter, opt GridPainterOption) *gridPainter {
+// newGridPainter returns new a grid renderer
+func newGridPainter(p *Painter, opt gridPainterOption) *gridPainter {
 	return &gridPainter{
 		p:   p,
 		opt: &opt,
