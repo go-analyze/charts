@@ -63,19 +63,6 @@ type multiTextOption struct {
 	labelSkipCount int
 }
 
-type gridOption struct {
-	// Columns is the count of columns in the grid.
-	Columns int
-	// Rows are the count of rows in the grid.
-	Rows int
-	// ColumnSpans specifies the span for each column.
-	ColumnSpans []int
-	// IgnoreColumnLines specifies index for columns to not display.
-	IgnoreColumnLines []int
-	// IgnoreRowLines specifies index for rows to not display.
-	IgnoreRowLines []int
-}
-
 // PainterPaddingOption sets the padding of draw painter.
 func PainterPaddingOption(padding Box) PainterOptionFunc {
 	return func(p *Painter) {
@@ -863,48 +850,6 @@ func (p *Painter) multiText(opt multiTextOption) *Painter {
 	}
 	if isTextRotation {
 		p.clearTextRotation()
-	}
-	return p
-}
-
-func (p *Painter) grid(opt gridOption) *Painter {
-	width := p.Width()
-	height := p.Height()
-	drawLines := func(values []int, ignoreIndexList []int, isVertical bool) {
-		for index, v := range values {
-			if containsInt(ignoreIndexList, index) {
-				continue
-			}
-			x0 := 0
-			y0 := 0
-			x1 := 0
-			y1 := 0
-			if isVertical {
-				x0 = v
-				x1 = v
-				y1 = height
-			} else {
-				x1 = width
-				y0 = v
-				y1 = v
-			}
-			p.LineStroke([]Point{
-				{X: x0, Y: y0},
-				{X: x1, Y: y1},
-			})
-		}
-	}
-	columnCount := sumInt(opt.ColumnSpans)
-	if columnCount == 0 {
-		columnCount = opt.Columns
-	}
-	if columnCount > 0 {
-		values := autoDivideSpans(width, columnCount, opt.ColumnSpans)
-		drawLines(values, opt.IgnoreColumnLines, true)
-	}
-	if opt.Rows > 0 {
-		values := autoDivide(height, opt.Rows)
-		drawLines(values, opt.IgnoreRowLines, false)
 	}
 	return p
 }
