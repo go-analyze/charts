@@ -73,7 +73,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	theme := opt.Theme
 
 	min, max := seriesList.GetMinMax(0)
-	xRange := NewRange(p, seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
+	xRange := newRange(p, seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
 	seriesNames := seriesList.Names()
 
 	var rendererList []Renderer
@@ -82,15 +82,9 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 		seriesColor := theme.GetSeriesColor(series.index)
 		divideValues := yRange.AutoDivide()
 
-		var labelPainter *SeriesLabelPainter
+		var labelPainter *seriesLabelPainter
 		if series.Label.Show {
-			labelPainter = NewSeriesLabelPainter(SeriesLabelPainterParams{
-				P:           seriesPainter,
-				SeriesNames: seriesNames,
-				Label:       series.Label,
-				Theme:       opt.Theme,
-				Font:        opt.Font,
-			})
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
 		for j, item := range series.Data {
@@ -129,17 +123,17 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 					fontStyle.FontColor = defaultDarkFontColor
 				}
 			}
-			labelValue := LabelValue{
-				Vertical:  false,
-				Index:     index,
-				Value:     item.Value,
-				X:         right,
-				Y:         y + barHeight>>1,
-				Offset:    series.Label.Offset,
-				FontStyle: fontStyle,
+			labelValue := labelValue{
+				vertical:  false, // label beside bar
+				index:     index,
+				value:     item.Value,
+				x:         right,
+				y:         y + (barHeight >> 1),
+				offset:    series.Label.Offset,
+				fontStyle: fontStyle,
 			}
 			if series.Label.Position == PositionLeft {
-				labelValue.X = 0
+				labelValue.x = 0
 			}
 			labelPainter.Add(labelValue)
 		}

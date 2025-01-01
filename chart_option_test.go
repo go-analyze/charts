@@ -13,15 +13,14 @@ func TestChartOption(t *testing.T) {
 	t.Parallel()
 
 	fns := []OptionFunc{
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		FontOptionFunc(GetDefaultFont()),
 		ThemeNameOptionFunc(ThemeVividDark),
 		TitleTextOptionFunc("title"),
 		LegendLabelsOptionFunc([]string{"label"}),
 		XAxisDataOptionFunc([]string{"xaxis"}),
 		YAxisDataOptionFunc([]string{"yaxis"}),
-		WidthOptionFunc(800),
-		HeightOptionFunc(600),
+		DimensionsOptionFunc(800, 600),
 		PaddingOptionFunc(Box{
 			Left:   10,
 			Top:    10,
@@ -104,7 +103,7 @@ func TestLineRender(t *testing.T) {
 	}
 	p, err := LineRender(
 		values,
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		TitleTextOptionFunc("Line"),
 		XAxisDataOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
@@ -128,7 +127,7 @@ func TestBarRender(t *testing.T) {
 	}
 	p, err := BarRender(
 		values,
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		XAxisDataOptionFunc([]string{
 			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
@@ -165,7 +164,7 @@ func TestHorizontalBarRender(t *testing.T) {
 	}
 	p, err := HorizontalBarRender(
 		values,
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		TitleTextOptionFunc("World Population"),
 		PaddingOptionFunc(Box{
 			Top:    20,
@@ -192,7 +191,7 @@ func TestPieRender(t *testing.T) {
 	values := []float64{1048, 735, 580, 484, 300}
 	p, err := PieRender(
 		values,
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		TitleOptionFunc(TitleOption{
 			Text:    "Rainfall vs Evaporation",
 			Subtext: "Fake Data",
@@ -205,7 +204,7 @@ func TestPieRender(t *testing.T) {
 			Left:   20,
 		}),
 		LegendOptionFunc(LegendOption{
-			Vertical: true,
+			Vertical: True(),
 			Data: []string{
 				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 			},
@@ -228,7 +227,7 @@ func TestRadarRender(t *testing.T) {
 	}
 	p, err := RadarRender(
 		values,
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		TitleTextOptionFunc("Basic Radar Chart"),
 		LegendLabelsOptionFunc([]string{
 			"Allocated Budget", "Actual Spending",
@@ -258,7 +257,7 @@ func TestFunnelRender(t *testing.T) {
 	}
 	p, err := FunnelRender(
 		values,
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		TitleTextOptionFunc("Funnel"),
 		LegendLabelsOptionFunc([]string{
 			"Show", "Click", "Visit", "Inquiry", "Order",
@@ -277,7 +276,7 @@ func TestChildRender(t *testing.T) {
 			{150, 232, 201, 154, 190, 330, 410},
 			{320, 332, 301, 334, 390, 330, 320},
 		},
-		SVGOutputOption(),
+		SVGOutputOptionFunc(),
 		XAxisDataOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),

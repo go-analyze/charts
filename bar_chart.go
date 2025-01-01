@@ -50,7 +50,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	opt := b.opt
 	seriesPainter := result.seriesPainter
 
-	xRange := NewRange(b.p, seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
+	xRange := newRange(b.p, seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
 	// margin between each block
@@ -78,8 +78,8 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	theme := opt.Theme
 	seriesNames := seriesList.Names()
 
-	markPointPainter := NewMarkPointPainter(seriesPainter)
-	markLinePainter := NewMarkLinePainter(seriesPainter)
+	markPointPainter := newMarkPointPainter(seriesPainter)
+	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []Renderer{
 		markPointPainter,
 		markLinePainter,
@@ -91,15 +91,9 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 
 		divideValues := xRange.AutoDivide()
 		points := make([]Point, len(series.Data))
-		var labelPainter *SeriesLabelPainter
+		var labelPainter *seriesLabelPainter
 		if series.Label.Show {
-			labelPainter = NewSeriesLabelPainter(SeriesLabelPainterParams{
-				P:           seriesPainter,
-				SeriesNames: seriesNames,
-				Label:       series.Label,
-				Theme:       opt.Theme,
-				Font:        opt.Font,
-			})
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
 
@@ -160,16 +154,15 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 					}
 				}
 			}
-			labelPainter.Add(LabelValue{
-				Vertical:  true, // label is above bar
-				Index:     index,
-				Value:     item.Value,
-				FontStyle: fontStyle,
-				X:         x + barWidth>>1,
-				Y:         y,
-				// rotate
-				Radians: radians,
-				Offset:  series.Label.Offset,
+			labelPainter.Add(labelValue{
+				vertical:  true, // label is above bar
+				index:     index,
+				value:     item.Value,
+				fontStyle: fontStyle,
+				x:         x + (barWidth >> 1),
+				y:         y,
+				radians:   radians,
+				offset:    series.Label.Offset,
 			})
 		}
 

@@ -18,7 +18,7 @@ func TestGrid(t *testing.T) {
 	}{
 		{
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewGridPainter(p, GridPainterOption{
+				_, err := newGridPainter(p, gridPainterOption{
 					StrokeColor:       drawing.ColorBlack,
 					Columns:           6,
 					Rows:              6,
@@ -36,7 +36,7 @@ func TestGrid(t *testing.T) {
 		},
 		{
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewGridPainter(p, GridPainterOption{
+				_, err := newGridPainter(p, gridPainterOption{
 					StrokeColor: drawing.ColorBlack,
 					ColumnSpans: []int{2, 5, 3},
 					Rows:        6,

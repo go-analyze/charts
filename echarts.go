@@ -47,16 +47,12 @@ func (value *EChartsSeriesDataValue) UnmarshalJSON(data []byte) error {
 	data = convertToArray(data)
 	return json.Unmarshal(data, &value.values)
 }
+
 func (value *EChartsSeriesDataValue) First() float64 {
 	if len(value.values) == 0 {
 		return 0
 	}
 	return value.values[0]
-}
-func NewEChartsSeriesDataValue(values ...float64) EChartsSeriesDataValue {
-	return EChartsSeriesDataValue{
-		values: values,
-	}
 }
 
 type EChartsSeriesData struct {
@@ -417,7 +413,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				Top:  string(eo.Legend.Top),
 			},
 			Align:    eo.Legend.Align,
-			Vertical: strings.EqualFold(eo.Legend.Orient, "vertical"),
+			Vertical: BoolPointer(strings.EqualFold(eo.Legend.Orient, "vertical")),
 		},
 		RadarIndicators: eo.Radar.Indicator,
 		Width:           eo.Width,

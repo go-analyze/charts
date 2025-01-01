@@ -85,8 +85,8 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	} else {
 		xValues = xDivideValues
 	}
-	markPointPainter := NewMarkPointPainter(seriesPainter)
-	markLinePainter := NewMarkLinePainter(seriesPainter)
+	markPointPainter := newMarkPointPainter(seriesPainter)
+	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []Renderer{
 		markPointPainter,
 		markLinePainter,
@@ -120,15 +120,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 
 		yRange := result.axisRanges[series.YAxisIndex]
 		points := make([]Point, 0)
-		var labelPainter *SeriesLabelPainter
+		var labelPainter *seriesLabelPainter
 		if series.Label.Show {
-			labelPainter = NewSeriesLabelPainter(SeriesLabelPainterParams{
-				P:           seriesPainter,
-				SeriesNames: seriesNames,
-				Label:       series.Label,
-				Theme:       opt.Theme,
-				Font:        opt.Font,
-			})
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
 		for i, item := range series.Data {
@@ -146,12 +140,12 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			if labelPainter == nil {
 				continue
 			}
-			labelPainter.Add(LabelValue{
-				Index:     index,
-				Value:     item.Value,
-				X:         p.X,
-				Y:         p.Y,
-				FontStyle: series.Label.FontStyle,
+			labelPainter.Add(labelValue{
+				index:     index,
+				value:     item.Value,
+				x:         p.X,
+				y:         p.Y,
+				fontStyle: series.Label.FontStyle,
 			})
 		}
 		if opt.FillArea {

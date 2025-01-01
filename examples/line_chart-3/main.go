@@ -36,8 +36,7 @@ func main() {
 	p, err := charts.LineRender(
 		values,
 		charts.ThemeNameOptionFunc(charts.ThemeVividLight), // custom color theme
-		charts.WidthOptionFunc(800),
-		charts.HeightOptionFunc(600),
+		charts.DimensionsOptionFunc(800, 600),
 		charts.TitleOptionFunc(charts.TitleOption{
 			Text:   "Line Chart Demo",
 			Offset: charts.OffsetCenter,
@@ -45,7 +44,7 @@ func main() {
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{"Critical", "High", "Medium", "Low"},
 			// Legend Vertical, on the right, and with smaller font to give more space for data
-			Vertical: true,
+			Vertical: charts.True(),
 			Offset:   charts.OffsetRight,
 			Align:    charts.AlignRight,
 			FontStyle: charts.FontStyle{

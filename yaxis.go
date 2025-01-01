@@ -38,7 +38,7 @@ type YAxisOption struct {
 	SpineLineShow *bool
 }
 
-func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
+func (opt *YAxisOption) ToAxisOption(p *Painter) axisOption {
 	position := PositionLeft
 	if opt.Position == PositionRight {
 		position = PositionRight
@@ -47,7 +47,7 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 	if theme == nil {
 		theme = p.theme
 	}
-	axisOpt := AxisOption{
+	axisOpt := axisOption{
 		Formatter:            opt.Formatter,
 		Theme:                theme,
 		Data:                 opt.Data,
@@ -86,21 +86,21 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) AxisOption {
 	return axisOpt
 }
 
-// NewLeftYAxis returns a left y axis renderer
-func NewLeftYAxis(p *Painter, opt YAxisOption) *axisPainter {
+// newLeftYAxis returns a left y-axis renderer.
+func newLeftYAxis(p *Painter, opt YAxisOption) *axisPainter {
 	p = p.Child(PainterPaddingOption(Box{
 		Bottom: defaultXAxisHeight,
 	}))
-	return NewAxisPainter(p, opt.ToAxisOption(p))
+	return newAxisPainter(p, opt.ToAxisOption(p))
 }
 
-// NewRightYAxis returns a right y axis renderer
-func NewRightYAxis(p *Painter, opt YAxisOption) *axisPainter {
+// newRightYAxis returns a right y-axis renderer.
+func newRightYAxis(p *Painter, opt YAxisOption) *axisPainter {
 	p = p.Child(PainterPaddingOption(Box{
 		Bottom: defaultXAxisHeight,
 	}))
 	axisOpt := opt.ToAxisOption(p)
 	axisOpt.Position = PositionRight
 	axisOpt.SplitLineShow = false
-	return NewAxisPainter(p, axisOpt)
+	return newAxisPainter(p, axisOpt)
 }

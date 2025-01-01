@@ -20,7 +20,7 @@ func TestMarkPoint(t *testing.T) {
 			render: func(p *Painter) ([]byte, error) {
 				series := NewSeriesFromValues([]float64{1, 2, 3})
 				series.MarkPoint = NewMarkPoint(SeriesMarkDataTypeMax)
-				markPoint := NewMarkPointPainter(p)
+				markPoint := newMarkPointPainter(p)
 				markPoint.Add(markPointRenderOption{
 					FillColor: drawing.ColorBlack,
 					Series:    series,

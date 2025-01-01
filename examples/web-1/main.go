@@ -73,8 +73,7 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 	theme := query.Get("theme")
 	width, _ := strconv.Atoi(query.Get("width"))
 	height, _ := strconv.Atoi(query.Get("height"))
-	charts.SetDefaultWidth(width)
-	charts.SetDefaultWidth(height)
+	charts.SetDefaultChartDimensions(width, height)
 	bytesList := make([][]byte, 0)
 	for _, opt := range chartOptions {
 		opt.Theme = charts.GetTheme(theme)
@@ -642,7 +641,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 			Legend: charts.LegendOption{
-				Vertical: true,
+				Vertical: charts.True(),
 				Data: []string{
 					"Search Engine",
 					"Direct",

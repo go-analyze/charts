@@ -18,8 +18,8 @@ type axisRange struct {
 	size        int
 }
 
-// NewRange returns a range of data for an axis, this range will have padding to better present the data.
-func NewRange(painter *Painter, size, divideCount int, min, max, minPaddingScale, maxPaddingScale float64) axisRange {
+// newRange returns a range of data for an axis, this range will have padding to better present the data.
+func newRange(painter *Painter, size, divideCount int, min, max, minPaddingScale, maxPaddingScale float64) axisRange {
 	min, max = padRange(divideCount, min, max, minPaddingScale, maxPaddingScale)
 	return axisRange{
 		p:           painter,

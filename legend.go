@@ -29,8 +29,8 @@ type LegendOption struct {
 	Offset OffsetStr
 	// Align is the legend marker and text alignment, it can be 'left', 'right' or 'center', default is 'left'.
 	Align string
-	// Vertical can be set to true to set the orientation to be vertical.
-	Vertical bool
+	// Vertical can be set to *true to set the legend orientation to be vertical.
+	Vertical *bool
 	// Icon to show next to the labels.	Can be 'rect' or 'dot'.
 	Icon string
 	// OverlayChart can be set to *true to render the legend over the chart. Ignored if Vertical is set to true (always overlapped).
@@ -47,8 +47,8 @@ func (opt *LegendOption) IsEmpty() bool {
 	return true
 }
 
-// NewLegendPainter returns a legend renderer
-func NewLegendPainter(p *Painter, opt LegendOption) *legendPainter {
+// newLegendPainter returns a legend renderer
+func newLegendPainter(p *Painter, opt LegendOption) *legendPainter {
 	return &legendPainter{
 		p:   p,
 		opt: &opt,
@@ -72,9 +72,10 @@ func (l *legendPainter) Render() (Box, error) {
 	if fontStyle.FontColor.IsZero() {
 		fontStyle.FontColor = theme.GetTextColor()
 	}
+	vertical := flagIs(true, opt.Vertical)
 	offset := opt.Offset
 	if offset.Left == "" {
-		if opt.Vertical {
+		if vertical {
 			// in the vertical orientation it's more visually appealing to default to the right side or left side
 			if opt.Align != "" {
 				offset.Left = opt.Align
@@ -110,7 +111,7 @@ func (l *legendPainter) Render() (Box, error) {
 		if b.Height() > itemMaxHeight {
 			itemMaxHeight = b.Height()
 		}
-		if opt.Vertical {
+		if flagIs(true, opt.Vertical) {
 			height += b.Height()
 		} else {
 			width += b.Width()
@@ -119,7 +120,7 @@ func (l *legendPainter) Render() (Box, error) {
 	}
 
 	// add padding
-	if opt.Vertical {
+	if vertical {
 		width = maxTextWidth + textOffset + legendWidth
 		height = builtInSpacing * len(opt.Data)
 	} else {
@@ -201,7 +202,7 @@ func (l *legendPainter) Render() (Box, error) {
 			FillColor:   color,
 			StrokeColor: color,
 		})
-		if opt.Vertical {
+		if vertical {
 			if opt.Align == AlignRight {
 				// adjust x0 so that the text will start with a right alignment to the longest line
 				x0 += maxTextWidth - measureList[index].Width()
@@ -247,7 +248,7 @@ func (l *legendPainter) Render() (Box, error) {
 			x0 = drawIcon(y0, x0)
 		}
 
-		if opt.Vertical {
+		if vertical {
 			y0 += builtInSpacing
 			x0 = startX
 		} else {

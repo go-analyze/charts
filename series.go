@@ -231,7 +231,7 @@ func (s *Series) Summary() seriesSummary {
 	}
 }
 
-// Names returns the names of series list
+// Names returns the names of series list.
 func (sl SeriesList) Names() []string {
 	names := make([]string, len(sl))
 	for index, s := range sl {
@@ -240,35 +240,32 @@ func (sl SeriesList) Names() []string {
 	return names
 }
 
-// LabelFormatter label formatter
-type LabelFormatter func(index int, value float64, percent float64) string
-
-// NewPieLabelFormatter returns a pie label formatter
-func NewPieLabelFormatter(seriesNames []string, layout string) LabelFormatter {
+// labelFormatPie formats the value for a pie chart label.
+func labelFormatPie(seriesNames []string, layout string, index int, value float64, percent float64) string {
 	if len(layout) == 0 {
 		layout = "{b}: {d}"
 	}
-	return NewLabelFormatter(seriesNames, layout)
+	return newLabelFormatter(seriesNames, layout)(index, value, percent)
 }
 
-// NewFunnelLabelFormatter returns a funner label formatter
-func NewFunnelLabelFormatter(seriesNames []string, layout string) LabelFormatter {
+// labelFormatFunnel formats the value for a funnel chart label.
+func labelFormatFunnel(seriesNames []string, layout string, index int, value float64, percent float64) string {
 	if len(layout) == 0 {
 		layout = "{b}({d})"
 	}
-	return NewLabelFormatter(seriesNames, layout)
+	return newLabelFormatter(seriesNames, layout)(index, value, percent)
 }
 
-// NewValueLabelFormatter returns a value formatter
-func NewValueLabelFormatter(seriesNames []string, layout string) LabelFormatter {
+// labelFormatValue returns a formatted value.
+func labelFormatValue(seriesNames []string, layout string, index int, value float64, percent float64) string {
 	if len(layout) == 0 {
 		layout = "{c}"
 	}
-	return NewLabelFormatter(seriesNames, layout)
+	return newLabelFormatter(seriesNames, layout)(index, value, percent)
 }
 
-// NewLabelFormatter returns a label formatter
-func NewLabelFormatter(seriesNames []string, layout string) LabelFormatter {
+// newLabelFormatter returns a label formatter.
+func newLabelFormatter(seriesNames []string, layout string) func(index int, value float64, percent float64) string {
 	return func(index int, value, percent float64) string {
 		percentText := ""
 		if percent >= 0 {

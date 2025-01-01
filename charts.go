@@ -18,15 +18,11 @@ const defaultYAxisLabelCountLow = 3
 var defaultChartWidth = 600
 var defaultChartHeight = 400
 
-// SetDefaultWidth sets default width of chart
-func SetDefaultWidth(width int) {
+// SetDefaultChartDimensions sets default width and height of charts if not otherwise specified in their configuration.
+func SetDefaultChartDimensions(width, height int) {
 	if width > 0 {
 		defaultChartWidth = width
 	}
-}
-
-// SetDefaultHeight sets default height of chart
-func SetDefaultHeight(height int) {
 	if height > 0 {
 		defaultChartHeight = height
 	}
@@ -113,11 +109,11 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	const legendTitlePadding = 15
 	legendTopSpacing := 0
-	legendResult, err := NewLegendPainter(p, opt.Legend).Render()
+	legendResult, err := newLegendPainter(p, opt.Legend).Render()
 	if err != nil {
 		return nil, err
 	}
-	if !legendResult.IsZero() && !opt.Legend.Vertical && !flagIs(true, opt.Legend.OverlayChart) {
+	if !legendResult.IsZero() && !flagIs(true, opt.Legend.Vertical) && !flagIs(true, opt.Legend.OverlayChart) {
 		legendHeight := legendResult.Height()
 		if legendResult.Bottom < p.Height()/2 {
 			// horizontal legend at the top, set the spacing based on the height
@@ -131,7 +127,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 	}
 
-	titleBox, err := NewTitlePainter(p, opt.Title).Render()
+	titleBox, err := newTitlePainter(p, opt.Title).Render()
 	if err != nil {
 		return nil, err
 	}
@@ -263,9 +259,9 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}))
 		var yAxis *axisPainter
 		if index == 0 {
-			yAxis = NewLeftYAxis(child, yAxisOption)
+			yAxis = newLeftYAxis(child, yAxisOption)
 		} else {
-			yAxis = NewRightYAxis(child, yAxisOption)
+			yAxis = newRightYAxis(child, yAxisOption)
 		}
 		if yAxisBox, err := yAxis.Render(); err != nil {
 			return nil, err
@@ -276,7 +272,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 	}
 
-	xAxis := NewBottomXAxis(p.Child(PainterPaddingOption(Box{
+	xAxis := newBottomXAxis(p.Child(PainterPaddingOption(Box{
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
 		IsSet: true,

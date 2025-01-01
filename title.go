@@ -47,8 +47,8 @@ type titlePainter struct {
 	opt *TitleOption
 }
 
-// NewTitlePainter returns a title renderer
-func NewTitlePainter(p *Painter, opt TitleOption) *titlePainter {
+// newTitlePainter returns a title renderer
+func newTitlePainter(p *Painter, opt TitleOption) *titlePainter {
 	return &titlePainter{
 		p:   p,
 		opt: &opt,

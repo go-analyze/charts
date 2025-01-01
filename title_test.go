@@ -20,7 +20,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "no_content",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "",
 					Subtext: "",
 				}).Render()
@@ -34,7 +34,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "offset_number",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					Offset: OffsetStr{
@@ -52,7 +52,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "offset_percent",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					Offset: OffsetStr{
@@ -70,7 +70,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "offset_right",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					Offset:  OffsetRight,
@@ -85,7 +85,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "offset_center",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					Offset:  OffsetCenter,
@@ -100,7 +100,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "offset_bottom",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					Offset: OffsetStr{
@@ -117,7 +117,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "offset_bottom_right",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					Offset: OffsetStr{
@@ -135,7 +135,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "offset_bottom_center",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					Offset: OffsetStr{
@@ -153,7 +153,7 @@ func TestTitleRenderer(t *testing.T) {
 		{
 			name: "custom_font",
 			render: func(p *Painter) ([]byte, error) {
-				_, err := NewTitlePainter(p, TitleOption{
+				_, err := newTitlePainter(p, TitleOption{
 					Text:    "title",
 					Subtext: "subTitle",
 					FontStyle: FontStyle{

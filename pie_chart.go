@@ -62,7 +62,7 @@ type sector struct {
 	color       Color
 }
 
-func NewSector(cx int, cy int, radius float64, labelRadius float64, value float64, currentValue float64, totalValue float64, labelLineLength int, label string, series Series, color Color) sector {
+func newSector(cx int, cy int, radius float64, labelRadius float64, value float64, currentValue float64, totalValue float64, labelLineLength int, label string, series Series, color Color) sector {
 	s := sector{}
 	s.value = value
 	s.percent = value / totalValue
@@ -96,7 +96,7 @@ func NewSector(cx int, cy int, radius float64, labelRadius float64, value float6
 	s.series = series
 	s.color = color
 	s.showLabel = series.Label.Show
-	s.label = NewPieLabelFormatter([]string{label}, series.Label.Formatter)(0, s.value, s.percent)
+	s.label = labelFormatPie([]string{label}, series.Label.Formatter, 0, s.value, s.percent)
 	return s
 }
 
@@ -177,7 +177,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				color = theme.GetSeriesColor(1)
 			}
 		}
-		s := NewSector(cx, cy, radius, labelRadius, v, currentValue, total, labelLineWidth, seriesNames[index], series, color)
+		s := newSector(cx, cy, radius, labelRadius, v, currentValue, total, labelLineWidth, seriesNames[index], series, color)
 		switch quadrant := s.quadrant; quadrant {
 		case 1:
 			quadrant1 = append([]sector{s}, quadrant1...)

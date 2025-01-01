@@ -47,7 +47,7 @@ type ChartOption struct {
 	BarWidth int
 	// BarHeight is the height of the bars for horizontal bar charts.
 	BarHeight int
-	// Children are child charts to render together.
+	// Children are Child charts to render together.
 	Children []ChartOption
 	parent   *Painter
 	// ValueFormatter to format numeric values into labels.
@@ -57,18 +57,18 @@ type ChartOption struct {
 // OptionFunc option function
 type OptionFunc func(opt *ChartOption)
 
-// SVGOutputOption set svg type of chart's output.
-func SVGOutputOption() OptionFunc {
-	return OutputFormatOptionFunc(ChartOutputSVG)
+// SVGOutputOptionFunc set svg type of chart's output.
+func SVGOutputOptionFunc() OptionFunc {
+	return outputFormatOptionFunc(ChartOutputSVG)
 }
 
-// PNGOutputOption set png type of chart's output.
-func PNGOutputOption() OptionFunc {
-	return OutputFormatOptionFunc(ChartOutputPNG)
+// PNGOutputOptionFunc set png type of chart's output.
+func PNGOutputOptionFunc() OptionFunc {
+	return outputFormatOptionFunc(ChartOutputPNG)
 }
 
-// OutputFormatOptionFunc set type of chart's output.
-func OutputFormatOptionFunc(t string) OptionFunc {
+// outputFormatOptionFunc set type of chart's output.
+func outputFormatOptionFunc(t string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.OutputFormat = t
 	}
@@ -162,16 +162,10 @@ func YAxisDataOptionFunc(data []string) OptionFunc {
 	}
 }
 
-// WidthOptionFunc set width of chart
-func WidthOptionFunc(width int) OptionFunc {
+// DimensionsOptionFunc sets the width and height dimensions of the chart.
+func DimensionsOptionFunc(width, height int) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Width = width
-	}
-}
-
-// HeightOptionFunc set height of chart
-func HeightOptionFunc(height int) OptionFunc {
-	return func(opt *ChartOption) {
 		opt.Height = height
 	}
 }
@@ -183,14 +177,7 @@ func PaddingOptionFunc(padding Box) OptionFunc {
 	}
 }
 
-// BoxOptionFunc set box of chart
-func BoxOptionFunc(box Box) OptionFunc {
-	return func(opt *ChartOption) {
-		opt.Box = box
-	}
-}
-
-// PieSeriesShowLabel set pie series show label
+// PieSeriesShowLabel set pie series show label.
 func PieSeriesShowLabel() OptionFunc {
 	return func(opt *ChartOption) {
 		for index := range opt.SeriesList {
@@ -199,7 +186,7 @@ func PieSeriesShowLabel() OptionFunc {
 	}
 }
 
-// ChildOptionFunc add child chart
+// ChildOptionFunc adds a Child chart on top of the current one. Use Padding and Box for positioning.
 func ChildOptionFunc(child ...ChartOption) OptionFunc {
 	return func(opt *ChartOption) {
 		if opt.Children == nil {

@@ -31,7 +31,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "x-axis_bottom",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:          dayLabels,
 					SplitLineShow: true,
 				}).Render()
@@ -42,7 +42,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "x-axis_bottom_left",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:        dayLabels,
 					BoundaryGap: False(),
 				}).Render()
@@ -53,7 +53,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "y-axis_left",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:     dayLabels,
 					Position: PositionLeft,
 				}).Render()
@@ -64,7 +64,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "y-axis_center",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:          dayLabels,
 					Position:      PositionLeft,
 					BoundaryGap:   False(),
@@ -77,7 +77,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "y-axis_right",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:          dayLabels,
 					Position:      PositionRight,
 					BoundaryGap:   False(),
@@ -90,7 +90,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "top",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:      dayLabels,
 					Formatter: "{value} --",
 					Position:  PositionTop,
@@ -102,7 +102,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "reduced_label_count",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:                 letterLabels,
 					SplitLineShow:        false,
 					LabelCountAdjustment: -1,
@@ -114,7 +114,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "custom_unit",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:          letterLabels,
 					SplitLineShow: false,
 					Unit:          10,
@@ -126,7 +126,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "custom_font",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data: letterLabels,
 					FontStyle: FontStyle{
 						FontSize:  40.0,
@@ -140,7 +140,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "boundary_gap_disable",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:        letterLabels,
 					BoundaryGap: False(),
 				}).Render()
@@ -151,7 +151,7 @@ func TestAxis(t *testing.T) {
 		{
 			name: "boundary_gap_enable",
 			render: func(p *Painter) ([]byte, error) {
-				_, _ = NewAxisPainter(p, AxisOption{
+				_, _ = newAxisPainter(p, axisOption{
 					Data:        letterLabels,
 					BoundaryGap: True(),
 				}).Render()
