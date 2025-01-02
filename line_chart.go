@@ -43,6 +43,10 @@ type LineChartOption struct {
 	SymbolShow *bool
 	// StrokeWidth is the width of the rendered line.
 	StrokeWidth float64
+	// StrokeSmoothingTension should be between 0 and 1. At 0 perfectly straight lines will be used with 1 providing
+	// smoother lines. Because the tension smooths out the line, the line will no longer hit the data points exactly.
+	// The more variable the points, and the higher the tension, the more the line will be moved from the points.
+	StrokeSmoothingTension float64
 	// FillArea set this to true to fill the area below the line.
 	FillArea bool
 	// FillOpacity is the opacity (alpha) of the area fill.
@@ -58,7 +62,10 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	opt := l.opt
 	seriesPainter := result.seriesPainter
 
-	boundaryGap := !flagIs(false, opt.XAxis.BoundaryGap)
+	boundaryGap := !opt.FillArea // boundary gap default enabled unless fill area is set
+	if opt.XAxis.BoundaryGap != nil {
+		boundaryGap = *opt.XAxis.BoundaryGap
+	}
 	xDivideCount := len(opt.XAxis.Data)
 	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= boundaryGapDefaultThreshold {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment.
@@ -95,6 +102,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		}
 	}
 	showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
+	if opt.StrokeSmoothingTension > 0 {
+		showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
+	}
 	if opt.SymbolShow != nil {
 		showSymbol = *opt.SymbolShow
 	}
@@ -161,12 +171,20 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			seriesPainter.SetDrawingStyle(chartdraw.Style{
 				FillColor: seriesColor.WithAlpha(opacity),
 			})
-			seriesPainter.FillArea(areaPoints)
+			if opt.StrokeSmoothingTension > 0 {
+				seriesPainter.smoothFillChartArea(areaPoints, opt.StrokeSmoothingTension)
+			} else {
+				seriesPainter.FillArea(areaPoints)
+			}
 		}
 		seriesPainter.SetDrawingStyle(drawingStyle)
 
 		// draw line
-		seriesPainter.LineStroke(points)
+		if opt.StrokeSmoothingTension > 0 {
+			seriesPainter.smoothLineStroke(points, opt.StrokeSmoothingTension)
+		} else {
+			seriesPainter.LineStroke(points)
+		}
 
 		// draw dots
 		if opt.Theme.IsDark() {
@@ -207,6 +225,11 @@ func (l *lineChart) Render() (Box, error) {
 	opt := l.opt
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.theme)
+	}
+	// boundary gap default must be set here as it's used by the x-axis as well
+	if opt.XAxis.BoundaryGap == nil {
+		boundaryGap := !opt.FillArea // boundary gap default enabled unless fill area is set
+		l.opt.XAxis.BoundaryGap = &boundaryGap
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{

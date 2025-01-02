@@ -437,30 +437,100 @@ func (p *Painter) MeasureTextMaxWidthHeight(textList []string) (int, int) {
 }
 
 func (p *Painter) LineStroke(points []Point) *Painter {
-	shouldMoveTo := false
-	for index, point := range points {
-		x := point.X
-		y := point.Y
-		if y == math.MaxInt32 {
+	var valid []Point
+	for _, pt := range points {
+		if pt.Y == math.MaxInt32 {
+			// If we encounter a break, draw the accumulated segment
+			p.drawStraightPath(valid, true)
 			p.Stroke()
-			shouldMoveTo = true
+			valid = valid[:0] // reset
 			continue
 		}
-		if shouldMoveTo || index == 0 {
-			p.MoveTo(x, y)
-			shouldMoveTo = false
-		} else {
-			p.LineTo(x, y)
-		}
+		valid = append(valid, pt)
 	}
-	p.Stroke()
-	return p
+
+	// Draw the last segment if there is one
+	p.drawStraightPath(valid, true)
+	return p.Stroke()
 }
 
+func (p *Painter) drawStraightPath(points []Point, dotForSinglePoint bool) {
+	pointCount := len(points)
+	if pointCount == 0 {
+		return
+	} else if pointCount == 1 {
+		if dotForSinglePoint {
+			p.Dots(points)
+		}
+	}
+	p.MoveTo(points[0].X, points[0].Y)
+	for i := 1; i < pointCount; i++ {
+		p.LineTo(points[i].X, points[i].Y)
+	}
+}
+
+// smoothLineStroke draws a smooth curve through the given points using Quadratic Bézier segments and a
+// `tension` parameter in [0..1] with 0 providing straight lines between midpoints and 1 providing a smoother line.
+// Because the tension smooths out the line, the line will no longer hit the provided points exactly. The more variable
+// the points, and the higher the tension, the more the line will be
+func (p *Painter) smoothLineStroke(points []Point, tension float64) *Painter {
+	if tension <= 0 {
+		return p.LineStroke(points)
+	} else if tension > 1 {
+		tension = 1
+	}
+
+	var valid []Point // Slice to hold valid points between breaks
+	for _, pt := range points {
+		if pt.Y == math.MaxInt32 {
+			// When a line break is found, draw the curve for the accumulated valid points if any
+			p.drawSmoothCurve(valid, tension, true)
+			p.Stroke()
+			valid = valid[:0] // reset
+			continue
+		}
+
+		valid = append(valid, pt)
+	}
+	// draw any remaining points collected
+	p.drawSmoothCurve(valid, tension, true)
+	return p.Stroke()
+}
+
+// drawSmoothCurve handles the actual path drawing (MoveTo/LineTo/QuadCurveTo)
+// but does NOT call Stroke() or Fill(). This allows us to reuse this path
+// logic for either smoothLineStroke or smoothFillArea.
+func (p *Painter) drawSmoothCurve(points []Point, tension float64, dotForSinglePoint bool) {
+	if len(points) < 3 { // Not enough points to form a curve, draw a line
+		p.drawStraightPath(points, dotForSinglePoint)
+		return
+	}
+
+	p.MoveTo(points[0].X, points[0].Y) // Start from the first valid point
+
+	// Handle each segment between points with quadratic Bézier curves
+	for i := 1; i < len(points)-1; i++ {
+		x1, y1 := points[i].X, points[i].Y
+		x2, y2 := points[i+1].X, points[i+1].Y
+
+		mx := float64(x1+x2) / 2.0
+		my := float64(y1+y2) / 2.0
+
+		cx := float64(x1) + tension*(mx-float64(x1))
+		cy := float64(y1) + tension*(my-float64(y1))
+
+		p.QuadCurveTo(x1, y1, int(cx), int(cy))
+	}
+
+	// Connect the second-to-last point to the last point
+	n := len(points)
+	p.QuadCurveTo(points[n-2].X, points[n-2].Y, points[n-1].X, points[n-1].Y)
+}
+
+// SmoothLineStroke is Deprecated. This implementation produced sharp joints at the point, and will be removed in v0.4.0.
 func (p *Painter) SmoothLineStroke(points []Point) *Painter {
 	prevX := 0
 	prevY := 0
-	// TODO - generate smooth polylines
 	for index, point := range points {
 		x := point.X
 		y := point.Y
@@ -531,17 +601,90 @@ func (p *Painter) Polygon(center Point, radius float64, sides int) *Painter {
 	return p
 }
 
+// FillArea draws a filled polygon through the given points, skipping "null" (MaxInt32) break values (filling the area
+// flat between them).
 func (p *Painter) FillArea(points []Point) *Painter {
-	var x, y int
-	for index, point := range points {
-		x = point.X
-		y = point.Y
-		if index == 0 {
-			p.MoveTo(x, y)
-		} else {
-			p.LineTo(x, y)
-		}
+	if len(points) == 0 {
+		return p
 	}
+
+	var valid []Point
+	for _, pt := range points {
+		if pt.Y == math.MaxInt32 {
+			// If we encounter a break, fill the accumulated segment
+			p.drawStraightPath(valid, false)
+			p.Fill()
+			valid = valid[:0] // reset
+			continue
+		}
+		valid = append(valid, pt)
+	}
+
+	// Fill the last segment if there is one
+	p.drawStraightPath(valid, false)
+	p.Fill()
+
+	return p
+}
+
+// smoothFillArea draws a smooth curve for the "top" portion of points but uses straight lines for the bottom corners,
+// producing a fill with sharp corners.
+func (p *Painter) smoothFillChartArea(points []Point, tension float64) *Painter {
+	if tension <= 0 {
+		return p.FillArea(points)
+	} else if tension > 1 {
+		tension = 1
+	}
+
+	// Typically, areaPoints has the shape:
+	//   [ top data points... ] + [ bottom-right corner, bottom-left corner, first top point ]
+	// We'll separate them:
+	if len(points) < 3 {
+		// Not enough to separate top from bottom
+		return p.FillArea(points)
+	}
+
+	// The final 3 points are the corners + repeated first point
+	top := points[:len(points)-3]
+	bottom := points[len(points)-3:] // [ corner1, corner2, firstTopAgain ]
+
+	// If top portion is empty or 1 point, just fill straight
+	if len(top) < 2 {
+		return p.FillArea(points)
+	}
+
+	// Build the smooth path for the top portion
+	var currentSegment []Point
+	firstPointSet := false
+	for _, pt := range top {
+		if pt.Y == math.MaxInt32 {
+			// If we encounter a break, fill the accumulated segment
+			if len(currentSegment) > 0 {
+				p.drawSmoothCurve(currentSegment, tension, false)
+				firstPointSet = true
+				currentSegment = currentSegment[:0]
+			}
+			continue
+		}
+		currentSegment = append(currentSegment, pt)
+	}
+
+	// Draw the remaining top segment
+	if len(currentSegment) > 0 {
+		p.drawSmoothCurve(currentSegment, tension, false)
+		firstPointSet = true
+	}
+
+	if !firstPointSet {
+		return p.FillArea(points) // No actual top segment was drawn, fallback to straight fill
+	}
+
+	// Add sharp lines to close the shape at the bottom
+	// The path is currently at the last top point we drew. Now we need to draw to corner1 -> corner2 -> firstTopAgain
+	for i := 0; i < len(bottom); i++ {
+		p.LineTo(bottom[i].X, bottom[i].Y)
+	}
+
 	p.Fill()
 	return p
 }
