@@ -204,8 +204,8 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			StrokeColor: s.color,
 			FillColor:   s.color,
 		})
-		seriesPainter.MoveTo(s.cx, s.cy)
-		seriesPainter.ArcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta).LineTo(s.cx, s.cy).Close().FillStroke()
+		seriesPainter.moveTo(s.cx, s.cy)
+		seriesPainter.arcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta).lineTo(s.cx, s.cy).close().fillStroke()
 		if !s.showLabel {
 			continue
 		}
@@ -235,11 +235,9 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		if prevY < minY {
 			minY = prevY
 		}
-		seriesPainter.MoveTo(s.lineStartX, s.lineStartY)
-		seriesPainter.LineTo(s.lineBranchX, s.lineBranchY)
-		seriesPainter.MoveTo(s.lineBranchX, s.lineBranchY)
-		seriesPainter.LineTo(s.lineEndX, s.lineEndY)
-		seriesPainter.Stroke()
+		seriesPainter.Line(s.lineStartX, s.lineStartY, s.lineBranchX, s.lineBranchY)
+		seriesPainter.Line(s.lineBranchX, s.lineBranchY, s.lineEndX, s.lineEndY)
+		seriesPainter.stroke()
 		textStyle := FontStyle{
 			FontColor: theme.GetTextColor(),
 			FontSize:  labelFontSize,

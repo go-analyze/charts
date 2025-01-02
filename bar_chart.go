@@ -115,7 +115,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				FillColor: fillColor,
 			})
 			if flagIs(true, opt.RoundedBarCaps) {
-				seriesPainter.RoundedRect(Box{
+				seriesPainter.roundedRect(Box{
 					Top:    top,
 					Left:   x,
 					Right:  x + barWidth,
@@ -123,7 +123,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 					IsSet:  true,
 				}, barWidth, true, false)
 			} else {
-				seriesPainter.Rect(Box{
+				seriesPainter.filledRect(Box{
 					Top:    top,
 					Left:   x,
 					Right:  x + barWidth,

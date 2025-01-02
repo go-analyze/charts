@@ -107,11 +107,11 @@ func (a *axisPainter) Render() (Box, error) {
 	isTextRotation := opt.TextRotation != 0
 
 	if isTextRotation {
-		top.SetTextRotation(opt.TextRotation)
+		top.setTextRotation(opt.TextRotation)
 	}
-	textMaxWidth, textMaxHeight := top.MeasureTextMaxWidthHeight(opt.Data)
+	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Data)
 	if isTextRotation {
-		top.ClearTextRotation()
+		top.clearTextRotation()
 	}
 
 	width := 0
@@ -221,7 +221,7 @@ func (a *axisPainter) Render() (Box, error) {
 	} else {
 		// there is always one more tick than data sample, and if we are centering labels we use that extra tick to
 		// center the label against, if not centering then we need one less tick spacing
-		// passing the tickSpaces reduces the need to copy the logic from painter.go:MultiText
+		// passing the tickSpaces reduces the need to copy the logic from painter.go:multiText
 		tickSpaces--
 	}
 
@@ -230,13 +230,13 @@ func (a *axisPainter) Render() (Box, error) {
 			Top:   ticksPaddingTop,
 			Left:  ticksPaddingLeft,
 			IsSet: true,
-		})).Ticks(TicksOption{
-			LabelCount: labelCount,
-			TickCount:  tickCount,
-			TickSpaces: tickSpaces,
-			Length:     tickLength,
-			Vertical:   isVertical,
-			First:      opt.DataStartIndex,
+		})).ticks(ticksOption{
+			labelCount: labelCount,
+			tickCount:  tickCount,
+			tickSpaces: tickSpaces,
+			length:     tickLength,
+			vertical:   isVertical,
+			firstIndex: opt.DataStartIndex,
 		})
 		p.LineStroke([]Point{
 			{X: x0, Y: y0},
@@ -249,17 +249,17 @@ func (a *axisPainter) Render() (Box, error) {
 		Top:   labelPaddingTop,
 		Right: labelPaddingRight,
 		IsSet: true,
-	})).MultiText(MultiTextOption{
-		First:          opt.DataStartIndex,
-		Align:          textAlign,
-		TextList:       opt.Data,
-		Vertical:       isVertical,
-		LabelCount:     labelCount,
-		TickCount:      tickCount,
-		LabelSkipCount: opt.LabelSkipCount,
-		CenterLabels:   centerLabels,
-		TextRotation:   opt.TextRotation,
-		Offset:         opt.LabelOffset,
+	})).multiText(multiTextOption{
+		firstIndex:     opt.DataStartIndex,
+		align:          textAlign,
+		textList:       opt.Data,
+		vertical:       isVertical,
+		labelCount:     labelCount,
+		tickCount:      tickCount,
+		labelSkipCount: opt.LabelSkipCount,
+		centerLabels:   centerLabels,
+		textRotation:   opt.TextRotation,
+		offset:         opt.LabelOffset,
 	})
 
 	if opt.SplitLineShow { // show auxiliary lines
