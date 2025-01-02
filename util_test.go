@@ -137,7 +137,7 @@ func TestMeasureTextMaxWidthHeight(t *testing.T) {
 	style := FontStyle{
 		FontSize: 10,
 	}
-	p.SetStyle(chartdraw.Style{FontStyle: style})
+	p.setStyle(chartdraw.Style{FontStyle: style})
 
 	maxWidth, maxHeight := measureTextMaxWidthHeight([]string{
 		"Mon",

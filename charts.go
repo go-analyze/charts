@@ -104,7 +104,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 
 	if !opt.Padding.IsZero() {
-		p = p.Child(PainterPaddingOption(opt.Padding))
+		p = p.child(PainterPaddingOption(opt.Padding))
 	}
 
 	const legendTitlePadding = 15
@@ -120,7 +120,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			legendTopSpacing = legendHeight + legendTitlePadding
 		} else {
 			// horizontal legend at the bottom, raise the chart above it
-			p = p.Child(PainterPaddingOption(Box{
+			p = p.child(PainterPaddingOption(Box{
 				Bottom: legendHeight + legendTitlePadding,
 				IsSet:  true,
 			}))
@@ -141,13 +141,13 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			top = legendTopSpacing // the legend may still need space on the top, set to whatever the legend requested
 		}
 
-		p = p.Child(PainterPaddingOption(Box{
+		p = p.child(PainterPaddingOption(Box{
 			Top:    top,
 			Bottom: bottom,
 			IsSet:  true,
 		}))
 	} else if legendTopSpacing > 0 { // apply chart spacing below legend
-		p = p.Child(PainterPaddingOption(Box{
+		p = p.child(PainterPaddingOption(Box{
 			Top:   legendTopSpacing,
 			IsSet: true,
 		}))
@@ -252,7 +252,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			opt.XAxis.isValueAxis = true
 		}
 		reverseStringSlice(yAxisOption.Data)
-		child := p.Child(PainterPaddingOption(Box{
+		child := p.child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
 			Right: rangeWidthRight,
 			IsSet: true,
@@ -272,7 +272,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 	}
 
-	xAxis := newBottomXAxis(p.Child(PainterPaddingOption(Box{
+	xAxis := newBottomXAxis(p.child(PainterPaddingOption(Box{
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
 		IsSet: true,
@@ -281,7 +281,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		return nil, err
 	}
 
-	result.seriesPainter = p.Child(PainterPaddingOption(Box{
+	result.seriesPainter = p.child(PainterPaddingOption(Box{
 		Left:   rangeWidthLeft,
 		Right:  rangeWidthRight,
 		Bottom: defaultXAxisHeight,
@@ -325,7 +325,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		p.valueFormatter = opt.ValueFormatter
 	}
 	if !opt.Box.IsZero() {
-		p = p.Child(PainterBoxOption(opt.Box))
+		p = p.child(PainterBoxOption(opt.Box))
 	}
 	if !isChild {
 		p.SetBackground(p.Width(), p.Height(), opt.Theme.GetBackgroundColor())

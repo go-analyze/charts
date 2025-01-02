@@ -63,7 +63,7 @@ func (g *gridPainter) Render() (Box, error) {
 		StrokeWidth: strokeWidth,
 		StrokeColor: opt.StrokeColor,
 	})
-	g.p.Grid(GridOption{
+	g.p.grid(gridOption{
 		Columns:           opt.Columns,
 		ColumnSpans:       opt.ColumnSpans,
 		Rows:              opt.Rows,

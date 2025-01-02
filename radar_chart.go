@@ -116,9 +116,8 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 	}
 	points := getPolygonPoints(center, radius, sides)
 	for _, p := range points {
-		seriesPainter.MoveTo(center.X, center.Y)
-		seriesPainter.LineTo(p.X, p.Y)
-		seriesPainter.Stroke()
+		seriesPainter.Line(center.X, center.Y, p.X, p.Y)
+		seriesPainter.stroke()
 	}
 	seriesPainter.OverrideFontStyle(FontStyle{
 		FontColor: theme.GetTextColor(),
@@ -206,7 +205,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		})
 		for index, point := range linePoints {
 			seriesPainter.Circle(dotWith, point.X, point.Y)
-			seriesPainter.FillStroke()
+			seriesPainter.fillStroke()
 			if series.Label.Show && index < len(series.Data) {
 				value := humanize.FtoaWithDigits(series.Data[index].Value, 2)
 				b := seriesPainter.MeasureText(value)

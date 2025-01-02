@@ -72,7 +72,7 @@ func (o *seriesLabelPainter) Add(value LabelValue) {
 	p.OverrideDrawingStyle(chartdraw.Style{FontStyle: labelStyle})
 	rotated := value.Radians != 0
 	if rotated {
-		p.SetTextRotation(value.Radians)
+		p.setTextRotation(value.Radians)
 	}
 	textBox := p.MeasureText(text)
 	renderValue := labelRenderValue{
@@ -92,7 +92,7 @@ func (o *seriesLabelPainter) Add(value LabelValue) {
 	}
 	if rotated {
 		renderValue.X = value.X + textBox.Width()>>1 - 1
-		p.ClearTextRotation()
+		p.clearTextRotation()
 	} else if textBox.Width()%2 != 0 {
 		renderValue.X++
 	}

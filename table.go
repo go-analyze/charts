@@ -207,7 +207,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 				style.FillColor = tc.FillColor
 			}
 			cells[index] = tc
-			p.SetStyle(style)
+			p.setStyle(style)
 			x := values[index]
 			y := currentHeight + cellPadding.Top
 			width := values[index+1] - x
@@ -275,7 +275,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 	currentHeight := info.headerHeight
 	for index, h := range info.rowHeights {
 		color := opt.RowBackgroundColors[index%len(opt.RowBackgroundColors)]
-		child := p.Child(PainterPaddingOption(Box{
+		child := p.child(PainterPaddingOption(Box{
 			Top:   currentHeight,
 			IsSet: true,
 		}))
@@ -297,7 +297,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			for j, tc := range info.tableCells[i] {
 				if !tc.FillColor.IsZero() {
 					padding := opt.Padding
-					child := p.Child(PainterPaddingOption(Box{
+					child := p.child(PainterPaddingOption(Box{
 						Top:   top + padding.Top,
 						Left:  left + padding.Left,
 						IsSet: true,

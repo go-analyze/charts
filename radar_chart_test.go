@@ -69,7 +69,7 @@ func TestRadarChart(t *testing.T) {
 				p, err := NewPainter(painterOptions)
 				require.NoError(t, err)
 
-				validateRadarChartRender(t, p.Child(PainterPaddingOption(Box{
+				validateRadarChartRender(t, p.child(PainterPaddingOption(Box{
 					Left:   20,
 					Top:    20,
 					Right:  20,

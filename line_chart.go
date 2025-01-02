@@ -176,7 +176,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 
 		// draw line
 		if opt.StrokeSmoothingTension > 0 {
-			seriesPainter.smoothLineStroke(points, opt.StrokeSmoothingTension)
+			seriesPainter.SmoothLineStroke(points, opt.StrokeSmoothingTension)
 		} else {
 			seriesPainter.LineStroke(points)
 		}

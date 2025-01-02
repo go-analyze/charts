@@ -43,9 +43,9 @@ func TestPainter(t *testing.T) {
 		{
 			name: "moveTo_lineTo",
 			fn: func(p *Painter) {
-				p.MoveTo(1, 1)
-				p.LineTo(2, 2)
-				p.Stroke()
+				p.moveTo(1, 1)
+				p.lineTo(2, 2)
+				p.stroke()
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 6 11\nL 7 12\" style=\"stroke-width:0;stroke:none;fill:none\"/></svg>",
 		},
@@ -87,21 +87,21 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arc",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: drawing.ColorBlack,
 					FillColor:   drawing.ColorBlue,
 				})
-				p.ArcTo(100, 100, 100, 100, 0, math.Pi/2)
-				p.Close()
-				p.FillStroke()
+				p.arcTo(100, 100, 100, 100, 0, math.Pi/2)
+				p.close()
+				p.fillStroke()
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 205 110\nA 100 100 90.00 0 1 105 210\nZ\" style=\"stroke-width:1;stroke:rgba(0,0,0,1.0);fill:rgba(0,0,255,1.0)\"/></svg>",
 		},
 		{
 			name: "pin",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -113,7 +113,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arrow_left",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -125,7 +125,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "arrow_right",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
@@ -135,33 +135,33 @@ func TestPainter(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 19 35\nL 35 40\nL 19 45\nL 24 40\nL 19 35\" style=\"stroke-width:1;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/></svg>",
 		},
 		{
-			name: "arrow_top",
+			name: "arrow_up",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
 				})
-				p.ArrowTop(30, 30, 10, 16)
+				p.ArrowUp(30, 30, 10, 16)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 30 40\nL 35 24\nL 40 40\nL 35 35\nL 30 40\" style=\"stroke-width:1;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/></svg>",
 		},
 		{
-			name: "arrow_bottom",
+			name: "arrow_down",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:   Color{R: 84, G: 112, B: 198, A: 255},
 				})
-				p.ArrowBottom(30, 30, 10, 16)
+				p.ArrowDown(30, 30, 10, 16)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 30 24\nL 35 40\nL 40 24\nL 35 30\nL 30 24\" style=\"stroke-width:1;stroke:rgba(84,112,198,1.0);fill:rgba(84,112,198,1.0)\"/></svg>",
 		},
 		{
 			name: "mark_line",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth:     1,
 					StrokeColor:     Color{R: 84, G: 112, B: 198, A: 255},
 					FillColor:       Color{R: 84, G: 112, B: 198, A: 255},
@@ -174,7 +174,7 @@ func TestPainter(t *testing.T) {
 		{
 			name: "polygon",
 			fn: func(p *Painter) {
-				p.SetStyle(chartdraw.Style{
+				p.setStyle(chartdraw.Style{
 					StrokeWidth: 1,
 					StrokeColor: Color{R: 84, G: 112, B: 198, A: 255},
 				})
@@ -236,7 +236,7 @@ func TestRoundedRect(t *testing.T) {
 		{
 			name: "round_fully",
 			fn: func(p *Painter) {
-				p.RoundedRect(Box{
+				p.roundedRect(Box{
 					Left:   10,
 					Right:  30,
 					Bottom: 150,
@@ -248,7 +248,7 @@ func TestRoundedRect(t *testing.T) {
 		{
 			name: "square_top",
 			fn: func(p *Painter) {
-				p.RoundedRect(Box{
+				p.roundedRect(Box{
 					Left:   10,
 					Right:  30,
 					Bottom: 150,
@@ -260,7 +260,7 @@ func TestRoundedRect(t *testing.T) {
 		{
 			name: "square_bottom",
 			fn: func(p *Painter) {
-				p.RoundedRect(Box{
+				p.roundedRect(Box{
 					Left:   10,
 					Right:  30,
 					Bottom: 150,
@@ -306,7 +306,7 @@ func TestPainterTextFit(t *testing.T) {
 		FontColor: chartdraw.ColorBlack,
 		Font:      GetDefaultFont(),
 	}
-	p.SetStyle(chartdraw.Style{FontStyle: style})
+	p.setStyle(chartdraw.Style{FontStyle: style})
 	box := p.TextFit("Hello World!", 0, 20, 80)
 	assert.Equal(t, chartdraw.Box{Right: 45, Bottom: 35}, box)
 

@@ -90,7 +90,7 @@ func (l *legendPainter) Render() (Box, error) {
 	if padding.IsZero() {
 		padding.Top = 5
 	}
-	p := l.p.Child(PainterPaddingOption(padding))
+	p := l.p.child(PainterPaddingOption(padding))
 	p.SetFontStyle(fontStyle)
 
 	// calculate the width and height of the display
@@ -173,7 +173,7 @@ func (l *legendPainter) Render() (Box, error) {
 	var drawIcon func(top, left int) int
 	if opt.Icon == IconRect {
 		drawIcon = func(top, left int) int {
-			p.Rect(Box{
+			p.filledRect(Box{
 				Top:    top - legendHeight + 8,
 				Left:   left,
 				Right:  left + legendWidth,
@@ -184,7 +184,7 @@ func (l *legendPainter) Render() (Box, error) {
 		}
 	} else {
 		drawIcon = func(top, left int) int {
-			p.LegendLineDot(Box{
+			p.legendLineDot(Box{
 				Top:    top + 1,
 				Left:   left,
 				Right:  left + legendWidth,
