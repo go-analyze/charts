@@ -292,7 +292,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 		heights := []int{info.headerHeight}
 		heights = append(heights, info.rowHeights...)
 		// loop through all table cells to generate background color
-		for i, _ := range arr {
+		for i := range arr {
 			left := 0
 			for j, tc := range info.tableCells[i] {
 				if !tc.FillColor.IsZero() {
