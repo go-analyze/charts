@@ -9,22 +9,8 @@ import (
 
 func makeBasicRadarChartOption() RadarChartOption {
 	values := [][]float64{
-		{
-			4200,
-			3000,
-			20000,
-			35000,
-			50000,
-			18000,
-		},
-		{
-			5000,
-			14000,
-			28000,
-			26000,
-			42000,
-			21000,
-		},
+		{4200, 3000, 20000, 35000, 50000, 18000},
+		{5000, 14000, 28000, 26000, 42000, 21000},
 	}
 	return RadarChartOption{
 		SeriesList: NewSeriesListDataFromValues(values, ChartTypeRadar),
@@ -33,8 +19,7 @@ func makeBasicRadarChartOption() RadarChartOption {
 		},
 		Legend: LegendOption{
 			Data: []string{
-				"Allocated Budget",
-				"Actual Spending",
+				"Allocated Budget", "Actual Spending",
 			},
 		},
 		RadarIndicators: NewRadarIndicators([]string{
@@ -45,12 +30,7 @@ func makeBasicRadarChartOption() RadarChartOption {
 			"Development",
 			"Marketing",
 		}, []float64{
-			6500,
-			16000,
-			30000,
-			38000,
-			52000,
-			25000,
+			6500, 16000, 30000, 38000, 52000, 25000,
 		}),
 	}
 }

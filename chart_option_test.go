@@ -96,71 +96,21 @@ func TestLineRender(t *testing.T) {
 	t.Parallel()
 
 	values := [][]float64{
-		{
-			120,
-			132,
-			101,
-			134,
-			90,
-			230,
-			210,
-		},
-		{
-			220,
-			182,
-			191,
-			234,
-			290,
-			330,
-			310,
-		},
-		{
-			150,
-			232,
-			201,
-			154,
-			190,
-			330,
-			410,
-		},
-		{
-			320,
-			332,
-			301,
-			334,
-			390,
-			330,
-			320,
-		},
-		{
-			820,
-			932,
-			901,
-			934,
-			1290,
-			1330,
-			1320,
-		},
+		{120, 132, 101, 134, 90, 230, 210},
+		{220, 182, 191, 234, 290, 330, 310},
+		{150, 232, 201, 154, 190, 330, 410},
+		{320, 332, 301, 334, 390, 330, 320},
+		{820, 932, 901, 934, 1290, 1330, 1320},
 	}
 	p, err := LineRender(
 		values,
 		SVGOutputOption(),
 		TitleTextOptionFunc("Line"),
 		XAxisDataOptionFunc([]string{
-			"Mon",
-			"Tue",
-			"Wed",
-			"Thu",
-			"Fri",
-			"Sat",
-			"Sun",
+			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		LegendLabelsOptionFunc([]string{
-			"Email",
-			"Union Ads",
-			"Video Ads",
-			"Direct",
-			"Search Engine",
+			"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 		}),
 	)
 	require.NoError(t, err)
@@ -173,55 +123,17 @@ func TestBarRender(t *testing.T) {
 	t.Parallel()
 
 	values := [][]float64{
-		{
-			2.0,
-			4.9,
-			7.0,
-			23.2,
-			25.6,
-			76.7,
-			135.6,
-			162.2,
-			32.6,
-			20.0,
-			6.4,
-			3.3,
-		},
-		{
-			2.6,
-			5.9,
-			9.0,
-			26.4,
-			28.7,
-			70.7,
-			175.6,
-			182.2,
-			48.7,
-			18.8,
-			6.0,
-			2.3,
-		},
+		{2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3},
+		{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
 	}
 	p, err := BarRender(
 		values,
 		SVGOutputOption(),
 		XAxisDataOptionFunc([]string{
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
 		LegendLabelsOptionFunc([]string{
-			"Rainfall",
-			"Evaporation",
+			"Rainfall", "Evaporation",
 		}),
 		MarkLineOptionFunc(0, SeriesMarkDataTypeAverage),
 		MarkPointOptionFunc(0, SeriesMarkDataTypeMax, SeriesMarkDataTypeMin),
@@ -248,22 +160,8 @@ func TestHorizontalBarRender(t *testing.T) {
 	t.Parallel()
 
 	values := [][]float64{
-		{
-			18203,
-			23489,
-			29034,
-			104970,
-			131744,
-			630230,
-		},
-		{
-			19325,
-			23438,
-			31000,
-			121594,
-			134141,
-			681807,
-		},
+		{18203, 23489, 29034, 104970, 131744, 630230},
+		{19325, 23438, 31000, 121594, 134141, 681807},
 	}
 	p, err := HorizontalBarRender(
 		values,
@@ -276,16 +174,10 @@ func TestHorizontalBarRender(t *testing.T) {
 			Left:   20,
 		}),
 		LegendLabelsOptionFunc([]string{
-			"2011",
-			"2012",
+			"2011", "2012",
 		}),
 		YAxisDataOptionFunc([]string{
-			"Brazil",
-			"Indonesia",
-			"USA",
-			"India",
-			"China",
-			"World",
+			"Brazil", "Indonesia", "USA", "India", "China", "World",
 		}),
 	)
 	require.NoError(t, err)
@@ -297,13 +189,7 @@ func TestHorizontalBarRender(t *testing.T) {
 func TestPieRender(t *testing.T) {
 	t.Parallel()
 
-	values := []float64{
-		1048,
-		735,
-		580,
-		484,
-		300,
-	}
+	values := []float64{1048, 735, 580, 484, 300}
 	p, err := PieRender(
 		values,
 		SVGOutputOption(),
@@ -321,11 +207,7 @@ func TestPieRender(t *testing.T) {
 		LegendOptionFunc(LegendOption{
 			Vertical: true,
 			Data: []string{
-				"Search Engine",
-				"Direct",
-				"Email",
-				"Union Ads",
-				"Video Ads",
+				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 			},
 			Offset: OffsetLeft,
 		}),
@@ -341,30 +223,15 @@ func TestRadarRender(t *testing.T) {
 	t.Parallel()
 
 	values := [][]float64{
-		{
-			4200,
-			3000,
-			20000,
-			35000,
-			50000,
-			18000,
-		},
-		{
-			5000,
-			14000,
-			28000,
-			26000,
-			42000,
-			21000,
-		},
+		{4200, 3000, 20000, 35000, 50000, 18000},
+		{5000, 14000, 28000, 26000, 42000, 21000},
 	}
 	p, err := RadarRender(
 		values,
 		SVGOutputOption(),
 		TitleTextOptionFunc("Basic Radar Chart"),
 		LegendLabelsOptionFunc([]string{
-			"Allocated Budget",
-			"Actual Spending",
+			"Allocated Budget", "Actual Spending",
 		}),
 		RadarIndicatorOptionFunc([]string{
 			"Sales",
@@ -374,12 +241,7 @@ func TestRadarRender(t *testing.T) {
 			"Development",
 			"Marketing",
 		}, []float64{
-			6500,
-			16000,
-			30000,
-			38000,
-			52000,
-			25000,
+			6500, 16000, 30000, 38000, 52000, 25000,
 		}),
 	)
 	require.NoError(t, err)
@@ -392,22 +254,14 @@ func TestFunnelRender(t *testing.T) {
 	t.Parallel()
 
 	values := []float64{
-		100,
-		80,
-		60,
-		40,
-		20,
+		100, 80, 60, 40, 20,
 	}
 	p, err := FunnelRender(
 		values,
 		SVGOutputOption(),
 		TitleTextOptionFunc("Funnel"),
 		LegendLabelsOptionFunc([]string{
-			"Show",
-			"Click",
-			"Visit",
-			"Inquiry",
-			"Order",
+			"Show", "Click", "Visit", "Inquiry", "Order",
 		}),
 	)
 	require.NoError(t, err)
@@ -427,43 +281,25 @@ func TestChildRender(t *testing.T) {
 		XAxisDataOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
-		func(opt *ChartOption) {
-			opt.Children = []ChartOption{
+		ChildOptionFunc(ChartOption{
+			Box: chartdraw.NewBox(10, 200, 500, 200),
+			SeriesList: NewSeriesListDataFromValues([][]float64{
+				{70, 90, 110, 130},
+				{80, 100, 120, 140},
+			}, ChartTypeHorizontalBar),
+			Legend: LegendOption{
+				Data: []string{
+					"2011", "2012",
+				},
+			},
+			YAxis: []YAxisOption{
 				{
-					Box: chartdraw.NewBox(10, 200, 500, 200),
-					SeriesList: NewSeriesListDataFromValues([][]float64{
-						{
-							70,
-							90,
-							110,
-							130,
-						},
-						{
-							80,
-							100,
-							120,
-							140,
-						},
-					}, ChartTypeHorizontalBar),
-					Legend: LegendOption{
-						Data: []string{
-							"2011",
-							"2012",
-						},
-					},
-					YAxis: []YAxisOption{
-						{
-							Data: []string{
-								"USA",
-								"India",
-								"China",
-								"World",
-							},
-						},
+					Data: []string{
+						"USA", "India", "China", "World",
 					},
 				},
-			}
-		},
+			},
+		}),
 	)
 	require.NoError(t, err)
 	data, err := p.Bytes()

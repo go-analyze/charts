@@ -18,41 +18,21 @@ func makeBasicHorizontalBarChartOption() HorizontalBarChartOption {
 			Left:   10,
 		},
 		SeriesList: NewSeriesListDataFromValues([][]float64{
-			{
-				18203,
-				23489,
-				29034,
-				104970,
-				131744,
-				630230,
-			},
-			{
-				19325,
-				23438,
-				31000,
-				121594,
-				134141,
-				681807,
-			},
+			{18203, 23489, 29034, 104970, 131744, 630230},
+			{19325, 23438, 31000, 121594, 134141, 681807},
 		}, ChartTypeHorizontalBar),
 		Title: TitleOption{
 			Text: "World Population",
 		},
 		Legend: LegendOption{
 			Data: []string{
-				"2011",
-				"2012",
+				"2011", "2012",
 			},
 		},
 		YAxis: []YAxisOption{
 			{
 				Data: []string{
-					"Brazil",
-					"Indonesia",
-					"USA",
-					"India",
-					"China",
-					"World",
+					"Brazil", "Indonesia", "USA", "India", "China", "World",
 				},
 			},
 		},

@@ -10,19 +10,11 @@ import (
 func makeBasicFunnelChartOption() FunnelChartOption {
 	return FunnelChartOption{
 		SeriesList: NewFunnelSeriesList([]float64{
-			100,
-			80,
-			60,
-			40,
-			20,
+			100, 80, 60, 40, 20,
 		}),
 		Legend: LegendOption{
 			Data: []string{
-				"Show",
-				"Click",
-				"Visit",
-				"Inquiry",
-				"Order",
+				"Show", "Click", "Visit", "Inquiry", "Order",
 			},
 		},
 		Title: TitleOption{

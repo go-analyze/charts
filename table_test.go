@@ -18,11 +18,7 @@ func makeDefaultTableChartOptions() TableChartOption {
 			Bottom: 10,
 		},
 		Header: []string{
-			"Name",
-			"Age",
-			"Address",
-			"Tag",
-			"Action",
+			"Name", "Age", "Address", "Tag", "Action",
 		},
 		Data: [][]string{
 			{
