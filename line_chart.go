@@ -41,6 +41,7 @@ type LineChartOption struct {
 	Legend LegendOption
 	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
 	SymbolShow *bool
+	// TODO - rename to `LineStrokeWidth` to be more similar to ChartOptions?
 	// StrokeWidth is the width of the rendered line.
 	StrokeWidth float64
 	// StrokeSmoothingTension should be between 0 and 1. At 0 perfectly straight lines will be used with 1 providing

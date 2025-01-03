@@ -7,6 +7,7 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
+// TODO - reconsider struct for v0.4.0
 type SeriesData struct {
 	// Value is the retained value for the data.
 	Value float64
@@ -114,9 +115,6 @@ func (sl SeriesList) init() {
 		return // already initialized
 	}
 	for i := 0; i < len(sl); i++ {
-		if sl[i].Type == "" {
-			sl[i].Type = ChartTypeLine
-		}
 		sl[i].index = i
 	}
 }
@@ -124,7 +122,7 @@ func (sl SeriesList) init() {
 func (sl SeriesList) Filter(chartType string) SeriesList {
 	arr := make(SeriesList, 0)
 	for index, item := range sl {
-		if item.Type == chartType {
+		if item.Type == "" || item.Type == chartType {
 			arr = append(arr, sl[index])
 		}
 	}
@@ -187,6 +185,7 @@ func NewPieSeriesList(values []float64, opts ...PieSeriesOption) SeriesList {
 	return result
 }
 
+// TODO - lower case field names
 type seriesSummary struct {
 	// The index of max value
 	MaxIndex int

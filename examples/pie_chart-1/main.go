@@ -17,17 +17,13 @@ func writeFile(buf []byte) error {
 		return err
 	}
 
-	file := filepath.Join(tmpPath, "pie-chart.png")
+	file := filepath.Join(tmpPath, "pie-chart-1.png")
 	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
 	values := []float64{
-		1048,
-		735,
-		580,
-		484,
-		300,
+		1048, 735, 580, 484, 300,
 	}
 	p, err := charts.PieRender(
 		values,
@@ -50,11 +46,7 @@ func main() {
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{
-				"Search Engine",
-				"Direct",
-				"Email",
-				"Union Ads",
-				"Video Ads",
+				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 			},
 			Vertical: true,
 			Offset: charts.OffsetStr{

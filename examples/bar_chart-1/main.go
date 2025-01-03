@@ -17,61 +17,23 @@ func writeFile(buf []byte) error {
 		return err
 	}
 
-	file := filepath.Join(tmpPath, "bar-chart.png")
+	file := filepath.Join(tmpPath, "bar-chart-1.png")
 	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
 	values := [][]float64{
-		{
-			2.0,
-			4.9,
-			7.0,
-			23.2,
-			25.6,
-			76.7,
-			135.6,
-			162.2,
-			32.6,
-			20.0,
-			6.4,
-			3.3,
-		},
-		{
-			2.6,
-			5.9,
-			9.0,
-			26.4,
-			28.7,
-			70.7,
-			175.6,
-			182.2,
-			48.7,
-			18.8,
-			6.0,
-			2.3,
-		},
+		{2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3},
+		{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
 	}
 	p, err := charts.BarRender(
 		values,
 		charts.XAxisDataOptionFunc([]string{
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{
-				"Rainfall",
-				"Evaporation",
+				"Rainfall", "Evaporation",
 			},
 			Offset:       charts.OffsetRight,
 			OverlayChart: charts.True(),

@@ -211,6 +211,6 @@ func (b *barChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	seriesList := opt.SeriesList.Filter(ChartTypeLine)
+	seriesList := opt.SeriesList.Filter(ChartTypeBar)
 	return b.render(renderResult, seriesList)
 }

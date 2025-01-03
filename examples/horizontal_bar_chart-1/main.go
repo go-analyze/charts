@@ -17,30 +17,14 @@ func writeFile(buf []byte) error {
 		return err
 	}
 
-	file := filepath.Join(tmpPath, "horizontal-bar-chart.png")
+	file := filepath.Join(tmpPath, "horizontal-bar-chart-1.png")
 	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
 	values := [][]float64{
-		{
-			10,
-			30,
-			50,
-			70,
-			90,
-			110,
-			130,
-		},
-		{
-			20,
-			40,
-			60,
-			80,
-			100,
-			120,
-			140,
-		},
+		{10, 30, 50, 70, 90, 110, 130},
+		{20, 40, 60, 80, 100, 120, 140},
 	}
 	p, err := charts.HorizontalBarRender(
 		values,
@@ -52,17 +36,10 @@ func main() {
 			Left:   20,
 		}),
 		charts.LegendLabelsOptionFunc([]string{
-			"2011",
-			"2012",
+			"2011", "2012",
 		}),
 		charts.YAxisDataOptionFunc([]string{
-			"UN",
-			"Brazil",
-			"Indonesia",
-			"USA",
-			"India",
-			"China",
-			"World",
+			"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
 		}),
 	)
 	if err != nil {

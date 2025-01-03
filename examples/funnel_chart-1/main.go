@@ -17,31 +17,18 @@ func writeFile(buf []byte) error {
 		return err
 	}
 
-	file := filepath.Join(tmpPath, "funnel-chart.png")
+	file := filepath.Join(tmpPath, "funnel-chart-1.png")
 	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
-	values := []float64{
-		100,
-		80,
-		60,
-		40,
-		20,
-		10,
-		2,
-	}
+	values := []float64{100, 80, 60, 40, 20, 10, 2}
+
 	p, err := charts.FunnelRender(
 		values,
 		charts.TitleTextOptionFunc("Funnel"),
 		charts.LegendLabelsOptionFunc([]string{
-			"Show",
-			"Click",
-			"Visit",
-			"Inquiry",
-			"Order",
-			"Pay",
-			"Cancel",
+			"Show", "Click", "Visit", "Inquiry", "Order", "Pay", "Cancel",
 		}),
 		func(opt *charts.ChartOption) {
 			opt.Legend.Padding = charts.Box{Left: 100}

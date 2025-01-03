@@ -50,6 +50,7 @@ type ChartOption struct {
 	// Children are child charts to render together.
 	Children []ChartOption
 	parent   *Painter
+	// TODO - review how this is set on other Option structs
 	// ValueFormatter to format numeric values into labels.
 	ValueFormatter ValueFormatter
 }

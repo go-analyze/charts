@@ -2,7 +2,6 @@ package charts
 
 import (
 	"bytes"
-	"errors"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -137,14 +136,17 @@ func PainterWidthHeightOption(width, height int) PainterOption {
 	}
 }
 
+// TODO - try to remove the error return
 // NewPainter creates a painter
 func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
-	if opts.Width <= 0 || opts.Height <= 0 {
-		return nil, errors.New("width/height can not be nil")
+	if opts.Width <= 0 {
+		opts.Width = defaultChartWidth
 	}
-	font := opts.Font
-	if font == nil {
-		font = GetDefaultFont()
+	if opts.Height <= 0 {
+		opts.Height = defaultChartHeight
+	}
+	if opts.Font == nil {
+		opts.Font = GetDefaultFont()
 	}
 	fn := chartdraw.PNG
 	if opts.OutputFormat == ChartOutputSVG {
@@ -156,7 +158,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 	if err != nil {
 		return nil, err
 	}
-	r.SetFont(font)
+	r.SetFont(opts.Font)
 
 	p := &Painter{
 		render: r,
@@ -165,7 +167,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOption) (*Painter, error) {
 			Bottom: opts.Height,
 			IsSet:  true,
 		},
-		font:         font,
+		font:         opts.Font,
 		outputFormat: opts.OutputFormat,
 	}
 	p.setOptions(opt...)

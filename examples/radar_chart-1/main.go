@@ -17,28 +17,14 @@ func writeFile(buf []byte) error {
 		return err
 	}
 
-	file := filepath.Join(tmpPath, "radar-chart.png")
+	file := filepath.Join(tmpPath, "radar-chart-1.png")
 	return os.WriteFile(file, buf, 0600)
 }
 
 func main() {
 	values := [][]float64{
-		{
-			4200,
-			3000,
-			20000,
-			35000,
-			50000,
-			18000,
-		},
-		{
-			5000,
-			14000,
-			28000,
-			26000,
-			42000,
-			21000,
-		},
+		{4200, 3000, 20000, 35000, 50000, 18000},
+		{5000, 14000, 28000, 26000, 42000, 21000},
 	}
 	p, err := charts.RadarRender(
 		values,
@@ -50,8 +36,7 @@ func main() {
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{
-				"Allocated Budget",
-				"Actual Spending",
+				"Allocated Budget", "Actual Spending",
 			},
 			Offset: charts.OffsetRight,
 		}),
