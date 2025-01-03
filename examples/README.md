@@ -5,8 +5,6 @@ Examples are our primary method for demonstrating the starting point our use and
 ## Example List
 
 * [bar_chart-1](./bar_chart-1) - Bar chart with included mark points and mark lines.
-* [child_chart-1](./child_chart-1) - Combining two charts together in the same image.
-* [child_chart-2](./child_chart-2) - An alternative API for combining two charts together in the same image.
 * [chinese](./chinese) - Line chart with chinese characters that uses a custom font (must be downloaded by user, see comment in code).
 * [funnel_chart-1](./funnel_chart-1) - Basic funnel chart.
 * [horizontal_bar_chart-1](./horizontal_bar_chart-1) - Basic horizontal bar chart.
