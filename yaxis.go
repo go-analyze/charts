@@ -88,7 +88,7 @@ func (opt *YAxisOption) ToAxisOption(p *Painter) axisOption {
 
 // newLeftYAxis returns a left y-axis renderer.
 func newLeftYAxis(p *Painter, opt YAxisOption) *axisPainter {
-	p = p.child(PainterPaddingOption(Box{
+	p = p.Child(PainterPaddingOption(Box{
 		Bottom: defaultXAxisHeight,
 	}))
 	return newAxisPainter(p, opt.ToAxisOption(p))
@@ -96,7 +96,7 @@ func newLeftYAxis(p *Painter, opt YAxisOption) *axisPainter {
 
 // newRightYAxis returns a right y-axis renderer.
 func newRightYAxis(p *Painter, opt YAxisOption) *axisPainter {
-	p = p.child(PainterPaddingOption(Box{
+	p = p.Child(PainterPaddingOption(Box{
 		Bottom: defaultXAxisHeight,
 	}))
 	axisOpt := opt.ToAxisOption(p)

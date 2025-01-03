@@ -138,7 +138,7 @@ func (a *axisPainter) Render() (Box, error) {
 		padding.Top = top.Height() - defaultXAxisHeight
 	}
 
-	p := top.child(PainterPaddingOption(padding))
+	p := top.Child(PainterPaddingOption(padding))
 
 	x0 := 0
 	y0 := 0
@@ -228,7 +228,7 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 
 	if strokeWidth > 0 {
-		p.child(PainterPaddingOption(Box{
+		p.Child(PainterPaddingOption(Box{
 			Top:   ticksPaddingTop,
 			Left:  ticksPaddingLeft,
 			IsSet: true,
@@ -246,7 +246,7 @@ func (a *axisPainter) Render() (Box, error) {
 		})
 	}
 
-	p.child(PainterPaddingOption(Box{
+	p.Child(PainterPaddingOption(Box{
 		Left:  labelPaddingLeft,
 		Top:   labelPaddingTop,
 		Right: labelPaddingRight,

@@ -47,7 +47,7 @@ func TestMarkPoint(t *testing.T) {
 				Height:       400,
 			}, PainterThemeOption(GetTheme(ThemeLight)))
 			require.NoError(t, err)
-			data, err := tt.render(p.child(PainterPaddingOption(Box{
+			data, err := tt.render(p.Child(PainterPaddingOption(Box{
 				Left:   20,
 				Top:    20,
 				Right:  20,

@@ -90,7 +90,7 @@ func (l *legendPainter) Render() (Box, error) {
 	if padding.IsZero() {
 		padding.Top = 5
 	}
-	p := l.p.child(PainterPaddingOption(padding))
+	p := l.p.Child(PainterPaddingOption(padding))
 	p.SetFontStyle(fontStyle)
 
 	// calculate the width and height of the display

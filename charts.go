@@ -67,21 +67,21 @@ func (rh *renderHandler) Do() error {
 	return nil
 }
 
-type defaultRenderOption struct { // TODO - change names to be lower case for consistency
-	// Theme specifies the colors used for the chart.
-	Theme ColorPalette
-	// Padding specifies the padding of chart.
-	Padding Box
-	// SeriesList provides the data series.
-	SeriesList SeriesList
-	// XAxis are options for the x-axis.
-	XAxis XAxisOption
-	// YAxis are options for the y-axis (at most two).
-	YAxis []YAxisOption
-	// Title are options for rendering the title.
-	Title TitleOption
-	// Legend are options for the data legend.
-	Legend LegendOption
+type defaultRenderOption struct {
+	// theme specifies the colors used for the chart.
+	theme ColorPalette
+	// padding specifies the padding of chart.
+	padding Box
+	// seriesList provides the data series.
+	seriesList SeriesList
+	// xAxis are options for the x-axis.
+	xAxis XAxisOption
+	// yAxis are options for the y-axis (at most two).
+	yAxis []YAxisOption
+	// title are options for rendering the title.
+	title TitleOption
+	// legend are options for the data legend.
+	legend LegendOption
 	// backgroundIsFilled is true if the background is filled.
 	backgroundIsFilled bool
 	// axisReversed is true if the x y axis is reversed.
@@ -95,39 +95,39 @@ type defaultRenderResult struct {
 }
 
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
-	fillThemeDefaults(getPreferredTheme(opt.Theme), &opt.Title, &opt.Legend, &opt.XAxis)
+	fillThemeDefaults(getPreferredTheme(opt.theme), &opt.title, &opt.legend, &opt.xAxis)
 
-	seriesList := opt.SeriesList
+	seriesList := opt.seriesList
 	seriesList.init()
 	if !opt.backgroundIsFilled {
-		p.SetBackground(p.Width(), p.Height(), opt.Theme.GetBackgroundColor())
+		p.SetBackground(p.Width(), p.Height(), opt.theme.GetBackgroundColor())
 	}
 
-	if !opt.Padding.IsZero() {
-		p = p.child(PainterPaddingOption(opt.Padding))
+	if !opt.padding.IsZero() {
+		p = p.Child(PainterPaddingOption(opt.padding))
 	}
 
 	const legendTitlePadding = 15
 	legendTopSpacing := 0
-	legendResult, err := newLegendPainter(p, opt.Legend).Render()
+	legendResult, err := newLegendPainter(p, opt.legend).Render()
 	if err != nil {
 		return nil, err
 	}
-	if !legendResult.IsZero() && !flagIs(true, opt.Legend.Vertical) && !flagIs(true, opt.Legend.OverlayChart) {
+	if !legendResult.IsZero() && !flagIs(true, opt.legend.Vertical) && !flagIs(true, opt.legend.OverlayChart) {
 		legendHeight := legendResult.Height()
 		if legendResult.Bottom < p.Height()/2 {
 			// horizontal legend at the top, set the spacing based on the height
 			legendTopSpacing = legendHeight + legendTitlePadding
 		} else {
 			// horizontal legend at the bottom, raise the chart above it
-			p = p.child(PainterPaddingOption(Box{
+			p = p.Child(PainterPaddingOption(Box{
 				Bottom: legendHeight + legendTitlePadding,
 				IsSet:  true,
 			}))
 		}
 	}
 
-	titleBox, err := newTitlePainter(p, opt.Title).Render()
+	titleBox, err := newTitlePainter(p, opt.title).Render()
 	if err != nil {
 		return nil, err
 	}
@@ -141,13 +141,13 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			top = legendTopSpacing // the legend may still need space on the top, set to whatever the legend requested
 		}
 
-		p = p.child(PainterPaddingOption(Box{
+		p = p.Child(PainterPaddingOption(Box{
 			Top:    top,
 			Bottom: bottom,
 			IsSet:  true,
 		}))
 	} else if legendTopSpacing > 0 { // apply chart spacing below legend
-		p = p.child(PainterPaddingOption(Box{
+		p = p.Child(PainterPaddingOption(Box{
 			Top:   legendTopSpacing,
 			IsSet: true,
 		}))
@@ -158,7 +158,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 
 	axisIndexList := make([]int, 0)
-	for _, series := range opt.SeriesList {
+	for _, series := range opt.seriesList {
 		if containsInt(axisIndexList, series.YAxisIndex) {
 			continue
 		}
@@ -174,15 +174,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	// calculate the axis range
 	for _, index := range axisIndexList {
 		yAxisOption := YAxisOption{}
-		if len(opt.YAxis) > index {
-			yAxisOption = opt.YAxis[index]
+		if len(opt.yAxis) > index {
+			yAxisOption = opt.yAxis[index]
 		}
 		minPadRange, maxPadRange := 1.0, 1.0
 		if yAxisOption.RangeValuePaddingScale != nil {
 			minPadRange = *yAxisOption.RangeValuePaddingScale
 			maxPadRange = *yAxisOption.RangeValuePaddingScale
 		}
-		min, max := opt.SeriesList.GetMinMax(index)
+		min, max := opt.seriesList.GetMinMax(index)
 		decimalData := min != math.Floor(min) || (max-min) != math.Floor(max-min)
 		if yAxisOption.Min != nil && *yAxisOption.Min < min {
 			min = *yAxisOption.Min
@@ -238,7 +238,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		result.axisRanges[index] = r
 
 		if yAxisOption.Theme == nil {
-			yAxisOption.Theme = opt.Theme
+			yAxisOption.Theme = opt.theme
 		}
 		if !opt.axisReversed {
 			yAxisOption.Data = r.Values()
@@ -248,11 +248,11 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			r.divideCount = len(seriesList[0].Data)
 			result.axisRanges[index] = r
 			// since the x-axis is the value part, it's label is calculated and processed separately
-			opt.XAxis.Data = r.Values()
-			opt.XAxis.isValueAxis = true
+			opt.xAxis.Data = r.Values()
+			opt.xAxis.isValueAxis = true
 		}
 		reverseStringSlice(yAxisOption.Data)
-		child := p.child(PainterPaddingOption(Box{
+		child := p.Child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
 			Right: rangeWidthRight,
 			IsSet: true,
@@ -272,16 +272,16 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 	}
 
-	xAxis := newBottomXAxis(p.child(PainterPaddingOption(Box{
+	xAxis := newBottomXAxis(p.Child(PainterPaddingOption(Box{
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
 		IsSet: true,
-	})), opt.XAxis)
+	})), opt.xAxis)
 	if _, err := xAxis.Render(); err != nil {
 		return nil, err
 	}
 
-	result.seriesPainter = p.child(PainterPaddingOption(Box{
+	result.seriesPainter = p.Child(PainterPaddingOption(Box{
 		Left:   rangeWidthLeft,
 		Right:  rangeWidthRight,
 		Bottom: defaultXAxisHeight,
@@ -325,7 +325,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		p.valueFormatter = opt.ValueFormatter
 	}
 	if !opt.Box.IsZero() {
-		p = p.child(PainterBoxOption(opt.Box))
+		p = p.Child(PainterBoxOption(opt.Box))
 	}
 	if !isChild {
 		p.SetBackground(p.Width(), p.Height(), opt.Theme.GetBackgroundColor())
@@ -353,13 +353,13 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	axisReversed := len(horizontalBarSeriesList) != 0
 	renderOpt := defaultRenderOption{
-		Theme:        opt.Theme,
-		Padding:      opt.Padding,
-		SeriesList:   opt.SeriesList,
-		XAxis:        opt.XAxis,
-		YAxis:        opt.YAxis,
-		Title:        opt.Title,
-		Legend:       opt.Legend,
+		theme:        opt.Theme,
+		padding:      opt.Padding,
+		seriesList:   opt.SeriesList,
+		xAxis:        opt.XAxis,
+		yAxis:        opt.YAxis,
+		title:        opt.Title,
+		legend:       opt.Legend,
 		axisReversed: axisReversed,
 		// the background color has been set
 		backgroundIsFilled: true,
@@ -367,15 +367,15 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(pieSeriesList) != 0 ||
 		len(radarSeriesList) != 0 ||
 		len(funnelSeriesList) != 0 {
-		renderOpt.XAxis.Show = False()
-		renderOpt.YAxis = []YAxisOption{
+		renderOpt.xAxis.Show = False()
+		renderOpt.yAxis = []YAxisOption{
 			{
 				Show: False(),
 			},
 		}
 	}
 	if len(horizontalBarSeriesList) != 0 {
-		renderOpt.YAxis[0].Unit = 1
+		renderOpt.yAxis[0].Unit = 1
 	}
 
 	renderResult, err := defaultRender(p, renderOpt)
