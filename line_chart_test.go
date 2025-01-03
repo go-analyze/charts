@@ -11,51 +11,11 @@ import (
 
 func makeFullLineChartOption() LineChartOption {
 	values := [][]float64{
-		{
-			120,
-			132,
-			101,
-			134,
-			90,
-			230,
-			210,
-		},
-		{
-			220,
-			182,
-			191,
-			234,
-			290,
-			330,
-			310,
-		},
-		{
-			150,
-			232,
-			201,
-			154,
-			190,
-			330,
-			410,
-		},
-		{
-			320,
-			332,
-			301,
-			334,
-			390,
-			330,
-			320,
-		},
-		{
-			820,
-			932,
-			901,
-			934,
-			1290,
-			1330,
-			1320,
-		},
+		{120, 132, 101, 134, 90, 230, 210},
+		{220, 182, 191, 234, 290, 330, 310},
+		{150, 232, 201, 154, 190, 330, 410},
+		{320, 332, 301, 334, 390, 330, 320},
+		{820, 932, 901, 934, 1290, 1330, 1320},
 	}
 	return LineChartOption{
 		Title: TitleOption{
@@ -69,22 +29,12 @@ func makeFullLineChartOption() LineChartOption {
 		},
 		XAxis: XAxisOption{
 			Data: []string{
-				"Mon",
-				"Tue",
-				"Wed",
-				"Thu",
-				"Fri",
-				"Sat",
-				"Sun",
+				"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 			},
 		},
 		Legend: LegendOption{
 			Data: []string{
-				"Email",
-				"Union Ads",
-				"Video Ads",
-				"Direct",
-				"Search Engine",
+				"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 			},
 		},
 		SeriesList: NewSeriesListDataFromValues(values),
@@ -93,24 +43,8 @@ func makeFullLineChartOption() LineChartOption {
 
 func makeBasicLineChartOption() LineChartOption {
 	values := [][]float64{
-		{
-			120,
-			132,
-			101,
-			134,
-			90,
-			230,
-			210,
-		},
-		{
-			820,
-			932,
-			901,
-			934,
-			1290,
-			1330,
-			1320,
-		},
+		{120, 132, 101, 134, 90, 230, 210},
+		{820, 932, 901, 934, 1290, 1330, 1320},
 	}
 	return LineChartOption{
 		Title: TitleOption{
@@ -124,13 +58,7 @@ func makeBasicLineChartOption() LineChartOption {
 		},
 		XAxis: XAxisOption{
 			Data: []string{
-				"A",
-				"B",
-				"C",
-				"D",
-				"E",
-				"F",
-				"G",
+				"A", "B", "C", "D", "E", "F", "G",
 			},
 		},
 		Legend: LegendOption{
@@ -142,24 +70,8 @@ func makeBasicLineChartOption() LineChartOption {
 
 func makeMinimalLineChartOption() LineChartOption {
 	values := [][]float64{
-		{
-			120,
-			132,
-			101,
-			134,
-			90,
-			230,
-			210,
-		},
-		{
-			820,
-			932,
-			901,
-			934,
-			1290,
-			1330,
-			1320,
-		},
+		{120, 132, 101, 134, 90, 230, 210},
+		{820, 932, 901, 934, 1290, 1330, 1320},
 	}
 	return LineChartOption{
 		Padding: Box{
@@ -170,13 +82,7 @@ func makeMinimalLineChartOption() LineChartOption {
 		},
 		XAxis: XAxisOption{
 			Data: []string{
-				"1",
-				"2",
-				"3",
-				"4",
-				"5",
-				"6",
-				"7",
+				"1", "2", "3", "4", "5", "6", "7",
 			},
 			Show: False(),
 		},

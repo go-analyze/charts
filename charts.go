@@ -71,7 +71,7 @@ func (rh *renderHandler) Do() error {
 	return nil
 }
 
-type defaultRenderOption struct {
+type defaultRenderOption struct { // TODO - change names to be lower case for consistency
 	// Theme specifies the colors used for the chart.
 	Theme ColorPalette
 	// Padding specifies the padding of chart.

@@ -11,34 +11,8 @@ import (
 
 func makeBasicBarChartOption() BarChartOption {
 	seriesList := NewSeriesListDataFromValues([][]float64{
-		{
-			2.0,
-			4.9,
-			7.0,
-			23.2,
-			25.6,
-			76.7,
-			135.6,
-			162.2,
-			32.6,
-			20.0,
-			6.4,
-			3.3,
-		},
-		{
-			2.6,
-			5.9,
-			9.0,
-			26.4,
-			28.7,
-			70.7,
-			175.6,
-			182.2,
-			48.7,
-			18.8,
-			6.0,
-			2.3,
-		},
+		{2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3},
+		{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
 	})
 	for index := range seriesList {
 		seriesList[index].Label.Show = true
@@ -53,25 +27,13 @@ func makeBasicBarChartOption() BarChartOption {
 		SeriesList: seriesList,
 		XAxis: XAxisOption{
 			Data: []string{
-				"Jan",
-				"Feb",
-				"Mar",
-				"Apr",
-				"May",
-				"Jun",
-				"Jul",
-				"Aug",
-				"Sep",
-				"Oct",
-				"Nov",
-				"Dec",
+				"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 			},
 		},
 		YAxis: []YAxisOption{
 			{
 				Data: []string{
-					"Rainfall",
-					"Evaporation",
+					"Rainfall", "Evaporation",
 				},
 			},
 		},

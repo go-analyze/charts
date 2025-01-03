@@ -34,6 +34,7 @@ type PainterOptions struct {
 	Width int
 	// Height is the height of the draw painter.
 	Height int
+	// TODO - is this the best place for font configuration?
 	// Font is the font used for rendering text.
 	Font *truetype.Font
 }
