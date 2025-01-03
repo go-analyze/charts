@@ -34,7 +34,6 @@ func main() {
 	opt.SeriesList = charts.NewSeriesListDataFromValues(values, charts.ChartTypeLine)
 	opt.Title.Text = "Line"
 	opt.Title.FontStyle.FontSize = 16
-
 	opt.XAxis.Data = []string{
 		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 	}

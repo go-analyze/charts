@@ -85,8 +85,8 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	} else {
 		xValues = xDivideValues
 	}
-	markPointPainter := NewMarkPointPainter(seriesPainter)
-	markLinePainter := NewMarkLinePainter(seriesPainter)
+	markPointPainter := newMarkPointPainter(seriesPainter)
+	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []Renderer{
 		markPointPainter,
 		markLinePainter,
@@ -120,15 +120,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 
 		yRange := result.axisRanges[series.YAxisIndex]
 		points := make([]Point, 0)
-		var labelPainter *SeriesLabelPainter
+		var labelPainter *seriesLabelPainter
 		if series.Label.Show {
-			labelPainter = NewSeriesLabelPainter(SeriesLabelPainterParams{
-				P:           seriesPainter,
-				SeriesNames: seriesNames,
-				Label:       series.Label,
-				Theme:       opt.Theme,
-				Font:        opt.Font,
-			})
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
 		for i, item := range series.Data {
@@ -182,7 +176,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 
 		// draw line
 		if opt.StrokeSmoothingTension > 0 {
-			seriesPainter.smoothLineStroke(points, opt.StrokeSmoothingTension)
+			seriesPainter.SmoothLineStroke(points, opt.StrokeSmoothingTension)
 		} else {
 			seriesPainter.LineStroke(points)
 		}
@@ -234,13 +228,13 @@ func (l *lineChart) Render() (Box, error) {
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		Theme:              opt.Theme,
-		Padding:            opt.Padding,
-		SeriesList:         opt.SeriesList,
-		XAxis:              opt.XAxis,
-		YAxis:              opt.YAxis,
-		Title:              opt.Title,
-		Legend:             opt.Legend,
+		theme:              opt.Theme,
+		padding:            opt.Padding,
+		seriesList:         opt.SeriesList,
+		xAxis:              opt.XAxis,
+		yAxis:              opt.YAxis,
+		title:              opt.Title,
+		legend:             opt.Legend,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {

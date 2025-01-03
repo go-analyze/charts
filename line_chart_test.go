@@ -418,7 +418,7 @@ func TestLineChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() LineChartOption {
 				opt := makeBasicLineChartOption()
-				opt.Legend.Vertical = true
+				opt.Legend.Vertical = True()
 				opt.Legend.Offset = OffsetRight
 				return opt
 			},

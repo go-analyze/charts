@@ -25,7 +25,7 @@ type LabelValue struct {
 	Offset    OffsetInt
 }
 
-type SeriesLabelPainter struct {
+type seriesLabelPainter struct {
 	p           *Painter
 	seriesNames []string
 	label       *SeriesLabel
@@ -34,32 +34,25 @@ type SeriesLabelPainter struct {
 	values      []labelRenderValue
 }
 
-type SeriesLabelPainterParams struct {
-	P           *Painter
-	SeriesNames []string
-	Label       SeriesLabel
-	Theme       ColorPalette
-	Font        *truetype.Font
-}
-
-func NewSeriesLabelPainter(params SeriesLabelPainterParams) *SeriesLabelPainter {
-	return &SeriesLabelPainter{
-		p:           params.P,
-		seriesNames: params.SeriesNames,
-		label:       &params.Label,
-		theme:       params.Theme,
-		font:        params.Font,
+func newSeriesLabelPainter(p *Painter, seriesNames []string, label SeriesLabel,
+	theme ColorPalette, font *truetype.Font) *seriesLabelPainter {
+	return &seriesLabelPainter{
+		p:           p,
+		seriesNames: seriesNames,
+		label:       &label,
+		theme:       theme,
+		font:        font,
 		values:      make([]labelRenderValue, 0),
 	}
 }
 
-func (o *SeriesLabelPainter) Add(value LabelValue) {
+func (o *seriesLabelPainter) Add(value LabelValue) {
 	label := o.label
 	distance := label.Distance
 	if distance == 0 {
 		distance = 5
 	}
-	text := NewValueLabelFormatter(o.seriesNames, label.Formatter)(value.Index, value.Value, -1)
+	text := labelFormatValue(o.seriesNames, label.Formatter, value.Index, value.Value, -1)
 	labelStyle := FontStyle{
 		FontColor: o.theme.GetTextColor(),
 		FontSize:  labelFontSize,
@@ -79,7 +72,7 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 	p.OverrideDrawingStyle(chartdraw.Style{FontStyle: labelStyle})
 	rotated := value.Radians != 0
 	if rotated {
-		p.SetTextRotation(value.Radians)
+		p.setTextRotation(value.Radians)
 	}
 	textBox := p.MeasureText(text)
 	renderValue := labelRenderValue{
@@ -99,7 +92,7 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 	}
 	if rotated {
 		renderValue.X = value.X + textBox.Width()>>1 - 1
-		p.ClearTextRotation()
+		p.clearTextRotation()
 	} else if textBox.Width()%2 != 0 {
 		renderValue.X++
 	}
@@ -108,7 +101,7 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 	o.values = append(o.values, renderValue)
 }
 
-func (o *SeriesLabelPainter) Render() (Box, error) {
+func (o *seriesLabelPainter) Render() (Box, error) {
 	for _, item := range o.values {
 		o.p.OverrideFontStyle(item.FontStyle)
 		if item.Radians != 0 {

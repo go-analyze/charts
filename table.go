@@ -207,7 +207,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 				style.FillColor = tc.FillColor
 			}
 			cells[index] = tc
-			p.SetStyle(style)
+			p.setStyle(style)
 			x := values[index]
 			y := currentHeight + cellPadding.Top
 			width := values[index+1] - x

@@ -49,7 +49,7 @@ func main() {
 		Data: []string{
 			"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 		},
-		Vertical: true,
+		Vertical: charts.True(),
 		Offset: charts.OffsetStr{
 			Left: "80%",
 			Top:  charts.PositionBottom,

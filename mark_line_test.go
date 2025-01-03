@@ -18,7 +18,7 @@ func TestMarkLine(t *testing.T) {
 	}{
 		{
 			render: func(p *Painter) ([]byte, error) {
-				markLine := NewMarkLinePainter(p)
+				markLine := newMarkLinePainter(p)
 				series := NewSeriesFromValues([]float64{1, 2, 3})
 				series.MarkLine = NewMarkLine(
 					SeriesMarkDataTypeMax,
@@ -30,7 +30,7 @@ func TestMarkLine(t *testing.T) {
 					FontColor:   drawing.ColorBlack,
 					StrokeColor: drawing.ColorBlack,
 					Series:      series,
-					Range:       NewRange(p, p.Height(), 6, 0.0, 5.0, 0.0, 0.0),
+					Range:       newRange(p, p.Height(), 6, 0.0, 5.0, 0.0, 0.0),
 				})
 				if _, err := markLine.Render(); err != nil {
 					return nil, err
