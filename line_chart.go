@@ -228,13 +228,13 @@ func (l *lineChart) Render() (Box, error) {
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		Theme:              opt.Theme,
-		Padding:            opt.Padding,
-		SeriesList:         opt.SeriesList,
-		XAxis:              opt.XAxis,
-		YAxis:              opt.YAxis,
-		Title:              opt.Title,
-		Legend:             opt.Legend,
+		theme:              opt.Theme,
+		padding:            opt.Padding,
+		seriesList:         opt.SeriesList,
+		xAxis:              opt.XAxis,
+		yAxis:              opt.YAxis,
+		title:              opt.Title,
+		legend:             opt.Legend,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {

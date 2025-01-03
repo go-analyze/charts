@@ -225,19 +225,19 @@ func (r *radarChart) Render() (Box, error) {
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		Theme:      opt.Theme,
-		Padding:    opt.Padding,
-		SeriesList: opt.SeriesList,
-		XAxis: XAxisOption{
+		theme:      opt.Theme,
+		padding:    opt.Padding,
+		seriesList: opt.SeriesList,
+		xAxis: XAxisOption{
 			Show: False(),
 		},
-		YAxis: []YAxisOption{
+		yAxis: []YAxisOption{
 			{
 				Show: False(),
 			},
 		},
-		Title:              opt.Title,
-		Legend:             opt.Legend,
+		title:              opt.Title,
+		legend:             opt.Legend,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {
