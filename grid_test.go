@@ -59,7 +59,7 @@ func TestGrid(t *testing.T) {
 			require.NoError(t, err)
 			data, err := tt.render(p)
 			require.NoError(t, err)
-			assertEqualSVG(t, tt.result, string(data))
+			assertEqualSVG(t, tt.result, data)
 		})
 	}
 }

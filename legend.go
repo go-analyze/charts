@@ -27,7 +27,7 @@ type LegendOption struct {
 	Padding Box
 	// Offset allows you to specify the position of the legend component relative to the left and top side.
 	Offset OffsetStr
-	// Align is the legend marker and text alignment, it can be 'left' or 'right', default is 'left'.
+	// Align is the legend marker and text alignment, it can be 'left', 'right' or 'center', default is 'left'.
 	Align string
 	// Vertical can be set to true to set the orientation to be vertical.
 	Vertical bool
@@ -96,10 +96,10 @@ func (l *legendPainter) Render() (Box, error) {
 	measureList := make([]Box, len(opt.Data))
 	width := 0
 	height := 0
-	builtInSpacing := 20
-	textOffset := 2
-	legendWidth := 30
-	legendHeight := 20
+	const builtInSpacing = 20
+	const textOffset = 2
+	const legendWidth = 30
+	const legendHeight = 20
 	maxTextWidth := 0
 	itemMaxHeight := 0
 	for index, text := range opt.Data {
@@ -137,7 +137,7 @@ func (l *legendPainter) Render() (Box, error) {
 	case PositionRight:
 		left = p.Width() - width
 	case PositionCenter:
-		left = (p.Width() - width) >> 1
+		left = p.Width()>>1 - (width >> 1)
 	default:
 		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
 			return BoxZero, fmt.Errorf("error parsing legend position: %v", err)
@@ -213,7 +213,24 @@ func (l *legendPainter) Render() (Box, error) {
 				itemWidth = x0 + measureList[index].Width() + legendWidth
 			}
 			if itemWidth > p.Width() {
-				x0 = 0
+				newLineStart := startX
+				if opt.Align == AlignCenter {
+					// recalculate width and center based off remaining width
+					var remainingWidth int
+					for i2 := index; i2 < len(opt.Data); i2++ {
+						b := p.MeasureText(opt.Data[i2])
+						remainingWidth += b.Width()
+					}
+					remainingCount := len(opt.Data) - index
+					remainingWidth += remainingCount * legendWidth
+					remainingWidth += (remainingCount - 1) * (builtInSpacing + textOffset)
+
+					newLineStart = startX + ((p.Width() >> 1) - (remainingWidth >> 1))
+					if newLineStart < 0 {
+						newLineStart = 0
+					}
+				}
+				x0 = newLineStart
 				y += itemMaxHeight
 				y0 = y
 			}

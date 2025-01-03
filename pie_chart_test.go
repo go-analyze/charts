@@ -346,5 +346,5 @@ func validatePieChartRender(t *testing.T, p *Painter, opt PieChartOption, expect
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)
-	assertEqualSVG(t, expectedResult, string(data))
+	assertEqualSVG(t, expectedResult, data)
 }

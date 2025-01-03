@@ -148,5 +148,5 @@ func validateBarChartRender(t *testing.T, p *Painter, opt BarChartOption, expect
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)
-	assertEqualSVG(t, expectedResult, string(data))
+	assertEqualSVG(t, expectedResult, data)
 }

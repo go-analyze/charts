@@ -55,7 +55,7 @@ func TestMarkLine(t *testing.T) {
 				Bottom: 20,
 			})))
 			require.NoError(t, err)
-			assertEqualSVG(t, tt.result, string(data))
+			assertEqualSVG(t, tt.result, data)
 		})
 	}
 }

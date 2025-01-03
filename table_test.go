@@ -151,5 +151,5 @@ func validateTableChartRender(t *testing.T, p *Painter, opt TableChartOption,
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)
-	assertEqualSVG(t, expectedResult, string(data))
+	assertEqualSVG(t, expectedResult, data)
 }
