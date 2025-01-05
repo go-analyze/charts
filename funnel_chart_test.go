@@ -9,7 +9,7 @@ import (
 
 func makeBasicFunnelChartOption() FunnelChartOption {
 	return FunnelChartOption{
-		SeriesList: NewFunnelSeriesList([]float64{
+		SeriesList: NewSeriesListFunnel([]float64{
 			100, 80, 60, 40, 20,
 		}),
 		Legend: LegendOption{

@@ -8,24 +8,25 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-// NewSeriesListDataFromValues returns a series list
-func NewSeriesListDataFromValues(values [][]float64, chartType ...string) SeriesList {
+// newSeriesListFromValues returns a series list for the given values and chart type.
+func newSeriesListFromValues(values [][]float64, chartType string, label SeriesLabel, names []string,
+	radius string, markPoint SeriesMarkPoint, markLine SeriesMarkLine) SeriesList {
 	seriesList := make(SeriesList, len(values))
 	for index, value := range values {
-		seriesList[index] = NewSeriesFromValues(value, chartType...)
+		s := Series{
+			Data:      value,
+			Type:      chartType,
+			Label:     label,
+			Radius:    radius,
+			MarkPoint: markPoint,
+			MarkLine:  markLine,
+		}
+		if index < len(names) {
+			s.Name = names[index]
+		}
+		seriesList[index] = s
 	}
 	return seriesList
-}
-
-// NewSeriesFromValues returns a series
-func NewSeriesFromValues(values []float64, chartType ...string) Series {
-	s := Series{
-		Data: values,
-	}
-	if len(chartType) != 0 {
-		s.Type = chartType[0]
-	}
-	return s
 }
 
 type SeriesLabel struct {
@@ -36,8 +37,8 @@ type SeriesLabel struct {
 	Formatter string
 	// FontStyle specifies the font and style for the label.
 	FontStyle FontStyle
-	// Show flag for label
-	Show bool
+	// Show flag for label, if unset the behavior will be defaulted based on the chart.
+	Show *bool
 	// Distance to the host graphic element.
 	Distance int // TODO - do we want to replace with just Offset?
 	// Position defines the label position.
@@ -88,6 +89,7 @@ type Series struct {
 	MarkPoint SeriesMarkPoint
 	// MarkLine provides a series for mark lines.
 	MarkLine SeriesMarkLine
+	// TODO - should min and max be in the series?
 	// Max value of series
 	Min *float64
 	// Min value of series
@@ -118,12 +120,12 @@ func (sl SeriesList) Filter(chartType string) SeriesList {
 	return arr
 }
 
-// GetMinMax get max and min value of series list
-func (sl SeriesList) GetMinMax(axisIndex int) (float64, float64) {
+// GetMinMax get max and min value of series list for a given y-axis index (either 0 or 1).
+func (sl SeriesList) GetMinMax(yaxisIndex int) (float64, float64) {
 	min := math.MaxFloat64
 	max := -math.MaxFloat64
 	for _, series := range sl {
-		if series.YAxisIndex != axisIndex {
+		if series.YAxisIndex != yaxisIndex {
 			continue
 		}
 		for _, item := range series.Data {
@@ -141,13 +143,64 @@ func (sl SeriesList) GetMinMax(axisIndex int) (float64, float64) {
 	return min, max
 }
 
+// LineSeriesOption provides series customization for NewSeriesListLine.
+type LineSeriesOption struct {
+	Label     SeriesLabel
+	Names     []string
+	MarkPoint SeriesMarkPoint
+	MarkLine  SeriesMarkLine
+}
+
+// NewSeriesListLine builds a SeriesList for a line chart. The first dimension of the values indicates the population
+// of the data, while the second dimension provides the samples for the population.
+func NewSeriesListLine(values [][]float64, opts ...LineSeriesOption) SeriesList {
+	var opt LineSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+	return newSeriesListFromValues(values, ChartTypeLine,
+		opt.Label, opt.Names, "", opt.MarkPoint, opt.MarkLine)
+}
+
+// BarSeriesOption provides series customization for NewSeriesListBar or NewSeriesListHorizontalBar.
+type BarSeriesOption struct {
+	Label     SeriesLabel
+	Names     []string
+	MarkPoint SeriesMarkPoint
+	MarkLine  SeriesMarkLine
+}
+
+// NewSeriesListBar builds a SeriesList for a bar chart. The first dimension of the values indicates the population
+// of the data, while the second dimension provides the samples for the population (on the X-Axis).
+func NewSeriesListBar(values [][]float64, opts ...BarSeriesOption) SeriesList {
+	var opt BarSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+	return newSeriesListFromValues(values, ChartTypeBar,
+		opt.Label, opt.Names, "", opt.MarkPoint, opt.MarkLine)
+}
+
+// NewSeriesListHorizontalBar builds a SeriesList for a horizontal bar chart. Horizontal bar charts are unique in that
+// these Series can not be combined with any other chart type.
+func NewSeriesListHorizontalBar(values [][]float64, opts ...BarSeriesOption) SeriesList {
+	var opt BarSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+	return newSeriesListFromValues(values, ChartTypeHorizontalBar,
+		opt.Label, opt.Names, "", opt.MarkPoint, opt.MarkLine)
+}
+
+// PieSeriesOption provides series customization for NewSeriesListPie.
 type PieSeriesOption struct {
 	Radius string
 	Label  SeriesLabel
 	Names  []string
 }
 
-func NewPieSeriesList(values []float64, opts ...PieSeriesOption) SeriesList {
+// NewSeriesListPie builds a SeriesList for a pie chart.
+func NewSeriesListPie(values []float64, opts ...PieSeriesOption) SeriesList {
 	result := make([]Series, len(values))
 	var opt PieSeriesOption
 	if len(opts) != 0 {
@@ -168,6 +221,50 @@ func NewPieSeriesList(values []float64, opts ...PieSeriesOption) SeriesList {
 		result[index] = s
 	}
 	return result
+}
+
+// RadarSeriesOption provides series customization for NewSeriesListRadar.
+type RadarSeriesOption struct {
+	Label SeriesLabel
+	Names []string
+}
+
+// NewSeriesListRadar builds a SeriesList for a Radar chart.
+func NewSeriesListRadar(values [][]float64, opts ...RadarSeriesOption) SeriesList {
+	var opt RadarSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+	return newSeriesListFromValues(values, ChartTypeRadar,
+		opt.Label, opt.Names, "", SeriesMarkPoint{}, SeriesMarkLine{})
+}
+
+// FunnelSeriesOption provides series customization for NewSeriesListFunnel.
+type FunnelSeriesOption struct {
+	Label SeriesLabel
+	Names []string
+}
+
+// NewSeriesListFunnel builds a series list for funnel charts.
+func NewSeriesListFunnel(values []float64, opts ...FunnelSeriesOption) SeriesList {
+	var opt FunnelSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+	seriesList := make(SeriesList, len(values))
+	for index, value := range values {
+		name := ""
+		if index < len(opt.Names) {
+			name = opt.Names[index]
+		}
+		seriesList[index] = Series{
+			Data:  []float64{value},
+			Type:  ChartTypeFunnel,
+			Label: opt.Label,
+			Name:  name,
+		}
+	}
+	return seriesList
 }
 
 type seriesSummary struct {

@@ -92,7 +92,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		divideValues := xRange.AutoDivide()
 		points := make([]Point, len(series.Data))
 		var labelPainter *seriesLabelPainter
-		if series.Label.Show {
+		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}

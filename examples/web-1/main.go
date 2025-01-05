@@ -99,11 +99,7 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 	p, err := charts.TableOptionRender(charts.TableChartOption{
 		OutputFormat: charts.ChartOutputSVG,
 		Header: []string{
-			"Name",
-			"Age",
-			"Address",
-			"Tag",
-			"Action",
+			"Name", "Age", "Address", "Tag", "Action",
 		},
 		Data: [][]string{
 			{
@@ -154,72 +150,22 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"Email",
-					"Union Ads",
-					"Video Ads",
-					"Direct",
-					"Search Engine",
+					"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 				},
 				Padding: charts.Box{Left: 100},
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
-					"Mon",
-					"Tue",
-					"Wed",
-					"Thu",
-					"Fri",
-					"Sat",
-					"Sun",
+					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 			},
-			SeriesList: []charts.Series{
-				charts.NewSeriesFromValues([]float64{
-					120,
-					132,
-					101,
-					134,
-					90,
-					230,
-					210,
-				}),
-				charts.NewSeriesFromValues([]float64{
-					220,
-					182,
-					191,
-					234,
-					290,
-					330,
-					310,
-				}),
-				charts.NewSeriesFromValues([]float64{
-					150,
-					232,
-					201,
-					154,
-					190,
-					330,
-					410,
-				}),
-				charts.NewSeriesFromValues([]float64{
-					320,
-					332,
-					301,
-					334,
-					390,
-					330,
-					320,
-				}),
-				charts.NewSeriesFromValues([]float64{
-					820,
-					932,
-					901,
-					934,
-					1290,
-					1330,
-					1320,
-				}),
-			},
+			SeriesList: charts.NewSeriesListLine([][]float64{
+				{120, 132, 101, 134, 90, 230, 210},
+				{220, 182, 191, 234, 290, 330, 310},
+				{150, 232, 201, 154, 190, 330, 410},
+				{320, 332, 301, 334, 390, 330, 320},
+				{820, 932, 901, 934, 1290, 1330, 1320},
+			}),
 		},
 		// temperature line chart
 		{
@@ -234,19 +180,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"Highest",
-					"Lowest",
+					"Highest", "Lowest",
 				},
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
-					"Mon",
-					"Tue",
-					"Wed",
-					"Thu",
-					"Fri",
-					"Sat",
-					"Sun",
+					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 				BoundaryGap: charts.False(),
 			},
@@ -255,6 +194,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					Data: []float64{
 						14, 11, 13, 11, 12, 12, 7,
 					},
+					Type:      charts.ChartTypeLine,
 					MarkPoint: charts.NewMarkPoint(charts.SeriesMarkDataTypeMax, charts.SeriesMarkDataTypeMin),
 					MarkLine:  charts.NewMarkLine(charts.SeriesMarkDataTypeAverage),
 				},
@@ -262,6 +202,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					Data: []float64{
 						1, -2, 2, 5, 3, 2, 0,
 					},
+					Type:     charts.ChartTypeLine,
 					MarkLine: charts.NewMarkLine(charts.SeriesMarkDataTypeAverage),
 				},
 			},
@@ -278,29 +219,15 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
-					"Mon",
-					"Tue",
-					"Wed",
-					"Thu",
-					"Fri",
-					"Sat",
-					"Sun",
+					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 			},
 			YAxis: []charts.YAxisOption{{
 				Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
 			}},
-			SeriesList: []charts.Series{
-				charts.NewSeriesFromValues([]float64{
-					120,
-					132,
-					101,
-					134,
-					90,
-					230,
-					210,
-				}),
-			},
+			SeriesList: charts.NewSeriesListLine([][]float64{
+				{120, 132, 101, 134, 90, 230, 210},
+			}),
 			FillArea: true,
 		},
 		// histogram
@@ -313,39 +240,29 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
-					"Mon",
-					"Tue",
-					"Wed",
-					"Thu",
-					"Fri",
-					"Sat",
-					"Sun",
+					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"Rainfall",
-					"Evaporation",
+					"Rainfall", "Evaporation",
 				},
 				Icon: charts.IconRect,
 			},
 			SeriesList: []charts.Series{
-				charts.NewSeriesFromValues([]float64{
-					120,
-					200,
-					150,
-					80,
-					70,
-					110,
-					130,
-				}, charts.ChartTypeBar),
 				{
+					Data: []float64{
+						120, 200, 150, 80, 70, 110, 130,
+					},
 					Type: charts.ChartTypeBar,
+				},
+				{
 					Data: []float64{
 						100, 190, 230, 140, 100, 200, 180,
 					},
+					Type: charts.ChartTypeBar,
 					Label: charts.SeriesLabel{
-						Show:     true,
+						Show:     charts.True(),
 						Position: charts.PositionBottom,
 					},
 				},
@@ -367,36 +284,20 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"2011",
-					"2012",
+					"2011", "2012",
 				},
 			},
 			YAxis: []charts.YAxisOption{
 				{
 					Data: []string{
-						"Brazil",
-						"Indonesia",
-						"USA",
-						"India",
-						"China",
-						"World",
+						"Brazil", "Indonesia", "USA", "India", "China", "World",
 					},
 				},
 			},
-			SeriesList: []charts.Series{
-				{
-					Type: charts.ChartTypeHorizontalBar,
-					Data: []float64{
-						18203, 23489, 29034, 104970, 131744, 630230,
-					},
-				},
-				{
-					Type: charts.ChartTypeHorizontalBar,
-					Data: []float64{
-						19325, 23438, 31000, 121594, 134141, 681807,
-					},
-				},
-			},
+			SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
+				{18203, 23489, 29034, 104970, 131744, 630230},
+				{19325, 23438, 31000, 121594, 134141, 681807},
+			}),
 		},
 		// histogram+marker
 		{
@@ -418,24 +319,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
-					"Jan",
-					"Feb",
-					"Mar",
-					"Apr",
-					"May",
-					"Jun",
-					"Jul",
-					"Aug",
-					"Sep",
-					"Oct",
-					"Nov",
-					"Dec",
+					"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 				},
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"Rainfall",
-					"Evaporation",
+					"Rainfall", "Evaporation",
 				},
 			},
 			SeriesList: []charts.Series{
@@ -477,25 +366,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
-					"Jan",
-					"Feb",
-					"Mar",
-					"Apr",
-					"May",
-					"Jun",
-					"Jul",
-					"Aug",
-					"Sep",
-					"Oct",
-					"Nov",
-					"Dec",
+					"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 				},
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"Evaporation",
-					"Precipitation",
-					"Temperature",
+					"Evaporation", "Precipitation", "Temperature",
 				},
 				Padding: charts.Box{Left: 100},
 			},
@@ -509,26 +385,16 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					AxisColor: charts.Color{R: 250, G: 200, B: 88, A: 255},
 				},
 			},
-			SeriesList: []charts.Series{
-				{
-					Type: charts.ChartTypeBar,
-					Data: []float64{
-						2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
-					},
+			SeriesList: append(charts.NewSeriesListBar([][]float64{
+				{2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3},
+				{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
+			}), charts.Series{
+				Type: charts.ChartTypeLine,
+				Data: []float64{
+					2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2,
 				},
-				{
-					Type: charts.ChartTypeBar,
-					Data: []float64{
-						2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3,
-					},
-				},
-				{
-					Data: []float64{
-						2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2,
-					},
-					YAxisIndex: 1,
-				},
-			},
+				YAxisIndex: 1,
+			}),
 		},
 		// pie chart
 		{
@@ -546,24 +412,13 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			Legend: charts.LegendOption{
 				Vertical: charts.True(),
 				Data: []string{
-					"Search Engine",
-					"Direct",
-					"Email",
-					"Union Ads",
-					"Video Ads",
+					"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 				},
 				Offset: charts.OffsetLeft,
 			},
-			SeriesList: charts.NewPieSeriesList([]float64{
-				1048,
-				735,
-				580,
-				484,
-				300,
+			SeriesList: charts.NewSeriesListPie([]float64{
+				1048, 735, 580, 484, 300,
 			}, charts.PieSeriesOption{
-				Label: charts.SeriesLabel{
-					Show: true,
-				},
 				Radius: "35%",
 			}),
 		},
@@ -577,8 +432,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"Allocated Budget",
-					"Actual Spending",
+					"Allocated Budget", "Actual Spending",
 				},
 				Padding: charts.Box{Left: 100},
 			},
@@ -608,20 +462,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					Max:  25000,
 				},
 			},
-			SeriesList: charts.SeriesList{
-				{
-					Type: charts.ChartTypeRadar,
-					Data: []float64{
-						4200, 3000, 20000, 35000, 50000, 18000,
-					},
-				},
-				{
-					Type: charts.ChartTypeRadar,
-					Data: []float64{
-						5000, 14000, 28000, 26000, 42000, 21000,
-					},
-				},
-			},
+			SeriesList: charts.NewSeriesListRadar([][]float64{
+				{4200, 3000, 20000, 35000, 50000, 18000},
+				{5000, 14000, 28000, 26000, 42000, 21000},
+			}),
 		},
 		// funnel chart
 		{
@@ -630,11 +474,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
-					"Show",
-					"Click",
-					"Visit",
-					"Inquiry",
-					"Order",
+					"Show", "Click", "Visit", "Inquiry", "Order",
 				},
 			},
 			SeriesList: []charts.Series{
@@ -672,10 +512,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					Top: "-90",
 				},
 				Data: []string{
-					"Milk Tea",
-					"Matcha Latte",
-					"Cheese Cocoa",
-					"Walnut Brownie",
+					"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 				},
 			},
 			Padding: charts.Box{
@@ -686,12 +523,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
-					"2012",
-					"2013",
-					"2014",
-					"2015",
-					"2016",
-					"2017",
+					"2012", "2013", "2014", "2015", "2016", "2017",
 				},
 			},
 			YAxis: []charts.YAxisOption{
@@ -701,49 +533,21 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					Max: charts.FloatPointer(90),
 				},
 			},
-			SeriesList: []charts.Series{
-				charts.NewSeriesFromValues([]float64{
-					56.5,
-					82.1,
-					88.7,
-					70.1,
-					53.4,
-					85.1,
+			SeriesList: append(
+				charts.NewSeriesListLine([][]float64{
+					{56.5, 82.1, 88.7, 70.1, 53.4, 85.1},
+					{51.1, 51.4, 55.1, 53.3, 73.8, 68.7},
 				}),
-				charts.NewSeriesFromValues([]float64{
-					51.1,
-					51.4,
-					55.1,
-					53.3,
-					73.8,
-					68.7,
-				}),
-				charts.NewSeriesFromValues([]float64{
-					40.1,
-					62.2,
-					69.5,
-					36.4,
-					45.2,
-					32.5,
-				}, charts.ChartTypeBar),
-				charts.NewSeriesFromValues([]float64{
-					25.2,
-					37.1,
-					41.2,
-					18,
-					33.9,
-					49.1,
-				}, charts.ChartTypeBar),
-			},
+				charts.NewSeriesListBar([][]float64{
+					{40.1, 62.2, 69.5, 36.4, 45.2, 32.5},
+					{25.2, 37.1, 41.2, 18, 33.9, 49.1},
+				})...),
 			Children: []charts.ChartOption{
 				{
 					Legend: charts.LegendOption{
 						Show: charts.False(),
 						Data: []string{
-							"Milk Tea",
-							"Matcha Latte",
-							"Cheese Cocoa",
-							"Walnut Brownie",
+							"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 						},
 					},
 					Box: charts.Box{
@@ -752,15 +556,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 						Right:  500,
 						Bottom: 120,
 					},
-					SeriesList: charts.NewPieSeriesList([]float64{
-						435.9,
-						354.3,
-						285.9,
-						204.5,
+					SeriesList: charts.NewSeriesListPie([]float64{
+						435.9, 354.3, 285.9, 204.5,
 					}, charts.PieSeriesOption{
-						Label: charts.SeriesLabel{
-							Show: true,
-						},
 						Radius: "35%",
 					}),
 				},

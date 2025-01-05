@@ -13,7 +13,7 @@ func makeBasicRadarChartOption() RadarChartOption {
 		{5000, 14000, 28000, 26000, 42000, 21000},
 	}
 	return RadarChartOption{
-		SeriesList: NewSeriesListDataFromValues(values, ChartTypeRadar),
+		SeriesList: NewSeriesListRadar(values),
 		Title: TitleOption{
 			Text: "Basic Radar Chart",
 		},

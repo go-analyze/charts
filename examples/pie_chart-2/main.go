@@ -27,7 +27,7 @@ func main() {
 	}
 
 	opt := charts.PieChartOption{}
-	opt.SeriesList = charts.NewPieSeriesList(values)
+	opt.SeriesList = charts.NewSeriesListPie(values)
 	opt.Title = charts.TitleOption{
 		Text:    "Rainfall vs Evaporation",
 		Subtext: "(Fake Data)",
@@ -57,9 +57,6 @@ func main() {
 		FontStyle: charts.FontStyle{
 			FontSize: 10,
 		},
-	}
-	for index := range opt.SeriesList {
-		opt.SeriesList[index].Label.Show = true
 	}
 
 	p, err := charts.NewPainter(charts.PainterOptions{

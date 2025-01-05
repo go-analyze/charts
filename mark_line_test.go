@@ -19,7 +19,9 @@ func TestMarkLine(t *testing.T) {
 		{
 			render: func(p *Painter) ([]byte, error) {
 				markLine := newMarkLinePainter(p)
-				series := NewSeriesFromValues([]float64{1, 2, 3})
+				series := Series{
+					Data: []float64{1, 2, 3},
+				}
 				series.MarkLine = NewMarkLine(
 					SeriesMarkDataTypeMax,
 					SeriesMarkDataTypeAverage,

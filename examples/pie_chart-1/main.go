@@ -57,7 +57,6 @@ func main() {
 				FontSize: 10,
 			},
 		}),
-		charts.PieSeriesShowLabel(),
 	)
 	if err != nil {
 		panic(err)

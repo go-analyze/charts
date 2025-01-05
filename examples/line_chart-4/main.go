@@ -54,7 +54,7 @@ func main() {
 		Right:  20,
 		Bottom: 10,
 	}
-	opt.SeriesList = charts.NewSeriesListDataFromValues(values, charts.ChartTypeLine)
+	opt.SeriesList = charts.NewSeriesListLine(values)
 	opt.Title.Text = "Canon RF Zoom Lenses"
 	opt.Title.Offset = charts.OffsetCenter
 	opt.Title.FontStyle.FontSize = 16

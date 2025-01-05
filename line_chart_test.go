@@ -37,7 +37,7 @@ func makeFullLineChartOption() LineChartOption {
 				"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 			},
 		},
-		SeriesList: NewSeriesListDataFromValues(values),
+		SeriesList: NewSeriesListLine(values),
 	}
 }
 
@@ -64,7 +64,7 @@ func makeBasicLineChartOption() LineChartOption {
 		Legend: LegendOption{
 			Data: []string{"1", "2"},
 		},
-		SeriesList: NewSeriesListDataFromValues(values),
+		SeriesList: NewSeriesListLine(values),
 	}
 }
 
@@ -87,7 +87,7 @@ func makeMinimalLineChartOption() LineChartOption {
 			Show: False(),
 		},
 		SymbolShow: False(),
-		SeriesList: NewSeriesListDataFromValues(values),
+		SeriesList: NewSeriesListLine(values),
 	}
 }
 
@@ -306,7 +306,7 @@ func TestLineChart(t *testing.T) {
 					{0, 0, 0, 0, 0, 0, 0},
 					{0, 0, 0, 0, 0, 0, 0},
 				}
-				opt.SeriesList = NewSeriesListDataFromValues(values)
+				opt.SeriesList = NewSeriesListLine(values)
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(255,255,255,1.0)\"/><text x=\"10\" y=\"17\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">2</text><text x=\"10\" y=\"192\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1</text><text x=\"10\" y=\"367\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 29 10\nL 590 10\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 29 185\nL 590 185\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 69 360\nL 149 360\nL 229 360\nL 309 360\nL 389 360\nL 469 360\nL 549 360\" style=\"stroke-width:2;stroke:rgba(84,112,198,1.0);fill:none\"/><path  d=\"M 69 360\nL 149 360\nL 229 360\nL 309 360\nL 389 360\nL 469 360\nL 549 360\" style=\"stroke-width:2;stroke:rgba(145,204,117,1.0);fill:none\"/></svg>",
@@ -320,7 +320,7 @@ func TestLineChart(t *testing.T) {
 					{0.1, 0.2, 0.1, 0.2, 0.4, 0.2, 0.1},
 					{0.2, 0.4, 0.8, 0.4, 0.2, 0.1, 0.2},
 				}
-				opt.SeriesList = NewSeriesListDataFromValues(values)
+				opt.SeriesList = NewSeriesListLine(values)
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke-width:0;stroke:none;fill:rgba(255,255,255,1.0)\"/><text x=\"23\" y=\"17\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">2</text><text x=\"10\" y=\"87\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.6</text><text x=\"10\" y=\"157\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.2</text><text x=\"10\" y=\"227\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0.8</text><text x=\"10\" y=\"297\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0.4</text><text x=\"23\" y=\"367\" style=\"stroke-width:0;stroke:none;fill:rgba(70,70,70,1.0);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 42 10\nL 590 10\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 42 80\nL 590 80\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 42 150\nL 590 150\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 42 220\nL 590 220\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 42 290\nL 590 290\" style=\"stroke-width:1;stroke:rgba(224,230,242,1.0);fill:none\"/><path  d=\"M 81 343\nL 159 325\nL 237 343\nL 315 325\nL 394 290\nL 472 325\nL 550 343\" style=\"stroke-width:2;stroke:rgba(84,112,198,1.0);fill:none\"/><path  d=\"M 81 325\nL 159 290\nL 237 220\nL 315 290\nL 394 325\nL 472 343\nL 550 325\" style=\"stroke-width:2;stroke:rgba(145,204,117,1.0);fill:none\"/></svg>",

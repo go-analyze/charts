@@ -56,7 +56,6 @@ type sector struct {
 	lineBranchY int
 	lineEndX    int
 	lineEndY    int
-	showLabel   bool
 	label       string
 	series      Series
 	color       Color
@@ -95,8 +94,9 @@ func newSector(cx int, cy int, radius float64, labelRadius float64, value float6
 	s.lineEndY = s.lineBranchY
 	s.series = series
 	s.color = color
-	s.showLabel = series.Label.Show
-	s.label = labelFormatPie([]string{label}, series.Label.Formatter, 0, s.value, s.percent)
+	if !flagIs(false, series.Label.Show) { // only set the label if it's being rendered
+		s.label = labelFormatPie([]string{label}, series.Label.Formatter, 0, s.value, s.percent)
+	}
 	return s
 }
 
@@ -203,7 +203,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		})
 		seriesPainter.moveTo(s.cx, s.cy)
 		seriesPainter.arcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta).lineTo(s.cx, s.cy).close().fillStroke()
-		if !s.showLabel {
+		if s.label == "" {
 			continue
 		}
 		if currentQuadrant != s.quadrant {

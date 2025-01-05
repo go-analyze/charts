@@ -16,10 +16,7 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 					Top: "-90",
 				},
 				Data: []string{
-					"Milk Tea",
-					"Matcha Latte",
-					"Cheese Cocoa",
-					"Walnut Brownie",
+					"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 				},
 			},
 			Padding: chartdraw.Box{
@@ -30,12 +27,7 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 			},
 			XAxis: XAxisOption{
 				Data: []string{
-					"2012",
-					"2013",
-					"2014",
-					"2015",
-					"2016",
-					"2017",
+					"2012", "2013", "2014", "2015", "2016", "2017",
 				},
 			},
 			YAxis: []YAxisOption{
@@ -45,49 +37,21 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 					Max: FloatPointer(90),
 				},
 			},
-			SeriesList: []Series{
-				NewSeriesFromValues([]float64{
-					56.5,
-					82.1,
-					88.7,
-					70.1,
-					53.4,
-					85.1,
+			SeriesList: append(
+				NewSeriesListLine([][]float64{
+					{56.5, 82.1, 88.7, 70.1, 53.4, 85.1},
+					{51.1, 51.4, 55.1, 53.3, 73.8, 68.7},
 				}),
-				NewSeriesFromValues([]float64{
-					51.1,
-					51.4,
-					55.1,
-					53.3,
-					73.8,
-					68.7,
-				}),
-				NewSeriesFromValues([]float64{
-					40.1,
-					62.2,
-					69.5,
-					36.4,
-					45.2,
-					32.5,
-				}, ChartTypeBar),
-				NewSeriesFromValues([]float64{
-					25.2,
-					37.1,
-					41.2,
-					18,
-					33.9,
-					49.1,
-				}, ChartTypeBar),
-			},
+				NewSeriesListBar([][]float64{
+					{40.1, 62.2, 69.5, 36.4, 45.2, 32.5},
+					{25.2, 37.1, 41.2, 18, 33.9, 49.1},
+				})...),
 			Children: []ChartOption{
 				{
 					Legend: LegendOption{
 						Show: False(),
 						Data: []string{
-							"Milk Tea",
-							"Matcha Latte",
-							"Cheese Cocoa",
-							"Walnut Brownie",
+							"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 						},
 					},
 					Box: chartdraw.Box{
@@ -96,15 +60,9 @@ func BenchmarkMultiChartPNGRender(b *testing.B) {
 						Right:  500,
 						Bottom: 120,
 					},
-					SeriesList: NewPieSeriesList([]float64{
-						435.9,
-						354.3,
-						285.9,
-						204.5,
+					SeriesList: NewSeriesListPie([]float64{
+						435.9, 354.3, 285.9, 204.5,
 					}, PieSeriesOption{
-						Label: SeriesLabel{
-							Show: true,
-						},
 						Radius: "35%",
 					}),
 				},
@@ -129,10 +87,7 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 					Top: "-90",
 				},
 				Data: []string{
-					"Milk Tea",
-					"Matcha Latte",
-					"Cheese Cocoa",
-					"Walnut Brownie",
+					"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 				},
 			},
 			Padding: chartdraw.Box{
@@ -157,49 +112,21 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 					Max: FloatPointer(90),
 				},
 			},
-			SeriesList: []Series{
-				NewSeriesFromValues([]float64{
-					56.5,
-					82.1,
-					88.7,
-					70.1,
-					53.4,
-					85.1,
+			SeriesList: append(
+				NewSeriesListLine([][]float64{
+					{56.5, 82.1, 88.7, 70.1, 53.4, 85.1},
+					{51.1, 51.4, 55.1, 53.3, 73.8, 68.7},
 				}),
-				NewSeriesFromValues([]float64{
-					51.1,
-					51.4,
-					55.1,
-					53.3,
-					73.8,
-					68.7,
-				}),
-				NewSeriesFromValues([]float64{
-					40.1,
-					62.2,
-					69.5,
-					36.4,
-					45.2,
-					32.5,
-				}, ChartTypeBar),
-				NewSeriesFromValues([]float64{
-					25.2,
-					37.1,
-					41.2,
-					18,
-					33.9,
-					49.1,
-				}, ChartTypeBar),
-			},
+				NewSeriesListBar([][]float64{
+					{40.1, 62.2, 69.5, 36.4, 45.2, 32.5},
+					{25.2, 37.1, 41.2, 18, 33.9, 49.1},
+				})...),
 			Children: []ChartOption{
 				{
 					Legend: LegendOption{
 						Show: False(),
 						Data: []string{
-							"Milk Tea",
-							"Matcha Latte",
-							"Cheese Cocoa",
-							"Walnut Brownie",
+							"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 						},
 					},
 					Box: chartdraw.Box{
@@ -208,15 +135,9 @@ func BenchmarkMultiChartSVGRender(b *testing.B) {
 						Right:  500,
 						Bottom: 120,
 					},
-					SeriesList: NewPieSeriesList([]float64{
-						435.9,
-						354.3,
-						285.9,
-						204.5,
+					SeriesList: NewSeriesListPie([]float64{
+						435.9, 354.3, 285.9, 204.5,
 					}, PieSeriesOption{
-						Label: SeriesLabel{
-							Show: true,
-						},
 						Radius: "35%",
 					}),
 				},

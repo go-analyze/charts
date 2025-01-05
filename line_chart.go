@@ -121,7 +121,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		yRange := result.axisRanges[series.YAxisIndex]
 		points := make([]Point, 0)
 		var labelPainter *seriesLabelPainter
-		if series.Label.Show {
+		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}

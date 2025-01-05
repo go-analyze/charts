@@ -61,21 +61,29 @@ func TestChartOption(t *testing.T) {
 	}, opt)
 }
 
-func TestChartOptionPieSeriesShowLabel(t *testing.T) {
+func TestChartOptionSeriesShowLabel(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewPieSeriesList([]float64{1, 2}),
+		SeriesList: NewSeriesListPie([]float64{1, 2}),
 	}
-	PieSeriesShowLabel()(&opt)
-	assert.True(t, opt.SeriesList[0].Label.Show)
+	SeriesShowLabel(true)(&opt)
+	assert.True(t, flagIs(true, opt.SeriesList[0].Label.Show))
+
+	SeriesShowLabel(false)(&opt)
+	assert.True(t, flagIs(false, opt.SeriesList[0].Label.Show))
+}
+
+func newNoTypeSeriesListFromValues(values [][]float64) SeriesList {
+	return newSeriesListFromValues(values, "",
+		SeriesLabel{}, nil, "", SeriesMarkPoint{}, SeriesMarkLine{})
 }
 
 func TestChartOptionMarkLine(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewSeriesListDataFromValues([][]float64{{1, 2}}),
+		SeriesList: newNoTypeSeriesListFromValues([][]float64{{1, 2}}),
 	}
 	MarkLineOptionFunc(0, "min", "max")(&opt)
 	assert.Equal(t, NewMarkLine("min", "max"), opt.SeriesList[0].MarkLine)
@@ -85,7 +93,7 @@ func TestChartOptionMarkPoint(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewSeriesListDataFromValues([][]float64{{1, 2}}),
+		SeriesList: newNoTypeSeriesListFromValues([][]float64{{1, 2}}),
 	}
 	MarkPointOptionFunc(0, "min", "max")(&opt)
 	assert.Equal(t, NewMarkPoint("min", "max"), opt.SeriesList[0].MarkPoint)
@@ -210,7 +218,6 @@ func TestPieRender(t *testing.T) {
 			},
 			Offset: OffsetLeft,
 		}),
-		PieSeriesShowLabel(),
 	)
 	require.NoError(t, err)
 	data, err := p.Bytes()
@@ -282,10 +289,10 @@ func TestChildRender(t *testing.T) {
 		}),
 		ChildOptionFunc(ChartOption{
 			Box: chartdraw.NewBox(10, 200, 500, 200),
-			SeriesList: NewSeriesListDataFromValues([][]float64{
+			SeriesList: NewSeriesListHorizontalBar([][]float64{
 				{70, 90, 110, 130},
 				{80, 100, 120, 140},
-			}, ChartTypeHorizontalBar),
+			}),
 			Legend: LegendOption{
 				Data: []string{
 					"2011", "2012",

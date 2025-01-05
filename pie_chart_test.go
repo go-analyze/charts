@@ -14,9 +14,7 @@ func makeBasicPieChartOption() PieChartOption {
 		1048, 735, 580, 484, 300,
 	}
 	return PieChartOption{
-		SeriesList: NewPieSeriesList(values, PieSeriesOption{
-			Label: SeriesLabel{Show: true},
-		}),
+		SeriesList: NewSeriesListPie(values),
 		Title: TitleOption{
 			Text:    "Rainfall vs Evaporation",
 			Subtext: "Fake Data",
@@ -75,9 +73,9 @@ func TestPieChart(t *testing.T) {
 				}
 
 				return PieChartOption{
-					SeriesList: NewPieSeriesList(values, PieSeriesOption{
+					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      true,
+							Show:      True(),
 							Formatter: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
@@ -138,9 +136,9 @@ func TestPieChart(t *testing.T) {
 				}
 
 				return PieChartOption{
-					SeriesList: NewPieSeriesList(values, PieSeriesOption{
+					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      true,
+							Show:      True(),
 							Formatter: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
@@ -201,10 +199,7 @@ func TestPieChart(t *testing.T) {
 				}
 
 				return PieChartOption{
-					SeriesList: NewPieSeriesList(values, PieSeriesOption{
-						Label: SeriesLabel{
-							Show: true,
-						},
+					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Radius: "200",
 					}),
 					Padding: Box{
@@ -235,9 +230,9 @@ func TestPieChart(t *testing.T) {
 					25804, 25730, 24438, 23782, 22896, 21404, 428978,
 				}
 				return PieChartOption{
-					SeriesList: NewPieSeriesList(values, PieSeriesOption{
+					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      true,
+							Show:      True(),
 							Formatter: "{b} ({c} ≅ {d})",
 						},
 						Radius: "150",

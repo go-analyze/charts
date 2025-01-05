@@ -83,7 +83,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 		divideValues := yRange.AutoDivide()
 
 		var labelPainter *seriesLabelPainter
-		if series.Label.Show {
+		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}

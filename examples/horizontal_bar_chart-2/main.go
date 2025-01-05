@@ -28,7 +28,7 @@ func main() {
 	}
 
 	opt := charts.HorizontalBarChartOption{}
-	opt.SeriesList = charts.NewSeriesListDataFromValues(values, charts.ChartTypeHorizontalBar)
+	opt.SeriesList = charts.NewSeriesListHorizontalBar(values)
 	opt.Title.Text = "World Population"
 	opt.Padding = charts.Box{
 		Top:    20,

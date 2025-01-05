@@ -59,7 +59,7 @@ func main() {
 				"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 			},
 		},
-		SeriesList: charts.NewSeriesListDataFromValues([][]float64{
+		SeriesList: charts.NewSeriesListLine([][]float64{
 			{120, 132, 101, 134, 90, 230, 210},
 			{220, 182, 191, 234, 290, 330, 310},
 			{150, 232, 201, 154, 190, 330, 410},

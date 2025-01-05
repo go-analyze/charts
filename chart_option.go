@@ -177,11 +177,11 @@ func PaddingOptionFunc(padding Box) OptionFunc {
 	}
 }
 
-// PieSeriesShowLabel set pie series show label.
-func PieSeriesShowLabel() OptionFunc {
+// SeriesShowLabel set the series show label state for all series.
+func SeriesShowLabel(show bool) OptionFunc {
 	return func(opt *ChartOption) {
 		for index := range opt.SeriesList {
-			opt.SeriesList[index].Label.Show = true
+			opt.SeriesList[index].Label.Show = BoolPointer(show)
 		}
 	}
 }
@@ -309,42 +309,42 @@ func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *Le
 // LineRender line chart render
 func LineRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListDataFromValues(values, ChartTypeLine),
+		SeriesList: NewSeriesListLine(values),
 	}, opts...)
 }
 
 // BarRender bar chart render
 func BarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListDataFromValues(values, ChartTypeBar),
+		SeriesList: NewSeriesListBar(values),
 	}, opts...)
 }
 
 // HorizontalBarRender horizontal bar chart render
 func HorizontalBarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListDataFromValues(values, ChartTypeHorizontalBar),
+		SeriesList: NewSeriesListHorizontalBar(values),
 	}, opts...)
 }
 
 // PieRender pie chart render
 func PieRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewPieSeriesList(values),
+		SeriesList: NewSeriesListPie(values),
 	}, opts...)
 }
 
 // RadarRender radar chart render
 func RadarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListDataFromValues(values, ChartTypeRadar),
+		SeriesList: NewSeriesListRadar(values),
 	}, opts...)
 }
 
 // FunnelRender funnel chart render
 func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewFunnelSeriesList(values),
+		SeriesList: NewSeriesListFunnel(values),
 	}, opts...)
 }
 

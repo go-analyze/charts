@@ -206,7 +206,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		for index, point := range linePoints {
 			seriesPainter.Circle(dotWith, point.X, point.Y)
 			seriesPainter.fillStroke()
-			if series.Label.Show && index < len(series.Data) {
+			if flagIs(true, series.Label.Show) && index < len(series.Data) {
 				value := humanize.FtoaWithDigits(series.Data[index], 2)
 				b := seriesPainter.MeasureText(value)
 				seriesPainter.Text(value, point.X-b.Width()/2, point.Y)

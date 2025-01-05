@@ -59,10 +59,10 @@ func main() {
 			opt.Children = []charts.ChartOption{
 				{
 					Box: chartdraw.NewBox(10, 200, 500, 200),
-					SeriesList: charts.NewSeriesListDataFromValues([][]float64{
+					SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
 						{70, 90, 110, 130},
 						{80, 100, 120, 140},
-					}, charts.ChartTypeHorizontalBar),
+					}),
 					Legend: charts.LegendOption{
 						Data: []string{
 							"2011", "2012",

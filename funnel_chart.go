@@ -13,17 +13,6 @@ type funnelChart struct {
 	opt *FunnelChartOption
 }
 
-// NewFunnelSeriesList returns a series list for funnel
-func NewFunnelSeriesList(values []float64) SeriesList {
-	seriesList := make(SeriesList, len(values))
-	for index, value := range values {
-		seriesList[index] = NewSeriesFromValues([]float64{
-			value,
-		}, ChartTypeFunnel)
-	}
-	return seriesList
-}
-
 // NewFunnelChart returns a funnel chart renderer
 func NewFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
 	return &funnelChart{

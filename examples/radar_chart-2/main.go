@@ -28,7 +28,7 @@ func main() {
 	}
 
 	opt := charts.RadarChartOption{}
-	opt.SeriesList = charts.NewSeriesListDataFromValues(values, charts.ChartTypeRadar)
+	opt.SeriesList = charts.NewSeriesListRadar(values)
 	opt.Title = charts.TitleOption{
 		Text: "Basic Radar Chart",
 		FontStyle: charts.FontStyle{

@@ -16,20 +16,20 @@ func TestNewSeriesListDataFromValues(t *testing.T) {
 				1.0,
 			},
 		},
-	}, NewSeriesListDataFromValues([][]float64{
+	}, NewSeriesListBar([][]float64{
 		{
 			1,
 		},
-	}, ChartTypeBar))
+	}))
 }
 
 func TestSeriesLists(t *testing.T) {
 	t.Parallel()
 
-	seriesList := NewSeriesListDataFromValues([][]float64{
+	seriesList := NewSeriesListBar([][]float64{
 		{1, 2},
 		{10},
-	}, ChartTypeBar)
+	})
 
 	assert.Equal(t, 2, len(seriesList.Filter(ChartTypeBar)))
 	assert.Equal(t, 0, len(seriesList.Filter(ChartTypeLine)))
@@ -42,13 +42,13 @@ func TestSeriesLists(t *testing.T) {
 func TestSeriesSummary(t *testing.T) {
 	t.Parallel()
 
-	seriesList := NewSeriesListDataFromValues([][]float64{
+	seriesList := NewSeriesListLine([][]float64{
 		{10},
 		{1, 2},
 		{1, 2, 3},
 		{1, 2, 3, 4},
 		{3, 7, 11, 13},
-	}, ChartTypeLine)
+	})
 
 	t.Run("empty_series", func(t *testing.T) {
 		assert.Equal(t, seriesSummary{

@@ -271,7 +271,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 					Type: item.Type,
 					Name: dataItem.Name,
 					Label: SeriesLabel{
-						Show: true,
+						Show: True(),
 					},
 					Radius: item.Radius,
 					Data:   []float64{dataItem.Value.First()},
@@ -292,7 +292,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 						FontStyle: FontStyle{
 							FontColor: ParseColor(item.Label.Color),
 						},
-						Show:     item.Label.Show,
+						Show:     BoolPointer(item.Label.Show),
 						Distance: item.Label.Distance,
 					},
 				})
@@ -311,7 +311,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 				FontStyle: FontStyle{
 					FontColor: ParseColor(item.Label.Color),
 				},
-				Show:     item.Label.Show,
+				Show:     BoolPointer(item.Label.Show),
 				Distance: item.Label.Distance,
 			},
 			Name:      item.Name,

@@ -17,10 +17,10 @@ func makeBasicHorizontalBarChartOption() HorizontalBarChartOption {
 			Bottom: 10,
 			Left:   10,
 		},
-		SeriesList: NewSeriesListDataFromValues([][]float64{
+		SeriesList: NewSeriesListHorizontalBar([][]float64{
 			{18203, 23489, 29034, 104970, 131744, 630230},
 			{19325, 23438, 31000, 121594, 134141, 681807},
-		}, ChartTypeHorizontalBar),
+		}),
 		Title: TitleOption{
 			Text: "World Population",
 		},
@@ -83,7 +83,7 @@ func TestHorizontalBarChart(t *testing.T) {
 				opt := makeBasicHorizontalBarChartOption()
 				series := opt.SeriesList
 				for i := range series {
-					series[i].Label.Show = true
+					series[i].Label.Show = True()
 				}
 				return opt
 			},

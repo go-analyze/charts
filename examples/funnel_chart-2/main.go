@@ -25,7 +25,7 @@ func main() {
 	values := []float64{100, 80, 60, 40, 20, 10, 2}
 
 	opt := charts.FunnelChartOption{}
-	opt.SeriesList = charts.NewFunnelSeriesList(values)
+	opt.SeriesList = charts.NewSeriesListFunnel(values)
 	opt.Title.Text = "Funnel"
 	opt.Legend.Data = []string{
 		"Show", "Click", "Visit", "Inquiry", "Order", "Pay", "Cancel",
