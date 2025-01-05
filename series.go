@@ -2,6 +2,7 @@ package charts
 
 import (
 	"math"
+	"sort"
 	"strings"
 
 	"github.com/dustin/go-humanize"
@@ -169,44 +170,122 @@ func NewPieSeriesList(values []float64, opts ...PieSeriesOption) SeriesList {
 	return result
 }
 
-// TODO - lower case field names
 type seriesSummary struct {
-	// The index of max value
+	// Max is the maximum value in the series.
+	Max float64
+	// MaxIndex is the index of the maximum value in the series. If the series is empty this value will be -1.
 	MaxIndex int
-	// The max value
-	MaxValue float64
-	// The index of min value
+	// Min is the minimum value in the series.
+	Min float64
+	// MinIndex is the index of the minimum value in the series. If the series is empty this value will be -1.
 	MinIndex int
-	// The min value
-	MinValue float64
-	// THe average value
-	AverageValue float64
+	// Average is the mean of all values in the series.
+	Average float64
+	// Median is the middle value of the series when it is sorted in ascending order.
+	Median float64
+	// StandardDeviation is a measure of the amount of variation or dispersion of a set of values. A low standard
+	// deviation indicates that the values tend to be close to the mean of the set, while a high standard deviation
+	// indicates that the values are spread out over a wider range.
+	StandardDeviation float64
+	// Skewness measures the asymmetry of the distribution of values in the series around the mean. If skewness is zero,
+	// the data are perfectly symmetrical, although not necessarily normal. If skewness is positive, the data is skewed
+	// right, meaning that the right tail is longer or fatter than the left. If skewness is negative, the data is skewed
+	// left, meaning that the left tail is longer or fatter than the right.
+	Skewness float64
+	// Kurtosis is a measure of the "tailedness" of the probability distribution of a real-valued random variable.
+	// High kurtosis in a data set is an indicator of substantial outliers. A negative kurtosis indicates a relatively flat distribution.
+	Kurtosis float64
 }
 
 // Summary returns numeric summary of series values (population statistics).
 func (s *Series) Summary() seriesSummary {
-	minIndex := -1
-	maxIndex := -1
+	n := float64(len(s.Data))
+	if n == 0 {
+		return seriesSummary{
+			MinIndex: -1,
+			MaxIndex: -1,
+		}
+	}
+
+	// Initialize tracking variables
+	var minIndex, maxIndex int
 	minValue := math.MaxFloat64
 	maxValue := -math.MaxFloat64
-	sum := float64(0)
-	for j, item := range s.Data {
-		if item < minValue {
-			minIndex = j
-			minValue = item
+	// For sums of powers:
+	var sum, sumSq, sumCu, sumQd float64
+
+	// Single pass to gather everything we need
+	for i, x := range s.Data {
+		if x < minValue {
+			minValue = x
+			minIndex = i
 		}
-		if item > maxValue {
-			maxIndex = j
-			maxValue = item
+		if x > maxValue {
+			maxValue = x
+			maxIndex = i
 		}
-		sum += item
+
+		sum += x
+		sumSq += x * x
+		sumCu += x * x * x
+		sumQd += x * x * x * x
 	}
+
+	// Compute average (mean)
+	mean := sum / n
+	// Compute population variance = E[X^2] - (E[X])^2
+	variance := sumSq/n - mean*mean
+	stdDev := math.Sqrt(variance)
+	// Compute median: copy the data and sort
+	sortedData := make([]float64, len(s.Data))
+	copy(sortedData, s.Data)
+	sort.Float64s(sortedData)
+	var median float64
+	mid := len(sortedData) / 2
+	if len(sortedData)%2 == 0 {
+		median = (sortedData[mid-1] + sortedData[mid]) / 2.0
+	} else {
+		median = sortedData[mid]
+	}
+
+	// Compute population skewness:
+	// thirdCentral = Σ x^3 - 3μΣ x^2 + 3μ^2Σ x - nμ^3
+	// skewness = thirdCentral / (n * σ^3)
+	var skewness float64
+	if stdDev != 0 { // zero stdDev will result in a divide by zero
+		thirdCentral := sumCu - 3*mean*sumSq + 3*mean*mean*sum - n*mean*mean*mean
+		skewness = thirdCentral / (n * stdDev * stdDev * stdDev)
+	}
+
+	// Compute population excess kurtosis:
+	// fourthCentral = Σ x^4
+	//                 - 4μΣ x^3
+	//                 + 6μ^2Σ x^2
+	//                 - 4μ^3Σ x
+	//                 + nμ^4
+	// kurtosis = (fourthCentral / (n * σ^4))
+	// We don't subtract 3 (excess kurtosis) in our implementation.
+	var kurtosis float64
+	if variance != 0 {
+		fourthCentral := sumQd -
+			4*mean*sumCu +
+			6*mean*mean*sumSq -
+			4*mean*mean*mean*sum +
+			n*mean*mean*mean*mean
+
+		kurtosis = fourthCentral / (n * variance * variance)
+	} // else, all points might be the same => kurtosis is undefined
+
 	return seriesSummary{
-		MaxIndex:     maxIndex,
-		MaxValue:     maxValue,
-		MinIndex:     minIndex,
-		MinValue:     minValue,
-		AverageValue: sum / float64(len(s.Data)),
+		Max:               maxValue,
+		MaxIndex:          maxIndex,
+		Min:               minValue,
+		MinIndex:          minIndex,
+		Average:           mean,
+		Median:            median,
+		StandardDeviation: stdDev,
+		Skewness:          skewness,
+		Kurtosis:          kurtosis,
 	}
 }
 

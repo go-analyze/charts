@@ -74,11 +74,11 @@ func (m *markPointPainter) Render() (Box, error) {
 			textStyle.FontSize = labelFontSize
 			painter.OverrideFontStyle(textStyle.FontStyle)
 			p := points[summary.MinIndex]
-			value := summary.MinValue
+			value := summary.Min
 			switch markPointData.Type {
 			case SeriesMarkDataTypeMax:
 				p = points[summary.MaxIndex]
-				value = summary.MaxValue
+				value = summary.Max
 			}
 
 			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize)

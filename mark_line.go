@@ -72,11 +72,11 @@ func (m *markLinePainter) Render() (Box, error) {
 			value := float64(0)
 			switch markLine.Type {
 			case SeriesMarkDataTypeMax:
-				value = summary.MaxValue
+				value = summary.Max
 			case SeriesMarkDataTypeMin:
-				value = summary.MinValue
+				value = summary.Min
 			default:
-				value = summary.AverageValue
+				value = summary.Average
 			}
 			y := opt.Range.getRestHeight(value)
 			width := painter.Width()
