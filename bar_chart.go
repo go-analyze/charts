@@ -107,7 +107,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				x += index * (barWidth + barMargin)
 			}
 
-			h := yRange.getHeight(item.Value)
+			h := yRange.getHeight(item)
 			fillColor := seriesColor
 			top := barMaxHeight - h
 
@@ -157,7 +157,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			labelPainter.Add(labelValue{
 				vertical:  true, // label is above bar
 				index:     index,
-				value:     item.Value,
+				value:     item,
 				fontStyle: fontStyle,
 				x:         x + (barWidth >> 1),
 				y:         y,

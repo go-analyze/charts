@@ -274,11 +274,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 						Show: true,
 					},
 					Radius: item.Radius,
-					Data: []SeriesData{
-						{
-							Value: dataItem.Value.First(),
-						},
-					},
+					Data:   []float64{dataItem.Value.First()},
 				})
 			}
 			continue
@@ -289,7 +285,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 				seriesList = append(seriesList, Series{
 					Name: dataItem.Name,
 					Type: item.Type,
-					Data: NewSeriesDataFromValues(dataItem.Value.values),
+					Data: dataItem.Value.values,
 					Max:  item.Max,
 					Min:  item.Min,
 					Label: SeriesLabel{
@@ -303,11 +299,9 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 			}
 			continue
 		}
-		data := make([]SeriesData, len(item.Data))
+		data := make([]float64, len(item.Data))
 		for j, dataItem := range item.Data {
-			data[j] = SeriesData{
-				Value: dataItem.Value.First(),
-			}
+			data[j] = dataItem.Value.First()
 		}
 		seriesList = append(seriesList, Series{
 			Type:       item.Type,

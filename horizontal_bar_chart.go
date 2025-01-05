@@ -99,7 +99,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				y += index * (barHeight + barMargin)
 			}
 
-			w := xRange.getHeight(item.Value)
+			w := xRange.getHeight(item)
 			fillColor := seriesColor
 			right := w
 			seriesPainter.OverrideDrawingStyle(chartdraw.Style{
@@ -126,7 +126,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			labelValue := labelValue{
 				vertical:  false, // label beside bar
 				index:     index,
-				value:     item.Value,
+				value:     item,
 				x:         right,
 				y:         y + (barHeight >> 1),
 				offset:    series.Label.Offset,

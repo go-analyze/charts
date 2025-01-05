@@ -7,12 +7,6 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-// TODO - reconsider struct for v0.4.0
-type SeriesData struct {
-	// Value is the retained value for the data.
-	Value float64
-}
-
 // NewSeriesListDataFromValues returns a series list
 func NewSeriesListDataFromValues(values [][]float64, chartType ...string) SeriesList {
 	seriesList := make(SeriesList, len(values))
@@ -25,23 +19,12 @@ func NewSeriesListDataFromValues(values [][]float64, chartType ...string) Series
 // NewSeriesFromValues returns a series
 func NewSeriesFromValues(values []float64, chartType ...string) Series {
 	s := Series{
-		Data: NewSeriesDataFromValues(values),
+		Data: values,
 	}
 	if len(chartType) != 0 {
 		s.Type = chartType[0]
 	}
 	return s
-}
-
-// NewSeriesDataFromValues return a series data
-func NewSeriesDataFromValues(values []float64) []SeriesData {
-	data := make([]SeriesData, len(values))
-	for index, value := range values {
-		data[index] = SeriesData{
-			Value: value,
-		}
-	}
-	return data
 }
 
 type SeriesLabel struct {
@@ -91,7 +74,7 @@ type Series struct {
 	// Type is the type of series, it can be "line", "bar" or "pie". Default value is "line".
 	Type string
 	// Data provides the series data list.
-	Data []SeriesData
+	Data []float64
 	// YAxisIndex is the index for the axis, it must be 0 or 1.
 	YAxisIndex int
 	// Label provides the series labels.
@@ -143,14 +126,14 @@ func (sl SeriesList) GetMinMax(axisIndex int) (float64, float64) {
 			continue
 		}
 		for _, item := range series.Data {
-			if item.Value == GetNullValue() {
+			if item == GetNullValue() {
 				continue
 			}
-			if item.Value > max {
-				max = item.Value
+			if item > max {
+				max = item
 			}
-			if item.Value < min {
-				min = item.Value
+			if item < min {
+				min = item
 			}
 		}
 	}
@@ -175,12 +158,8 @@ func NewPieSeriesList(values []float64, opts ...PieSeriesOption) SeriesList {
 			name = opt.Names[index]
 		}
 		s := Series{
-			Type: ChartTypePie,
-			Data: []SeriesData{
-				{
-					Value: v,
-				},
-			},
+			Type:   ChartTypePie,
+			Data:   []float64{v},
 			Radius: opt.Radius,
 			Label:  opt.Label,
 			Name:   name,
@@ -212,15 +191,15 @@ func (s *Series) Summary() seriesSummary {
 	maxValue := -math.MaxFloat64
 	sum := float64(0)
 	for j, item := range s.Data {
-		if item.Value < minValue {
+		if item < minValue {
 			minIndex = j
-			minValue = item.Value
+			minValue = item
 		}
-		if item.Value > maxValue {
+		if item > maxValue {
 			maxIndex = j
-			maxValue = item.Value
+			maxValue = item
 		}
-		sum += item.Value
+		sum += item
 	}
 	return seriesSummary{
 		MaxIndex:     maxIndex,

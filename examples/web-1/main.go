@@ -252,28 +252,16 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			SeriesList: []charts.Series{
 				{
-					Data: charts.NewSeriesDataFromValues([]float64{
-						14,
-						11,
-						13,
-						11,
-						12,
-						12,
-						7,
-					}),
+					Data: []float64{
+						14, 11, 13, 11, 12, 12, 7,
+					},
 					MarkPoint: charts.NewMarkPoint(charts.SeriesMarkDataTypeMax, charts.SeriesMarkDataTypeMin),
 					MarkLine:  charts.NewMarkLine(charts.SeriesMarkDataTypeAverage),
 				},
 				{
-					Data: charts.NewSeriesDataFromValues([]float64{
-						1,
-						-2,
-						2,
-						5,
-						3,
-						2,
-						0,
-					}),
+					Data: []float64{
+						1, -2, 2, 5, 3, 2, 0,
+					},
 					MarkLine: charts.NewMarkLine(charts.SeriesMarkDataTypeAverage),
 				},
 			},
@@ -353,28 +341,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				}, charts.ChartTypeBar),
 				{
 					Type: charts.ChartTypeBar,
-					Data: []charts.SeriesData{
-						{
-							Value: 100,
-						},
-						{
-							Value: 190,
-						},
-						{
-							Value: 230,
-						},
-						{
-							Value: 140,
-						},
-						{
-							Value: 100,
-						},
-						{
-							Value: 200,
-						},
-						{
-							Value: 180,
-						},
+					Data: []float64{
+						100, 190, 230, 140, 100, 200, 180,
 					},
 					Label: charts.SeriesLabel{
 						Show:     true,
@@ -418,25 +386,15 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			SeriesList: []charts.Series{
 				{
 					Type: charts.ChartTypeHorizontalBar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						18203,
-						23489,
-						29034,
-						104970,
-						131744,
-						630230,
-					}),
+					Data: []float64{
+						18203, 23489, 29034, 104970, 131744, 630230,
+					},
 				},
 				{
 					Type: charts.ChartTypeHorizontalBar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						19325,
-						23438,
-						31000,
-						121594,
-						134141,
-						681807,
-					}),
+					Data: []float64{
+						19325, 23438, 31000, 121594, 134141, 681807,
+					},
 				},
 			},
 		},
@@ -483,20 +441,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			SeriesList: []charts.Series{
 				{
 					Type: charts.ChartTypeBar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						2.0,
-						4.9,
-						7.0,
-						23.2,
-						25.6,
-						76.7,
-						135.6,
-						162.2,
-						32.6,
-						20.0,
-						6.4,
-						3.3,
-					}),
+					Data: []float64{
+						2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
+					},
 					MarkPoint: charts.NewMarkPoint(
 						charts.SeriesMarkDataTypeMax,
 						charts.SeriesMarkDataTypeMin,
@@ -507,20 +454,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 				{
 					Type: charts.ChartTypeBar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						2.6,
-						5.9,
-						9.0,
-						26.4,
-						28.7,
-						70.7,
-						175.6,
-						182.2,
-						48.7,
-						18.8,
-						6.0,
-						2.3,
-					}),
+					Data: []float64{
+						2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3,
+					},
 					MarkPoint: charts.NewMarkPoint(
 						charts.SeriesMarkDataTypeMax,
 						charts.SeriesMarkDataTypeMin,
@@ -576,53 +512,20 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			SeriesList: []charts.Series{
 				{
 					Type: charts.ChartTypeBar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						2.0,
-						4.9,
-						7.0,
-						23.2,
-						25.6,
-						76.7,
-						135.6,
-						162.2,
-						32.6,
-						20.0,
-						6.4,
-						3.3,
-					}),
+					Data: []float64{
+						2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
+					},
 				},
 				{
 					Type: charts.ChartTypeBar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						2.6,
-						5.9,
-						9.0,
-						26.4,
-						28.7,
-						70.7,
-						175.6,
-						182.2,
-						48.7,
-						18.8,
-						6.0,
-						2.3,
-					}),
+					Data: []float64{
+						2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3,
+					},
 				},
 				{
-					Data: charts.NewSeriesDataFromValues([]float64{
-						2.0,
-						2.2,
-						3.3,
-						4.5,
-						6.3,
-						10.2,
-						20.3,
-						23.4,
-						23.0,
-						16.5,
-						12.0,
-						6.2,
-					}),
+					Data: []float64{
+						2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2,
+					},
 					YAxisIndex: 1,
 				},
 			},
@@ -708,25 +611,15 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			SeriesList: charts.SeriesList{
 				{
 					Type: charts.ChartTypeRadar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						4200,
-						3000,
-						20000,
-						35000,
-						50000,
-						18000,
-					}),
+					Data: []float64{
+						4200, 3000, 20000, 35000, 50000, 18000,
+					},
 				},
 				{
 					Type: charts.ChartTypeRadar,
-					Data: charts.NewSeriesDataFromValues([]float64{
-						5000,
-						14000,
-						28000,
-						26000,
-						42000,
-						21000,
-					}),
+					Data: []float64{
+						5000, 14000, 28000, 26000, 42000, 21000,
+					},
 				},
 			},
 		},
@@ -748,37 +641,27 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				{
 					Type: charts.ChartTypeFunnel,
 					Name: "Show",
-					Data: charts.NewSeriesDataFromValues([]float64{
-						100,
-					}),
+					Data: []float64{100},
 				},
 				{
 					Type: charts.ChartTypeFunnel,
 					Name: "Click",
-					Data: charts.NewSeriesDataFromValues([]float64{
-						80,
-					}),
+					Data: []float64{80},
 				},
 				{
 					Type: charts.ChartTypeFunnel,
 					Name: "Visit",
-					Data: charts.NewSeriesDataFromValues([]float64{
-						60,
-					}),
+					Data: []float64{60},
 				},
 				{
 					Type: charts.ChartTypeFunnel,
 					Name: "Inquiry",
-					Data: charts.NewSeriesDataFromValues([]float64{
-						40,
-					}),
+					Data: []float64{40},
 				},
 				{
 					Type: charts.ChartTypeFunnel,
 					Name: "Order",
-					Data: charts.NewSeriesDataFromValues([]float64{
-						20,
-					}),
+					Data: []float64{20},
 				},
 			},
 		},

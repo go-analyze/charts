@@ -126,8 +126,8 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			rendererList = append(rendererList, labelPainter)
 		}
 		for i, item := range series.Data {
-			h := yRange.getRestHeight(item.Value)
-			if item.Value == GetNullValue() {
+			h := yRange.getRestHeight(item)
+			if item == GetNullValue() {
 				h = math.MaxInt32
 			}
 			p := Point{
@@ -142,7 +142,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 			labelPainter.Add(labelValue{
 				index:     index,
-				value:     item.Value,
+				value:     item,
 				x:         p.X,
 				y:         p.Y,
 				fontStyle: series.Label.FontStyle,

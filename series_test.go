@@ -12,10 +12,8 @@ func TestNewSeriesListDataFromValues(t *testing.T) {
 	assert.Equal(t, SeriesList{
 		{
 			Type: ChartTypeBar,
-			Data: []SeriesData{
-				{
-					Value: 1.0,
-				},
+			Data: []float64{
+				1.0,
 			},
 		},
 	}, NewSeriesListDataFromValues([][]float64{

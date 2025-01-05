@@ -76,8 +76,8 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 	maxValues := make([]float64, len(indicators))
 	for _, series := range seriesList {
 		for index, item := range series.Data {
-			if index < len(maxValues) && item.Value > maxValues[index] {
-				maxValues[index] = item.Value
+			if index < len(maxValues) && item > maxValues[index] {
+				maxValues[index] = item
 			}
 		}
 	}
@@ -176,7 +176,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			var percent float64
 			offset := indicator.Max - indicator.Min
 			if offset > 0 {
-				percent = (item.Value - indicator.Min) / offset
+				percent = (item - indicator.Min) / offset
 			}
 			r := percent * radius
 			p := getPolygonPoint(center, r, angles[j])
@@ -207,7 +207,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			seriesPainter.Circle(dotWith, point.X, point.Y)
 			seriesPainter.fillStroke()
 			if series.Label.Show && index < len(series.Data) {
-				value := humanize.FtoaWithDigits(series.Data[index].Value, 2)
+				value := humanize.FtoaWithDigits(series.Data[index], 2)
 				b := seriesPainter.MeasureText(value)
 				seriesPainter.Text(value, point.X-b.Width()/2, point.Y)
 			}

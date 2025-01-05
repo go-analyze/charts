@@ -138,10 +138,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		if len(series.Radius) != 0 {
 			radiusValue = series.Radius
 		}
-		value := float64(0)
-		for _, item := range series.Data {
-			value += item.Value
-		}
+		value := chartdraw.SumFloat64(series.Data...)
 		values[index] = value
 		total += value
 	}

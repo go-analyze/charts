@@ -50,7 +50,7 @@ type FunnelChartOption struct {
 func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	opt := f.opt
 	seriesPainter := result.seriesPainter
-	max := seriesList[0].Data[0].Value
+	max := seriesList[0].Data[0]
 	min := float64(0)
 	for _, item := range seriesList {
 		if item.Max != nil {
@@ -77,7 +77,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	seriesNames := seriesList.Names()
 	offset := max - min
 	for index, item := range seriesList {
-		value := item.Data[0].Value
+		value := item.Data[0]
 		// if the maximum and minimum are consistent it's 100%
 		widthPercent := 100.0
 		if offset != 0 {
