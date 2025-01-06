@@ -89,11 +89,6 @@ type Series struct {
 	MarkPoint SeriesMarkPoint
 	// MarkLine provides a series for mark lines.
 	MarkLine SeriesMarkLine
-	// TODO - should min and max be in the series?
-	// Max value of series
-	Min *float64
-	// Min value of series
-	Max *float64
 }
 
 // SeriesList is a list of series to be rendered on the chart, typically constructed using NewSeriesListLine,

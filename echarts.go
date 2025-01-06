@@ -286,8 +286,6 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 					Name: dataItem.Name,
 					Type: item.Type,
 					Data: dataItem.Value.values,
-					Max:  item.Max,
-					Min:  item.Min,
 					Label: SeriesLabel{
 						FontStyle: FontStyle{
 							FontColor: ParseColor(item.Label.Color),

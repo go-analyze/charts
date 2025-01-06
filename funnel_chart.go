@@ -41,14 +41,6 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	seriesPainter := result.seriesPainter
 	max := seriesList[0].Data[0]
 	min := float64(0)
-	for _, item := range seriesList {
-		if item.Max != nil {
-			max = *item.Max
-		}
-		if item.Min != nil {
-			min = *item.Min
-		}
-	}
 	theme := opt.Theme
 	gap := 2
 	height := seriesPainter.Height()
