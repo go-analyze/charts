@@ -87,7 +87,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 	markPointPainter := newMarkPointPainter(seriesPainter)
 	markLinePainter := newMarkLinePainter(seriesPainter)
-	rendererList := []Renderer{
+	rendererList := []renderer{
 		markPointPainter,
 		markLinePainter,
 	}

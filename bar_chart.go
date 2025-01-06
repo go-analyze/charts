@@ -80,7 +80,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 
 	markPointPainter := newMarkPointPainter(seriesPainter)
 	markLinePainter := newMarkLinePainter(seriesPainter)
-	rendererList := []Renderer{
+	rendererList := []renderer{
 		markPointPainter,
 		markLinePainter,
 	}

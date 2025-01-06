@@ -42,7 +42,7 @@ func defaultYAxisLabelCount(span float64, decimalData bool) int {
 	return int(result)
 }
 
-type Renderer interface {
+type renderer interface {
 	Render() (Box, error)
 }
 
@@ -290,7 +290,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	return &result, nil
 }
 
-func doRender(renderers ...Renderer) error {
+func doRender(renderers ...renderer) error {
 	for _, r := range renderers {
 		if _, err := r.Render(); err != nil {
 			return err
