@@ -7,13 +7,68 @@ import (
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
+// TableOptionRenderDirect table render with the provided options directly to an image. Table options are different
+// from other charts as they include the state for initializing the Painter, where other charts accept the Painter. If
+// you want to write a Table on an existing Painter use TableOptionRender
+func TableOptionRenderDirect(opt TableChartOption) (*Painter, error) {
+	if opt.OutputFormat == "" {
+		opt.OutputFormat = chartDefaultOutputFormat
+	}
+	if opt.Width <= 0 {
+		opt.Width = defaultChartWidth
+	}
+
+	p := NewPainter(PainterOptions{
+		OutputFormat: opt.OutputFormat,
+		Width:        opt.Width,
+		Height:       100, // is only used to calculate the height of the table
+		Font:         opt.FontStyle.Font,
+	})
+	info, err := newTableChart(p, opt).render()
+	if err != nil {
+		return nil, err
+	}
+
+	p = NewPainter(PainterOptions{
+		OutputFormat: opt.OutputFormat,
+		Width:        info.width,
+		Height:       info.height,
+		Font:         opt.FontStyle.Font,
+	})
+	if _, err = newTableChart(p, opt).renderWithInfo(info); err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+// TableRenderValues renders a table chart with the simple header and data values provided.
+func TableRenderValues(header []string, data [][]string, spanMaps ...map[int]int) (*Painter, error) {
+	opt := TableChartOption{
+		Header: header,
+		Data:   data,
+	}
+	if len(spanMaps) != 0 {
+		spanMap := spanMaps[0]
+		spans := make([]int, len(opt.Header))
+		for index := range spans {
+			v, ok := spanMap[index]
+			if !ok {
+				v = 1
+			}
+			spans[index] = v
+		}
+		opt.Spans = spans
+	}
+	return TableOptionRenderDirect(opt)
+}
+
 type tableChart struct {
 	p   *Painter
 	opt *TableChartOption
 }
 
-// NewTableChart returns a table chart render
-func NewTableChart(p *Painter, opt TableChartOption) *tableChart {
+// newTableChart returns a table chart render.
+func newTableChart(p *Painter, opt TableChartOption) *tableChart {
 	return &tableChart{
 		p:   p,
 		opt: &opt,

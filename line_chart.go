@@ -14,8 +14,8 @@ type lineChart struct {
 	opt *LineChartOption
 }
 
-// NewLineChart returns a line chart render
-func NewLineChart(p *Painter, opt LineChartOption) *lineChart {
+// newLineChart returns a line chart render
+func newLineChart(p *Painter, opt LineChartOption) *lineChart {
 	return &lineChart{
 		p:   p,
 		opt: &opt,

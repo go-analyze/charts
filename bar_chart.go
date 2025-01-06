@@ -14,8 +14,8 @@ type barChart struct {
 	opt *BarChartOption
 }
 
-// NewBarChart returns a bar chart renderer
-func NewBarChart(p *Painter, opt BarChartOption) *barChart {
+// newBarChart returns a bar chart renderer
+func newBarChart(p *Painter, opt BarChartOption) *barChart {
 	return &barChart{
 		p:   p,
 		opt: &opt,

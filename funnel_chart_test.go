@@ -78,7 +78,7 @@ func TestFunnelChart(t *testing.T) {
 func validateFunnelChartRender(t *testing.T, p *Painter, opt FunnelChartOption, expectedResult string) {
 	t.Helper()
 
-	_, err := NewFunnelChart(p, opt).Render()
+	err := p.FunnelChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

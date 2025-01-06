@@ -49,7 +49,7 @@ func TestCustomFontSizeRender(t *testing.T) {
 	opt.Title.FontStyle.FontSize = 4.0
 	opt.Legend.FontStyle.FontSize = 4.0
 
-	_, err := NewLineChart(p, opt).Render()
+	err := p.LineChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

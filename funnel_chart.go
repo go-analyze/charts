@@ -13,8 +13,8 @@ type funnelChart struct {
 	opt *FunnelChartOption
 }
 
-// NewFunnelChart returns a funnel chart renderer
-func NewFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
+// newFunnelChart returns a funnel chart renderer
+func newFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
 	return &funnelChart{
 		p:   p,
 		opt: &opt,

@@ -96,7 +96,7 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 		bytesList = append(bytesList, buf)
 	}
 
-	p, err := charts.TableOptionRender(charts.TableChartOption{
+	p, err := charts.TableOptionRenderDirect(charts.TableChartOption{
 		OutputFormat: charts.ChartOutputSVG,
 		Header: []string{
 			"Name", "Age", "Address", "Tag", "Action",

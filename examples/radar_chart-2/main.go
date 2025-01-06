@@ -62,7 +62,7 @@ func main() {
 		Width:        600,
 		Height:       400,
 	})
-	if _, err := charts.NewRadarChart(p, opt).Render(); err != nil {
+	if err := p.RadarChart(opt); err != nil {
 		panic(err)
 	}
 

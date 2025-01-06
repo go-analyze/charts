@@ -54,7 +54,7 @@ func main() {
 		Width:        600,
 		Height:       400,
 	})
-	if _, err := charts.NewBarChart(p, opt).Render(); err != nil {
+	if err := p.BarChart(opt); err != nil {
 		panic(err)
 	}
 

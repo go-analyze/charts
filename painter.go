@@ -94,7 +94,7 @@ func PainterThemeOption(theme ColorPalette) PainterOptionFunc {
 	}
 }
 
-// NewPainter creates a painter which can be used to render charts to (using for example NewLineChart).
+// NewPainter creates a painter which can be used to render charts to (using for example newLineChart).
 func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) *Painter {
 	if opts.Width <= 0 {
 		opts.Width = defaultChartWidth
@@ -916,4 +916,46 @@ func (p *Painter) legendLineDot(box Box) {
 	p.stroke()
 	p.Circle(float64(dotHeight), box.Left+width>>1, box.Top-center)
 	p.fillStroke()
+}
+
+// BarChart renders a bar chart with the provided configuration to the painter.
+func (p *Painter) BarChart(opt BarChartOption) error {
+	_, err := newBarChart(p, opt).Render()
+	return err
+}
+
+// HorizontalBarChart renders a horizontal bar chart with the provided configuration to the painter.
+func (p *Painter) HorizontalBarChart(opt HorizontalBarChartOption) error {
+	_, err := newHorizontalBarChart(p, opt).Render()
+	return err
+}
+
+// FunnelChart renders a funnel chart with the provided configuration to the painter.
+func (p *Painter) FunnelChart(opt FunnelChartOption) error {
+	_, err := newFunnelChart(p, opt).Render()
+	return err
+}
+
+// LineChart renders a line chart with the provided configuration to the painter.
+func (p *Painter) LineChart(opt LineChartOption) error {
+	_, err := newLineChart(p, opt).Render()
+	return err
+}
+
+// PieChart renders a pie chart with the provided configuration to the painter.
+func (p *Painter) PieChart(opt PieChartOption) error {
+	_, err := newPieChart(p, opt).Render()
+	return err
+}
+
+// RadarChart renders a radar chart with the provided configuration to the painter.
+func (p *Painter) RadarChart(opt RadarChartOption) error {
+	_, err := newRadarChart(p, opt).Render()
+	return err
+}
+
+// TableChart renders a table with the provided configuration to the painter.
+func (p *Painter) TableChart(opt TableChartOption) error {
+	_, err := newTableChart(p, opt).Render()
+	return err
 }

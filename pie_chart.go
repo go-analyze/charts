@@ -31,8 +31,8 @@ type PieChartOption struct {
 	backgroundIsFilled bool
 }
 
-// NewPieChart returns a pie chart renderer
-func NewPieChart(p *Painter, opt PieChartOption) *pieChart {
+// newPieChart returns a pie chart renderer.
+func newPieChart(p *Painter, opt PieChartOption) *pieChart {
 	return &pieChart{
 		p:   p,
 		opt: &opt,

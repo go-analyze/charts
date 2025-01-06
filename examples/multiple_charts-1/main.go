@@ -66,13 +66,13 @@ func main() {
 	}
 
 	// render the same chart in each spot for the demo
-	if _, err := charts.NewLineChart(bottomLeftPainter, lineOpt).Render(); err != nil {
+	if err := bottomLeftPainter.LineChart(lineOpt); err != nil {
 		panic(err)
 	}
-	if _, err := charts.NewLineChart(bottomRightPainter, lineOpt).Render(); err != nil {
+	if err := bottomRightPainter.LineChart(lineOpt); err != nil {
 		panic(err)
 	}
-	if _, err := charts.NewLineChart(topCenterPainter, lineOpt).Render(); err != nil {
+	if err := topCenterPainter.LineChart(lineOpt); err != nil {
 		panic(err)
 	}
 

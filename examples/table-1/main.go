@@ -64,7 +64,7 @@ func main() {
 		3: 2,
 		4: 2,
 	}
-	p, err := charts.TableRender(
+	p, err := charts.TableRenderValues(
 		header,
 		data,
 		spans,
@@ -80,7 +80,7 @@ func main() {
 	}
 
 	bgColor := charts.Color{R: 28, G: 28, B: 32, A: 255}
-	p, err = charts.TableOptionRender(charts.TableChartOption{
+	p, err = charts.TableOptionRenderDirect(charts.TableChartOption{
 		Header:                []string{"Name", "Price", "Change"},
 		BackgroundColor:       bgColor,
 		HeaderBackgroundColor: charts.Color{R: 80, G: 80, B: 80, A: 255},

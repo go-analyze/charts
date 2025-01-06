@@ -582,7 +582,7 @@ func TestLineChart(t *testing.T) {
 func validateLineChartRender(t *testing.T, p *Painter, opt LineChartOption, expectedResult string) {
 	t.Helper()
 
-	_, err := NewLineChart(p, opt).Render()
+	err := p.LineChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

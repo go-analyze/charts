@@ -34,8 +34,8 @@ type HorizontalBarChartOption struct {
 	BarHeight int
 }
 
-// NewHorizontalBarChart returns a horizontal bar chart renderer
-func NewHorizontalBarChart(p *Painter, opt HorizontalBarChartOption) *horizontalBarChart {
+// newHorizontalBarChart returns a horizontal bar chart renderer
+func newHorizontalBarChart(p *Painter, opt HorizontalBarChartOption) *horizontalBarChart {
 	return &horizontalBarChart{
 		p:   p,
 		opt: &opt,

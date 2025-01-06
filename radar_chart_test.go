@@ -95,7 +95,7 @@ func TestRadarChart(t *testing.T) {
 func validateRadarChartRender(t *testing.T, p *Painter, opt RadarChartOption, expectedResult string) {
 	t.Helper()
 
-	_, err := NewRadarChart(p, opt).Render()
+	err := p.RadarChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

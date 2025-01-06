@@ -72,7 +72,7 @@ func renderTestLineChartWithTheme(t *testing.T, fullChart bool, theme ColorPalet
 	}
 	opt.Theme = theme
 
-	_, err := NewLineChart(p, opt).Render()
+	err := p.LineChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

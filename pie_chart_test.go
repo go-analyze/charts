@@ -334,7 +334,7 @@ func TestPieChart(t *testing.T) {
 func validatePieChartRender(t *testing.T, p *Painter, opt PieChartOption, expectedResult string) {
 	t.Helper()
 
-	_, err := NewPieChart(p, opt).Render()
+	err := p.PieChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

@@ -141,7 +141,7 @@ func validateTableChartRender(t *testing.T, p *Painter, opt TableChartOption,
 	expectedResult string, errorExpected bool) {
 	t.Helper()
 
-	_, err := NewTableChart(p, opt).Render()
+	err := p.TableChart(opt)
 	if errorExpected {
 		require.Error(t, err)
 		return

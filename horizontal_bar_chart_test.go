@@ -123,7 +123,7 @@ func TestHorizontalBarChart(t *testing.T) {
 func validateHorizontalBarChartRender(t *testing.T, p *Painter, opt HorizontalBarChartOption, expectedResult string) {
 	t.Helper()
 
-	_, err := NewHorizontalBarChart(p, opt).Render()
+	err := p.HorizontalBarChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

@@ -88,7 +88,7 @@ func main() {
 		Width:  600,
 		Height: 400,
 	})
-	if _, err = charts.NewLineChart(p, opt).Render(); err != nil {
+	if err = p.LineChart(opt); err != nil {
 		panic(err)
 	}
 

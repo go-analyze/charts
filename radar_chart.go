@@ -58,8 +58,8 @@ func NewRadarIndicators(names []string, values []float64) []RadarIndicator {
 	return indicators
 }
 
-// NewRadarChart returns a radar chart renderer
-func NewRadarChart(p *Painter, opt RadarChartOption) *radarChart {
+// newRadarChart returns a radar chart renderer.
+func newRadarChart(p *Painter, opt RadarChartOption) *radarChart {
 	return &radarChart{
 		p:   p,
 		opt: &opt,

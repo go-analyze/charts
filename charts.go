@@ -384,7 +384,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// bar chart
 	if len(barSeriesList) != 0 {
 		handler.Add(func() error {
-			_, err := NewBarChart(p, BarChartOption{
+			_, err := newBarChart(p, BarChartOption{
 				Theme:    opt.Theme,
 				Font:     opt.Font,
 				XAxis:    opt.XAxis,
@@ -397,7 +397,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// horizontal bar chart
 	if len(horizontalBarSeriesList) != 0 {
 		handler.Add(func() error {
-			_, err := NewHorizontalBarChart(p, HorizontalBarChartOption{
+			_, err := newHorizontalBarChart(p, HorizontalBarChartOption{
 				Theme:     opt.Theme,
 				Font:      opt.Font,
 				BarHeight: opt.BarHeight,
@@ -410,7 +410,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// pie chart
 	if len(pieSeriesList) != 0 {
 		handler.Add(func() error {
-			_, err := NewPieChart(p, PieChartOption{
+			_, err := newPieChart(p, PieChartOption{
 				Theme: opt.Theme,
 				Font:  opt.Font,
 			}).render(renderResult, pieSeriesList)
@@ -421,7 +421,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// line chart
 	if len(lineSeriesList) != 0 {
 		handler.Add(func() error {
-			_, err := NewLineChart(p, LineChartOption{
+			_, err := newLineChart(p, LineChartOption{
 				Theme:       opt.Theme,
 				Font:        opt.Font,
 				XAxis:       opt.XAxis,
@@ -437,7 +437,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// radar chart
 	if len(radarSeriesList) != 0 {
 		handler.Add(func() error {
-			_, err := NewRadarChart(p, RadarChartOption{
+			_, err := newRadarChart(p, RadarChartOption{
 				Theme:           opt.Theme,
 				Font:            opt.Font,
 				RadarIndicators: opt.RadarIndicators,
@@ -449,7 +449,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// funnel chart
 	if len(funnelSeriesList) != 0 {
 		handler.Add(func() error {
-			_, err := NewFunnelChart(p, FunnelChartOption{
+			_, err := newFunnelChart(p, FunnelChartOption{
 				Theme: opt.Theme,
 				Font:  opt.Font,
 			}).render(renderResult, funnelSeriesList)

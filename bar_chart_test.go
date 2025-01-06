@@ -141,7 +141,7 @@ func TestBarChart(t *testing.T) {
 func validateBarChartRender(t *testing.T, p *Painter, opt BarChartOption, expectedResult string) {
 	t.Helper()
 
-	_, err := NewBarChart(p, opt).Render()
+	err := p.BarChart(opt)
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)
