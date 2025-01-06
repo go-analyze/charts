@@ -202,7 +202,10 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			FillColor:   s.color,
 		})
 		seriesPainter.moveTo(s.cx, s.cy)
-		seriesPainter.arcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta).lineTo(s.cx, s.cy).close().fillStroke()
+		seriesPainter.arcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta)
+		seriesPainter.lineTo(s.cx, s.cy)
+		seriesPainter.close()
+		seriesPainter.fillStroke()
 		if s.label == "" {
 			continue
 		}

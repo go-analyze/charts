@@ -190,19 +190,17 @@ func overrideStyle(defaultStyle chartdraw.Style, style chartdraw.Style) chartdra
 	return style
 }
 
-func (p *Painter) OverrideDrawingStyle(style chartdraw.Style) *Painter {
+func (p *Painter) OverrideDrawingStyle(style chartdraw.Style) {
 	// TODO - we should alias parts of Style we want to support drawing on
 	s := overrideStyle(p.style, style)
 	p.SetDrawingStyle(s)
-	return p
 }
 
-func (p *Painter) SetDrawingStyle(style chartdraw.Style) *Painter {
+func (p *Painter) SetDrawingStyle(style chartdraw.Style) {
 	style.WriteDrawingOptionsToRenderer(p.render)
-	return p
 }
 
-func (p *Painter) SetFontStyle(style chartdraw.FontStyle) *Painter {
+func (p *Painter) SetFontStyle(style chartdraw.FontStyle) {
 	if style.Font == nil {
 		style.Font = p.font
 	}
@@ -213,18 +211,15 @@ func (p *Painter) SetFontStyle(style chartdraw.FontStyle) *Painter {
 		style.FontSize = p.style.FontSize
 	}
 	style.WriteTextOptionsToRenderer(p.render)
-	return p
 }
 
-func (p *Painter) OverrideFontStyle(style chartdraw.FontStyle) *Painter {
+func (p *Painter) OverrideFontStyle(style chartdraw.FontStyle) {
 	s := overrideStyle(p.style, chartdraw.Style{FontStyle: style})
 	p.SetFontStyle(s.FontStyle)
-	return p
 }
 
-func (p *Painter) resetStyle() *Painter {
+func (p *Painter) resetStyle() {
 	p.style.WriteToRenderer(p.render)
-	return p
 }
 
 // Bytes returns the data of draw canvas.
@@ -237,34 +232,31 @@ func (p *Painter) Bytes() ([]byte, error) {
 }
 
 // moveTo moves the cursor to a given point.
-func (p *Painter) moveTo(x, y int) *Painter {
+func (p *Painter) moveTo(x, y int) {
 	p.render.MoveTo(x+p.box.Left, y+p.box.Top)
-	return p
 }
 
 // arcTo renders an arc from the current cursor and the given parameters.
-func (p *Painter) arcTo(cx, cy int, rx, ry, startAngle, delta float64) *Painter {
+func (p *Painter) arcTo(cx, cy int, rx, ry, startAngle, delta float64) {
 	p.render.ArcTo(cx+p.box.Left, cy+p.box.Top, rx, ry, startAngle, delta)
-	return p
 }
 
 // Line renders a line from the first xy coordinates to the second point.
-func (p *Painter) Line(x1, y1, x2, y2 int) *Painter {
-	return p.moveTo(x1, y1).lineTo(x2, y2)
+func (p *Painter) Line(x1, y1, x2, y2 int) {
+	p.moveTo(x1, y1)
+	p.lineTo(x2, y2)
 }
 
-func (p *Painter) quadCurveTo(cx, cy, x, y int) *Painter {
+func (p *Painter) quadCurveTo(cx, cy, x, y int) {
 	p.render.QuadCurveTo(cx+p.box.Left, cy+p.box.Top, x+p.box.Left, y+p.box.Top)
-	return p
 }
 
 // lineTo renders a line from the current cursor to the given point.
-func (p *Painter) lineTo(x, y int) *Painter {
+func (p *Painter) lineTo(x, y int) {
 	p.render.LineTo(x+p.box.Left, y+p.box.Top)
-	return p
 }
 
-func (p *Painter) Pin(x, y, width int) *Painter {
+func (p *Painter) Pin(x, y, width int) {
 	r := float64(width) / 2
 	y -= width / 4
 	angle := chartdraw.DegreesToRadians(15)
@@ -290,10 +282,9 @@ func (p *Painter) Pin(x, y, width int) *Painter {
 	p.render.QuadCurveTo(cx+left, cy+top, endX+left, endY+top)
 	p.close()
 	p.render.Fill()
-	return p
 }
 
-func (p *Painter) arrow(x, y, width, height int, direction string) *Painter {
+func (p *Painter) arrow(x, y, width, height int, direction string) {
 	halfWidth := width >> 1
 	halfHeight := height >> 1
 	if direction == PositionTop || direction == PositionBottom {
@@ -329,52 +320,43 @@ func (p *Painter) arrow(x, y, width, height int, direction string) *Painter {
 		p.lineTo(x0, y0)
 	}
 	p.fillStroke()
-	return p
 }
 
 // ArrowLeft draws an arrow at the given point and dimensions pointing left.
-func (p *Painter) ArrowLeft(x, y, width, height int) *Painter {
+func (p *Painter) ArrowLeft(x, y, width, height int) {
 	p.arrow(x, y, width, height, PositionLeft)
-	return p
 }
 
 // ArrowRight draws an arrow at the given point and dimensions pointing right.
-func (p *Painter) ArrowRight(x, y, width, height int) *Painter {
+func (p *Painter) ArrowRight(x, y, width, height int) {
 	p.arrow(x, y, width, height, PositionRight)
-	return p
 }
 
 // ArrowUp draws an arrow at the given point and dimensions pointing up.
-func (p *Painter) ArrowUp(x, y, width, height int) *Painter {
+func (p *Painter) ArrowUp(x, y, width, height int) {
 	p.arrow(x, y, width, height, PositionTop)
-	return p
 }
 
 // ArrowDown draws an arrow at the given point and dimensions pointing down.
-func (p *Painter) ArrowDown(x, y, width, height int) *Painter {
+func (p *Painter) ArrowDown(x, y, width, height int) {
 	p.arrow(x, y, width, height, PositionBottom)
-	return p
 }
 
 // Circle draws a circle at the given coords with a given radius.
-func (p *Painter) Circle(radius float64, x, y int) *Painter {
+func (p *Painter) Circle(radius float64, x, y int) {
 	p.render.Circle(radius, x+p.box.Left, y+p.box.Top)
-	return p
 }
 
-func (p *Painter) stroke() *Painter {
+func (p *Painter) stroke() {
 	p.render.Stroke()
-	return p
 }
 
-func (p *Painter) close() *Painter {
+func (p *Painter) close() {
 	p.render.Close()
-	return p
 }
 
-func (p *Painter) fillStroke() *Painter {
+func (p *Painter) fillStroke() {
 	p.render.FillStroke()
-	return p
 }
 
 // Width returns the drawable width of the painter's box.
@@ -410,7 +392,7 @@ func (p *Painter) measureTextMaxWidthHeight(textList []string) (int, int) {
 // LineStroke draws a line in the graph from point to point with the specified stroke color/width.
 // Points with values of math.MaxInt32 will be skipped, resulting in a gap.
 // Single or isolated points will result in just a dot being drawn at the point.
-func (p *Painter) LineStroke(points []Point) *Painter {
+func (p *Painter) LineStroke(points []Point) {
 	var valid []Point
 	for _, pt := range points {
 		if pt.Y == math.MaxInt32 {
@@ -425,7 +407,7 @@ func (p *Painter) LineStroke(points []Point) *Painter {
 
 	// Draw the last segment if there is one
 	p.drawStraightPath(valid, true)
-	return p.stroke()
+	p.stroke()
 }
 
 // drawStraightPath draws a simple (non-curved) path for the given points.
@@ -449,9 +431,10 @@ func (p *Painter) drawStraightPath(points []Point, dotForSinglePoint bool) {
 // `tension` parameter in [0..1] with 0 providing straight lines between midpoints and 1 providing a smoother line.
 // Because the tension smooths out the line, the line will no longer hit the provided points exactly. The more variable
 // the points, and the higher the tension, the more the line will be
-func (p *Painter) SmoothLineStroke(points []Point, tension float64) *Painter {
+func (p *Painter) SmoothLineStroke(points []Point, tension float64) {
 	if tension <= 0 {
-		return p.LineStroke(points)
+		p.LineStroke(points)
+		return
 	} else if tension > 1 {
 		tension = 1
 	}
@@ -470,7 +453,7 @@ func (p *Painter) SmoothLineStroke(points []Point, tension float64) *Painter {
 	}
 	// draw any remaining points collected
 	p.drawSmoothCurve(valid, tension, true)
-	return p.stroke()
+	p.stroke()
 }
 
 // drawSmoothCurve handles the actual path drawing (MoveTo/LineTo/QuadCurveTo)
@@ -503,7 +486,7 @@ func (p *Painter) drawSmoothCurve(points []Point, tension float64, dotForSingleP
 	p.quadCurveTo(points[n-2].X, points[n-2].Y, points[n-1].X, points[n-1].Y)
 }
 
-func (p *Painter) SetBackground(width, height int, color Color, inside ...bool) *Painter {
+func (p *Painter) SetBackground(width, height int, color Color, inside ...bool) {
 	r := p.render
 	s := chartdraw.Style{
 		FillColor: color,
@@ -526,11 +509,10 @@ func (p *Painter) SetBackground(width, height int, color Color, inside ...bool) 
 		r.LineTo(0, 0)
 	}
 	p.fillStroke()
-	return p
 }
 
 // MarkLine draws a horizontal line with a small circle and arrow at the right.
-func (p *Painter) MarkLine(x, y, width int) *Painter {
+func (p *Painter) MarkLine(x, y, width int) {
 	arrowWidth := 16
 	arrowHeight := 10
 	endX := x + width
@@ -540,11 +522,10 @@ func (p *Painter) MarkLine(x, y, width int) *Painter {
 	p.Line(x+radius*3, y, endX-arrowWidth, y)
 	p.stroke()
 	p.ArrowRight(endX, y, arrowWidth, arrowHeight)
-	return p
 }
 
 // Polygon draws a polygon with the specified center, radius, and number of sides.
-func (p *Painter) Polygon(center Point, radius float64, sides int) *Painter {
+func (p *Painter) Polygon(center Point, radius float64, sides int) {
 	points := getPolygonPoints(center, radius, sides)
 	for i, item := range points {
 		if i == 0 {
@@ -555,14 +536,13 @@ func (p *Painter) Polygon(center Point, radius float64, sides int) *Painter {
 	}
 	p.lineTo(points[0].X, points[0].Y)
 	p.stroke()
-	return p
 }
 
 // FillArea draws a filled polygon through the given points, skipping "null" (MaxInt32) break values (filling the area
 // flat between them).
-func (p *Painter) FillArea(points []Point) *Painter {
+func (p *Painter) FillArea(points []Point) {
 	if len(points) == 0 {
-		return p
+		return
 	}
 
 	var valid []Point
@@ -580,15 +560,14 @@ func (p *Painter) FillArea(points []Point) *Painter {
 	// Fill the last segment if there is one
 	p.drawStraightPath(valid, false)
 	p.render.Fill()
-
-	return p
 }
 
 // smoothFillArea draws a smooth curve for the "top" portion of points but uses straight lines for the bottom corners,
 // producing a fill with sharp corners.
-func (p *Painter) smoothFillChartArea(points []Point, tension float64) *Painter {
+func (p *Painter) smoothFillChartArea(points []Point, tension float64) {
 	if tension <= 0 {
-		return p.FillArea(points)
+		p.FillArea(points)
+		return
 	} else if tension > 1 {
 		tension = 1
 	}
@@ -598,7 +577,8 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64) *Painter 
 	// We'll separate them:
 	if len(points) < 3 {
 		// Not enough to separate top from bottom
-		return p.FillArea(points)
+		p.FillArea(points)
+		return
 	}
 
 	// The final 3 points are the corners + repeated first point
@@ -607,7 +587,8 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64) *Painter 
 
 	// If top portion is empty or 1 point, just fill straight
 	if len(top) < 2 {
-		return p.FillArea(points)
+		p.FillArea(points)
+		return
 	}
 
 	// Build the smooth path for the top portion
@@ -633,7 +614,8 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64) *Painter 
 	}
 
 	if !firstPointSet {
-		return p.FillArea(points) // No actual top segment was drawn, fallback to straight fill
+		p.FillArea(points) // No actual top segment was drawn, fallback to straight fill
+		return
 	}
 
 	// Add sharp lines to close the shape at the bottom
@@ -643,12 +625,10 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64) *Painter 
 	}
 
 	p.render.Fill()
-	return p
 }
 
-func (p *Painter) Text(body string, x, y int) *Painter {
+func (p *Painter) Text(body string, x, y int) {
 	p.render.Text(body, x+p.box.Left, y+p.box.Top)
-	return p
 }
 
 func (p *Painter) TextRotation(body string, x, y int, radians float64) {
@@ -720,9 +700,9 @@ func isTick(totalRange int, numTicks int, index int) bool {
 	return actualTickIndex == index
 }
 
-func (p *Painter) ticks(opt ticksOption) *Painter {
+func (p *Painter) ticks(opt ticksOption) {
 	if opt.labelCount <= 0 || opt.length <= 0 {
-		return p
+		return
 	}
 	var values []int
 	if opt.vertical {
@@ -748,12 +728,11 @@ func (p *Painter) ticks(opt ticksOption) *Painter {
 			})
 		}
 	}
-	return p
 }
 
-func (p *Painter) multiText(opt multiTextOption) *Painter {
+func (p *Painter) multiText(opt multiTextOption) {
 	if len(opt.textList) == 0 {
-		return p
+		return
 	}
 	count := len(opt.textList)
 	width := p.Width()
@@ -845,36 +824,33 @@ func (p *Painter) multiText(opt multiTextOption) *Painter {
 	if isTextRotation {
 		p.clearTextRotation()
 	}
-	return p
 }
 
 // Dots prints filled circles for the given points.
-func (p *Painter) Dots(points []Point) *Painter {
+func (p *Painter) Dots(points []Point) {
 	for _, item := range points {
 		p.Circle(2, item.X, item.Y)
 	}
 	p.fillStroke()
-	return p
 }
 
 // Rect will draw a box with the given coordinates.
-func (p *Painter) Rect(box Box) *Painter {
+func (p *Painter) Rect(box Box) {
 	p.moveTo(box.Left, box.Top)
 	p.lineTo(box.Right, box.Top)
 	p.lineTo(box.Right, box.Bottom)
 	p.lineTo(box.Left, box.Bottom)
 	p.lineTo(box.Left, box.Top)
-	return p
 }
 
 // filledRect will draw a filled box with the given coordinates.
-func (p *Painter) filledRect(box Box) *Painter {
-	p.Rect(box).fillStroke()
-	return p
+func (p *Painter) filledRect(box Box) {
+	p.Rect(box)
+	p.fillStroke()
 }
 
 // roundedRect is similar to filledRect except the top and bottom will be rounded.
-func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool) *Painter {
+func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool) {
 	r := (box.Right - box.Left) / 2
 	if radius > r {
 		radius = r
@@ -926,10 +902,9 @@ func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool) *
 	p.close()
 	p.fillStroke()
 	p.render.Fill()
-	return p
 }
 
-func (p *Painter) legendLineDot(box Box) *Painter {
+func (p *Painter) legendLineDot(box Box) {
 	width := box.Width()
 	height := box.Height()
 	strokeWidth := 3
@@ -941,5 +916,4 @@ func (p *Painter) legendLineDot(box Box) *Painter {
 	p.stroke()
 	p.Circle(float64(dotHeight), box.Left+width>>1, box.Top-center)
 	p.fillStroke()
-	return p
 }

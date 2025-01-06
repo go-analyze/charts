@@ -110,7 +110,8 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 
 		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 			FillColor: color,
-		}).FillArea(points)
+		})
+		seriesPainter.FillArea(points)
 
 		// text
 		text := textList[index]

@@ -195,8 +195,8 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			DotColor:    color,
 			FillColor:   color.WithAlpha(20),
 		})
-		seriesPainter.LineStroke(linePoints).
-			FillArea(linePoints)
+		seriesPainter.LineStroke(linePoints)
+		seriesPainter.FillArea(linePoints)
 		dotWith := 2.0
 		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
 			StrokeWidth: defaultStrokeWidth,

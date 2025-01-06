@@ -102,7 +102,8 @@ func (a *axisPainter) Render() (Box, error) {
 		StrokeWidth: strokeWidth,
 		FontStyle:   fontStyle,
 	}
-	top.SetDrawingStyle(style).OverrideFontStyle(style.FontStyle)
+	top.SetDrawingStyle(style)
+	top.OverrideFontStyle(style.FontStyle)
 
 	isTextRotation := opt.TextRotation != 0
 
