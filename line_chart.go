@@ -41,9 +41,8 @@ type LineChartOption struct {
 	Legend LegendOption
 	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
 	SymbolShow *bool
-	// TODO - rename to `LineStrokeWidth` to be more similar to ChartOptions?
-	// StrokeWidth is the width of the rendered line.
-	StrokeWidth float64
+	// LineStrokeWidth is the width of the rendered line.
+	LineStrokeWidth float64
 	// StrokeSmoothingTension should be between 0 and 1. At 0 perfectly straight lines will be used with 1 providing
 	// smoother lines. Because the tension smooths out the line, the line will no longer hit the data points exactly.
 	// The more variable the points, and the higher the tension, the more the line will be moved from the points.
@@ -91,7 +90,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		markPointPainter,
 		markLinePainter,
 	}
-	strokeWidth := opt.StrokeWidth
+	strokeWidth := opt.LineStrokeWidth
 	if strokeWidth == 0 {
 		strokeWidth = defaultStrokeWidth
 	}

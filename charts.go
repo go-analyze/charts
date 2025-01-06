@@ -422,13 +422,13 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(lineSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newLineChart(p, LineChartOption{
-				Theme:       opt.Theme,
-				Font:        opt.Font,
-				XAxis:       opt.XAxis,
-				SymbolShow:  opt.SymbolShow,
-				StrokeWidth: opt.LineStrokeWidth,
-				FillArea:    opt.FillArea,
-				FillOpacity: opt.FillOpacity,
+				Theme:           opt.Theme,
+				Font:            opt.Font,
+				XAxis:           opt.XAxis,
+				SymbolShow:      opt.SymbolShow,
+				LineStrokeWidth: opt.LineStrokeWidth,
+				FillArea:        opt.FillArea,
+				FillOpacity:     opt.FillOpacity,
 			}).render(renderResult, lineSeriesList)
 			return err
 		})

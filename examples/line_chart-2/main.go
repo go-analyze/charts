@@ -44,7 +44,7 @@ func main() {
 		Left: 100,
 	}
 	opt.SymbolShow = charts.True()
-	opt.StrokeWidth = 1.2
+	opt.LineStrokeWidth = 1.2
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
