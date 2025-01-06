@@ -15,7 +15,7 @@ import (
 )
 
 // SVG returns a new png/raster renderer.
-func SVG(width, height int) (Renderer, error) {
+func SVG(width, height int) Renderer {
 	buffer := bytes.NewBuffer([]byte{})
 	canvas := newCanvas(buffer)
 	canvas.Start(width, height)
@@ -25,13 +25,13 @@ func SVG(width, height int) (Renderer, error) {
 		s:   &Style{},
 		p:   []string{},
 		dpi: DefaultDPI,
-	}, nil
+	}
 }
 
 // SVGWithCSS returns a new png/raster renderer with attached custom CSS
 // The optional nonce argument sets a CSP nonce.
-func SVGWithCSS(css string, nonce string) func(width, height int) (Renderer, error) {
-	return func(width, height int) (Renderer, error) {
+func SVGWithCSS(css string, nonce string) func(width, height int) Renderer {
+	return func(width, height int) Renderer {
 		buffer := bytes.NewBuffer([]byte{})
 		canvas := newCanvas(buffer)
 		canvas.css = css
@@ -43,7 +43,7 @@ func SVGWithCSS(css string, nonce string) func(width, height int) (Renderer, err
 			s:   &Style{},
 			p:   []string{},
 			dpi: DefaultDPI,
-		}, nil
+		}
 	}
 }
 

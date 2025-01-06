@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
@@ -22,8 +21,7 @@ func TestAnnotationSeriesMeasure(t *testing.T) {
 		},
 	}
 
-	r, err := PNG(110, 110)
-	require.NoError(t, err)
+	r := PNG(110, 110)
 
 	xrange := &ContinuousRange{
 		Min:    1.0,
@@ -73,8 +71,7 @@ func TestAnnotationSeriesRender(t *testing.T) {
 		},
 	}
 
-	r, err := PNG(110, 110)
-	require.NoError(t, err)
+	r := PNG(110, 110)
 
 	xrange := &ContinuousRange{
 		Min:    1.0,

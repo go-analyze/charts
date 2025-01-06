@@ -82,15 +82,12 @@ func main() {
 	opt.SymbolShow = charts.False()
 	opt.StrokeWidth = 1.5
 
-	p, err := charts.NewPainter(charts.PainterOptions{
+	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
 		// positions drawn below depend on the canvas size set here
 		Width:  600,
 		Height: 400,
 	})
-	if err != nil {
-		panic(err)
-	}
 	if _, err = charts.NewLineChart(p, opt).Render(); err != nil {
 		panic(err)
 	}

@@ -15,7 +15,7 @@ import (
 func TestPainterOption(t *testing.T) {
 	t.Parallel()
 
-	d, err := NewPainter(PainterOptions{
+	p := NewPainter(PainterOptions{
 		OutputFormat: ChartOutputSVG,
 		Width:        800,
 		Height:       600,
@@ -23,13 +23,12 @@ func TestPainterOption(t *testing.T) {
 		PainterBoxOption(Box{Right: 400, Bottom: 300}),
 		PainterPaddingOption(Box{Left: 1, Top: 2, Right: 3, Bottom: 4}),
 	)
-	require.NoError(t, err)
 	assert.Equal(t, Box{
 		Left:   1,
 		Top:    2,
 		Right:  397,
 		Bottom: 296,
-	}, d.box)
+	}, p.box)
 }
 
 func TestPainter(t *testing.T) {
@@ -211,14 +210,13 @@ func TestPainter(t *testing.T) {
 	}
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
-			d, err := NewPainter(PainterOptions{
+			p := NewPainter(PainterOptions{
 				OutputFormat: ChartOutputSVG,
 				Width:        400,
 				Height:       300,
 			}, PainterPaddingOption(chartdraw.Box{Left: 5, Top: 10}))
-			require.NoError(t, err)
-			tt.fn(d)
-			data, err := d.Bytes()
+			tt.fn(p)
+			data, err := p.Bytes()
 			require.NoError(t, err)
 			assertEqualSVG(t, tt.result, data)
 		})
@@ -273,12 +271,11 @@ func TestRoundedRect(t *testing.T) {
 
 	for i, tc := range tests {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
-			p, err := NewPainter(PainterOptions{
+			p := NewPainter(PainterOptions{
 				Width:        400,
 				Height:       300,
 				OutputFormat: ChartOutputSVG,
 			})
-			require.NoError(t, err)
 			p.OverrideDrawingStyle(chartdraw.Style{
 				FillColor:   drawing.ColorBlue,
 				StrokeWidth: 1,
@@ -295,12 +292,11 @@ func TestRoundedRect(t *testing.T) {
 func TestPainterTextFit(t *testing.T) {
 	t.Parallel()
 
-	p, err := NewPainter(PainterOptions{
+	p := NewPainter(PainterOptions{
 		OutputFormat: ChartOutputSVG,
 		Width:        400,
 		Height:       300,
 	})
-	require.NoError(t, err)
 	style := FontStyle{
 		FontSize:  12,
 		FontColor: chartdraw.ColorBlack,
@@ -321,12 +317,11 @@ func TestPainterTextFit(t *testing.T) {
 func TestMultipleChartsOnPainter(t *testing.T) {
 	t.Parallel()
 
-	p, err := NewPainter(PainterOptions{
+	p := NewPainter(PainterOptions{
 		OutputFormat: ChartOutputSVG,
 		Width:        800,
 		Height:       600,
 	})
-	require.NoError(t, err)
 	p.SetBackground(800, 600, drawing.ColorWhite)
 	// set the space and theme for each chart
 	topCenterPainter := p.Child(PainterBoxOption(chartdraw.NewBox(0, 0, 800, 300)),
@@ -338,7 +333,7 @@ func TestMultipleChartsOnPainter(t *testing.T) {
 
 	pieOpt := makeBasicPieChartOption()
 	pieOpt.Legend.Show = False()
-	_, err = NewPieChart(bottomLeftPainter, pieOpt).Render()
+	_, err := NewPieChart(bottomLeftPainter, pieOpt).Render()
 	require.NoError(t, err)
 	_, err = NewBarChart(bottomRightPainter, makeBasicBarChartOption()).Render()
 	require.NoError(t, err)

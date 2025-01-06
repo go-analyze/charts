@@ -120,8 +120,7 @@ func TestTableChart(t *testing.T) {
 		runName := strconv.Itoa(i)
 		if tt.theme != nil {
 			t.Run(runName+"-theme_painter", func(t *testing.T) {
-				p, err := NewPainter(painterOptions, PainterThemeOption(tt.theme))
-				require.NoError(t, err)
+				p := NewPainter(painterOptions, PainterThemeOption(tt.theme))
 				opt := tt.makeOptions()
 
 				validateTableChartRender(t, p, opt, tt.result, tt.errorExpected)
@@ -129,8 +128,7 @@ func TestTableChart(t *testing.T) {
 			runName += "-theme_opt"
 		}
 		t.Run(runName, func(t *testing.T) {
-			p, err := NewPainter(painterOptions)
-			require.NoError(t, err)
+			p := NewPainter(painterOptions)
 			opt := tt.makeOptions()
 			opt.Theme = tt.theme
 

@@ -55,12 +55,11 @@ func renderTestLineChartWithThemeName(t *testing.T, fullChart bool, themeName st
 func renderTestLineChartWithTheme(t *testing.T, fullChart bool, theme ColorPalette) []byte {
 	t.Helper()
 
-	p, err := NewPainter(PainterOptions{
+	p := NewPainter(PainterOptions{
 		OutputFormat: ChartOutputSVG,
 		Width:        600,
 		Height:       400,
 	})
-	require.NoError(t, err)
 	opt := makeFullLineChartOption()
 	if len(opt.YAxis) == 0 {
 		opt.YAxis = []YAxisOption{{}}
@@ -73,7 +72,7 @@ func renderTestLineChartWithTheme(t *testing.T, fullChart bool, theme ColorPalet
 	}
 	opt.Theme = theme
 
-	_, err = NewLineChart(p, opt).Render()
+	_, err := NewLineChart(p, opt).Render()
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

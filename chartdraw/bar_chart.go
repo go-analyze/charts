@@ -94,10 +94,7 @@ func (bc BarChart) Render(rp RendererProvider, w io.Writer) error {
 		return errors.New("please provide at least one bar")
 	}
 
-	r, err := rp(bc.GetWidth(), bc.GetHeight())
-	if err != nil {
-		return err
-	}
+	r := rp(bc.GetWidth(), bc.GetHeight())
 
 	if bc.Font == nil {
 		bc.defaultFont = GetDefaultFont()

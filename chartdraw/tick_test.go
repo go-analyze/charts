@@ -10,8 +10,7 @@ import (
 func TestGenerateContinuousTicks(t *testing.T) {
 	t.Parallel()
 
-	r, err := PNG(1024, 1024)
-	require.NoError(t, err)
+	r := PNG(1024, 1024)
 	r.SetFont(GetDefaultFont())
 
 	ra := &ContinuousRange{
@@ -32,8 +31,7 @@ func TestGenerateContinuousTicks(t *testing.T) {
 func TestGenerateContinuousTicksDescending(t *testing.T) {
 	t.Parallel()
 
-	r, err := PNG(1024, 1024)
-	require.NoError(t, err)
+	r := PNG(1024, 1024)
 	r.SetFont(GetDefaultFont())
 
 	ra := &ContinuousRange{

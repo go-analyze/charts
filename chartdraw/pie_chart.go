@@ -71,10 +71,7 @@ func (pc PieChart) Render(rp RendererProvider, w io.Writer) error {
 		return errors.New("please provide at least one value")
 	}
 
-	r, err := rp(pc.GetWidth(), pc.GetHeight())
-	if err != nil {
-		return err
-	}
+	r := rp(pc.GetWidth(), pc.GetHeight())
 
 	if pc.Font == nil {
 		pc.defaultFont = GetDefaultFont()

@@ -44,12 +44,11 @@ func TestMarkLine(t *testing.T) {
 	}
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			p, err := NewPainter(PainterOptions{
+			p := NewPainter(PainterOptions{
 				OutputFormat: ChartOutputSVG,
 				Width:        600,
 				Height:       400,
 			}, PainterThemeOption(GetTheme(ThemeLight)))
-			require.NoError(t, err)
 			data, err := tt.render(p.Child(PainterPaddingOption(Box{
 				Left:   20,
 				Top:    20,

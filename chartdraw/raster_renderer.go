@@ -12,16 +12,13 @@ import (
 )
 
 // PNG returns a new png/raster renderer.
-func PNG(width, height int) (Renderer, error) {
+func PNG(width, height int) Renderer {
 	i := image.NewRGBA(image.Rect(0, 0, width, height))
-	gc, err := drawing.NewRasterGraphicContext(i)
-	if err == nil {
-		return &rasterRenderer{
-			i:  i,
-			gc: gc,
-		}, nil
+	gc := drawing.NewRasterGraphicContext(i)
+	return &rasterRenderer{
+		i:  i,
+		gc: gc,
 	}
-	return nil, err
 }
 
 // rasterRenderer renders chart commands to a bitmap.

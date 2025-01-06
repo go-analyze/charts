@@ -117,21 +117,18 @@ func TestBarChart(t *testing.T) {
 		}
 		if tt.defaultTheme {
 			t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
-				p, err := NewPainter(painterOptions)
-				require.NoError(t, err)
+				p := NewPainter(painterOptions)
 
 				validateBarChartRender(t, p, tt.makeOptions(), tt.result)
 			})
 		} else {
 			t.Run(strconv.Itoa(i)+"-"+tt.name+"-painter", func(t *testing.T) {
-				p, err := NewPainter(painterOptions, PainterThemeOption(GetTheme(ThemeVividDark)))
-				require.NoError(t, err)
+				p := NewPainter(painterOptions, PainterThemeOption(GetTheme(ThemeVividDark)))
 
 				validateBarChartRender(t, p, tt.makeOptions(), tt.result)
 			})
 			t.Run(strconv.Itoa(i)+"-"+tt.name+"-options", func(t *testing.T) {
-				p, err := NewPainter(painterOptions)
-				require.NoError(t, err)
+				p := NewPainter(painterOptions)
 				opt := tt.makeOptions()
 				opt.Theme = GetTheme(ThemeVividDark)
 

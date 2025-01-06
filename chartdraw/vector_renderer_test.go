@@ -15,8 +15,7 @@ import (
 func TestVectorRendererPath(t *testing.T) {
 	t.Parallel()
 
-	vr, err := SVG(100, 100)
-	require.NoError(t, err)
+	vr := SVG(100, 100)
 
 	typed, isTyped := vr.(*vectorRenderer)
 	assert.True(t, isTyped)
@@ -38,8 +37,7 @@ func TestVectorRendererPath(t *testing.T) {
 func TestVectorRendererMeasureText(t *testing.T) {
 	t.Parallel()
 
-	vr, err := SVG(100, 100)
-	require.NoError(t, err)
+	vr := SVG(100, 100)
 
 	vr.SetDPI(DefaultDPI)
 	vr.SetFont(GetDefaultFont())

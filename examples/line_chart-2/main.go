@@ -32,7 +32,6 @@ func main() {
 
 	opt := charts.LineChartOption{}
 	opt.SeriesList = charts.NewSeriesListLine(values)
-
 	opt.Title.Text = "Line"
 	opt.Title.FontStyle.FontSize = 16
 	opt.XAxis.Data = []string{
@@ -47,15 +46,12 @@ func main() {
 	opt.SymbolShow = charts.True()
 	opt.StrokeWidth = 1.2
 
-	p, err := charts.NewPainter(charts.PainterOptions{
+	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
 		Width:        600,
 		Height:       400,
 	})
-	if err != nil {
-		panic(err)
-	}
-	if _, err = charts.NewLineChart(p, opt).Render(); err != nil {
+	if _, err := charts.NewLineChart(p, opt).Render(); err != nil {
 		panic(err)
 	}
 

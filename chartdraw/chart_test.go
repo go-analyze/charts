@@ -316,8 +316,7 @@ func TestChartHasAxes(t *testing.T) {
 func TestChartGetAxesTicks(t *testing.T) {
 	t.Parallel()
 
-	r, err := PNG(1024, 1024)
-	require.NoError(t, err)
+	r := PNG(1024, 1024)
 
 	c := Chart{
 		XAxis: XAxis{

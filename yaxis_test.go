@@ -30,7 +30,7 @@ func TestRightYAxis(t *testing.T) {
 	}
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			p, err := NewPainter(PainterOptions{
+			p := NewPainter(PainterOptions{
 				OutputFormat: ChartOutputSVG,
 				Width:        600,
 				Height:       400,
@@ -40,7 +40,6 @@ func TestRightYAxis(t *testing.T) {
 				Bottom: 10,
 				Left:   10,
 			}))
-			require.NoError(t, err)
 			data, err := tt.render(p)
 			require.NoError(t, err)
 			assertEqualSVG(t, tt.result, data)

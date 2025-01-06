@@ -378,29 +378,23 @@ func TableOptionRender(opt TableChartOption) (*Painter, error) {
 		opt.Width = defaultChartWidth
 	}
 
-	p, err := NewPainter(PainterOptions{
+	p := NewPainter(PainterOptions{
 		OutputFormat: opt.OutputFormat,
 		Width:        opt.Width,
 		Height:       100, // is only used to calculate the height of the table
 		Font:         opt.FontStyle.Font,
 	})
-	if err != nil {
-		return nil, err
-	}
 	info, err := NewTableChart(p, opt).render()
 	if err != nil {
 		return nil, err
 	}
 
-	p, err = NewPainter(PainterOptions{
+	p = NewPainter(PainterOptions{
 		OutputFormat: opt.OutputFormat,
 		Width:        info.width,
 		Height:       info.height,
 		Font:         opt.FontStyle.Font,
 	})
-	if err != nil {
-		return nil, err
-	}
 	if _, err = NewTableChart(p, opt).renderWithInfo(info); err != nil {
 		return nil, err
 	}

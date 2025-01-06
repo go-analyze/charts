@@ -14,15 +14,9 @@ import (
 )
 
 // NewRasterGraphicContext creates a new Graphic context from an image.
-func NewRasterGraphicContext(img draw.Image) (*RasterGraphicContext, error) {
-	var painter Painter
-	switch selectImage := img.(type) {
-	case *image.RGBA:
-		painter = raster.NewRGBAPainter(selectImage)
-	default:
-		return nil, errors.New("NewRasterGraphicContext() :: invalid image type")
-	}
-	return NewRasterGraphicContextWithPainter(img, painter), nil
+func NewRasterGraphicContext(img *image.RGBA) *RasterGraphicContext {
+	painter := raster.NewRGBAPainter(img)
+	return NewRasterGraphicContextWithPainter(img, painter)
 }
 
 // NewRasterGraphicContextWithPainter creates a new Graphic context from an image and a Painter (see Freetype-go)

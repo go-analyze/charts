@@ -217,8 +217,7 @@ func TestBarChartGetAxesTicks(t *testing.T) {
 		},
 	}
 
-	r, err := PNG(128, 128)
-	require.NoError(t, err)
+	r := PNG(128, 128)
 	yr := bc.getRanges()
 	yf := bc.getValueFormatters()
 

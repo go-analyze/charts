@@ -309,16 +309,12 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	isChild := opt.parent != nil
 	if !isChild {
-		p, err := NewPainter(PainterOptions{
+		opt.parent = NewPainter(PainterOptions{
 			OutputFormat: opt.OutputFormat,
 			Width:        opt.Width,
 			Height:       opt.Height,
 			Font:         opt.Font,
 		})
-		if err != nil {
-			return nil, err
-		}
-		opt.parent = p
 	}
 	p := opt.parent
 	if opt.ValueFormatter != nil {

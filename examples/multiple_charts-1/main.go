@@ -24,14 +24,11 @@ func writeFile(buf []byte) error {
 }
 
 func main() {
-	p, err := charts.NewPainter(charts.PainterOptions{
+	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
 		Width:        800,
 		Height:       600,
 	})
-	if err != nil {
-		panic(err)
-	}
 	p.SetBackground(800, 600, drawing.ColorWhite)
 	// set the space and theme for each chart
 	topCenterPainter := p.Child(charts.PainterBoxOption(chartdraw.NewBox(0, 0, 800, 300)),
@@ -69,13 +66,13 @@ func main() {
 	}
 
 	// render the same chart in each spot for the demo
-	if _, err = charts.NewLineChart(bottomLeftPainter, lineOpt).Render(); err != nil {
+	if _, err := charts.NewLineChart(bottomLeftPainter, lineOpt).Render(); err != nil {
 		panic(err)
 	}
-	if _, err = charts.NewLineChart(bottomRightPainter, lineOpt).Render(); err != nil {
+	if _, err := charts.NewLineChart(bottomRightPainter, lineOpt).Render(); err != nil {
 		panic(err)
 	}
-	if _, err = charts.NewLineChart(topCenterPainter, lineOpt).Render(); err != nil {
+	if _, err := charts.NewLineChart(topCenterPainter, lineOpt).Render(); err != nil {
 		panic(err)
 	}
 

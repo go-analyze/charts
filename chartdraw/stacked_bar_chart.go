@@ -101,10 +101,7 @@ func (sbc StackedBarChart) Render(rp RendererProvider, w io.Writer) error {
 		return errors.New("please provide at least one bar")
 	}
 
-	r, err := rp(sbc.GetWidth(), sbc.GetHeight())
-	if err != nil {
-		return err
-	}
+	r := rp(sbc.GetWidth(), sbc.GetHeight())
 
 	if sbc.Font == nil {
 		sbc.defaultFont = GetDefaultFont()

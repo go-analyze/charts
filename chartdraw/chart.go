@@ -80,10 +80,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 
 	c.YAxisSecondary.AxisType = YAxisSecondary
 
-	r, err := rp(c.GetWidth(), c.GetHeight())
-	if err != nil {
-		return err
-	}
+	r := rp(c.GetWidth(), c.GetHeight())
 
 	if c.Font == nil {
 		c.defaultFont = GetDefaultFont()
@@ -99,8 +96,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 
 	xr, yr, yra = c.setRangeDomains(canvasBox, xr, yr, yra)
 
-	err = c.checkRanges(xr, yr, yra)
-	if err != nil {
+	if err := c.checkRanges(xr, yr, yra); err != nil {
 		_ = r.Save(w)
 		return err
 	}

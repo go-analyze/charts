@@ -32,15 +32,12 @@ func main() {
 	}
 	opt.Legend.Padding = charts.Box{Left: 100}
 
-	p, err := charts.NewPainter(charts.PainterOptions{
+	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
 		Width:        600,
 		Height:       400,
 	})
-	if err != nil {
-		panic(err)
-	}
-	if _, err = charts.NewFunnelChart(p, opt).Render(); err != nil {
+	if _, err := charts.NewFunnelChart(p, opt).Render(); err != nil {
 		panic(err)
 	}
 

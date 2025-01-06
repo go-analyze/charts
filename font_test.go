@@ -31,12 +31,11 @@ func TestGetPreferredFont(t *testing.T) {
 func TestCustomFontSizeRender(t *testing.T) {
 	t.Parallel()
 
-	p, err := NewPainter(PainterOptions{
+	p := NewPainter(PainterOptions{
 		OutputFormat: ChartOutputSVG,
 		Width:        600,
 		Height:       400,
 	}, PainterThemeOption(GetTheme(ThemeLight)))
-	require.NoError(t, err)
 
 	opt := makeBasicLineChartOption()
 	opt.XAxis.FontStyle.FontSize = 4.0
@@ -50,7 +49,7 @@ func TestCustomFontSizeRender(t *testing.T) {
 	opt.Title.FontStyle.FontSize = 4.0
 	opt.Legend.FontStyle.FontSize = 4.0
 
-	_, err = NewLineChart(p, opt).Render()
+	_, err := NewLineChart(p, opt).Render()
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)

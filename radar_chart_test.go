@@ -66,8 +66,7 @@ func TestRadarChart(t *testing.T) {
 		}
 		if tt.defaultTheme {
 			t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
-				p, err := NewPainter(painterOptions)
-				require.NoError(t, err)
+				p := NewPainter(painterOptions)
 
 				validateRadarChartRender(t, p.Child(PainterPaddingOption(Box{
 					Left:   20,
@@ -78,14 +77,12 @@ func TestRadarChart(t *testing.T) {
 			})
 		} else {
 			t.Run(strconv.Itoa(i)+"-"+tt.name+"-painter", func(t *testing.T) {
-				p, err := NewPainter(painterOptions, PainterThemeOption(GetTheme(ThemeVividDark)))
-				require.NoError(t, err)
+				p := NewPainter(painterOptions, PainterThemeOption(GetTheme(ThemeVividDark)))
 
 				validateRadarChartRender(t, p, tt.makeOptions(), tt.result)
 			})
 			t.Run(strconv.Itoa(i)+"-"+tt.name+"-options", func(t *testing.T) {
-				p, err := NewPainter(painterOptions)
-				require.NoError(t, err)
+				p := NewPainter(painterOptions)
 				opt := tt.makeOptions()
 				opt.Theme = GetTheme(ThemeVividDark)
 

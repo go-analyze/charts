@@ -94,9 +94,8 @@ func PainterThemeOption(theme ColorPalette) PainterOptionFunc {
 	}
 }
 
-// TODO - try to remove the error return
 // NewPainter creates a painter which can be used to render charts to (using for example NewLineChart).
-func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) (*Painter, error) {
+func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) *Painter {
 	if opts.Width <= 0 {
 		opts.Width = defaultChartWidth
 	}
@@ -110,12 +109,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) (*Painter, error)
 	if opts.OutputFormat == ChartOutputSVG {
 		fn = chartdraw.SVG
 	}
-	width := opts.Width
-	height := opts.Height
-	r, err := fn(width, height)
-	if err != nil {
-		return nil, err
-	}
+	r := fn(opts.Width, opts.Height)
 	r.SetFont(opts.Font)
 
 	p := &Painter{
@@ -132,7 +126,7 @@ func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) (*Painter, error)
 	if p.theme == nil {
 		p.theme = GetDefaultTheme()
 	}
-	return p, nil
+	return p
 }
 
 func (p *Painter) setOptions(opts ...PainterOptionFunc) {

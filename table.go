@@ -334,11 +334,7 @@ func (t *tableChart) Render() (Box, error) {
 	if p.outputFormat == ChartOutputSVG {
 		fn = chartdraw.SVG
 	}
-	newRender, err := fn(p.Width(), 100)
-	if err != nil {
-		return BoxZero, err
-	}
-	p.render = newRender
+	p.render = fn(p.Width(), 100)
 	info, err := t.render()
 	if err != nil {
 		return BoxZero, err
