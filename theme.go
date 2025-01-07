@@ -268,8 +268,7 @@ func GetDefaultTheme() ColorPalette {
 
 // MakeTheme constructs a one-off theme without installing it into the catalog.
 func MakeTheme(opt ThemeOption) ColorPalette {
-	optStr := fmt.Sprintf("%v", opt)
-	optId := crc32.ChecksumIEEE([]byte(optStr))
+	optId := crc32.ChecksumIEEE([]byte(fmt.Sprintf("%v", opt)))
 	return &themeColorPalette{
 		name:               fmt.Sprintf("custom-%x", optId),
 		isDarkMode:         opt.IsDarkMode,
