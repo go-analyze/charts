@@ -80,6 +80,24 @@ func reverseSlice[T any](s []T) {
 	}
 }
 
+// SliceToFloat64 converts a slice of arbitrary types to float64 to be used as chart values.
+func SliceToFloat64[T any](slice []T, conversion func(T) float64) []float64 {
+	return sliceConversion(slice, conversion)
+}
+
+// IntSliceToFloat64 converts an int slice to a float64 slice so that it can be used for chart values.
+func IntSliceToFloat64(slice []int) []float64 {
+	return sliceConversion(slice, func(i int) float64 { return float64(i) })
+}
+
+func sliceConversion[I any, R any](input []I, conversion func(I) R) []R {
+	result := make([]R, len(input))
+	for i, v := range input {
+		result[i] = conversion(v)
+	}
+	return result
+}
+
 func parseFlexibleValue(value string, percentTotal float64) (float64, error) {
 	if strings.HasSuffix(value, "%") {
 		percent, err := strconv.ParseFloat(strings.TrimSuffix(value, "%"), 64)

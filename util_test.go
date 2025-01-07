@@ -2,6 +2,7 @@ package charts
 
 import (
 	"math"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -111,6 +112,78 @@ func TestReverseSlice(t *testing.T) {
 	numbers := []int{1, 3, 5, 7, 9}
 	reverseSlice(numbers)
 	assert.Equal(t, []int{9, 7, 5, 3, 1}, numbers)
+}
+
+func TestSliceToFloat64(t *testing.T) {
+	t.Parallel()
+
+	t.Run("int", func(t *testing.T) {
+		input := []int{1, 2, 3, 4}
+		expected := []float64{1.0, 2.0, 3.0, 4.0}
+		result := SliceToFloat64(input, func(i int) float64 { return float64(i) })
+		assert.Equal(t, expected, result)
+	})
+	t.Run("string", func(t *testing.T) {
+		input := []string{"1.5", "2.5", "3.5"}
+		expected := []float64{1.5, 2.5, 3.5}
+		result := SliceToFloat64(input, func(s string) float64 {
+			if f, err := strconv.ParseFloat(s, 64); err == nil {
+				return f
+			}
+			return 0
+		})
+		assert.Equal(t, expected, result)
+	})
+	t.Run("empty", func(t *testing.T) {
+		input := []string{}
+		expected := []float64{}
+		result := SliceToFloat64(input, func(s string) float64 { return 0 })
+		assert.Equal(t, expected, result)
+	})
+	t.Run("nil", func(t *testing.T) {
+		var input []int
+		expected := []float64{}
+		result := SliceToFloat64(input, func(i int) float64 { return float64(i) })
+		assert.Equal(t, expected, result)
+	})
+}
+
+// TestIntSliceToFloat64 tests the IntSliceToFloat64 convenience function.
+func TestIntSliceToFloat64(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		input []int
+		want  []float64
+	}{
+		{
+			name:  "positive",
+			input: []int{1, 2, 3},
+			want:  []float64{1.0, 2.0, 3.0},
+		},
+		{
+			name:  "negative",
+			input: []int{0, -1, -2},
+			want:  []float64{0.0, -1.0, -2.0},
+		},
+		{
+			name:  "empty",
+			input: []int{},
+			want:  []float64{},
+		},
+		{
+			name:  "nil",
+			input: nil,
+			want:  []float64{},
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, IntSliceToFloat64(tt.input))
+		})
+	}
 }
 
 func TestParseFlexibleValue(t *testing.T) {
