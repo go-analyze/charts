@@ -217,18 +217,12 @@ type EChartsMarkPoint struct {
 }
 
 func (emp *EChartsMarkPoint) ToSeriesMarkPoint() SeriesMarkPoint {
-	sp := SeriesMarkPoint{
+	return SeriesMarkPoint{
 		SymbolSize: emp.SymbolSize,
+		Data: sliceConversion(emp.Data, func(i EChartsMarkData) SeriesMarkData {
+			return SeriesMarkData{Type: i.Type}
+		}),
 	}
-	if len(emp.Data) == 0 {
-		return sp
-	}
-	data := make([]SeriesMarkData, len(emp.Data))
-	for index, item := range emp.Data {
-		data[index].Type = item.Type
-	}
-	sp.Data = data
-	return sp
 }
 
 type EChartsMarkLine struct {
@@ -236,16 +230,11 @@ type EChartsMarkLine struct {
 }
 
 func (eml *EChartsMarkLine) ToSeriesMarkLine() SeriesMarkLine {
-	sl := SeriesMarkLine{}
-	if len(eml.Data) == 0 {
-		return sl
+	return SeriesMarkLine{
+		Data: sliceConversion(eml.Data, func(i EChartsMarkData) SeriesMarkData {
+			return SeriesMarkData{Type: i.Type}
+		}),
 	}
-	data := make([]SeriesMarkData, len(eml.Data))
-	for index, item := range eml.Data {
-		data[index].Type = item.Type
-	}
-	sl.Data = data
-	return sl
 }
 
 type EChartsSeries struct {
@@ -300,13 +289,11 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 			}
 			continue
 		}
-		data := make([]float64, len(item.Data))
-		for j, dataItem := range item.Data {
-			data[j] = dataItem.Value.First()
-		}
 		seriesList = append(seriesList, Series{
-			Type:       item.Type,
-			Data:       data,
+			Type: item.Type,
+			Data: sliceConversion(item.Data, func(dataItem EChartsSeriesData) float64 {
+				return dataItem.Value.First()
+			}),
 			YAxisIndex: item.YAxisIndex,
 			Label: SeriesLabel{
 				FontStyle: FontStyle{
@@ -421,6 +408,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	for _, item := range eo.XAxis.Data {
 		if item.Type == "value" {
 			isHorizontalChart = true
+			break
 		}
 	}
 	if isHorizontalChart {
@@ -456,13 +444,9 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		}
 	}
 	o.YAxis = yAxisOptions
-
-	if len(eo.Children) != 0 {
-		o.Children = make([]ChartOption, len(eo.Children))
-		for index, item := range eo.Children {
-			o.Children[index] = item.ToOption()
-		}
-	}
+	o.Children = sliceConversion(eo.Children, func(child EChartsOption) ChartOption {
+		return child.ToOption()
+	})
 	return o
 }
 
