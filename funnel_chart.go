@@ -1,6 +1,8 @@
 package charts
 
 import (
+	"errors"
+
 	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw"
@@ -63,6 +65,9 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	height := seriesPainter.Height()
 	width := seriesPainter.Width()
 	count := len(seriesList)
+	if count == 0 {
+		return BoxZero, errors.New("empty series list")
+	}
 
 	h := (height - gap*(count-1)) / count
 

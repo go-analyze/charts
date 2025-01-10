@@ -1,6 +1,8 @@
 package charts
 
 import (
+	"errors"
+
 	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw"
@@ -59,6 +61,9 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 		barMargin = 3
 	}
 	seriesCount := len(seriesList)
+	if seriesCount == 0 {
+		return BoxZero, errors.New("empty series list")
+	}
 	barHeight := (height - 2*margin - barMargin*(seriesCount-1)) / seriesCount
 	if opt.BarHeight > 0 && opt.BarHeight < barHeight {
 		barHeight = opt.BarHeight

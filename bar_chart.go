@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"errors"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -64,6 +65,9 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		barMargin = 3
 	}
 	seriesCount := len(seriesList)
+	if seriesCount == 0 {
+		return BoxZero, errors.New("empty series list")
+	}
 	barWidth := (width - 2*margin - barMargin*(seriesCount-1)) / seriesCount
 	if opt.BarWidth > 0 && opt.BarWidth < barWidth {
 		barWidth = opt.BarWidth
