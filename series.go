@@ -55,7 +55,7 @@ type SeriesLabel struct {
 	// Show flag for label
 	Show bool
 	// Distance to the host graphic element.
-	Distance int
+	Distance int // TODO - do we want to replace with just Offset?
 	// Position defines the label position.
 	Position string
 	// Offset specifies an offset from the position.
@@ -85,6 +85,7 @@ type SeriesMarkLine struct {
 	Data []SeriesMarkData
 }
 
+// Series references a population of data.
 type Series struct {
 	index int
 	// Type is the type of series, it can be "line", "bar" or "pie". Default value is "line".
@@ -108,6 +109,10 @@ type Series struct {
 	// Min value of series
 	Max *float64
 }
+
+// SeriesList is a list of series to be rendered on the chart, typically constructed using NewSeriesListLine,
+// NewSeriesListBar, NewSeriesListHorizontalBar, NewSeriesListPie, NewSeriesListRadar, or NewSeriesListFunnel.
+// These Series can be appended to each other if multiple chart types should be rendered to the same axis.
 type SeriesList []Series
 
 func (sl SeriesList) init() {
@@ -122,7 +127,7 @@ func (sl SeriesList) init() {
 func (sl SeriesList) Filter(chartType string) SeriesList {
 	arr := make(SeriesList, 0)
 	for index, item := range sl {
-		if item.Type == "" || item.Type == chartType {
+		if item.Type == chartType || (chartType == ChartTypeLine && item.Type == "") {
 			arr = append(arr, sl[index])
 		}
 	}
@@ -199,7 +204,7 @@ type seriesSummary struct {
 	AverageValue float64
 }
 
-// Summary get summary of series
+// Summary returns numeric summary of series values (population statistics).
 func (s *Series) Summary() seriesSummary {
 	minIndex := -1
 	maxIndex := -1
