@@ -9,16 +9,17 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
+// ValueFormatter defines a function that can be used to format numeric values.
 type ValueFormatter func(float64) string
 
 var defaultValueFormatter = func(val float64) string {
 	return FormatValueHumanizeShort(val, 2, false)
 }
 
+// Painter is the primary struct for drawing charts/graphs.
 type Painter struct {
 	render         chartdraw.Renderer
 	box            Box
-	parent         *Painter
 	style          chartdraw.Style
 	theme          ColorPalette
 	font           *truetype.Font
@@ -26,14 +27,14 @@ type Painter struct {
 	valueFormatter ValueFormatter
 }
 
+// PainterOptions contains parameters for creating a new Painter.
 type PainterOptions struct {
-	// OutputFormat specifies the output type, "svg" or "png", default value is "png"
+	// OutputFormat specifies the output type, "svg" or "png", default is "png".
 	OutputFormat string
 	// Width is the width of the draw painter.
 	Width int
 	// Height is the height of the draw painter.
 	Height int
-	// TODO - is this the best place for font configuration?
 	// Font is the font used for rendering text.
 	Font *truetype.Font
 }
@@ -87,7 +88,7 @@ func PainterPaddingOption(padding Box) PainterOption {
 	}
 }
 
-// PainterBoxOption sets the box of draw painter
+// PainterBoxOption sets a specific box for the Painter to draw within.
 func PainterBoxOption(box Box) PainterOption {
 	return func(p *Painter) {
 		if box.IsZero() {
@@ -114,7 +115,8 @@ func PainterStyleOption(style chartdraw.Style) PainterOption {
 	}
 }
 
-// PainterThemeOption sets the theme of draw painter
+// PainterThemeOption sets a color palette theme default for the Painter.
+// This theme is used if the specific chart options don't have a theme set.
 func PainterThemeOption(theme ColorPalette) PainterOption {
 	return func(p *Painter) {
 		if theme == nil {
@@ -184,13 +186,13 @@ func (p *Painter) setOptions(opts ...PainterOption) {
 
 func (p *Painter) Child(opt ...PainterOption) *Painter {
 	child := &Painter{
-		valueFormatter: p.valueFormatter,
 		render:         p.render,
 		box:            p.box.Clone(),
-		parent:         p,
 		style:          p.style,
 		theme:          p.theme,
 		font:           p.font,
+		outputFormat:   p.outputFormat,
+		valueFormatter: p.valueFormatter,
 	}
 	child.setOptions(opt...)
 	return child
@@ -412,14 +414,17 @@ func (p *Painter) Fill() *Painter {
 	return p
 }
 
+// Width returns the drawable width of the painter's box.
 func (p *Painter) Width() int {
 	return p.box.Width()
 }
 
+// Height returns the drawable height of the painter's box.
 func (p *Painter) Height() int {
 	return p.box.Height()
 }
 
+// MeasureText will provide the rendered size of the text for the provided font style.
 func (p *Painter) MeasureText(text string) Box {
 	return p.render.MeasureText(text)
 }
@@ -439,6 +444,9 @@ func (p *Painter) MeasureTextMaxWidthHeight(textList []string) (int, int) {
 	return maxWidth, maxHeight
 }
 
+// LineStroke draws a line in the graph from point to point with the specified stroke color/width.
+// Points with values of math.MaxInt32 will be skipped, resulting in a gap.
+// Single or isolated points will result in just a dot being drawn at the point.
 func (p *Painter) LineStroke(points []Point) *Painter {
 	var valid []Point
 	for _, pt := range points {
@@ -457,6 +465,8 @@ func (p *Painter) LineStroke(points []Point) *Painter {
 	return p.Stroke()
 }
 
+// drawStraightPath draws a simple (non-curved) path for the given points.
+// If dotForSinglePoint is true, single points are drawn as 2px radius dots.
 func (p *Painter) drawStraightPath(points []Point, dotForSinglePoint bool) {
 	pointCount := len(points)
 	if pointCount == 0 {
@@ -576,6 +586,8 @@ func (p *Painter) SetBackground(width, height int, color Color, inside ...bool) 
 	p.FillStroke()
 	return p
 }
+
+// MarkLine draws a horizontal line with a small circle and arrow at the right.
 func (p *Painter) MarkLine(x, y, width int) *Painter {
 	arrowWidth := 16
 	arrowHeight := 10
@@ -590,6 +602,7 @@ func (p *Painter) MarkLine(x, y, width int) *Painter {
 	return p
 }
 
+// Polygon draws a polygon with the specified center, radius, and number of sides.
 func (p *Painter) Polygon(center Point, radius float64, sides int) *Painter {
 	points := getPolygonPoints(center, radius, sides)
 	for i, item := range points {

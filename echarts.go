@@ -482,17 +482,17 @@ func renderEcharts(options, outputType string) ([]byte, error) {
 	}
 	opt := o.ToOption()
 	opt.OutputFormat = outputType
-	if d, err := Render(opt); err != nil {
+	if p, err := Render(opt); err != nil {
 		return nil, err
 	} else {
-		return d.Bytes()
+		return p.Bytes()
 	}
 }
 
 func RenderEChartsToPNG(options string) ([]byte, error) {
-	return renderEcharts(options, "png")
+	return renderEcharts(options, ChartOutputPNG)
 }
 
 func RenderEChartsToSVG(options string) ([]byte, error) {
-	return renderEcharts(options, "svg")
+	return renderEcharts(options, ChartOutputSVG)
 }

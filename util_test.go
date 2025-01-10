@@ -5,9 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func TestGetDefaultInt(t *testing.T) {
@@ -126,53 +123,15 @@ func TestGetRadius(t *testing.T) {
 	assert.Equal(t, 40.0, getRadius(100, ""))
 }
 
-func TestMeasureTextMaxWidthHeight(t *testing.T) {
-	t.Parallel()
-
-	p, err := NewPainter(PainterOptions{
-		Width:  400,
-		Height: 300,
-	})
-	require.NoError(t, err)
-	style := FontStyle{
-		FontSize: 10,
-	}
-	p.SetStyle(chartdraw.Style{FontStyle: style})
-
-	maxWidth, maxHeight := measureTextMaxWidthHeight([]string{
-		"Mon",
-		"Tue",
-		"Wed",
-		"Thu",
-		"Fri",
-		"Sat",
-		"Sun",
-	}, p)
-	assert.Equal(t, 31, maxWidth)
-	assert.Equal(t, 12, maxHeight)
-}
-
 func TestReverseSlice(t *testing.T) {
 	t.Parallel()
 
 	arr := []string{
-		"Mon",
-		"Tue",
-		"Wed",
-		"Thu",
-		"Fri",
-		"Sat",
-		"Sun",
+		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 	}
 	reverseStringSlice(arr)
 	assert.Equal(t, []string{
-		"Sun",
-		"Sat",
-		"Fri",
-		"Thu",
-		"Wed",
-		"Tue",
-		"Mon",
+		"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon",
 	}, arr)
 
 	numbers := []int{1, 3, 5, 7, 9}

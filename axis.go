@@ -68,10 +68,7 @@ func (a *axisPainter) Render() (Box, error) {
 		return BoxZero, nil
 	}
 	top := a.p
-	theme := opt.Theme
-	if theme == nil {
-		theme = top.theme
-	}
+	theme := getPreferredTheme(opt.Theme, top.theme)
 
 	strokeWidth := opt.StrokeWidth
 	if strokeWidth == 0 {
@@ -155,6 +152,7 @@ func (a *axisPainter) Render() (Box, error) {
 	case PositionTop:
 		labelPaddingTop = 0
 		x1 = p.Width()
+		// TODO - should this reference opt.FontStyle or fontStyle with defaults set
 		y0 = labelMargin + int(opt.FontStyle.FontSize)
 		ticksPaddingTop = int(opt.FontStyle.FontSize)
 		y1 = y0

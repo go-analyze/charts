@@ -135,8 +135,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 			// generate marker point by hand
 			points[j] = Point{
-				// centered position
-				X: x + barWidth>>1,
+				X: x + (barWidth >> 1), // centered position
 				Y: top,
 			}
 			// return if the label does not need to be displayed

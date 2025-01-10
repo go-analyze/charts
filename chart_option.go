@@ -8,16 +8,16 @@ import (
 )
 
 type ChartOption struct {
-	// OutputFormat specifies the output type of chart, "svg" or "png", default value is "png"
+	// OutputFormat specifies the output type of chart, "svg" or "png", default value is "png".
 	OutputFormat string
 	// Width is the width of chart, default width is 600.
 	Width int
-	// Height is the height of chart, default height is 400
+	// Height is the height of chart, default height is 400.
 	Height int
 	// Theme specifies the colors used for the chart. Built in themes can be loaded using GetTheme with
 	// "light", "dark", "vivid-light", "vivid-dark", "ant" or "grafana".
 	Theme ColorPalette
-	// Padding specifies the padding for chart, default padding is [20, 10, 10, 10]
+	// Padding specifies the padding for chart, default padding is [20, 10, 10, 10].
 	Padding Box
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
@@ -33,7 +33,7 @@ type ChartOption struct {
 	Box Box
 	// SeriesList provides the data series.
 	SeriesList SeriesList
-	// RadarIndicators are radar indicator list for radar charts
+	// RadarIndicators are radar indicator list for radar charts.
 	RadarIndicators []RadarIndicator
 	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
 	SymbolShow *bool
@@ -50,7 +50,6 @@ type ChartOption struct {
 	// Children are child charts to render together.
 	Children []ChartOption
 	parent   *Painter
-	// TODO - review how this is set on other Option structs
 	// ValueFormatter to format numeric values into labels.
 	ValueFormatter ValueFormatter
 }

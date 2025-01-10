@@ -7,8 +7,6 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 // True returns a pointer to a true bool, useful for configuration.
@@ -111,18 +109,6 @@ func sumInt(values []int) int {
 		sum += v
 	}
 	return sum
-}
-
-// measureTextMaxWidthHeight returns maxWidth and maxHeight of text list
-func measureTextMaxWidthHeight(textList []string, p *Painter) (int, int) {
-	maxWidth := 0
-	maxHeight := 0
-	for _, text := range textList {
-		box := p.MeasureText(text)
-		maxWidth = chartdraw.MaxInt(maxWidth, box.Width())
-		maxHeight = chartdraw.MaxInt(maxHeight, box.Height())
-	}
-	return maxWidth, maxHeight
 }
 
 func reverseStringSlice(stringList []string) {
