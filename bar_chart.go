@@ -5,8 +5,6 @@ import (
 	"math"
 
 	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type barChart struct {
@@ -43,6 +41,8 @@ type BarChartOption struct {
 	BarWidth int
 	// RoundedBarCaps set to `true` to produce a bar graph where the bars have rounded tops.
 	RoundedBarCaps *bool
+	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	ValueFormatter ValueFormatter
 }
 
 func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
@@ -50,7 +50,8 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	opt := b.opt
 	seriesPainter := result.seriesPainter
 
-	xRange := newRange(b.p, seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
+	xRange := newRange(b.p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
+		seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
 	// margin between each block
@@ -108,12 +109,8 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 
 			h := yRange.getHeight(item)
-			fillColor := seriesColor
 			top := barMaxHeight - h
 
-			seriesPainter.OverrideDrawingStyle(chartdraw.Style{
-				FillColor: fillColor,
-			})
 			if flagIs(true, opt.RoundedBarCaps) {
 				seriesPainter.roundedRect(Box{
 					Top:    top,
@@ -121,7 +118,8 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 					Right:  x + barWidth,
 					Bottom: barMaxHeight - 1,
 					IsSet:  true,
-				}, barWidth, true, false)
+				}, barWidth, true, false,
+					seriesColor, seriesColor, 0.0)
 			} else {
 				seriesPainter.filledRect(Box{
 					Top:    top,
@@ -129,7 +127,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 					Right:  x + barWidth,
 					Bottom: barMaxHeight - 1,
 					IsSet:  true,
-				})
+				}, seriesColor, seriesColor, 0.0)
 			}
 			// generate marker point by hand
 			points[j] = Point{
@@ -147,7 +145,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				y = barMaxHeight
 				radians = -math.Pi / 2
 				if fontStyle.FontColor.IsZero() {
-					if isLightColor(fillColor) {
+					if isLightColor(seriesColor) {
 						fontStyle.FontColor = defaultLightFontColor
 					} else {
 						fontStyle.FontColor = defaultDarkFontColor
@@ -196,13 +194,14 @@ func (b *barChart) Render() (Box, error) {
 		opt.Theme = getPreferredTheme(p.theme)
 	}
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		theme:      opt.Theme,
-		padding:    opt.Padding,
-		seriesList: opt.SeriesList,
-		xAxis:      opt.XAxis,
-		yAxis:      opt.YAxis,
-		title:      opt.Title,
-		legend:     opt.Legend,
+		theme:          opt.Theme,
+		padding:        opt.Padding,
+		seriesList:     opt.SeriesList,
+		xAxis:          opt.XAxis,
+		yAxis:          opt.YAxis,
+		title:          opt.Title,
+		legend:         opt.Legend,
+		valueFormatter: opt.ValueFormatter,
 	})
 	if err != nil {
 		return BoxZero, err

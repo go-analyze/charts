@@ -21,6 +21,8 @@ type XAxisOption struct {
 	TextRotation float64
 	// LabelOffset is the offset of each label.
 	LabelOffset OffsetInt
+	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	ValueFormatter ValueFormatter
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.

@@ -84,8 +84,10 @@ type defaultRenderOption struct {
 	legend LegendOption
 	// backgroundIsFilled is true if the background is filled.
 	backgroundIsFilled bool
-	// axisReversed is true if the x y axis is reversed.
+	// axisReversed is true if the x y-axis is reversed.
 	axisReversed bool
+	// valueFormatter to format numeric values into labels.
+	valueFormatter ValueFormatter
 }
 
 type defaultRenderResult struct {
@@ -228,13 +230,8 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			yAxisOption.LabelCount = labelCount
 		}
 		labelCount = chartdraw.MaxInt(labelCount+yAxisOption.LabelCountAdjustment, 2)
-		r := axisRange{
-			p:           p,
-			divideCount: labelCount,
-			min:         min,
-			max:         max,
-			size:        rangeHeight,
-		}
+		r := newRange(p, getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter),
+			rangeHeight, labelCount, min, max, 0, 0)
 		result.axisRanges[index] = r
 
 		if yAxisOption.Theme == nil {
@@ -317,9 +314,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		})
 	}
 	p := opt.parent
-	if opt.ValueFormatter != nil {
-		p.valueFormatter = opt.ValueFormatter
-	}
 	if !opt.Box.IsZero() {
 		p = p.Child(PainterBoxOption(opt.Box))
 	}
@@ -349,14 +343,15 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	axisReversed := len(horizontalBarSeriesList) != 0
 	renderOpt := defaultRenderOption{
-		theme:        opt.Theme,
-		padding:      opt.Padding,
-		seriesList:   opt.SeriesList,
-		xAxis:        opt.XAxis,
-		yAxis:        opt.YAxis,
-		title:        opt.Title,
-		legend:       opt.Legend,
-		axisReversed: axisReversed,
+		theme:          opt.Theme,
+		padding:        opt.Padding,
+		seriesList:     opt.SeriesList,
+		xAxis:          opt.XAxis,
+		yAxis:          opt.YAxis,
+		title:          opt.Title,
+		legend:         opt.Legend,
+		axisReversed:   axisReversed,
+		valueFormatter: opt.ValueFormatter,
 		// the background color has been set
 		backgroundIsFilled: true,
 	}

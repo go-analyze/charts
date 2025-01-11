@@ -385,9 +385,7 @@ func (s Style) WriteToRenderer(r Renderer) {
 	r.SetStrokeWidth(s.GetStrokeWidth())
 	r.SetStrokeDashArray(s.GetStrokeDashArray())
 	r.SetFillColor(s.GetFillColor())
-	r.SetFont(s.GetFont())
-	r.SetFontColor(s.GetFontColor())
-	r.SetFontSize(s.GetFontSize())
+	s.FontStyle.WriteTextOptionsToRenderer(r)
 
 	r.ClearTextRotation()
 	if s.GetTextRotationDegrees() != 0 {

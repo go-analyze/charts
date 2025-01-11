@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"strconv"
 	"strings"
 
 	"golang.org/x/image/font"
@@ -207,6 +208,7 @@ func (vr *vectorRenderer) MeasureText(body string) (box Box) {
 
 		box.Right = w
 		box.Bottom = int(drawing.PointsToPixels(vr.dpi, vr.s.FontSize))
+		box.IsSet = true
 		if vr.c.textTheta == nil {
 			return
 		}
@@ -266,24 +268,30 @@ func (c *canvas) Start(width, height int) {
 }
 
 func (c *canvas) Path(d string, style Style) {
+	if d == "" {
+		return
+	}
 	var strokeDashArrayProperty string
 	if len(style.StrokeDashArray) > 0 {
 		strokeDashArrayProperty = c.getStrokeDashArray(style)
 	}
-	_, _ = c.w.Write([]byte(fmt.Sprintf(`<path %s d="%s" %s/>`, strokeDashArrayProperty, d, c.styleAsSVG(style))))
+	_, _ = c.w.Write([]byte(fmt.Sprintf(`<path %s d="%s" %s/>`, strokeDashArrayProperty, d, c.styleAsSVG(style, false))))
 }
 
 func (c *canvas) Text(x, y int, body string, style Style) {
+	if body == "" {
+		return
+	}
 	if c.textTheta == nil {
-		_, _ = c.w.Write([]byte(fmt.Sprintf(`<text x="%d" y="%d" %s>%s</text>`, x, y, c.styleAsSVG(style), body)))
+		_, _ = c.w.Write([]byte(fmt.Sprintf(`<text x="%d" y="%d" %s>%s</text>`, x, y, c.styleAsSVG(style, true), body)))
 	} else {
 		transform := fmt.Sprintf(` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y)
-		_, _ = c.w.Write([]byte(fmt.Sprintf(`<text x="%d" y="%d" %s%s>%s</text>`, x, y, c.styleAsSVG(style), transform, body)))
+		_, _ = c.w.Write([]byte(fmt.Sprintf(`<text x="%d" y="%d" %s%s>%s</text>`, x, y, c.styleAsSVG(style, true), transform, body)))
 	}
 }
 
 func (c *canvas) Circle(x, y, r int, style Style) {
-	_, _ = c.w.Write([]byte(fmt.Sprintf(`<circle cx="%d" cy="%d" r="%d" %s/>`, x, y, r, c.styleAsSVG(style))))
+	_, _ = c.w.Write([]byte(fmt.Sprintf(`<circle cx="%d" cy="%d" r="%d" %s/>`, x, y, r, c.styleAsSVG(style, false))))
 }
 
 func (c *canvas) End() {
@@ -315,7 +323,7 @@ func (c *canvas) getFontFace(s Style) string {
 }
 
 // styleAsSVG returns the style as a svg style or class string.
-func (c *canvas) styleAsSVG(s Style) string {
+func (c *canvas) styleAsSVG(s Style, applyText bool) string {
 	sw := s.StrokeWidth
 	sc := s.StrokeColor
 	fc := s.FillColor
@@ -331,7 +339,7 @@ func (c *canvas) styleAsSVG(s Style) string {
 		if !fc.IsZero() {
 			classes = append(classes, "fill")
 		}
-		if fs != 0 || s.Font != nil {
+		if applyText && (fs != 0 || s.Font != nil) {
 			classes = append(classes, "text")
 		}
 
@@ -340,19 +348,14 @@ func (c *canvas) styleAsSVG(s Style) string {
 
 	var pieces []string
 
-	if sw != 0 {
-		pieces = append(pieces, "stroke-width:"+fmt.Sprintf("%d", int(sw)))
-	} else {
-		pieces = append(pieces, "stroke-width:0")
-	}
-
-	if !sc.IsTransparent() {
+	if sw != 0 && !sc.IsTransparent() {
+		pieces = append(pieces, "stroke-width:"+formatFloatMinimized(sw))
 		pieces = append(pieces, "stroke:"+sc.String())
 	} else {
 		pieces = append(pieces, "stroke:none")
 	}
 
-	if !fnc.IsTransparent() {
+	if applyText && !fnc.IsTransparent() {
 		pieces = append(pieces, "fill:"+fnc.String())
 	} else if !fc.IsTransparent() {
 		pieces = append(pieces, "fill:"+fc.String())
@@ -360,12 +363,29 @@ func (c *canvas) styleAsSVG(s Style) string {
 		pieces = append(pieces, "fill:none")
 	}
 
-	if fs != 0 {
-		pieces = append(pieces, "font-size:"+fmt.Sprintf("%.1fpx", drawing.PointsToPixels(c.dpi, fs)))
+	if applyText {
+		if fs != 0 {
+			pieces = append(pieces, "font-size:"+formatFloatMinimized(drawing.PointsToPixels(c.dpi, fs))+"px")
+		}
+		if s.Font != nil {
+			pieces = append(pieces, c.getFontFace(s))
+		}
 	}
 
-	if s.Font != nil {
-		pieces = append(pieces, c.getFontFace(s))
+	if len(pieces) == 0 {
+		return ""
 	}
+
 	return fmt.Sprintf("style=\"%s\"", strings.Join(pieces, ";"))
+}
+
+// formatFloatNoTrailingZero formats a float without trailing zeros, so it is as small as possible.
+func formatFloatMinimized(val float64) string {
+	if val == float64(int(val)) {
+		return strconv.Itoa(int(val))
+	}
+	str := fmt.Sprintf("%.1f", val)   // e.g. "1.20"
+	str = strings.TrimRight(str, "0") // e.g. "1.2"
+	str = strings.TrimRight(str, ".") // a rounding condition where an int is acceptable
+	return str
 }

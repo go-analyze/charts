@@ -12,36 +12,71 @@ import (
 var (
 	// ColorTransparent is a fully transparent color.
 	ColorTransparent = Color{R: 255, G: 255, B: 255, A: 0}
-	// ColorWhite is white.
+	// ColorWhite is R: 255, G: 255, B: 255.
 	ColorWhite = Color{R: 255, G: 255, B: 255, A: 255}
-	// ColorBlack is black.
+	// ColorBlack is R: 0, G: 0, B: 0.
 	ColorBlack = Color{R: 0, G: 0, B: 0, A: 255}
-	// ColorRed is red.
+	// ColorGray is R: 128, G: 128, B: 128,
+	ColorGray = Color{R: 128, G: 128, B: 128, A: 255}
+	// ColorRed is R: 255, G: 0, B: 0.
 	ColorRed = Color{R: 255, G: 0, B: 0, A: 255}
-	// ColorGreen is green.
+	// ColorGreen is R: 0, G: 128, B: 0.
 	ColorGreen = Color{R: 0, G: 128, B: 0, A: 255}
-	// ColorBlue is blue.
+	// ColorBlue is R: 0, G: 0, B: 255.
 	ColorBlue = Color{R: 0, G: 0, B: 255, A: 255}
-	// ColorSilver is a known color.
+	// ColorSilver is R: 192, G: 192, B: 192.
 	ColorSilver = Color{R: 192, G: 192, B: 192, A: 255}
-	// ColorMaroon is a known color.
+	// ColorMaroon is R: 128, G: 0, B: 0.
 	ColorMaroon = Color{R: 128, G: 0, B: 0, A: 255}
-	// ColorPurple is a known color.
+	// ColorPurple is R: 128, G: 0, B: 128.
 	ColorPurple = Color{R: 128, G: 0, B: 128, A: 255}
-	// ColorFuchsia is a known color.
+	// ColorFuchsia is R: 255, G: 0, B: 255.
 	ColorFuchsia = Color{R: 255, G: 0, B: 255, A: 255}
-	// ColorLime is a known color.
+	// ColorLime is R: 0, G: 255, B: 0.
 	ColorLime = Color{R: 0, G: 255, B: 0, A: 255}
-	// ColorOlive is a known color.
+	// ColorOlive is R: 128, G: 128, B: 0.
 	ColorOlive = Color{R: 128, G: 128, B: 0, A: 255}
-	// ColorYellow is a known color.
+	// ColorYellow is R: 255, G: 255, B: 0.
 	ColorYellow = Color{R: 255, G: 255, B: 0, A: 255}
-	// ColorNavy is a known color.
+	// ColorNavy is R: 0, G: 0, B: 128.
 	ColorNavy = Color{R: 0, G: 0, B: 128, A: 255}
-	// ColorTeal is a known color.
+	// ColorTeal is R: 0, G: 128, B: 128.
 	ColorTeal = Color{R: 0, G: 128, B: 128, A: 255}
-	// ColorAqua is a known color.
+	// ColorAqua is R: 0, G: 255, B: 255.
 	ColorAqua = Color{R: 0, G: 255, B: 255, A: 255}
+
+	// select extended colors
+
+	// ColorAzure is R: 240, G: 255, B: 255.
+	ColorAzure = Color{R: 240, G: 255, B: 255, A: 255}
+	// ColorBeige is R: 245, G: 245, B: 220.
+	ColorBeige = Color{R: 245, G: 245, B: 220, A: 255}
+	// ColorBrown is R: 165, G: 42, B: 42.
+	ColorBrown = Color{R: 165, G: 42, B: 42, A: 255}
+	// ColorChocolate is R: 210, G: 105, B: 30.
+	ColorChocolate = Color{R: 210, G: 105, B: 30, A: 255}
+	// ColorCoral is R: 255, G: 127, B: 80.
+	ColorCoral = Color{R: 255, G: 127, B: 80, A: 255}
+	// ColorGold is R: 255, G: 215, B: 0.
+	ColorGold = Color{R: 255, G: 215, B: 0, A: 255}
+	// ColorIndigo is R: 75, G: 0, B: 130.
+	ColorIndigo = Color{R: 75, G: 0, B: 130, A: 255}
+	// ColorIvory is R: 255, G: 255, B: 250.
+	ColorIvory = Color{R: 255, G: 255, B: 250, A: 255}
+	// ColorOrange is R: 255, G: 165, B: 0.
+	ColorOrange = Color{R: 255, G: 165, B: 0, A: 255}
+	// ColorPink is R: 255, G: 192, B: 203.
+	ColorPink = Color{R: 255, G: 192, B: 203, A: 255}
+	// ColorPlum is R: 221, G: 160, B: 221.
+	ColorPlum = Color{R: 221, G: 160, B: 221, A: 255}
+	// ColorSalmon is R: 250, G: 128, B: 114.
+	ColorSalmon = Color{R: 250, G: 128, B: 114, A: 255}
+	// ColorTan is R: 210, G: 180, B: 140.
+	ColorTan = Color{R: 210, G: 180, B: 140, A: 255}
+	// ColorTurquoise is R: 64, G: 224, B: 208.
+	ColorTurquoise = Color{R: 64, G: 224, B: 208, A: 255}
+	// ColorViolet is R: 238, G: 130, B: 238.
+	ColorViolet = Color{R: 238, G: 130, B: 238, A: 255}
 )
 
 // ParseColor parses a color from a string.
@@ -129,6 +164,8 @@ func ColorFromKnown(known string) Color {
 		return ColorWhite
 	case "black":
 		return ColorBlack
+	case "grey", "gray":
+		return ColorGray
 	case "red":
 		return ColorRed
 	case "blue":
@@ -153,8 +190,38 @@ func ColorFromKnown(known string) Color {
 		return ColorNavy
 	case "teal":
 		return ColorTeal
-	case "aqua":
+	case "cyan", "aqua":
 		return ColorAqua
+	case "azure":
+		return ColorAzure
+	case "beige":
+		return ColorBeige
+	case "brown":
+		return ColorBrown
+	case "chocolate":
+		return ColorChocolate
+	case "coral":
+		return ColorCoral
+	case "gold":
+		return ColorGold
+	case "indigo":
+		return ColorIndigo
+	case "ivory":
+		return ColorIvory
+	case "orange":
+		return ColorOrange
+	case "pink":
+		return ColorPink
+	case "plum":
+		return ColorPlum
+	case "salmon":
+		return ColorSalmon
+	case "tan":
+		return ColorTan
+	case "turquoise":
+		return ColorTurquoise
+	case "violet":
+		return ColorViolet
 	default:
 		return Color{}
 	}
@@ -235,6 +302,53 @@ func (c Color) AverageWith(other Color) Color {
 
 // String returns a css string representation of the color.
 func (c Color) String() string {
+	switch c {
+	case ColorWhite:
+		return "white"
+	case ColorBlack:
+		return "black"
+	case ColorRed:
+		return "red"
+	case ColorBlue:
+		return "blue"
+	case ColorGreen:
+		return "green"
+	case ColorSilver:
+		return "silver"
+	case ColorMaroon:
+		return "maroon"
+	case ColorPurple:
+		return "purple"
+	case ColorFuchsia:
+		return "fuchsia"
+	case ColorLime:
+		return "lime"
+	case ColorOlive:
+		return "olive"
+	case ColorYellow:
+		return "yellow"
+	case ColorNavy:
+		return "navy"
+	case ColorTeal:
+		return "teal"
+	case ColorAqua:
+		return "aqua"
+	default:
+		if c.A == 255 {
+			return c.StringRGB()
+		} else {
+			return c.StringRGBA()
+		}
+	}
+}
+
+// StringRGB returns a css RGB string representation of the color.
+func (c Color) StringRGB() string {
+	return fmt.Sprintf("rgb(%v,%v,%v)", c.R, c.G, c.B)
+}
+
+// StringRGBA returns a css RGBA string representation of the color.
+func (c Color) StringRGBA() string {
 	fa := float64(c.A) / float64(255)
 	return fmt.Sprintf("rgba(%v,%v,%v,%.1f)", c.R, c.G, c.B, fa)
 }

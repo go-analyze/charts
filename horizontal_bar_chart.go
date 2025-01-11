@@ -32,6 +32,8 @@ type HorizontalBarChartOption struct {
 	Legend LegendOption
 	// BarHeight specifies the height of each horizontal bar.
 	BarHeight int
+	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	ValueFormatter ValueFormatter
 }
 
 // newHorizontalBarChart returns a horizontal bar chart renderer
@@ -73,7 +75,8 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	theme := opt.Theme
 
 	min, max := seriesList.GetMinMax(0)
-	xRange := newRange(p, seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
+	xRange := newRange(p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
+		seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
 	seriesNames := seriesList.Names()
 
 	var rendererList []renderer
@@ -102,16 +105,13 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			w := xRange.getHeight(item)
 			fillColor := seriesColor
 			right := w
-			seriesPainter.OverrideDrawingStyle(chartdraw.Style{
-				FillColor: fillColor,
-			})
 			seriesPainter.filledRect(chartdraw.Box{
 				Top:    y,
 				Left:   0,
 				Right:  right,
 				Bottom: y + barHeight,
 				IsSet:  true,
-			})
+			}, fillColor, fillColor, 0.0)
 			// if the label does not need to be displayed, return
 			if labelPainter == nil {
 				continue
@@ -153,14 +153,15 @@ func (h *horizontalBarChart) Render() (Box, error) {
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		theme:        opt.Theme,
-		padding:      opt.Padding,
-		seriesList:   opt.SeriesList,
-		xAxis:        opt.XAxis,
-		yAxis:        opt.YAxis,
-		title:        opt.Title,
-		legend:       opt.Legend,
-		axisReversed: true,
+		theme:          opt.Theme,
+		padding:        opt.Padding,
+		seriesList:     opt.SeriesList,
+		xAxis:          opt.XAxis,
+		yAxis:          opt.YAxis,
+		title:          opt.Title,
+		legend:         opt.Legend,
+		valueFormatter: opt.ValueFormatter,
+		axisReversed:   true,
 	})
 	if err != nil {
 		return BoxZero, err

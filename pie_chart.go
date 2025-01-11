@@ -196,16 +196,11 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	maxY := 0
 	minY := 0
 	for _, s := range sectors {
-		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
-			StrokeWidth: 1,
-			StrokeColor: s.color,
-			FillColor:   s.color,
-		})
 		seriesPainter.moveTo(s.cx, s.cy)
 		seriesPainter.arcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta)
 		seriesPainter.lineTo(s.cx, s.cy)
 		seriesPainter.close()
-		seriesPainter.fillStroke()
+		seriesPainter.fillStroke(s.color, s.color, 1)
 		if s.label == "" {
 			continue
 		}
@@ -235,9 +230,11 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		if prevY < minY {
 			minY = prevY
 		}
-		seriesPainter.Line(s.lineStartX, s.lineStartY, s.lineBranchX, s.lineBranchY)
-		seriesPainter.Line(s.lineBranchX, s.lineBranchY, s.lineEndX, s.lineEndY)
-		seriesPainter.stroke()
+		seriesPainter.moveTo(s.lineStartX, s.lineStartY)
+		seriesPainter.lineTo(s.lineBranchX, s.lineBranchY)
+		seriesPainter.moveTo(s.lineBranchX, s.lineBranchY)
+		seriesPainter.lineTo(s.lineEndX, s.lineEndY)
+		seriesPainter.stroke(s.color, 1)
 		textStyle := FontStyle{
 			FontColor: theme.GetTextColor(),
 			FontSize:  labelFontSize,
@@ -246,9 +243,8 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		if !s.series.Label.FontStyle.FontColor.IsZero() {
 			textStyle.FontColor = s.series.Label.FontStyle.FontColor
 		}
-		seriesPainter.OverrideFontStyle(textStyle)
-		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label))
-		seriesPainter.Text(s.label, x, y)
+		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label, 0, textStyle))
+		seriesPainter.Text(s.label, x, y, 0, textStyle)
 	}
 	return p.p.box, nil
 }

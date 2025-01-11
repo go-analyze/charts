@@ -11,22 +11,28 @@ const rangeMaxPaddingPercentMax = 20.0
 const zeroSpanAdjustment = 1 // Adjustment
 
 type axisRange struct {
-	p           *Painter
-	divideCount int
-	min         float64
-	max         float64
-	size        int
+	p              *Painter
+	valueFormatter ValueFormatter
+	divideCount    int
+	min            float64
+	max            float64
+	size           int
 }
 
 // newRange returns a range of data for an axis, this range will have padding to better present the data.
-func newRange(painter *Painter, size, divideCount int, min, max, minPaddingScale, maxPaddingScale float64) axisRange {
+func newRange(painter *Painter, valueFormatter ValueFormatter,
+	size, divideCount int, min, max, minPaddingScale, maxPaddingScale float64) axisRange {
 	min, max = padRange(divideCount, min, max, minPaddingScale, maxPaddingScale)
+	if valueFormatter == nil {
+		valueFormatter = defaultValueFormatter
+	}
 	return axisRange{
-		p:           painter,
-		divideCount: divideCount,
-		min:         min,
-		max:         max,
-		size:        size,
+		p:              painter,
+		valueFormatter: valueFormatter,
+		divideCount:    divideCount,
+		min:            min,
+		max:            max,
+		size:           size,
 	}
 }
 
@@ -159,14 +165,10 @@ func friendlyRound(val, increment, defaultMultiplier, minMultiplier, maxMultipli
 // Values returns values of range
 func (r axisRange) Values() []string {
 	offset := (r.max - r.min) / float64(r.divideCount-1)
-	formatter := defaultValueFormatter
-	if r.p != nil && r.p.valueFormatter != nil {
-		formatter = r.p.valueFormatter
-	}
 	values := make([]string, r.divideCount)
 	for i := 0; i < r.divideCount; i++ {
 		v := r.min + float64(i)*offset
-		values[i] = formatter(v)
+		values[i] = r.valueFormatter(v)
 	}
 	return values
 }

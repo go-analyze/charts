@@ -98,44 +98,35 @@ func main() {
 		FontColor: drawing.ColorBlack,
 		Font:      charts.GetDefaultFont(),
 	}
-	p.SetFontStyle(fontStyle)
-	//p.TextRotation("f/stop", 10, 170, chartdraw.DegreesToRadians(90))
+	//p.Text("f/stop", 10, 170, chartdraw.DegreesToRadians(90), fontStyle)
 
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(0)
-	p.SetFontStyle(fontStyle)
-	p.Text(labels[0], 420, 84)
+	p.Text(labels[0], 420, 84, 0, fontStyle)
 
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(1)
-	p.SetFontStyle(fontStyle)
-	p.Text(labels[1], 45, 284)
+	p.Text(labels[1], 45, 284, 0, fontStyle)
 
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(2)
-	p.SetFontStyle(fontStyle)
-	p.Text(labels[2], 140, 230)
+	p.Text(labels[2], 140, 230, 0, fontStyle)
 
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(3)
-	p.SetFontStyle(fontStyle)
-	p.Text(labels[3], 160, 155)
+	p.Text(labels[3], 160, 155, 0, fontStyle)
 
 	fontStyle.FontSize = 8
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(0)
-	p.SetFontStyle(fontStyle)
-	p.Text("f/4.5", 42, 220)
-	p.Text("f/5.0", 105, 196)
-	p.Text("f/6.3", 370, 137)
-	p.Text("f/7.1", 570, 100)
+	p.Text("f/4.5", 42, 220, 0, fontStyle)
+	p.Text("f/5.0", 105, 196, 0, fontStyle)
+	p.Text("f/6.3", 370, 137, 0, fontStyle)
+	p.Text("f/7.1", 570, 100, 0, fontStyle)
 
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(1)
-	p.SetFontStyle(fontStyle)
-	p.Text("f/2.8", 5, 298)
+	p.Text("f/2.8", 5, 298, 0, fontStyle)
 
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(2)
-	p.SetFontStyle(fontStyle)
-	p.Text("f/4.0", 40, 244)
+	p.Text("f/4.0", 40, 244, 0, fontStyle)
 
 	fontStyle.FontColor = opt.Theme.GetSeriesColor(3)
-	p.SetFontStyle(fontStyle)
-	p.Text("f/5.6", 92, 168)
+	p.Text("f/5.6", 92, 168, 0, fontStyle)
 
 	if buf, err := p.Bytes(); err != nil {
 		panic(err)

@@ -150,6 +150,9 @@ func (rr *rasterRenderer) SetFontColor(c drawing.Color) {
 
 // Text implements the interface method.
 func (rr *rasterRenderer) Text(body string, x, y int) {
+	if body == "" {
+		return
+	}
 	xf, yf := rr.getCoords(x, y)
 	rr.gc.SetFont(rr.s.Font)
 	rr.gc.SetFontSize(rr.s.FontSize)

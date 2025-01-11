@@ -111,8 +111,7 @@ func (t *titlePainter) Render() (Box, error) {
 	textMaxHeight := 0
 	textTotalHeight := 0
 	for index, item := range measureOptions {
-		p.OverrideFontStyle(item.style)
-		textBox := p.MeasureText(item.text)
+		textBox := p.MeasureText(item.text, 0, item.style)
 
 		w := textBox.Width()
 		h := textBox.Height()
@@ -159,10 +158,9 @@ func (t *titlePainter) Render() (Box, error) {
 	}
 	startY := titleY
 	for _, item := range measureOptions {
-		p.OverrideFontStyle(item.style)
 		x := titleX + (textMaxWidth-item.width)>>1
 		y := titleY + item.height
-		p.Text(item.text, x, y)
+		p.Text(item.text, x, y, 0, item.style)
 		titleY = y
 	}
 

@@ -2,8 +2,6 @@ package charts
 
 import (
 	"fmt"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type legendPainter struct {
@@ -91,7 +89,6 @@ func (l *legendPainter) Render() (Box, error) {
 		padding.Top = 5
 	}
 	p := l.p.Child(PainterPaddingOption(padding))
-	p.SetFontStyle(fontStyle)
 
 	// calculate the width and height of the display
 	measureList := make([]Box, len(opt.Data))
@@ -104,7 +101,7 @@ func (l *legendPainter) Render() (Box, error) {
 	maxTextWidth := 0
 	itemMaxHeight := 0
 	for index, text := range opt.Data {
-		b := p.MeasureText(text)
+		b := p.MeasureText(text, 0, fontStyle)
 		if b.Width() > maxTextWidth {
 			maxTextWidth = b.Width()
 		}
@@ -170,27 +167,27 @@ func (l *legendPainter) Render() (Box, error) {
 	x0 := startX
 	y0 := y
 
-	var drawIcon func(top, left int) int
+	var drawIcon func(top, left int, color Color) int
 	if opt.Icon == IconRect {
-		drawIcon = func(top, left int) int {
+		drawIcon = func(top, left int, color Color) int {
 			p.filledRect(Box{
 				Top:    top - legendHeight + 8,
 				Left:   left,
 				Right:  left + legendWidth,
 				Bottom: top + 1,
 				IsSet:  true,
-			})
+			}, color, color, 0)
 			return left + legendWidth
 		}
 	} else {
-		drawIcon = func(top, left int) int {
+		drawIcon = func(top, left int, color Color) int {
 			p.legendLineDot(Box{
 				Top:    top + 1,
 				Left:   left,
 				Right:  left + legendWidth,
 				Bottom: top + legendHeight + 1,
 				IsSet:  true,
-			})
+			}, color, 3, color)
 			return left + legendWidth
 		}
 	}
@@ -198,10 +195,6 @@ func (l *legendPainter) Render() (Box, error) {
 	lastIndex := len(opt.Data) - 1
 	for index, text := range opt.Data {
 		color := theme.GetSeriesColor(index)
-		p.SetDrawingStyle(chartdraw.Style{
-			FillColor:   color,
-			StrokeColor: color,
-		})
 		if vertical {
 			if opt.Align == AlignRight {
 				// adjust x0 so that the text will start with a right alignment to the longest line
@@ -219,7 +212,7 @@ func (l *legendPainter) Render() (Box, error) {
 					// recalculate width and center based off remaining width
 					var remainingWidth int
 					for i2 := index; i2 < len(opt.Data); i2++ {
-						b := p.MeasureText(opt.Data[i2])
+						b := p.MeasureText(opt.Data[i2], 0, fontStyle)
 						remainingWidth += b.Width()
 					}
 					remainingCount := len(opt.Data) - index
@@ -238,14 +231,14 @@ func (l *legendPainter) Render() (Box, error) {
 		}
 
 		if opt.Align != AlignRight {
-			x0 = drawIcon(y0, x0)
+			x0 = drawIcon(y0, x0, color)
 			x0 += textOffset
 		}
-		p.Text(text, x0, y0)
+		p.Text(text, x0, y0, 0, fontStyle)
 		x0 += measureList[index].Width()
 		if opt.Align == AlignRight {
 			x0 += textOffset
-			x0 = drawIcon(y0, x0)
+			x0 = drawIcon(y0, x0, color)
 		}
 
 		if vertical {

@@ -218,13 +218,10 @@ func (t *tableChart) render() (*renderInfo, error) {
 	info.columnWidths = columnWidths
 
 	height := 0
-	style := chartdraw.Style{
-		FontStyle: FontStyle{
-			FontSize:  fontStyle.FontSize,
-			FontColor: opt.HeaderFontColor,
-			Font:      fontStyle.Font,
-		},
-		FillColor: opt.HeaderFontColor,
+	headerFontStyle := FontStyle{
+		FontSize:  fontStyle.FontSize,
+		FontColor: opt.HeaderFontColor,
+		Font:      fontStyle.Font,
 	}
 
 	// textAligns := opt.TextAligns
@@ -237,7 +234,8 @@ func (t *tableChart) render() (*renderInfo, error) {
 
 	// processing of the table cells
 	renderTableCells := func(
-		style chartdraw.Style,
+		fontStyle FontStyle,
+		fillColor Color,
 		rowIndex int,
 		textList []string,
 		currentHeight int,
@@ -252,23 +250,22 @@ func (t *tableChart) render() (*renderInfo, error) {
 				Text:      text,
 				Row:       rowIndex,
 				Column:    index,
-				FontStyle: style.FontStyle,
-				FillColor: style.FillColor,
+				FontStyle: fontStyle,
+				FillColor: fillColor,
 			}
 			if opt.CellModifier != nil {
 				tc = opt.CellModifier(tc)
 				// Update style values to capture any changes
-				style.FontStyle = tc.FontStyle
-				style.FillColor = tc.FillColor
+				fontStyle = tc.FontStyle
+				fillColor = tc.FillColor
 			}
 			cells[index] = tc
-			p.setStyle(style)
 			x := values[index]
 			y := currentHeight + cellPadding.Top
 			width := values[index+1] - x
 			x += cellPadding.Left
 			width -= paddingWidth
-			box := p.TextFit(text, x, y+int(fontStyle.FontSize), width, getTextAlign(index))
+			box := p.TextFit(text, x, y+int(fontStyle.FontSize), width, fontStyle, getTextAlign(index))
 			// calculate the highest height
 			if box.Height()+paddingHeight > cellMaxHeight {
 				cellMaxHeight = box.Height() + paddingHeight
@@ -280,16 +277,15 @@ func (t *tableChart) render() (*renderInfo, error) {
 	info.tableCells = make([][]TableCell, len(opt.Data)+1)
 
 	// processing of the table headers
-	headerCells, headerHeight := renderTableCells(style, 0, opt.Header, height, opt.Padding)
+	headerCells, headerHeight := renderTableCells(headerFontStyle, opt.HeaderFontColor,
+		0, opt.Header, height, opt.Padding)
 	info.tableCells[0] = headerCells
 	height += headerHeight
 	info.headerHeight = headerHeight
 
 	// processing of the table contents
-	style.FontColor = fontStyle.FontColor
-	style.FillColor = fontStyle.FontColor
 	for index, textList := range opt.Data {
-		newCells, cellHeight := renderTableCells(style, index+1, textList, height, opt.Padding)
+		newCells, cellHeight := renderTableCells(fontStyle, fontStyle.FontColor, index+1, textList, height, opt.Padding)
 		info.tableCells[index+1] = newCells
 		info.rowHeights = append(info.rowHeights, cellHeight)
 		height += cellHeight
@@ -317,7 +313,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			opt.HeaderBackgroundColor = tableLightThemeSetting.headerColor
 		}
 	}
-	p.SetBackground(info.width, info.headerHeight, opt.HeaderBackgroundColor, true)
+	p.SetBackground(info.width, info.headerHeight, opt.HeaderBackgroundColor)
 
 	if opt.RowBackgroundColors == nil {
 		if opt.Theme.IsDark() {
@@ -334,7 +330,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			Top:   currentHeight,
 			IsSet: true,
 		}))
-		child.SetBackground(p.Width(), h, color, true)
+		child.SetBackground(p.Width(), h, color)
 		currentHeight += h
 	}
 	// adjust the background color according to the set table style
@@ -359,7 +355,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 					}))
 					w := info.columnWidths[j] - padding.Left - padding.Top
 					h := heights[i] - padding.Top - padding.Bottom
-					child.SetBackground(w, h, tc.FillColor, true)
+					child.SetBackground(w, h, tc.FillColor)
 				}
 				left += info.columnWidths[j]
 			}

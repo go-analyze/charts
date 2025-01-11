@@ -69,12 +69,7 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 		labelStyle.FontColor = value.fontStyle.FontColor
 	}
 	p := o.p
-	p.OverrideDrawingStyle(chartdraw.Style{FontStyle: labelStyle})
-	rotated := value.radians != 0
-	if rotated {
-		p.setTextRotation(value.radians)
-	}
-	textBox := p.MeasureText(text)
+	textBox := p.MeasureText(text, value.radians, labelStyle)
 	renderValue := labelRenderValue{
 		Text:      text,
 		FontStyle: labelStyle,
@@ -92,9 +87,6 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 	}
 	if value.radians != 0 {
 		renderValue.X = value.x + (textBox.Width() >> 1) - 1
-		p.clearTextRotation()
-	} else if textBox.Width()%2 != 0 {
-		renderValue.X++
 	}
 	renderValue.X += value.offset.Left
 	renderValue.Y += value.offset.Top
@@ -103,12 +95,7 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 
 func (o *seriesLabelPainter) Render() (Box, error) {
 	for _, item := range o.values {
-		o.p.OverrideFontStyle(item.FontStyle)
-		if item.Radians != 0 {
-			o.p.TextRotation(item.Text, item.X, item.Y, item.Radians)
-		} else {
-			o.p.Text(item.Text, item.X, item.Y)
-		}
+		o.p.Text(item.Text, item.X, item.Y, item.Radians, item.FontStyle)
 	}
 	return chartdraw.BoxZero, nil
 }

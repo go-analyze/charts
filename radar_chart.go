@@ -106,29 +106,26 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 	divideRadius := float64(int(radius / float64(divideCount)))
 	radius = divideRadius * float64(divideCount)
 
-	seriesPainter.OverrideDrawingStyle(chartdraw.Style{
-		StrokeColor: theme.GetAxisSplitLineColor(),
-		StrokeWidth: 1,
-	})
 	center := Point{X: cx, Y: cy}
 	for i := 0; i < divideCount; i++ {
-		seriesPainter.Polygon(center, divideRadius*float64(i+1), sides)
+		seriesPainter.Polygon(center, divideRadius*float64(i+1), sides, theme.GetAxisSplitLineColor(), 1)
 	}
 	points := getPolygonPoints(center, radius, sides)
 	for _, p := range points {
-		seriesPainter.Line(center.X, center.Y, p.X, p.Y)
-		seriesPainter.stroke()
+		seriesPainter.moveTo(center.X, center.Y)
+		seriesPainter.lineTo(p.X, p.Y)
+		seriesPainter.stroke(theme.GetAxisSplitLineColor(), 1)
 	}
-	seriesPainter.OverrideFontStyle(FontStyle{
+	fontStyle := FontStyle{
 		FontColor: theme.GetTextColor(),
 		FontSize:  labelFontSize,
 		Font:      opt.Font,
-	})
+	}
 	offset := 5
 	// text generation
 	for index, p := range points {
 		name := indicators[index].Name
-		b := seriesPainter.MeasureText(name)
+		b := seriesPainter.MeasureText(name, 0, fontStyle)
 		isXCenter := p.X == center.X
 		isYCenter := p.Y == center.Y
 		isRight := p.X > center.X
@@ -160,7 +157,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		if isLeft {
 			x -= b.Width() + offset
 		}
-		seriesPainter.Text(name, x, y)
+		seriesPainter.Text(name, x, y, 0, fontStyle)
 	}
 
 	// radar chart
@@ -188,28 +185,15 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			dotFillColor = color
 		}
 		linePoints = append(linePoints, linePoints[0])
-		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
-			StrokeColor: color,
-			StrokeWidth: defaultStrokeWidth,
-			DotWidth:    defaultDotWidth,
-			DotColor:    color,
-			FillColor:   color.WithAlpha(20),
-		})
-		seriesPainter.LineStroke(linePoints)
-		seriesPainter.FillArea(linePoints)
-		dotWith := 2.0
-		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
-			StrokeWidth: defaultStrokeWidth,
-			StrokeColor: color,
-			FillColor:   dotFillColor,
-		})
+		seriesPainter.LineStroke(linePoints, color, defaultStrokeWidth)
+		seriesPainter.FillArea(linePoints, color.WithAlpha(20))
+		dotWith := defaultDotWidth
 		for index, point := range linePoints {
-			seriesPainter.Circle(dotWith, point.X, point.Y)
-			seriesPainter.fillStroke()
+			seriesPainter.Circle(dotWith, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
 			if flagIs(true, series.Label.Show) && index < len(series.Data) {
 				value := humanize.FtoaWithDigits(series.Data[index], 2)
-				b := seriesPainter.MeasureText(value)
-				seriesPainter.Text(value, point.X-b.Width()/2, point.Y)
+				b := seriesPainter.MeasureText(value, 0, fontStyle)
+				seriesPainter.Text(value, point.X-b.Width()/2, point.Y, 0, fontStyle)
 			}
 		}
 	}

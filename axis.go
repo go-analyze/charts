@@ -3,8 +3,6 @@ package charts
 import (
 	"math"
 	"strings"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type axisPainter struct {
@@ -97,23 +95,7 @@ func (a *axisPainter) Render() (Box, error) {
 	tickLength := getDefaultInt(opt.TickLength, 5)
 	labelMargin := getDefaultInt(opt.LabelMargin, 5)
 
-	style := chartdraw.Style{
-		StrokeColor: theme.GetAxisStrokeColor(),
-		StrokeWidth: strokeWidth,
-		FontStyle:   fontStyle,
-	}
-	top.SetDrawingStyle(style)
-	top.OverrideFontStyle(style.FontStyle)
-
-	isTextRotation := opt.TextRotation != 0
-
-	if isTextRotation {
-		top.setTextRotation(opt.TextRotation)
-	}
-	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Data)
-	if isTextRotation {
-		top.clearTextRotation()
-	}
+	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Data, opt.TextRotation, fontStyle)
 
 	width := 0
 	height := 0
@@ -227,22 +209,25 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 
 	if strokeWidth > 0 {
+		strokeColor := theme.GetAxisStrokeColor()
 		p.Child(PainterPaddingOption(Box{
 			Top:   ticksPaddingTop,
 			Left:  ticksPaddingLeft,
 			IsSet: true,
 		})).ticks(ticksOption{
-			labelCount: labelCount,
-			tickCount:  tickCount,
-			tickSpaces: tickSpaces,
-			length:     tickLength,
-			vertical:   isVertical,
-			firstIndex: opt.DataStartIndex,
+			labelCount:  labelCount,
+			tickCount:   tickCount,
+			tickSpaces:  tickSpaces,
+			length:      tickLength,
+			vertical:    isVertical,
+			firstIndex:  opt.DataStartIndex,
+			strokeWidth: strokeWidth,
+			strokeColor: strokeColor,
 		})
 		p.LineStroke([]Point{
 			{X: x0, Y: y0},
 			{X: x1, Y: y1},
-		})
+		}, strokeColor, strokeWidth)
 	}
 
 	p.Child(PainterPaddingOption(Box{
@@ -254,6 +239,7 @@ func (a *axisPainter) Render() (Box, error) {
 		firstIndex:     opt.DataStartIndex,
 		align:          textAlign,
 		textList:       opt.Data,
+		fontStyle:      fontStyle,
 		vertical:       isVertical,
 		labelCount:     labelCount,
 		tickCount:      tickCount,
@@ -264,9 +250,6 @@ func (a *axisPainter) Render() (Box, error) {
 	})
 
 	if opt.SplitLineShow { // show auxiliary lines
-		style.StrokeColor = theme.GetAxisSplitLineColor()
-		style.StrokeWidth = 1
-		top.OverrideDrawingStyle(style)
 		if isVertical {
 			x0 := p.Width()
 			x1 := top.Width()
@@ -280,7 +263,7 @@ func (a *axisPainter) Render() (Box, error) {
 				top.LineStroke([]Point{
 					{X: x0, Y: y},
 					{X: x1, Y: y},
-				})
+				}, theme.GetAxisSplitLineColor(), 1)
 			}
 		} else {
 			y0 := p.Height() - defaultXAxisHeight
@@ -293,7 +276,7 @@ func (a *axisPainter) Render() (Box, error) {
 				top.LineStroke([]Point{
 					{X: x, Y: y0},
 					{X: x, Y: y1},
-				})
+				}, theme.GetAxisSplitLineColor(), 1)
 			}
 		}
 	}

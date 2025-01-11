@@ -36,17 +36,16 @@ type YAxisOption struct {
 	// SpineLineShow can be set to enforce if the vertical spine on the axis should be shown or not.
 	// By default, not shown unless a category axis.
 	SpineLineShow *bool
+	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	ValueFormatter ValueFormatter
 }
 
-func (opt *YAxisOption) toAxisOption(p *Painter) axisOption {
+func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 	position := PositionLeft
 	if opt.Position == PositionRight {
 		position = PositionRight
 	}
-	theme := opt.Theme
-	if theme == nil {
-		theme = p.theme
-	}
+	theme := getPreferredTheme(opt.Theme, fallbackTheme)
 	axisOpt := axisOption{
 		Formatter:            opt.Formatter,
 		Theme:                theme,
@@ -91,7 +90,7 @@ func newLeftYAxis(p *Painter, opt YAxisOption) *axisPainter {
 	p = p.Child(PainterPaddingOption(Box{
 		Bottom: defaultXAxisHeight,
 	}))
-	return newAxisPainter(p, opt.toAxisOption(p))
+	return newAxisPainter(p, opt.toAxisOption(p.theme))
 }
 
 // newRightYAxis returns a right y-axis renderer.
@@ -99,7 +98,7 @@ func newRightYAxis(p *Painter, opt YAxisOption) *axisPainter {
 	p = p.Child(PainterPaddingOption(Box{
 		Bottom: defaultXAxisHeight,
 	}))
-	axisOpt := opt.toAxisOption(p)
+	axisOpt := opt.toAxisOption(p.theme)
 	axisOpt.Position = PositionRight
 	axisOpt.SplitLineShow = false
 	return newAxisPainter(p, axisOpt)

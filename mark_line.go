@@ -2,8 +2,6 @@ package charts
 
 import (
 	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 // NewMarkLine returns a series mark line
@@ -52,24 +50,13 @@ func (m *markLinePainter) Render() (Box, error) {
 		if len(s.MarkLine.Data) == 0 {
 			continue
 		}
-		font := getPreferredFont(opt.Font)
 		summary := s.Summary()
+		fontStyle := FontStyle{
+			Font:      getPreferredFont(opt.Font),
+			FontColor: opt.FontColor,
+			FontSize:  labelFontSize,
+		}
 		for _, markLine := range s.MarkLine.Data {
-			// since the mark line will modify the style, it must be reset every time
-			painter.OverrideDrawingStyle(chartdraw.Style{
-				FillColor:   opt.FillColor,
-				StrokeColor: opt.StrokeColor,
-				StrokeWidth: 1,
-				StrokeDashArray: []float64{
-					4,
-					2,
-				},
-			})
-			painter.OverrideFontStyle(FontStyle{
-				Font:      font,
-				FontColor: opt.FontColor,
-				FontSize:  labelFontSize,
-			})
 			value := float64(0)
 			switch markLine.Type {
 			case SeriesMarkDataTypeMax:
@@ -82,9 +69,9 @@ func (m *markLinePainter) Render() (Box, error) {
 			y := opt.Range.getRestHeight(value)
 			width := painter.Width()
 			text := defaultValueFormatter(value)
-			textBox := painter.MeasureText(text)
-			painter.MarkLine(0, y, width-2)
-			painter.Text(text, width, y+textBox.Height()>>1-2)
+			textBox := painter.MeasureText(text, 0, fontStyle)
+			painter.MarkLine(0, y, width-2, opt.FillColor, opt.StrokeColor, 1, []float64{4, 2})
+			painter.Text(text, width, y+textBox.Height()>>1-2, 0, fontStyle)
 		}
 	}
 	return BoxZero, nil

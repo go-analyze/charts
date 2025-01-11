@@ -5,7 +5,6 @@ import (
 
 	"github.com/golang/freetype/truetype"
 
-	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
@@ -51,6 +50,8 @@ type LineChartOption struct {
 	FillArea bool
 	// FillOpacity is the opacity (alpha) of the area fill.
 	FillOpacity uint8
+	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	ValueFormatter ValueFormatter
 	// backgroundIsFilled is set to true if the background is filled.
 	backgroundIsFilled bool
 }
@@ -112,10 +113,6 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	for index := range seriesList {
 		series := seriesList[index]
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
-		drawingStyle := chartdraw.Style{
-			StrokeColor: seriesColor,
-			StrokeWidth: strokeWidth,
-		}
 
 		yRange := result.axisRanges[series.YAxisIndex]
 		points := make([]Point, 0)
@@ -162,34 +159,28 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				X: areaPoints[0].X,
 				Y: bottomY,
 			}, areaPoints[0])
-			seriesPainter.SetDrawingStyle(chartdraw.Style{
-				FillColor: seriesColor.WithAlpha(opacity),
-			})
+			fillColor := seriesColor.WithAlpha(opacity)
 			if opt.StrokeSmoothingTension > 0 {
-				seriesPainter.smoothFillChartArea(areaPoints, opt.StrokeSmoothingTension)
+				seriesPainter.smoothFillChartArea(areaPoints, opt.StrokeSmoothingTension, fillColor)
 			} else {
-				seriesPainter.FillArea(areaPoints)
+				seriesPainter.FillArea(areaPoints, fillColor)
 			}
 		}
-		seriesPainter.SetDrawingStyle(drawingStyle)
 
 		// draw line
 		if opt.StrokeSmoothingTension > 0 {
-			seriesPainter.SmoothLineStroke(points, opt.StrokeSmoothingTension)
+			seriesPainter.SmoothLineStroke(points, opt.StrokeSmoothingTension, seriesColor, strokeWidth)
 		} else {
-			seriesPainter.LineStroke(points)
+			seriesPainter.LineStroke(points, seriesColor, strokeWidth)
 		}
 
 		// draw dots
-		if opt.Theme.IsDark() {
-			drawingStyle.FillColor = drawingStyle.StrokeColor
-		} else {
-			drawingStyle.FillColor = drawing.ColorWhite
-		}
-		drawingStyle.StrokeWidth = 1
-		seriesPainter.SetDrawingStyle(drawingStyle)
 		if showSymbol {
-			seriesPainter.Dots(points)
+			dotFillColor := drawing.ColorWhite
+			if opt.Theme.IsDark() {
+				dotFillColor = seriesColor
+			}
+			seriesPainter.Dots(points, dotFillColor, seriesColor, 1, 2)
 		}
 		markPointPainter.Add(markPointRenderOption{
 			FillColor: seriesColor,
@@ -234,6 +225,7 @@ func (l *lineChart) Render() (Box, error) {
 		yAxis:              opt.YAxis,
 		title:              opt.Title,
 		legend:             opt.Legend,
+		valueFormatter:     opt.ValueFormatter,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {

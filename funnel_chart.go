@@ -4,8 +4,6 @@ import (
 	"errors"
 
 	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type funnelChart struct {
@@ -106,24 +104,19 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 				Y: y,
 			},
 		}
-		color := theme.GetSeriesColor(series.index)
 
-		seriesPainter.OverrideDrawingStyle(chartdraw.Style{
-			FillColor: color,
-		})
-		seriesPainter.FillArea(points)
+		seriesPainter.FillArea(points, theme.GetSeriesColor(series.index))
 
-		// text
 		text := textList[index]
-		seriesPainter.OverrideFontStyle(FontStyle{
+		fontStyle := FontStyle{
 			FontColor: theme.GetTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,
-		})
-		textBox := seriesPainter.MeasureText(text)
+		}
+		textBox := seriesPainter.MeasureText(text, 0, fontStyle)
 		textX := width>>1 - textBox.Width()>>1
 		textY := y + h>>1
-		seriesPainter.Text(text, textX, textY)
+		seriesPainter.Text(text, textX, textY, 0, fontStyle)
 		y += h + gap
 	}
 

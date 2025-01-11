@@ -67,13 +67,8 @@ func (m *markPointPainter) Render() (Box, error) {
 		} else {
 			textStyle.FontColor = defaultDarkFontColor
 		}
-		painter.OverrideDrawingStyle(chartdraw.Style{
-			FillColor: opt.FillColor,
-		})
-		painter.OverrideFontStyle(textStyle.FontStyle)
 		for _, markPointData := range opt.Series.MarkPoint.Data {
 			textStyle.FontSize = labelFontSize
-			painter.OverrideFontStyle(textStyle.FontStyle)
 			p := points[summary.MinIndex]
 			value := summary.Min
 			switch markPointData.Type {
@@ -82,15 +77,14 @@ func (m *markPointPainter) Render() (Box, error) {
 				value = summary.Max
 			}
 
-			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize)
+			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize, opt.FillColor, opt.FillColor, 0.0)
 			text := defaultValueFormatter(value)
-			textBox := painter.MeasureText(text)
+			textBox := painter.MeasureText(text, 0, textStyle.FontStyle)
 			if textBox.Width() > symbolSize {
 				textStyle.FontSize = smallLabelFontSize
-				painter.OverrideFontStyle(textStyle.FontStyle)
-				textBox = painter.MeasureText(text)
+				textBox = painter.MeasureText(text, 0, textStyle.FontStyle)
 			}
-			painter.Text(text, p.X-textBox.Width()>>1, p.Y-symbolSize>>1-2)
+			painter.Text(text, p.X-textBox.Width()>>1, p.Y-symbolSize>>1-2, 0, textStyle.FontStyle)
 		}
 	}
 	return BoxZero, nil
