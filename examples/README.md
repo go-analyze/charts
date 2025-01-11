@@ -14,6 +14,7 @@ Examples are our primary method for demonstrating the starting point our use and
 * [line_chart-1](./line_chart-1) - Basic line chart with some simple styling changes and a demonstration of `null` values.
 * [line_chart-2](./line_chart-2) - The above example line chart re-demonstrated using the Painter API.
 * [line_chart-3](./line_chart-3) - Line chart with dense data and more custom styling configured.
+* [line_chart-4](./line_chart-4) - Line chart with dense data and most default rendering disabled, instead rendering labels manually on the Painter.
 * [line_chart-area](./line_chart-area) - Example line chart with the area below the line shaded.
 * [multiple_charts-1](./multiple_charts-1) - Example of manually building a painter so that you can render 4 charts on the same image.
 * [multiple_charts-2](./multiple_charts-2) - Combining two charts together by writting one chart over the other.
