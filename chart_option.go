@@ -2,7 +2,6 @@ package charts
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/golang/freetype/truetype"
 )
@@ -227,14 +226,9 @@ func (o *ChartOption) fillDefault() error {
 	o.Width = getDefaultInt(o.Width, defaultChartWidth)
 	o.Height = getDefaultInt(o.Height, defaultChartHeight)
 
-	yaxisCount := 1
-	for _, series := range o.SeriesList {
-		if series.YAxisIndex == 1 {
-			yaxisCount++
-			break
-		} else if series.YAxisIndex > 1 {
-			return fmt.Errorf("series '%s' specified invalid y-axis index: %v", series.Name, series.YAxisIndex)
-		}
+	yaxisCount := o.SeriesList.getYAxisCount()
+	if yaxisCount < 0 {
+		return fmt.Errorf("series specified invalid y-axis index")
 	}
 	if len(o.YAxis) < yaxisCount {
 		yAxisOptions := make([]YAxisOption, yaxisCount)
@@ -265,31 +259,7 @@ func (o *ChartOption) fillDefault() error {
 	fillThemeDefaults(o.Theme, &o.Title, &o.Legend, &o.XAxis)
 
 	if o.Padding.IsZero() {
-		o.Padding = Box{
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-			Left:   20,
-		}
-	}
-	// association between legend and series name
-	if len(o.Legend.Data) == 0 {
-		o.Legend.Data = o.SeriesList.Names()
-	} else {
-		seriesCount := len(o.SeriesList)
-		for index, name := range o.Legend.Data {
-			if index < seriesCount && len(o.SeriesList[index].Name) == 0 {
-				o.SeriesList[index].Name = name
-			}
-		}
-		nameIndexDict := map[string]int{}
-		for index, name := range o.Legend.Data {
-			nameIndexDict[name] = index
-		}
-		// ensure order of series is consistent with legend
-		sort.Slice(o.SeriesList, func(i, j int) bool {
-			return nameIndexDict[o.SeriesList[i].Name] < nameIndexDict[o.SeriesList[j].Name]
-		})
+		o.Padding = defaultPadding
 	}
 	return nil
 }

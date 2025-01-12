@@ -27,8 +27,7 @@ func main() {
 		{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
 	}
 
-	opt := charts.BarChartOption{}
-	opt.SeriesList = charts.NewSeriesListBar(values)
+	opt := charts.NewBarChartOptionWithData(values)
 	opt.XAxis.Data = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}

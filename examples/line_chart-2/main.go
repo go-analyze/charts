@@ -30,8 +30,7 @@ func main() {
 		{820, 932, 901, 934, 1290, 1330, 1320},
 	}
 
-	opt := charts.LineChartOption{}
-	opt.SeriesList = charts.NewSeriesListLine(values)
+	opt := charts.NewLineChartOptionWithData(values)
 	opt.Title.Text = "Line"
 	opt.Title.FontStyle.FontSize = 16
 	opt.XAxis.Data = []string{

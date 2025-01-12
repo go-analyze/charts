@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw/drawing"
@@ -92,6 +93,23 @@ func makeMinimalLineChartOption() LineChartOption {
 		SymbolShow: False(),
 		SeriesList: NewSeriesListLine(values),
 	}
+}
+
+func TestNewLineChartOptionWithData(t *testing.T) {
+	t.Parallel()
+
+	opt := NewLineChartOptionWithData([][]float64{
+		{12, 24},
+		{24, 48},
+	})
+
+	assert.Len(t, opt.SeriesList, 2)
+	assert.Equal(t, ChartTypeLine, opt.SeriesList[0].Type)
+	assert.Len(t, opt.YAxis, 1)
+	assert.Equal(t, defaultPadding, opt.Padding)
+
+	p := NewPainter(PainterOptions{})
+	assert.NoError(t, p.LineChart(opt))
 }
 
 func TestLineChart(t *testing.T) {

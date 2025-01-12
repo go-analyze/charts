@@ -24,6 +24,17 @@ type RadarIndicator struct {
 	Min float64
 }
 
+// NewRadarChartOptionWithData returns an initialized RadarChartOption with the SeriesList set for the provided data slice.
+func NewRadarChartOptionWithData(data [][]float64, names []string, values []float64) RadarChartOption {
+	return RadarChartOption{
+		SeriesList:      NewSeriesListRadar(data),
+		RadarIndicators: NewRadarIndicators(names, values),
+		Padding:         defaultPadding,
+		Theme:           GetDefaultTheme(),
+		Font:            GetDefaultFont(),
+	}
+}
+
 type RadarChartOption struct {
 	// Theme specifies the colors used for the pie chart.
 	Theme ColorPalette
@@ -212,7 +223,7 @@ func (r *radarChart) Render() (Box, error) {
 		theme:      opt.Theme,
 		padding:    opt.Padding,
 		seriesList: opt.SeriesList,
-		xAxis: XAxisOption{
+		xAxis: &XAxisOption{
 			Show: False(),
 		},
 		yAxis: []YAxisOption{
@@ -221,7 +232,7 @@ func (r *radarChart) Render() (Box, error) {
 			},
 		},
 		title:              opt.Title,
-		legend:             opt.Legend,
+		legend:             &r.opt.Legend,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {

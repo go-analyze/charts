@@ -27,8 +27,23 @@ func main() {
 		{5000, 14000, 28000, 26000, 42000, 21000},
 	}
 
-	opt := charts.RadarChartOption{}
-	opt.SeriesList = charts.NewSeriesListRadar(values)
+	opt := charts.NewRadarChartOptionWithData(values,
+		[]string{
+			"Sales",
+			"Administration",
+			"Information Technology",
+			"Customer Support",
+			"Development",
+			"Marketing",
+		},
+		[]float64{
+			6500,
+			16000,
+			30000,
+			38000,
+			52000,
+			25000,
+		})
 	opt.Title = charts.TitleOption{
 		Text: "Basic Radar Chart",
 		FontStyle: charts.FontStyle{
@@ -41,21 +56,6 @@ func main() {
 		},
 		Offset: charts.OffsetRight,
 	}
-	opt.RadarIndicators = charts.NewRadarIndicators([]string{
-		"Sales",
-		"Administration",
-		"Information Technology",
-		"Customer Support",
-		"Development",
-		"Marketing",
-	}, []float64{
-		6500,
-		16000,
-		30000,
-		38000,
-		52000,
-		25000,
-	})
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,

@@ -17,6 +17,7 @@ const defaultYAxisLabelCountLow = 3
 
 var defaultChartWidth = 600
 var defaultChartHeight = 400
+var defaultPadding = chartdraw.NewBox(20, 20, 20, 20)
 
 // SetDefaultChartDimensions sets default width and height of charts if not otherwise specified in their configuration.
 func SetDefaultChartDimensions(width, height int) {
@@ -75,13 +76,13 @@ type defaultRenderOption struct {
 	// seriesList provides the data series.
 	seriesList SeriesList
 	// xAxis are options for the x-axis.
-	xAxis XAxisOption
+	xAxis *XAxisOption
 	// yAxis are options for the y-axis (at most two).
 	yAxis []YAxisOption
 	// title are options for rendering the title.
 	title TitleOption
 	// legend are options for the data legend.
-	legend LegendOption
+	legend *LegendOption
 	// backgroundIsFilled is true if the background is filled.
 	backgroundIsFilled bool
 	// axisReversed is true if the x y-axis is reversed.
@@ -97,21 +98,40 @@ type defaultRenderResult struct {
 }
 
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
-	fillThemeDefaults(getPreferredTheme(opt.theme), &opt.title, &opt.legend, &opt.xAxis)
+	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis)
 
 	seriesList := opt.seriesList
 	seriesList.init()
 	if !opt.backgroundIsFilled {
 		p.SetBackground(p.Width(), p.Height(), opt.theme.GetBackgroundColor())
 	}
-
 	if !opt.padding.IsZero() {
 		p = p.Child(PainterPaddingOption(opt.padding))
 	}
 
+	// association between legend and series name
+	if len(opt.legend.Data) == 0 {
+		opt.legend.Data = opt.seriesList.Names()
+	} else {
+		seriesCount := len(opt.seriesList)
+		for index, name := range opt.legend.Data {
+			if index < seriesCount && len(opt.seriesList[index].Name) == 0 {
+				opt.seriesList[index].Name = name
+			}
+		}
+		nameIndexDict := map[string]int{}
+		for index, name := range opt.legend.Data {
+			nameIndexDict[name] = index
+		}
+		// ensure order of series is consistent with legend
+		sort.Slice(opt.seriesList, func(i, j int) bool {
+			return nameIndexDict[opt.seriesList[i].Name] < nameIndexDict[opt.seriesList[j].Name]
+		})
+	}
+
 	const legendTitlePadding = 15
 	legendTopSpacing := 0
-	legendResult, err := newLegendPainter(p, opt.legend).Render()
+	legendResult, err := newLegendPainter(p, *opt.legend).Render()
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +191,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	rangeWidthLeft := 0
 	rangeWidthRight := 0
 
-	sort.Sort(sort.Reverse(sort.IntSlice(axisIndexList)))
+	reverseIntSlice(axisIndexList)
 
 	// calculate the axis range
 	for _, index := range axisIndexList {
@@ -197,8 +217,8 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 		// Label counts and y-axis padding are linked together to produce a user-friendly graph.
 		// First when considering padding we want to prefer a zero axis start if reasonable, and add a slight
-		// padding to the max so there is a little space at the top of the graph.  In addition, we want to pick
-		// a max value that will result in round intervals on the axis.  These details are in range.go.
+		// padding to the max so there is a little space at the top of the graph. In addition, we want to pick
+		// a max value that will result in round intervals on the axis. These details are in range.go.
 		// But in order to produce round intervals we need to have an idea of how many intervals there are.
 		// In addition, if the user specified a `Unit` value we may need to adjust our label count calculation
 		// based on the padded range.
@@ -241,7 +261,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			yAxisOption.Data = r.Values()
 		} else {
 			yAxisOption.isCategoryAxis = true
-			// we need to update the range labels or the bars wont be aligned to the Y axis
+			// we need to update the range labels or the bars won't be aligned to the Y axis
 			r.divideCount = len(seriesList[0].Data)
 			result.axisRanges[index] = r
 			// since the x-axis is the value part, it's label is calculated and processed separately
@@ -273,7 +293,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
 		IsSet: true,
-	})), opt.xAxis)
+	})), *opt.xAxis)
 	if _, err := xAxis.Render(); err != nil {
 		return nil, err
 	}
@@ -346,10 +366,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		theme:          opt.Theme,
 		padding:        opt.Padding,
 		seriesList:     opt.SeriesList,
-		xAxis:          opt.XAxis,
+		xAxis:          &opt.XAxis,
 		yAxis:          opt.YAxis,
 		title:          opt.Title,
-		legend:         opt.Legend,
+		legend:         &opt.Legend,
 		axisReversed:   axisReversed,
 		valueFormatter: opt.ValueFormatter,
 		// the background color has been set

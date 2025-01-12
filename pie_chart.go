@@ -14,6 +14,16 @@ type pieChart struct {
 	opt *PieChartOption
 }
 
+// NewPieChartOptionWithData returns an initialized PieChartOption with the SeriesList set for the provided data slice.
+func NewPieChartOptionWithData(data []float64) PieChartOption {
+	return PieChartOption{
+		SeriesList: NewSeriesListPie(data),
+		Padding:    defaultPadding,
+		Theme:      GetDefaultTheme(),
+		Font:       GetDefaultFont(),
+	}
+}
+
 type PieChartOption struct {
 	// Theme specifies the colors used for the pie chart.
 	Theme ColorPalette
@@ -259,7 +269,7 @@ func (p *pieChart) Render() (Box, error) {
 		theme:      opt.Theme,
 		padding:    opt.Padding,
 		seriesList: opt.SeriesList,
-		xAxis: XAxisOption{
+		xAxis: &XAxisOption{
 			Show: False(),
 		},
 		yAxis: []YAxisOption{
@@ -268,7 +278,7 @@ func (p *pieChart) Render() (Box, error) {
 			},
 		},
 		title:              opt.Title,
-		legend:             opt.Legend,
+		legend:             &p.opt.Legend,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})
 	if err != nil {

@@ -20,6 +20,19 @@ func newBarChart(p *Painter, opt BarChartOption) *barChart {
 	}
 }
 
+// NewBarChartOptionWithData returns an initialized BarChartOption with the SeriesList set for the provided data slice.
+func NewBarChartOptionWithData(data [][]float64) BarChartOption {
+	sl := NewSeriesListBar(data)
+	return BarChartOption{
+		SeriesList:     sl,
+		Padding:        defaultPadding,
+		Theme:          GetDefaultTheme(),
+		Font:           GetDefaultFont(),
+		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
+		ValueFormatter: defaultValueFormatter,
+	}
+}
+
 type BarChartOption struct {
 	// Theme specifies the colors used for the bar chart.
 	Theme ColorPalette
@@ -197,10 +210,10 @@ func (b *barChart) Render() (Box, error) {
 		theme:          opt.Theme,
 		padding:        opt.Padding,
 		seriesList:     opt.SeriesList,
-		xAxis:          opt.XAxis,
+		xAxis:          &b.opt.XAxis,
 		yAxis:          opt.YAxis,
 		title:          opt.Title,
-		legend:         opt.Legend,
+		legend:         &b.opt.Legend,
 		valueFormatter: opt.ValueFormatter,
 	})
 	if err != nil {

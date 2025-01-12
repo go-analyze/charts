@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -33,6 +34,31 @@ func makeBasicRadarChartOption() RadarChartOption {
 			6500, 16000, 30000, 38000, 52000, 25000,
 		}),
 	}
+}
+
+func TestNewRadarChartOptionWithData(t *testing.T) {
+	t.Parallel()
+
+	opt := NewRadarChartOptionWithData([][]float64{
+		{4200, 3000, 20000, 35000, 50000, 18000},
+		{5000, 14000, 28000, 26000, 42000, 21000},
+	}, []string{
+		"Sales",
+		"Administration",
+		"Information Technology",
+		"Customer Support",
+		"Development",
+		"Marketing",
+	}, []float64{
+		6500, 16000, 30000, 38000, 52000, 25000,
+	})
+
+	assert.Len(t, opt.SeriesList, 2)
+	assert.Equal(t, ChartTypeRadar, opt.SeriesList[0].Type)
+	assert.Equal(t, defaultPadding, opt.Padding)
+
+	p := NewPainter(PainterOptions{})
+	assert.NoError(t, p.RadarChart(opt))
 }
 
 func TestRadarChart(t *testing.T) {

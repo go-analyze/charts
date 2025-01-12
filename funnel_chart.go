@@ -19,6 +19,16 @@ func newFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
 	}
 }
 
+// NewFunnelChartOptionWithData returns an initialized FunnelChartOption with the SeriesList set for the provided data slice.
+func NewFunnelChartOptionWithData(data []float64) FunnelChartOption {
+	return FunnelChartOption{
+		SeriesList: NewSeriesListFunnel(data),
+		Padding:    defaultPadding,
+		Theme:      GetDefaultTheme(),
+		Font:       GetDefaultFont(),
+	}
+}
+
 type FunnelChartOption struct {
 	// Theme specifies the colors used for the chart.
 	Theme ColorPalette
@@ -134,7 +144,7 @@ func (f *funnelChart) Render() (Box, error) {
 		theme:      opt.Theme,
 		padding:    opt.Padding,
 		seriesList: opt.SeriesList,
-		xAxis: XAxisOption{
+		xAxis: &XAxisOption{
 			Show: False(),
 		},
 		yAxis: []YAxisOption{
@@ -143,7 +153,7 @@ func (f *funnelChart) Render() (Box, error) {
 			},
 		},
 		title:  opt.Title,
-		legend: opt.Legend,
+		legend: &f.opt.Legend,
 	})
 	if err != nil {
 		return BoxZero, err

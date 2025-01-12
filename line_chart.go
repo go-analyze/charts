@@ -21,6 +21,22 @@ func newLineChart(p *Painter, opt LineChartOption) *lineChart {
 	}
 }
 
+// NewLineChartOptionWithData returns an initialized LineChartOption with the SeriesList set for the provided data slice.
+func NewLineChartOptionWithData(data [][]float64) LineChartOption {
+	sl := NewSeriesListLine(data)
+	return LineChartOption{
+		SeriesList: sl,
+		Padding:    defaultPadding,
+		Theme:      GetDefaultTheme(),
+		Font:       GetDefaultFont(),
+		XAxis: XAxisOption{
+			Data: make([]string, len(data[0])),
+		},
+		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
+		ValueFormatter: defaultValueFormatter,
+	}
+}
+
 type LineChartOption struct {
 	// Theme specifies the colors used for the line chart.
 	Theme ColorPalette
@@ -221,10 +237,10 @@ func (l *lineChart) Render() (Box, error) {
 		theme:              opt.Theme,
 		padding:            opt.Padding,
 		seriesList:         opt.SeriesList,
-		xAxis:              opt.XAxis,
+		xAxis:              &l.opt.XAxis,
 		yAxis:              opt.YAxis,
 		title:              opt.Title,
-		legend:             opt.Legend,
+		legend:             &l.opt.Legend,
 		valueFormatter:     opt.ValueFormatter,
 		backgroundIsFilled: opt.backgroundIsFilled,
 	})

@@ -37,6 +37,7 @@ func flagIs(is bool, flag *bool) bool {
 	return *flag == is
 }
 
+// TODO - replace when we support a newer version of go
 func containsInt(values []int, value int) bool {
 	for _, v := range values {
 		if v == value {
@@ -111,12 +112,14 @@ func sumInt(values []int) int {
 	return sum
 }
 
+// TODO - replace when we support a newer version of go
 func reverseStringSlice(stringList []string) {
 	for i, j := 0, len(stringList)-1; i < j; i, j = i+1, j-1 {
 		stringList[i], stringList[j] = stringList[j], stringList[i]
 	}
 }
 
+// TODO - replace when we support a newer version of go
 func reverseIntSlice(intList []int) {
 	for i, j := 0, len(intList)-1; i < j; i, j = i+1, j-1 {
 		intList[i], intList[j] = intList[j], intList[i]
@@ -152,7 +155,7 @@ const gValue = mValue * kValue
 const tValue = gValue * kValue
 
 // FormatValueHumanizeShort takes in a value and a specified precision, rounding to the specified precision and
-// returning a human friendly number string including commas.  If the value is over 1,000 it will be reduced to a
+// returning a human friendly number string including commas. If the value is over 1,000 it will be reduced to a
 // shorter version with the appropriate k, M, G, T suffix.
 func FormatValueHumanizeShort(value float64, decimals int, ensureTrailingZeros bool) string {
 	if value >= tValue {

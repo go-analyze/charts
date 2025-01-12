@@ -25,7 +25,7 @@ type XAxisOption struct {
 	ValueFormatter ValueFormatter
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
-	// LabelCount is the number of labels to show on the axis.  Specify a smaller number to reduce writing collisions.
+	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions.
 	LabelCount int
 	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
 	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.

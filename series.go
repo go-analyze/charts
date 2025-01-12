@@ -14,6 +14,7 @@ func newSeriesListFromValues(values [][]float64, chartType string, label SeriesL
 	seriesList := make(SeriesList, len(values))
 	for index, value := range values {
 		s := Series{
+			index:     index,
 			Data:      value,
 			Type:      chartType,
 			Label:     label,
@@ -113,6 +114,17 @@ func (sl SeriesList) Filter(chartType string) SeriesList {
 		}
 	}
 	return arr
+}
+
+func (sl SeriesList) getYAxisCount() int {
+	for _, series := range sl {
+		if series.YAxisIndex == 1 {
+			return 2
+		} else if series.YAxisIndex != 0 {
+			return -1
+		}
+	}
+	return 1
 }
 
 // GetMinMax get max and min value of series list for a given y-axis index (either 0 or 1).

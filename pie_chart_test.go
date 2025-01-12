@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw/drawing"
@@ -34,6 +35,19 @@ func makeBasicPieChartOption() PieChartOption {
 			Offset: OffsetLeft,
 		},
 	}
+}
+
+func TestNewPieChartOptionWithData(t *testing.T) {
+	t.Parallel()
+
+	opt := NewPieChartOptionWithData([]float64{12, 24, 48})
+
+	assert.Len(t, opt.SeriesList, 3)
+	assert.Equal(t, ChartTypePie, opt.SeriesList[0].Type)
+	assert.Equal(t, defaultPadding, opt.Padding)
+
+	p := NewPainter(PainterOptions{})
+	assert.NoError(t, p.PieChart(opt))
 }
 
 func TestPieChart(t *testing.T) {

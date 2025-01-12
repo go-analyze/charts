@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw/drawing"
@@ -38,6 +39,23 @@ func makeBasicBarChartOption() BarChartOption {
 			},
 		},
 	}
+}
+
+func TestNewBarChartOptionWithData(t *testing.T) {
+	t.Parallel()
+
+	opt := NewBarChartOptionWithData([][]float64{
+		{12, 24},
+		{24, 48},
+	})
+
+	assert.Len(t, opt.SeriesList, 2)
+	assert.Equal(t, ChartTypeBar, opt.SeriesList[0].Type)
+	assert.Len(t, opt.YAxis, 1)
+	assert.Equal(t, defaultPadding, opt.Padding)
+
+	p := NewPainter(PainterOptions{})
+	assert.NoError(t, p.BarChart(opt))
 }
 
 func TestBarChart(t *testing.T) {

@@ -13,6 +13,19 @@ type horizontalBarChart struct {
 	opt *HorizontalBarChartOption
 }
 
+// NewHorizontalBarChartOptionWithData returns an initialized HorizontalBarChartOption with the SeriesList set for the provided data slice.
+func NewHorizontalBarChartOptionWithData(data [][]float64) HorizontalBarChartOption {
+	sl := NewSeriesListHorizontalBar(data)
+	return HorizontalBarChartOption{
+		SeriesList:     sl,
+		Padding:        defaultPadding,
+		Theme:          GetDefaultTheme(),
+		Font:           GetDefaultFont(),
+		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
+		ValueFormatter: defaultValueFormatter,
+	}
+}
+
 type HorizontalBarChartOption struct {
 	// Theme specifies the colors used for the chart.
 	Theme ColorPalette
@@ -156,10 +169,10 @@ func (h *horizontalBarChart) Render() (Box, error) {
 		theme:          opt.Theme,
 		padding:        opt.Padding,
 		seriesList:     opt.SeriesList,
-		xAxis:          opt.XAxis,
+		xAxis:          &h.opt.XAxis,
 		yAxis:          opt.YAxis,
 		title:          opt.Title,
-		legend:         opt.Legend,
+		legend:         &h.opt.Legend,
 		valueFormatter: opt.ValueFormatter,
 		axisReversed:   true,
 	})

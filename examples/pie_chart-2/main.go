@@ -26,8 +26,7 @@ func main() {
 		1048, 735, 580, 484, 300,
 	}
 
-	opt := charts.PieChartOption{}
-	opt.SeriesList = charts.NewSeriesListPie(values)
+	opt := charts.NewPieChartOptionWithData(values)
 	opt.Title = charts.TitleOption{
 		Text:    "Rainfall vs Evaporation",
 		Subtext: "(Fake Data)",
