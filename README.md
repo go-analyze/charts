@@ -236,7 +236,6 @@ func main() {
 				"Video Ads",
 			},
 		}),
-		charts.SeriesShowLabel(true),
 		// other options as desired...
 ```
 
