@@ -415,15 +415,21 @@ func (p *Painter) Polygon(center Point, radius float64, sides int, strokeColor C
 	p.stroke(strokeColor, strokeWidth)
 }
 
+const (
+	_pi2  = math.Pi / 2.0
+	_2pi  = 2 * math.Pi
+	_3pi2 = (3 * math.Pi) / 2.0
+)
+
 // Pin draws a pin shape (circle + curved tail).
 func (p *Painter) Pin(x, y, width int, fillColor, strokeColor Color, strokeWidth float64) {
 	r := float64(width) / 2
 	y -= width / 4
-	angle := chartdraw.DegreesToRadians(15)
+	angle := DegreesToRadians(15)
 
 	// Draw the pin head with fill and stroke
-	startAngle := math.Pi/2 + angle
-	delta := 2*math.Pi - 2*angle
+	startAngle := _pi2 + angle
+	delta := _2pi - 2*angle
 	p.arcTo(x, y, r, r, startAngle, delta)
 	p.lineTo(x, y)
 	p.close()
@@ -806,6 +812,47 @@ func (p *Painter) multiText(opt multiTextOption) {
 	}
 }
 
+// textRotationHeightAdjustment calculates how much vertical adjustment is needed
+// after rotating the text around the bottom-right corner.
+//
+// The caller will then typically subtract this returned value from the existing y-position so that the text will
+// stay aligned with the bottom position.  In order to do this calculation the provided text dimensions should be
+// WITHOUT rotation applied.
+func textRotationHeightAdjustment(textWidth, textHeight int, radians float64) int {
+	r := normalizeAngle(radians)
+
+	switch {
+	// Very close to 0 radians: no vertical adjustment needed
+	case r < 1e-9:
+		return 0
+	// 0 to π (0 to 180 degrees)
+	case r < math.Pi:
+		// Compute vertical displacement needed to maintain alignment at the bottom
+		// sin(r) gives the vertical component of the text width as it rotates
+		return int(math.Round(float64(textWidth) * math.Sin(r)))
+	// π to 3π/2 (180 to 270 degrees)
+	case r >= math.Pi && r < _3pi2:
+		// Adjust the text downward as it rotates past 180 degrees
+		// cos(angle) gives the horizontal overlap, subtract from height to get adjustment
+		return textHeight - int(math.Round(float64(textHeight)*math.Cos(r-_3pi2)))
+	// 3π/2 to 2π (270 to 360 degrees)
+	default:
+		// No adjustment needed as the text aligns back towards zero position
+		return 0
+	}
+}
+
+// normalizeAngle brings the angle into the range [0, 2π).
+func normalizeAngle(radians float64) float64 {
+	if radians < 0 {
+		for radians < 0 {
+			radians += _2pi
+		}
+		return radians
+	}
+	return math.Mod(radians, _2pi)
+}
+
 // Dots prints filled circles for the given points.
 func (p *Painter) Dots(points []Point, fillColor, strokeColor Color, strokeWidth float64, dotRadius float64) {
 	defer p.render.ResetStyle()
@@ -846,7 +893,7 @@ func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool,
 		// right top
 		cx := box.Right - radius
 		cy := box.Top + radius
-		p.arcTo(cx, cy, rx, ry, -math.Pi/2, math.Pi/2)
+		p.arcTo(cx, cy, rx, ry, -_pi2, _pi2)
 	} else {
 		p.moveTo(box.Left, box.Top)
 		p.lineTo(box.Right, box.Top)
@@ -858,14 +905,14 @@ func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool,
 		// right bottom
 		cx := box.Right - radius
 		cy := box.Bottom - radius
-		p.arcTo(cx, cy, rx, ry, 0, math.Pi/2)
+		p.arcTo(cx, cy, rx, ry, 0, _pi2)
 
 		p.lineTo(box.Left+radius, box.Bottom)
 
 		// left bottom
 		cx = box.Left + radius
 		cy = box.Bottom - radius
-		p.arcTo(cx, cy, rx, ry, math.Pi/2, math.Pi/2)
+		p.arcTo(cx, cy, rx, ry, _pi2, _pi2)
 	} else {
 		p.lineTo(box.Right, box.Bottom)
 		p.lineTo(box.Left, box.Bottom)
@@ -876,7 +923,7 @@ func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool,
 		p.lineTo(box.Left, box.Top+radius)
 		cx := box.Left + radius
 		cy := box.Top + radius
-		p.arcTo(cx, cy, rx, ry, math.Pi, math.Pi/2)
+		p.arcTo(cx, cy, rx, ry, math.Pi, _pi2)
 	} else {
 		p.lineTo(box.Left, box.Top)
 	}

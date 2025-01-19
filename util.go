@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 // True returns a pointer to a true bool, useful for configuration.
@@ -153,6 +155,16 @@ const kValue = float64(1000)
 const mValue = kValue * kValue
 const gValue = mValue * kValue
 const tValue = gValue * kValue
+
+// DegreesToRadians returns degrees as radians.
+func DegreesToRadians(degrees float64) float64 {
+	return chartdraw.DegreesToRadians(degrees)
+}
+
+// RadiansToDegrees translates a radian value to a degree value.
+func RadiansToDegrees(value float64) float64 {
+	return chartdraw.RadiansToDegrees(value)
+}
 
 // FormatValueHumanizeShort takes in a value and a specified precision, rounding to the specified precision and
 // returning a human friendly number string including commas. If the value is over 1,000 it will be reduced to a

@@ -61,6 +61,7 @@ func main() {
 	opt.XAxis.Data = xAxisLabels
 	opt.XAxis.Unit = 40
 	opt.XAxis.LabelCount = 10
+	opt.XAxis.TextRotation = charts.DegreesToRadians(45)
 	opt.XAxis.BoundaryGap = charts.True()
 	opt.XAxis.FontStyle = charts.FontStyle{
 		FontSize: 6.0,

@@ -133,11 +133,15 @@ func (a *axisPainter) Render() (Box, error) {
 
 	switch opt.Position {
 	case PositionTop:
-		labelPaddingTop = 0
+		if opt.TextRotation != 0 {
+			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Data, 0, fontStyle)
+			labelPaddingTop = flatHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.TextRotation)
+		} else {
+			labelPaddingTop = 0
+		}
 		x1 = p.Width()
-		// TODO - should this reference opt.FontStyle or fontStyle with defaults set
-		y0 = labelMargin + int(opt.FontStyle.FontSize)
-		ticksPaddingTop = int(opt.FontStyle.FontSize)
+		y0 = labelMargin + int(fontStyle.FontSize)
+		ticksPaddingTop = int(fontStyle.FontSize)
 		y1 = y0
 	case PositionLeft:
 		x0 = p.Width()
@@ -151,7 +155,12 @@ func (a *axisPainter) Render() (Box, error) {
 		y1 = p.Height()
 		labelPaddingLeft = width - textMaxWidth
 	default:
-		labelPaddingTop = height
+		if opt.TextRotation != 0 {
+			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Data, 0, fontStyle)
+			labelPaddingTop = tickLength<<1 + (textMaxHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.TextRotation))
+		} else {
+			labelPaddingTop = height
+		}
 		x1 = p.Width()
 	}
 

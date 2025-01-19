@@ -126,7 +126,7 @@ func TestPainterExternal(t *testing.T) {
 		{
 			name: "text_rotated",
 			fn: func(p *Painter) {
-				p.Text("hello world!", 3, 6, chartdraw.DegreesToRadians(90), FontStyle{})
+				p.Text("hello world!", 3, 6, DegreesToRadians(90), FontStyle{})
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><text x=\"8\" y=\"16\" style=\"stroke:none;fill:none;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,8,16)\">hello world!</text></svg>",
 		},
@@ -257,6 +257,165 @@ func TestPainterExternal(t *testing.T) {
 			data, err := p.Bytes()
 			require.NoError(t, err)
 			assertEqualSVG(t, tt.result, data)
+		})
+	}
+}
+
+func TestTextRotationHeightAdjustment(t *testing.T) {
+	t.Parallel()
+
+	text := "hello world "
+	expectedTemplate := "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"200\" y=\"%d\" style=\"stroke:none;fill:black;font-size:40.9px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(%d.00,200,%d)\">hello world %s</text></svg>"
+	fontStyle := FontStyle{
+		Font:      GetDefaultFont(),
+		FontSize:  32,
+		FontColor: drawing.ColorBlack,
+	}
+	drawDebugBox := false
+
+	tests := []struct {
+		degrees   int
+		expectedY int
+	}{
+		{
+			degrees:   15,
+			expectedY: 127,
+		},
+		{
+			degrees:   30,
+			expectedY: 60,
+		},
+		{
+			degrees:   45,
+			expectedY: 1,
+		},
+		{
+			degrees:   60,
+			expectedY: -43,
+		},
+		{
+			degrees:   75,
+			expectedY: -71,
+		},
+		{
+			degrees:   90,
+			expectedY: -81,
+		},
+		{
+			degrees:   105,
+			expectedY: -71,
+		},
+		{
+			degrees:   120,
+			expectedY: -43,
+		},
+		{
+			degrees:   135,
+			expectedY: 1,
+		},
+		{
+			degrees:   150,
+			expectedY: 60,
+		},
+		{
+			degrees:   165,
+			expectedY: 127,
+		},
+		{
+			degrees:   180,
+			expectedY: 160,
+		},
+		{
+			degrees:   195,
+			expectedY: 170,
+		},
+		{
+			degrees:   210,
+			expectedY: 180,
+		},
+		{
+			degrees:   225,
+			expectedY: 188,
+		},
+		{
+			degrees:   240,
+			expectedY: 195,
+		},
+		{
+			degrees:   255,
+			expectedY: 199,
+		},
+		{
+			degrees:   270,
+			expectedY: 200,
+		},
+		{
+			degrees:   285,
+			expectedY: 200,
+		},
+		{
+			degrees:   300,
+			expectedY: 200,
+		},
+		{
+			degrees:   315,
+			expectedY: 200,
+		},
+		{
+			degrees:   330,
+			expectedY: 200,
+		},
+		{
+			degrees:   345,
+			expectedY: 200,
+		},
+		{
+			degrees:   360,
+			expectedY: 200,
+		},
+	}
+
+	for _, tt := range tests {
+		name := strconv.Itoa(tt.degrees)
+		for len(name) < 3 {
+			name = "0" + name
+		}
+		t.Run(name, func(t *testing.T) {
+			padding := 200
+			p := NewPainter(PainterOptions{
+				OutputFormat: ChartOutputSVG,
+				Width:        600,
+				Height:       400,
+			}, PainterPaddingOption(chartdraw.Box{Left: padding, Top: padding}))
+
+			radians := DegreesToRadians(float64(tt.degrees))
+			testText := text + name
+			textBox := p.MeasureText(testText, 0, fontStyle)
+
+			if drawDebugBox {
+				debugBox := []Point{
+					{X: 0, Y: 0},
+					{X: 0, Y: -textBox.Height()},
+					{X: textBox.Width(), Y: -textBox.Height()},
+					{X: textBox.Width(), Y: 0},
+					{X: 0, Y: 0},
+				}
+				p.LineStroke(debugBox, drawing.ColorBlue, 1)
+			}
+
+			assert.Equal(t, tt.expectedY, padding-textRotationHeightAdjustment(textBox.Width(), textBox.Height(), radians))
+
+			p.Text(testText, 0, -textRotationHeightAdjustment(textBox.Width(), textBox.Height(), radians), radians, fontStyle)
+
+			data, err := p.Bytes()
+			require.NoError(t, err)
+
+			if drawDebugBox {
+				assertEqualSVG(t, "", data)
+			} else {
+				expectedResult := fmt.Sprintf(expectedTemplate, tt.expectedY, tt.degrees%360, tt.expectedY, name)
+				assertEqualSVG(t, expectedResult, data)
+			}
 		})
 	}
 }

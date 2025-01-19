@@ -65,10 +65,11 @@ func main() {
 			LabelSkipCount: 1,
 		}),
 		charts.XAxisOptionFunc(charts.XAxisOption{
-			Data:        xAxisLabels,
-			FontStyle:   axisFont,
-			BoundaryGap: charts.True(),
-			LabelCount:  10,
+			Data:         xAxisLabels,
+			FontStyle:    axisFont,
+			BoundaryGap:  charts.True(),
+			LabelCount:   10,
+			TextRotation: charts.DegreesToRadians(45),
 		}),
 		func(opt *charts.ChartOption) {
 			// disable the symbols and reduce the stroke width to give more fidelity on the line

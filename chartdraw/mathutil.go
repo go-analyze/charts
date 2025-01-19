@@ -101,7 +101,7 @@ func RadianAdd(base, delta float64) float64 {
 	return math.Mod(math.Mod(value, _2pi)+_2pi, _2pi)
 }
 
-// DegreesAdd adds a delta to a base in radians.
+// DegreesAdd adds a delta to a base in degrees.
 func DegreesAdd(baseDegrees, deltaDegrees float64) float64 {
 	value := baseDegrees + deltaDegrees
 	return math.Mod(math.Mod(value, 360.0)+360.0, 360.0)
