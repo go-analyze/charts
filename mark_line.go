@@ -57,7 +57,7 @@ func (m *markLinePainter) Render() (Box, error) {
 			FontSize:  labelFontSize,
 		}
 		for _, markLine := range s.MarkLine.Data {
-			value := float64(0)
+			var value float64
 			switch markLine.Type {
 			case SeriesMarkDataTypeMax:
 				value = summary.Max

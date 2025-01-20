@@ -236,16 +236,11 @@ func main() {
 		},
 	}
 
-	pngFile, err := os.Create("output.png")
-	if err != nil {
+	if pngFile, err := os.Create("output.png"); err != nil {
 		panic(err)
-	}
-
-	if err := stackedBarChart.Render(chartdraw.PNG, pngFile); err != nil {
+	} else if err := stackedBarChart.Render(chartdraw.PNG, pngFile); err != nil {
 		panic(err)
-	}
-
-	if err := pngFile.Close(); err != nil {
+	} else if err := pngFile.Close(); err != nil {
 		panic(err)
 	}
 }

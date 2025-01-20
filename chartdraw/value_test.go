@@ -22,13 +22,13 @@ func TestValuesValues(t *testing.T) {
 
 	values := Values(vs).Values()
 	require.Len(t, values, 7)
-	assert.Equal(t, float64(10), values[0])
-	assert.Equal(t, float64(9), values[1])
-	assert.Equal(t, float64(8), values[2])
-	assert.Equal(t, float64(7), values[3])
-	assert.Equal(t, float64(6), values[4])
-	assert.Equal(t, float64(5), values[5])
-	assert.Equal(t, float64(2), values[6])
+	assert.InDelta(t, float64(10), values[0], 0)
+	assert.InDelta(t, float64(9), values[1], 0)
+	assert.InDelta(t, float64(8), values[2], 0)
+	assert.InDelta(t, float64(7), values[3], 0)
+	assert.InDelta(t, float64(6), values[4], 0)
+	assert.InDelta(t, float64(5), values[5], 0)
+	assert.InDelta(t, float64(2), values[6], 0)
 }
 
 func TestValuesValuesNormalized(t *testing.T) {
@@ -46,8 +46,8 @@ func TestValuesValuesNormalized(t *testing.T) {
 
 	values := Values(vs).ValuesNormalized()
 	require.Len(t, values, 7)
-	assert.Equal(t, 0.2127, values[0])
-	assert.Equal(t, 0.0425, values[6])
+	assert.InDelta(t, 0.2127, values[0], 0)
+	assert.InDelta(t, 0.0425, values[6], 0)
 }
 
 func TestValuesNormalize(t *testing.T) {
@@ -65,6 +65,6 @@ func TestValuesNormalize(t *testing.T) {
 
 	values := Values(vs).Normalize()
 	require.Len(t, values, 7)
-	assert.Equal(t, 0.2127, values[0].Value)
-	assert.Equal(t, 0.0425, values[6].Value)
+	assert.InDelta(t, 0.2127, values[0].Value, 0)
+	assert.InDelta(t, 0.0425, values[6].Value, 0)
 }

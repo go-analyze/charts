@@ -20,16 +20,16 @@ func TestContinuousSeries(t *testing.T) {
 	assert.Equal(t, "Test Series", cs.GetName())
 	assert.Equal(t, 10, cs.Len())
 	x0, y0 := cs.GetValues(0)
-	assert.Equal(t, 1.0, x0)
-	assert.Equal(t, 1.0, y0)
+	assert.InDelta(t, 1.0, x0, 0)
+	assert.InDelta(t, 1.0, y0, 0)
 
 	xn, yn := cs.GetValues(9)
-	assert.Equal(t, 10.0, xn)
-	assert.Equal(t, 10.0, yn)
+	assert.InDelta(t, 10.0, xn, 0)
+	assert.InDelta(t, 10.0, yn, 0)
 
 	xn, yn = cs.GetLastValues()
-	assert.Equal(t, 10.0, xn)
-	assert.Equal(t, 10.0, yn)
+	assert.InDelta(t, 10.0, xn, 0)
+	assert.InDelta(t, 10.0, yn, 0)
 }
 
 func TestContinuousSeriesValueFormatter(t *testing.T) {

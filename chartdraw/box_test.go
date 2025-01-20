@@ -172,14 +172,14 @@ func TestBoxFit(t *testing.T) {
 	fab := a.Fit(b)
 	assert.Equal(t, a.Left, fab.Left)
 	assert.Equal(t, a.Right, fab.Right)
-	assert.True(t, fab.Top < fab.Bottom)
-	assert.True(t, fab.Left < fab.Right)
-	assert.True(t, math.Abs(b.Aspect()-fab.Aspect()) < 0.02)
+	assert.Less(t, fab.Top, fab.Bottom)
+	assert.Less(t, fab.Left, fab.Right)
+	assert.Less(t, math.Abs(b.Aspect()-fab.Aspect()), 0.02)
 
 	fac := a.Fit(c)
 	assert.Equal(t, a.Top, fac.Top)
 	assert.Equal(t, a.Bottom, fac.Bottom)
-	assert.True(t, math.Abs(c.Aspect()-fac.Aspect()) < 0.02)
+	assert.Less(t, math.Abs(c.Aspect()-fac.Aspect()), 0.02)
 }
 
 func TestBoxConstrain(t *testing.T) {
@@ -303,7 +303,7 @@ func TestDistanceTo(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.expected, tc.p1.DistanceTo(tc.p2))
+			assert.InDelta(t, tc.expected, tc.p1.DistanceTo(tc.p2), 0)
 		})
 	}
 }

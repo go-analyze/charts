@@ -18,12 +18,12 @@ func TestChartGetDPI(t *testing.T) {
 	t.Parallel()
 
 	unset := Chart{}
-	assert.Equal(t, DefaultDPI, unset.GetDPI())
-	assert.Equal(t, float64(192), unset.GetDPI(192))
+	assert.InDelta(t, DefaultDPI, unset.GetDPI(), 0)
+	assert.InDelta(t, float64(192), unset.GetDPI(192), 0)
 
 	set := Chart{DPI: 128}
-	assert.Equal(t, float64(128), set.GetDPI())
-	assert.Equal(t, float64(128), set.GetDPI(192))
+	assert.InDelta(t, float64(128), set.GetDPI(), 0)
+	assert.InDelta(t, float64(128), set.GetDPI(192), 0)
 }
 
 func TestChartGetFont(t *testing.T) {
@@ -78,14 +78,14 @@ func TestChartGetRanges(t *testing.T) {
 	}
 
 	xrange, yrange, yrangeAlt := c.getRanges()
-	assert.Equal(t, -2.0, xrange.GetMin())
-	assert.Equal(t, 5.0, xrange.GetMax())
+	assert.InDelta(t, -2.0, xrange.GetMin(), 0)
+	assert.InDelta(t, 5.0, xrange.GetMax(), 0)
 
-	assert.Equal(t, -2.1, yrange.GetMin())
-	assert.Equal(t, 4.5, yrange.GetMax())
+	assert.InDelta(t, -2.1, yrange.GetMin(), 0)
+	assert.InDelta(t, 4.5, yrange.GetMax(), 0)
 
-	assert.Equal(t, 10.0, yrangeAlt.GetMin())
-	assert.Equal(t, 14.0, yrangeAlt.GetMax())
+	assert.InDelta(t, 10.0, yrangeAlt.GetMin(), 0)
+	assert.InDelta(t, 14.0, yrangeAlt.GetMax(), 0)
 
 	cSet := Chart{
 		XAxis: XAxis{
@@ -115,14 +115,14 @@ func TestChartGetRanges(t *testing.T) {
 	}
 
 	xr2, yr2, yra2 := cSet.getRanges()
-	assert.Equal(t, 9.8, xr2.GetMin())
-	assert.Equal(t, 19.8, xr2.GetMax())
+	assert.InDelta(t, 9.8, xr2.GetMin(), 0)
+	assert.InDelta(t, 19.8, xr2.GetMax(), 0)
 
-	assert.Equal(t, 9.9, yr2.GetMin())
-	assert.Equal(t, 19.9, yr2.GetMax())
+	assert.InDelta(t, 9.9, yr2.GetMin(), 0)
+	assert.InDelta(t, 19.9, yr2.GetMax(), 0)
 
-	assert.Equal(t, 9.7, yra2.GetMin())
-	assert.Equal(t, 19.7, yra2.GetMax())
+	assert.InDelta(t, 9.7, yra2.GetMin(), 0)
+	assert.InDelta(t, 19.7, yra2.GetMax(), 0)
 }
 
 func TestChartGetRangesUseTicks(t *testing.T) {
@@ -154,10 +154,10 @@ func TestChartGetRangesUseTicks(t *testing.T) {
 	}
 
 	xr, yr, yar := c.getRanges()
-	assert.Equal(t, -2.0, xr.GetMin())
-	assert.Equal(t, 2.0, xr.GetMax())
-	assert.Equal(t, 0.0, yr.GetMin())
-	assert.Equal(t, 5.0, yr.GetMax())
+	assert.InDelta(t, -2.0, xr.GetMin(), 0)
+	assert.InDelta(t, 2.0, xr.GetMax(), 0)
+	assert.InDelta(t, 0.0, yr.GetMin(), 0)
+	assert.InDelta(t, 5.0, yr.GetMax(), 0)
 	assert.True(t, yar.IsZero(), yar.String())
 }
 
@@ -180,10 +180,10 @@ func TestChartGetRangesUseUserRanges(t *testing.T) {
 	}
 
 	xr, yr, yar := c.getRanges()
-	assert.Equal(t, -2.0, xr.GetMin())
-	assert.Equal(t, 2.0, xr.GetMax())
-	assert.Equal(t, -5.0, yr.GetMin())
-	assert.Equal(t, 5.0, yr.GetMax())
+	assert.InDelta(t, -2.0, xr.GetMin(), 0)
+	assert.InDelta(t, 2.0, xr.GetMax(), 0)
+	assert.InDelta(t, -5.0, yr.GetMin(), 0)
+	assert.InDelta(t, 5.0, yr.GetMax(), 0)
 	assert.True(t, yar.IsZero(), yar.String())
 }
 

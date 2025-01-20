@@ -35,7 +35,7 @@ func TestEChartsSeriesDataValue(t *testing.T) {
 		values: []float64{1, 2},
 	}, es)
 	assert.Equal(t, EChartsSeriesDataValue{values: []float64{1, 2}}, es)
-	assert.Equal(t, 1.0, es.First())
+	assert.InDelta(t, 1.0, es.First(), 0)
 }
 
 func TestEChartsSeriesData(t *testing.T) {

@@ -22,15 +22,10 @@ var (
 
 // New returns a new matrix.
 func New(rows, cols int, values ...float64) *Matrix {
-	if len(values) == 0 {
-		return &Matrix{
-			stride:   cols,
-			epsilon:  DefaultEpsilon,
-			elements: make([]float64, rows*cols),
-		}
-	}
 	elems := make([]float64, rows*cols)
-	copy(elems, values)
+	if len(values) != 0 {
+		copy(elems, values)
+	}
 	return &Matrix{
 		stride:   cols,
 		epsilon:  DefaultEpsilon,
@@ -147,14 +142,12 @@ func (m *Matrix) Round() *Matrix {
 	return m
 }
 
-// Arrays returns the matrix as a two dimensional jagged array.
+// Arrays returns the matrix as a two-dimensional jagged array.
 func (m *Matrix) Arrays() [][]float64 {
 	rows, cols := m.Size()
 	a := make([][]float64, rows)
-
 	for row := 0; row < rows; row++ {
 		a[row] = make([]float64, cols)
-
 		for col := 0; col < cols; col++ {
 			a[row][col] = m.Get(row, col)
 		}
@@ -237,7 +230,7 @@ func (m *Matrix) SubMatrix(i, j, rows, cols int) *Matrix {
 func (m *Matrix) ScaleRow(row int, scale float64) {
 	startIndex := row * m.stride
 	for i := startIndex; i < m.stride; i++ {
-		m.elements[i] = m.elements[i] * scale
+		m.elements[i] *= scale
 	}
 }
 
@@ -292,7 +285,7 @@ func (m *Matrix) Copy() *Matrix {
 // DiagonalVector returns a vector from the diagonal of a matrix.
 func (m *Matrix) DiagonalVector() Vector {
 	rows, cols := m.Size()
-	rank := MinInt(rows, cols)
+	rank := minInt(rows, cols)
 	values := make([]float64, rank)
 
 	for index := 0; index < rank; index++ {
@@ -304,7 +297,7 @@ func (m *Matrix) DiagonalVector() Vector {
 // Diagonal returns a matrix from the diagonal of a matrix.
 func (m *Matrix) Diagonal() *Matrix {
 	rows, cols := m.Size()
-	rank := MinInt(rows, cols)
+	rank := minInt(rows, cols)
 	m2 := New(rank, rank)
 
 	for index := 0; index < rank; index++ {
@@ -389,7 +382,6 @@ func (m *Matrix) Multiply(m2 *Matrix) (m3 *Matrix, err error) {
 // Pivotize does something i'm not sure what.
 func (m *Matrix) Pivotize() *Matrix {
 	pv := make([]int, m.stride)
-
 	for i := range pv {
 		pv[i] = i
 	}
@@ -516,12 +508,10 @@ func (m *Matrix) QR() (q, r *Matrix) {
 						r.Set(i, j, qr.Get(i, j))
 					}
 				}
-
 			}
 		}
 
 		r.Set(k, k, -norm)
-
 	}
 
 	for k = cols - 1; k >= 0; k-- {

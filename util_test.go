@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetDefaultInt(t *testing.T) {
@@ -118,9 +119,9 @@ func TestSumInt(t *testing.T) {
 func TestGetRadius(t *testing.T) {
 	t.Parallel()
 
-	assert.Equal(t, 50.0, getRadius(100, "50%"))
-	assert.Equal(t, 30.0, getRadius(100, "30"))
-	assert.Equal(t, 40.0, getRadius(100, ""))
+	assert.InDelta(t, 50.0, getRadius(100, "50%"), 0)
+	assert.InDelta(t, 30.0, getRadius(100, "30"), 0)
+	assert.InDelta(t, 40.0, getRadius(100, ""), 0)
 }
 
 func TestReverseSlice(t *testing.T) {
@@ -144,13 +145,13 @@ func TestParseFlexibleValue(t *testing.T) {
 
 	t.Run("percent", func(t *testing.T) {
 		result, err := parseFlexibleValue("10%", 200)
-		assert.NoError(t, err)
-		assert.Equal(t, 20.0, result)
+		require.NoError(t, err)
+		assert.InDelta(t, 20.0, result, 0)
 	})
 	t.Run("value", func(t *testing.T) {
 		result, err := parseFlexibleValue("10", 200)
-		assert.NoError(t, err)
-		assert.Equal(t, 10.0, result)
+		require.NoError(t, err)
+		assert.InDelta(t, 10.0, result, 0)
 	})
 }
 
@@ -167,9 +168,9 @@ func verifyConvertPercent(t *testing.T, expected float64, input string) {
 
 	v, err := convertPercent(input)
 	if expected == -1 {
-		assert.Error(t, err)
+		require.Error(t, err)
 	} else {
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	}
-	assert.Equal(t, expected, v)
+	assert.InDelta(t, expected, v, 0)
 }

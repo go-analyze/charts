@@ -295,11 +295,11 @@ func (d draw) TextWithin(r Renderer, text string, box Box, style Style) {
 
 	switch style.GetTextVerticalAlign() {
 	case TextVerticalAlignBottom, TextVerticalAlignBaseline: // i have to build better baseline handling into measure text
-		y = y - linesBox.Height()
+		y -= linesBox.Height()
 	case TextVerticalAlignMiddle:
-		y = y + (box.Height() >> 1) - (linesBox.Height() >> 1)
+		y += (box.Height() >> 1) - (linesBox.Height() >> 1)
 	case TextVerticalAlignMiddleBaseline:
-		y = y + (box.Height() >> 1) - linesBox.Height()
+		y += (box.Height() >> 1) - linesBox.Height()
 	}
 
 	var tx, ty int

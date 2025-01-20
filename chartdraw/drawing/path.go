@@ -164,19 +164,19 @@ func (p *Path) String() string {
 		switch cmd {
 		case MoveToComponent:
 			s += fmt.Sprintf("MoveTo: %f, %f\n", p.Points[j], p.Points[j+1])
-			j = j + 2
+			j += 2
 		case LineToComponent:
 			s += fmt.Sprintf("LineTo: %f, %f\n", p.Points[j], p.Points[j+1])
-			j = j + 2
+			j += 2
 		case QuadCurveToComponent:
 			s += fmt.Sprintf("QuadCurveTo: %f, %f, %f, %f\n", p.Points[j], p.Points[j+1], p.Points[j+2], p.Points[j+3])
-			j = j + 4
+			j += 4
 		case CubicCurveToComponent:
 			s += fmt.Sprintf("CubicCurveTo: %f, %f, %f, %f, %f, %f\n", p.Points[j], p.Points[j+1], p.Points[j+2], p.Points[j+3], p.Points[j+4], p.Points[j+5])
-			j = j + 6
+			j += 6
 		case ArcToComponent:
 			s += fmt.Sprintf("ArcTo: %f, %f, %f, %f, %f, %f\n", p.Points[j], p.Points[j+1], p.Points[j+2], p.Points[j+3], p.Points[j+4], p.Points[j+5])
-			j = j + 6
+			j += 6
 		case CloseComponent:
 			s += "Close\n"
 		}

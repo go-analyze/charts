@@ -7,10 +7,6 @@ import (
 // Matrix represents an affine transformation
 type Matrix [6]float64
 
-const (
-	epsilon = 1e-6
-)
-
 // Determinant compute the determinant of the matrix
 func (tr *Matrix) Determinant() float64 {
 	return tr[0]*tr[3] - tr[1]*tr[2]
@@ -175,7 +171,7 @@ func (tr *Matrix) Rotate(radians float64) {
 	tr[3] = t3
 }
 
-// GetTranslation gets the matrix traslation.
+// GetTranslation gets the matrix translation.
 func (tr *Matrix) GetTranslation() (x, y float64) {
 	return tr[4], tr[5]
 }
@@ -196,7 +192,7 @@ func (tr *Matrix) GetScale() float64 {
 
 // Equals tests if a two transformation are equal. A tolerance is applied when comparing matrix elements.
 func (tr *Matrix) Equals(tr2 Matrix) bool {
-	for i := 0; i < 6; i = i + 1 {
+	for i := 0; i < 6; i++ {
 		if !fequals(tr[i], tr2[i]) {
 			return false
 		}
@@ -216,5 +212,5 @@ func (tr *Matrix) IsTranslation() bool {
 
 // fequals compares two floats. return true if the distance between the two floats is less than epsilon, false otherwise
 func fequals(float1, float2 float64) bool {
-	return math.Abs(float1-float2) <= epsilon
+	return math.Abs(float1-float2) <= 1e-6
 }

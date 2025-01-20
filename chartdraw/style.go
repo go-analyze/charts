@@ -106,13 +106,13 @@ func (s Style) String() string {
 	}
 
 	if s.ClassName != "" {
-		output = append(output, fmt.Sprintf("\"class_name\": %s", s.ClassName))
+		output = append(output, "\"class_name\": "+s.ClassName)
 	} else {
 		output = append(output, "\"class_name\": null")
 	}
 
 	if !s.Padding.IsZero() {
-		output = append(output, fmt.Sprintf("\"padding\": %s", s.Padding.String()))
+		output = append(output, "\"padding\": "+s.Padding.String())
 	} else {
 		output = append(output, "\"padding\": null")
 	}
@@ -124,18 +124,20 @@ func (s Style) String() string {
 	}
 
 	if !s.StrokeColor.IsZero() {
-		output = append(output, fmt.Sprintf("\"stroke_color\": %s", s.StrokeColor.String()))
+		output = append(output, "\"stroke_color\": "+s.StrokeColor.String())
 	} else {
 		output = append(output, "\"stroke_color\": null")
 	}
 
 	if len(s.StrokeDashArray) > 0 {
-		var elements []string
-		for _, v := range s.StrokeDashArray {
-			elements = append(elements, fmt.Sprintf("%.2f", v))
+		var dashArray strings.Builder
+		for i, v := range s.StrokeDashArray {
+			if i > 0 {
+				dashArray.WriteString(", ")
+			}
+			dashArray.WriteString(fmt.Sprintf("%.2f", v))
 		}
-		dashArray := strings.Join(elements, ", ")
-		output = append(output, fmt.Sprintf("\"stroke_dash_array\": [%s]", dashArray))
+		output = append(output, "\"stroke_dash_array\": ["+dashArray.String()+"]")
 	} else {
 		output = append(output, "\"stroke_dash_array\": null")
 	}
@@ -147,13 +149,13 @@ func (s Style) String() string {
 	}
 
 	if !s.DotColor.IsZero() {
-		output = append(output, fmt.Sprintf("\"dot_color\": %s", s.DotColor.String()))
+		output = append(output, "\"dot_color\": "+s.DotColor.String())
 	} else {
 		output = append(output, "\"dot_color\": null")
 	}
 
 	if !s.FillColor.IsZero() {
-		output = append(output, fmt.Sprintf("\"fill_color\": %s", s.FillColor.String()))
+		output = append(output, "\"fill_color\": "+s.FillColor.String())
 	} else {
 		output = append(output, "\"fill_color\": null")
 	}
@@ -165,13 +167,13 @@ func (s Style) String() string {
 	}
 
 	if !s.FontColor.IsZero() {
-		output = append(output, fmt.Sprintf("\"font_color\": %s", s.FontColor.String()))
+		output = append(output, "\"font_color\": "+s.FontColor.String())
 	} else {
 		output = append(output, "\"font_color\": null")
 	}
 
 	if s.Font != nil {
-		output = append(output, fmt.Sprintf("\"font\": \"%s\"", s.Font.Name(truetype.NameIDFontFamily)))
+		output = append(output, "\"font\": \""+s.Font.Name(truetype.NameIDFontFamily)+"\"")
 	} else {
 		output = append(output, "\"font_color\": null")
 	}

@@ -28,7 +28,7 @@ func TestTimeSeriesGetValue(t *testing.T) {
 
 	x0, y0 := ts.GetValues(0)
 	assert.NotZero(t, x0)
-	assert.Equal(t, 1.0, y0)
+	assert.InDelta(t, 1.0, y0, 0)
 }
 
 func TestTimeSeriesValidate(t *testing.T) {

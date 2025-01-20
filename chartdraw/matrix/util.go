@@ -5,26 +5,14 @@ import (
 	"strconv"
 )
 
-func MinInt(values ...int) int {
+func minInt(values ...int) int {
 	min := math.MaxInt32
-
 	for x := 0; x < len(values); x++ {
 		if values[x] < min {
 			min = values[x]
 		}
 	}
 	return min
-}
-
-func MaxInt(values ...int) int {
-	max := math.MinInt32
-
-	for x := 0; x < len(values); x++ {
-		if values[x] > max {
-			max = values[x]
-		}
-	}
-	return max
 }
 
 func f64s(v float64) string {

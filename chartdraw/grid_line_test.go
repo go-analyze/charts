@@ -20,6 +20,6 @@ func TestGenerateGridLines(t *testing.T) {
 	gl := GenerateGridLines(ticks, Style{}, Style{})
 	require.Len(t, gl, 2)
 
-	assert.Equal(t, 2.0, gl[0].Value)
-	assert.Equal(t, 3.0, gl[1].Value)
+	assert.InDelta(t, 2.0, gl[0].Value, 0)
+	assert.InDelta(t, 3.0, gl[1].Value, 0)
 }

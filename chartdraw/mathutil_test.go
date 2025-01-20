@@ -58,8 +58,8 @@ func TestMinMax(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			min, max := MinMax(tc.values...)
-			assert.Equal(t, tc.expectedMin, min)
-			assert.Equal(t, tc.expectedMax, max)
+			assert.InDelta(t, tc.expectedMin, min, 0)
+			assert.InDelta(t, tc.expectedMax, max, 0)
 		})
 	}
 }
@@ -75,7 +75,7 @@ func TestMinInt(t *testing.T) {
 		{
 			name:        "EmptySlice",
 			values:      []int{},
-			expectedMin: 0,
+			expectedMin: math.MaxInt32,
 		},
 		{
 			name:        "SingleElement",
@@ -123,7 +123,7 @@ func TestMaxInt(t *testing.T) {
 		{
 			name:        "EmptySlice",
 			values:      []int{},
-			expectedMax: 0,
+			expectedMax: math.MinInt32,
 		},
 		{
 			name:        "SingleElement",
@@ -231,7 +231,7 @@ func TestDegreesToRadians(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			rads := DegreesToRadians(tc.degrees)
-			assert.Equal(t, tc.expectedRads, rads)
+			assert.InDelta(t, tc.expectedRads, rads, 0)
 		})
 	}
 }
@@ -274,7 +274,7 @@ func TestRadiansToDegrees(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			degs := RadiansToDegrees(tc.radians)
-			assert.Equal(t, tc.expectedDegs, degs)
+			assert.InDelta(t, tc.expectedDegs, degs, 0)
 		})
 	}
 }
@@ -312,7 +312,7 @@ func TestPercentToRadians(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			rads := PercentToRadians(tc.percent)
-			assert.Equal(t, tc.expectedRads, rads)
+			assert.InDelta(t, tc.expectedRads, rads, 0)
 		})
 	}
 }
@@ -360,7 +360,7 @@ func TestRadianAdd(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			result := RadianAdd(tc.base, tc.delta)
-			assert.Equal(t, tc.expectedValue, result)
+			assert.InDelta(t, tc.expectedValue, result, 0)
 		})
 	}
 }
@@ -408,7 +408,7 @@ func TestDegreesAdd(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			result := DegreesAdd(tc.baseDegrees, tc.deltaDegrees)
-			assert.Equal(t, tc.expectedValue, result)
+			assert.InDelta(t, tc.expectedValue, result, 0)
 		})
 	}
 }
@@ -577,7 +577,7 @@ func TestRoundUp(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			rounded := RoundUp(tc.value, tc.roundTo)
-			assert.Equal(t, tc.expectedValue, rounded)
+			assert.InDelta(t, tc.expectedValue, rounded, 0)
 		})
 	}
 }
@@ -619,7 +619,7 @@ func TestRoundDown(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			rounded := RoundDown(tc.value, tc.roundTo)
-			assert.Equal(t, tc.expectedValue, rounded)
+			assert.InDelta(t, tc.expectedValue, rounded, 0)
 		})
 	}
 }
@@ -697,7 +697,7 @@ func TestMeanFloat64(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			mean := MeanFloat64(tc.values...)
-			assert.Equal(t, tc.expectedMean, mean)
+			assert.InDelta(t, tc.expectedMean, mean, 0)
 		})
 	}
 }
@@ -763,7 +763,7 @@ func TestSumFloat64(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			sum := SumFloat64(tc.values...)
-			assert.Equal(t, tc.expectedSum, sum)
+			assert.InDelta(t, tc.expectedSum, sum, 0)
 		})
 	}
 }
@@ -850,7 +850,7 @@ func TestPercentDifference(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			diff := PercentDifference(tc.v1, tc.v2)
-			assert.Equal(t, tc.expectedDifference, diff)
+			assert.InDelta(t, tc.expectedDifference, diff, 0)
 		})
 	}
 }
@@ -899,7 +899,7 @@ func TestRoundPlaces(t *testing.T) {
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			rounded := RoundPlaces(tc.input, tc.places)
-			assert.Equal(t, tc.expectedOutput, rounded)
+			assert.InDelta(t, tc.expectedOutput, rounded, 0)
 		})
 	}
 }

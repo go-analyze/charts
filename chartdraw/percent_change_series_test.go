@@ -22,14 +22,14 @@ func TestPercentageDifferenceSeries(t *testing.T) {
 	assert.Equal(t, "Test Series", pcs.GetName())
 	assert.Equal(t, 10, pcs.Len())
 	x0, y0 := pcs.GetValues(0)
-	assert.Equal(t, 1.0, x0)
-	assert.Equal(t, 0.0, y0)
+	assert.InDelta(t, 1.0, x0, 0)
+	assert.InDelta(t, 0.0, y0, 0)
 
 	xn, yn := pcs.GetValues(9)
-	assert.Equal(t, 10.0, xn)
-	assert.Equal(t, 9.0, yn)
+	assert.InDelta(t, 10.0, xn, 0)
+	assert.InDelta(t, 9.0, yn, 0)
 
 	xn, yn = pcs.GetLastValues()
-	assert.Equal(t, 10.0, xn)
-	assert.Equal(t, 9.0, yn)
+	assert.InDelta(t, 10.0, xn, 0)
+	assert.InDelta(t, 9.0, yn, 0)
 }

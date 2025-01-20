@@ -63,24 +63,24 @@ func TestStyleGetStrokeWidth(t *testing.T) {
 	t.Parallel()
 
 	unset := Style{}
-	assert.Equal(t, DefaultStrokeWidth, unset.GetStrokeWidth())
-	assert.Equal(t, DefaultStrokeWidth+1, unset.GetStrokeWidth(DefaultStrokeWidth+1))
+	assert.InDelta(t, DefaultStrokeWidth, unset.GetStrokeWidth(), 0)
+	assert.InDelta(t, DefaultStrokeWidth+1, unset.GetStrokeWidth(DefaultStrokeWidth+1), 0)
 
 	set := Style{StrokeWidth: DefaultStrokeWidth + 2}
-	assert.Equal(t, DefaultStrokeWidth+2, set.GetStrokeWidth())
-	assert.Equal(t, DefaultStrokeWidth+2, set.GetStrokeWidth(DefaultStrokeWidth+1))
+	assert.InDelta(t, DefaultStrokeWidth+2, set.GetStrokeWidth(), 0)
+	assert.InDelta(t, DefaultStrokeWidth+2, set.GetStrokeWidth(DefaultStrokeWidth+1), 0)
 }
 
 func TestStyleGetFontSize(t *testing.T) {
 	t.Parallel()
 
 	unset := Style{}
-	assert.Equal(t, DefaultFontSize, unset.GetFontSize())
-	assert.Equal(t, DefaultFontSize+1, unset.GetFontSize(DefaultFontSize+1))
+	assert.InDelta(t, DefaultFontSize, unset.GetFontSize(), 0)
+	assert.InDelta(t, DefaultFontSize+1, unset.GetFontSize(DefaultFontSize+1), 0)
 
 	set := Style{FontStyle: FontStyle{FontSize: DefaultFontSize + 2}}
-	assert.Equal(t, DefaultFontSize+2, set.GetFontSize())
-	assert.Equal(t, DefaultFontSize+2, set.GetFontSize(DefaultFontSize+1))
+	assert.InDelta(t, DefaultFontSize+2, set.GetFontSize(), 0)
+	assert.InDelta(t, DefaultFontSize+2, set.GetFontSize(DefaultFontSize+1), 0)
 }
 
 func TestStyleGetFontColor(t *testing.T) {

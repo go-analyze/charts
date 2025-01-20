@@ -47,17 +47,12 @@ func main() {
 	}
 
 	buffer := bytes.NewBuffer([]byte{})
-	err := graph.Render(chartdraw.PNG, buffer)
-	if err != nil {
+	if err := graph.Render(chartdraw.PNG, buffer); err != nil {
 		log.Fatal(err)
 	}
-
-	fo, err := os.Create("output.png")
-	if err != nil {
+	if fo, err := os.Create("output.png"); err != nil {
 		panic(err)
-	}
-
-	if _, err := fo.Write(buffer.Bytes()); err != nil {
+	} else if _, err := fo.Write(buffer.Bytes()); err != nil {
 		panic(err)
 	}
 }

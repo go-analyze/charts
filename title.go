@@ -138,7 +138,7 @@ func (t *titlePainter) Render() (Box, error) {
 		titleX = p.Width()>>1 - (textMaxWidth >> 1)
 	default:
 		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
-			return BoxZero, fmt.Errorf("error parsing title position: %v", err)
+			return BoxZero, fmt.Errorf("error parsing title position: %w", err)
 		} else {
 			titleX = int(v)
 		}
@@ -151,7 +151,7 @@ func (t *titlePainter) Render() (Box, error) {
 		titleY = p.Height() - textTotalHeight
 	default:
 		if v, err := parseFlexibleValue(offset.Top, float64(p.Height())); err != nil {
-			return BoxZero, fmt.Errorf("error parsing title position: %v", err)
+			return BoxZero, fmt.Errorf("error parsing title position: %w", err)
 		} else {
 			titleY = int(v)
 		}

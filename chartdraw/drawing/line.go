@@ -14,8 +14,8 @@ func PolylineBresenham(img draw.Image, c color.Color, s ...float64) {
 
 // Bresenham draws a line between (x0, y0) and (x1, y1)
 func Bresenham(img draw.Image, color color.Color, x0, y0, x1, y1 int) {
-	dx := abs(x1 - x0)
-	dy := abs(y1 - y0)
+	dx := absInt(x1 - x0)
+	dy := absInt(y1 - y0)
 	var sx, sy int
 	if x0 < x1 {
 		sx = 1
@@ -37,12 +37,12 @@ func Bresenham(img draw.Image, color color.Color, x0, y0, x1, y1 int) {
 		}
 		e2 = 2 * err
 		if e2 > -dy {
-			err = err - dy
-			x0 = x0 + sx
+			err -= dy
+			x0 += sx
 		}
 		if e2 < dx {
-			err = err + dx
-			y0 = y0 + sy
+			err += dx
+			y0 += sy
 		}
 	}
 }

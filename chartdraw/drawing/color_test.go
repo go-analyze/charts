@@ -1,8 +1,8 @@
 package drawing
 
 import (
-	"fmt"
 	"image/color"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -117,7 +117,9 @@ func TestParseColor(t *testing.T) {
 	}
 
 	for index, tc := range testCases {
-		actual := ParseColor(tc.Input)
-		assert.Equal(t, tc.Expected, actual, fmt.Sprintf("test case: %d -> %s", index, tc.Input))
+		t.Run(strconv.Itoa(index), func(t *testing.T) {
+			actual := ParseColor(tc.Input)
+			assert.Equal(t, tc.Expected, actual)
+		})
 	}
 }

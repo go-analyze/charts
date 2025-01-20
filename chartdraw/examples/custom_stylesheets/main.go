@@ -21,8 +21,7 @@ func svgWithCustomInlineCSS(res http.ResponseWriter, _ *http.Request) {
 	res.Header().Set("Content-Type", chartdraw.ContentTypeSVG)
 
 	// Render the CSS with custom css
-	err := pieChart().Render(chartdraw.SVGWithCSS(style, ""), res)
-	if err != nil {
+	if err := pieChart().Render(chartdraw.SVGWithCSS(style, ""), res); err != nil {
 		fmt.Printf("Error rendering pie chart: %v\n", err)
 	}
 }
@@ -37,8 +36,7 @@ func svgWithCustomInlineCSSNonce(res http.ResponseWriter, _ *http.Request) {
 
 	// Render the CSS with custom css and a nonce.
 	// Try changing the nonce to a different string - your browser should block the CSS.
-	err := pieChart().Render(chartdraw.SVGWithCSS(style, nonce), res)
-	if err != nil {
+	if err := pieChart().Render(chartdraw.SVGWithCSS(style, nonce), res); err != nil {
 		fmt.Printf("Error rendering pie chart: %v\n", err)
 	}
 }
@@ -51,8 +49,7 @@ func svgWithCustomExternalCSS(res http.ResponseWriter, _ *http.Request) {
 			`<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`))
 
 	res.Header().Set("Content-Type", chartdraw.ContentTypeSVG)
-	err := pieChart().Render(chartdraw.SVG, res)
-	if err != nil {
+	if err := pieChart().Render(chartdraw.SVG, res); err != nil {
 		fmt.Printf("Error rendering pie chart: %v\n", err)
 	}
 }

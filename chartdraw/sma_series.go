@@ -1,7 +1,7 @@
 package chartdraw
 
 import (
-	"fmt"
+	"errors"
 )
 
 const (
@@ -114,7 +114,7 @@ func (sma SMASeries) Render(r Renderer, canvasBox Box, xrange, yrange Range, def
 // Validate validates the series.
 func (sma SMASeries) Validate() error {
 	if sma.InnerSeries == nil {
-		return fmt.Errorf("sma series requires InnerSeries to be set")
+		return errors.New("sma series requires InnerSeries to be set")
 	}
 	return nil
 }

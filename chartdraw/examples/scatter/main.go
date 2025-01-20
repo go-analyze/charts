@@ -29,8 +29,7 @@ func drawChart(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", chartdraw.ContentTypePNG)
-	err := graph.Render(chartdraw.PNG, res)
-	if err != nil {
+	if err := graph.Render(chartdraw.PNG, res); err != nil {
 		log.Println(err.Error())
 	}
 }
@@ -54,8 +53,7 @@ func unit(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", chartdraw.ContentTypePNG)
-	err := graph.Render(chartdraw.PNG, res)
-	if err != nil {
+	if err := graph.Render(chartdraw.PNG, res); err != nil {
 		log.Println(err.Error())
 	}
 }

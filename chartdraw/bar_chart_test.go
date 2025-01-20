@@ -50,9 +50,9 @@ func TestBarChartProps(t *testing.T) {
 
 	bc := BarChart{}
 
-	assert.Equal(t, DefaultDPI, bc.GetDPI())
+	assert.InDelta(t, DefaultDPI, bc.GetDPI(), 0)
 	bc.DPI = 100
-	assert.Equal(t, float64(100), bc.GetDPI())
+	assert.InDelta(t, float64(100), bc.GetDPI(), 0)
 
 	assert.Nil(t, bc.GetFont())
 	bc.Font = GetDefaultFont()
@@ -91,8 +91,8 @@ func TestBarChartGetRanges(t *testing.T) {
 	assert.NotNil(t, yr)
 	assert.False(t, yr.IsZero())
 
-	assert.Equal(t, -math.MaxFloat64, yr.GetMax())
-	assert.Equal(t, math.MaxFloat64, yr.GetMin())
+	assert.InDelta(t, -math.MaxFloat64, yr.GetMax(), 0)
+	assert.InDelta(t, math.MaxFloat64, yr.GetMin(), 0)
 }
 
 func TestBarChartGetRangesBarsMinMax(t *testing.T) {
@@ -109,8 +109,8 @@ func TestBarChartGetRangesBarsMinMax(t *testing.T) {
 	assert.NotNil(t, yr)
 	assert.False(t, yr.IsZero())
 
-	assert.Equal(t, float64(10), yr.GetMax())
-	assert.Equal(t, float64(1), yr.GetMin())
+	assert.InDelta(t, float64(10), yr.GetMax(), 0)
+	assert.InDelta(t, float64(1), yr.GetMin(), 0)
 }
 
 func TestBarChartGetRangesMinMax(t *testing.T) {
@@ -137,8 +137,8 @@ func TestBarChartGetRangesMinMax(t *testing.T) {
 	assert.NotNil(t, yr)
 	assert.False(t, yr.IsZero())
 
-	assert.Equal(t, float64(15), yr.GetMax())
-	assert.Equal(t, float64(5), yr.GetMin())
+	assert.InDelta(t, float64(15), yr.GetMax(), 0)
+	assert.InDelta(t, float64(5), yr.GetMin(), 0)
 }
 
 func TestBarChartGetRangesTicksMinMax(t *testing.T) {
@@ -161,8 +161,8 @@ func TestBarChartGetRangesTicksMinMax(t *testing.T) {
 	assert.NotNil(t, yr)
 	assert.False(t, yr.IsZero())
 
-	assert.Equal(t, float64(11), yr.GetMax())
-	assert.Equal(t, float64(7), yr.GetMin())
+	assert.InDelta(t, float64(11), yr.GetMax(), 0)
+	assert.InDelta(t, float64(7), yr.GetMin(), 0)
 }
 
 func TestBarChartHasAxes(t *testing.T) {
@@ -294,13 +294,13 @@ func TestBarChatGetTitleFontSize(t *testing.T) {
 	t.Parallel()
 
 	size := BarChart{Width: 2049, Height: 2049}.getTitleFontSize()
-	assert.Equal(t, float64(48), size)
+	assert.InDelta(t, float64(48), size, 0)
 	size = BarChart{Width: 1025, Height: 1025}.getTitleFontSize()
-	assert.Equal(t, float64(24), size)
+	assert.InDelta(t, float64(24), size, 0)
 	size = BarChart{Width: 513, Height: 513}.getTitleFontSize()
-	assert.Equal(t, float64(18), size)
+	assert.InDelta(t, float64(18), size, 0)
 	size = BarChart{Width: 257, Height: 257}.getTitleFontSize()
-	assert.Equal(t, float64(12), size)
+	assert.InDelta(t, float64(12), size, 0)
 	size = BarChart{Width: 128, Height: 128}.getTitleFontSize()
-	assert.Equal(t, float64(10), size)
+	assert.InDelta(t, float64(10), size, 0)
 }

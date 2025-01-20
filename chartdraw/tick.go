@@ -37,9 +37,9 @@ func (t Ticks) Less(i, j int) bool {
 
 // String returns a string representation of the set of ticks.
 func (t Ticks) String() string {
-	var values []string
+	values := make([]string, len(t))
 	for i, tick := range t {
-		values = append(values, fmt.Sprintf("[%d: %s]", i, tick.Label))
+		values[i] = fmt.Sprintf("[%d: %s]", i, tick.Label)
 	}
 	return strings.Join(values, ", ")
 }
@@ -50,21 +50,7 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 		vf = FloatValueFormatter
 	}
 
-	var ticks []Tick
 	min, max := ra.GetMin(), ra.GetMax()
-
-	if ra.IsDescending() {
-		ticks = append(ticks, Tick{
-			Value: max,
-			Label: vf(max),
-		})
-	} else {
-		ticks = append(ticks, Tick{
-			Value: min,
-			Label: vf(min),
-		})
-	}
-
 	minLabel := vf(min)
 	style.GetTextOptions().WriteToRenderer(r)
 	labelBox := r.MeasureText(minLabel)
@@ -86,6 +72,18 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 	roundTo := GetRoundToForDelta(rangeDelta) / 10
 	intermediateTickCount = MinInt(intermediateTickCount, DefaultTickCountSanityCheck)
 
+	ticks := make([]Tick, 0, intermediateTickCount+2)
+	if ra.IsDescending() {
+		ticks = append(ticks, Tick{
+			Value: max,
+			Label: vf(max),
+		})
+	} else {
+		ticks = append(ticks, Tick{
+			Value: min,
+			Label: vf(min),
+		})
+	}
 	for x := 1; x < intermediateTickCount; x++ {
 		var tickValue float64
 		if ra.IsDescending() {

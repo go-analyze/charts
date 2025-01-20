@@ -1,10 +1,10 @@
 package chartdraw
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -82,7 +82,8 @@ func TestMACDSeries(t *testing.T) {
 	}
 
 	assert.NotEmpty(t, yvalues)
+	require.Len(t, yvalues, len(macdExpected))
 	for index, vy := range yvalues {
-		assert.InDelta(t, vy, macdExpected[index], emaDelta, fmt.Sprintf("delta @ %d actual: %0.9f expected: %0.9f", index, vy, macdExpected[index]))
+		assert.InDelta(t, macdExpected[index], vy, emaDelta)
 	}
 }

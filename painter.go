@@ -280,13 +280,15 @@ func (p *Painter) Circle(radius float64, x, y int, fillColor, strokeColor Color,
 // Points with values of math.MaxInt32 will be skipped, resulting in a gap.
 // Single or isolated points will result in just a dot being drawn at the point.
 func (p *Painter) LineStroke(points []Point, strokeColor Color, strokeWidth float64) {
-	var valid []Point
+	valid := make([]Point, 0, len(points))
 	for _, pt := range points {
 		if pt.Y == math.MaxInt32 {
 			// If we encounter a break, draw the accumulated segment
-			p.drawStraightPath(valid, true)
-			p.stroke(strokeColor, strokeWidth)
-			valid = valid[:0] // reset
+			if len(valid) > 0 {
+				p.drawStraightPath(valid, true)
+				p.stroke(strokeColor, strokeWidth)
+				valid = valid[:0] // reset
+			}
 			continue
 		}
 		valid = append(valid, pt)
@@ -326,13 +328,15 @@ func (p *Painter) SmoothLineStroke(points []Point, tension float64, strokeColor 
 		tension = 1
 	}
 
-	var valid []Point // Slice to hold valid points between breaks
+	valid := make([]Point, 0, len(points)) // Slice to hold valid points between breaks
 	for _, pt := range points {
 		if pt.Y == math.MaxInt32 {
 			// When a line break is found, draw the curve for the accumulated valid points if any
-			p.drawSmoothCurve(valid, tension, true)
-			p.stroke(strokeColor, strokeWidth)
-			valid = valid[:0] // reset
+			if len(valid) > 0 {
+				p.drawSmoothCurve(valid, tension, true)
+				p.stroke(strokeColor, strokeWidth)
+				valid = valid[:0] // reset
+			}
 			continue
 		}
 		valid = append(valid, pt)
@@ -521,13 +525,15 @@ func (p *Painter) FillArea(points []Point, fillColor Color) {
 		return
 	}
 
-	var valid []Point
+	valid := make([]Point, 0, len(points))
 	for _, pt := range points {
 		if pt.Y == math.MaxInt32 {
 			// If we encounter a break, fill the accumulated segment
-			p.drawStraightPath(valid, false)
-			p.fill(fillColor)
-			valid = valid[:0] // reset
+			if len(valid) > 0 {
+				p.drawStraightPath(valid, false)
+				p.fill(fillColor)
+				valid = valid[:0] // reset
+			}
 			continue
 		}
 		valid = append(valid, pt)
@@ -568,7 +574,7 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64, fillColor
 	}
 
 	// Build the smooth path for the top portion
-	var currentSegment []Point
+	currentSegment := make([]Point, 0, len(top))
 	firstPointSet := false
 	for _, pt := range top {
 		if pt.Y == math.MaxInt32 {
@@ -767,8 +773,7 @@ func (p *Painter) multiText(opt multiTextOption) {
 
 		text := opt.textList[index]
 		box := p.MeasureText(text, opt.textRotation, opt.fontStyle)
-		x := 0
-		y := 0
+		var x, y int
 		if opt.vertical {
 			if opt.centerLabels {
 				start = (positions[index] + positions[index+1]) >> 1

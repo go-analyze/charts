@@ -1,7 +1,5 @@
 package chartdraw
 
-import "fmt"
-
 // LastValueAnnotationSeries returns an annotation series of just the last value of a value provider.
 func LastValueAnnotationSeries(innerSeries ValuesProvider, vfs ...ValueFormatter) AnnotationSeries {
 	var vf ValueFormatter
@@ -25,7 +23,7 @@ func LastValueAnnotationSeries(innerSeries ValuesProvider, vfs ...ValueFormatter
 	var seriesName string
 	var seriesStyle Style
 	if typed, isTyped := innerSeries.(Series); isTyped {
-		seriesName = fmt.Sprintf("%s - Last Value", typed.GetName())
+		seriesName = typed.GetName() + " - Last Value"
 		seriesStyle = typed.GetStyle()
 	}
 

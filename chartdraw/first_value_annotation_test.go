@@ -17,6 +17,6 @@ func TestFirstValueAnnotation(t *testing.T) {
 	fva := FirstValueAnnotation(series)
 	assert.NotEmpty(t, fva.Annotations)
 	fvaa := fva.Annotations[0]
-	assert.Equal(t, float64(1), fvaa.XValue)
-	assert.Equal(t, float64(5), fvaa.YValue)
+	assert.InDelta(t, float64(1), fvaa.XValue, 0)
+	assert.InDelta(t, float64(5), fvaa.YValue, 0)
 }

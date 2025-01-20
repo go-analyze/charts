@@ -138,7 +138,7 @@ func (l *legendPainter) Render() (Box, error) {
 		left = p.Width()>>1 - (width >> 1)
 	default:
 		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
-			return BoxZero, fmt.Errorf("error parsing legend position: %v", err)
+			return BoxZero, fmt.Errorf("error parsing legend position: %w", err)
 		} else {
 			left = int(v)
 		}
@@ -155,7 +155,7 @@ func (l *legendPainter) Render() (Box, error) {
 		top = p.Height() - height
 	default:
 		if v, err := parseFlexibleValue(offset.Top, float64(p.Height())); err != nil {
-			return BoxZero, fmt.Errorf("error parsing legend position: %v", err)
+			return BoxZero, fmt.Errorf("error parsing legend position: %w", err)
 		} else {
 			top = int(v)
 		}

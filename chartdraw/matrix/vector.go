@@ -11,7 +11,7 @@ func (v Vector) DotProduct(v2 Vector) (result float64, err error) {
 	}
 
 	for i := 0; i < len(v); i++ {
-		result = result + (v[i] * v2[i])
+		result += v[i] * v2[i]
 	}
 	return
 }

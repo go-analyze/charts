@@ -1,6 +1,7 @@
 package chartdraw
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -305,16 +306,16 @@ func (b Box) OuterConstrain(bounds, other Box) Box {
 
 func (b Box) Validate() error {
 	if b.Left < 0 {
-		return fmt.Errorf("invalid left; must be >= 0")
+		return errors.New("invalid left; must be >= 0")
 	}
 	if b.Right < 0 {
-		return fmt.Errorf("invalid right; must be > 0")
+		return errors.New("invalid right; must be > 0")
 	}
 	if b.Top < 0 {
-		return fmt.Errorf("invalid top; must be > 0")
+		return errors.New("invalid top; must be > 0")
 	}
 	if b.Bottom < 0 {
-		return fmt.Errorf("invalid bottom; must be > 0")
+		return errors.New("invalid bottom; must be > 0")
 	}
 	return nil
 }

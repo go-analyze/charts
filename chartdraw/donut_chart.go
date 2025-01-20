@@ -2,7 +2,6 @@ package chartdraw
 
 import (
 	"errors"
-	"fmt"
 	"io"
 
 	"github.com/golang/freetype/truetype"
@@ -23,8 +22,7 @@ type DonutChart struct {
 	Canvas     Style
 	SliceStyle Style
 
-	Font        *truetype.Font
-	defaultFont *truetype.Font
+	Font *truetype.Font
 
 	Values   []Value
 	Elements []Renderable
@@ -43,9 +41,6 @@ func (pc DonutChart) GetDPI(defaults ...float64) float64 {
 
 // GetFont returns the text font.
 func (pc DonutChart) GetFont() *truetype.Font {
-	if pc.Font == nil {
-		return pc.defaultFont
-	}
 	return pc.Font
 }
 
@@ -74,7 +69,7 @@ func (pc DonutChart) Render(rp RendererProvider, w io.Writer) error {
 	r := rp(pc.GetWidth(), pc.GetHeight())
 
 	if pc.Font == nil {
-		pc.defaultFont = GetDefaultFont()
+		pc.Font = GetDefaultFont()
 	}
 	r.SetDPI(pc.GetDPI(DefaultDPI))
 
@@ -140,7 +135,7 @@ func (pc DonutChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 			r.LineTo(cx, cy)
 			r.Close()
 			r.FillStroke()
-			total = total + v.Value
+			total += v.Value
 		}
 	}
 
@@ -169,19 +164,19 @@ func (pc DonutChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 			lx, ly = CirclePoint(cx, cy, labelRadius, delta2)
 
 			tb := r.MeasureText(v.Label)
-			lx = lx - (tb.Width() >> 1)
-			ly = ly + (tb.Height() >> 1)
+			lx -= tb.Width() >> 1
+			ly += tb.Height() >> 1
 
 			r.Text(v.Label, lx, ly)
 		}
-		total = total + v.Value
+		total += v.Value
 	}
 }
 
 func (pc DonutChart) finalizeValues(values []Value) ([]Value, error) {
 	finalValues := Values(values).Normalize()
 	if len(finalValues) == 0 {
-		return nil, fmt.Errorf("donut chart must contain at least (1) non-zero value")
+		return nil, errors.New("donut chart must contain at least (1) non-zero value")
 	}
 	return finalValues, nil
 }

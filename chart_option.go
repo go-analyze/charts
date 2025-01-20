@@ -1,7 +1,7 @@
 package charts
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/golang/freetype/truetype"
 )
@@ -228,7 +228,7 @@ func (o *ChartOption) fillDefault() error {
 
 	yaxisCount := o.SeriesList.getYAxisCount()
 	if yaxisCount < 0 {
-		return fmt.Errorf("series specified invalid y-axis index")
+		return errors.New("series specified invalid y-axis index")
 	}
 	if len(o.YAxis) < yaxisCount {
 		yAxisOptions := make([]YAxisOption, yaxisCount)

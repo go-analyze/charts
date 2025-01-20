@@ -31,12 +31,12 @@ func TestSeriesLists(t *testing.T) {
 		{10},
 	})
 
-	assert.Equal(t, 2, len(seriesList.Filter(ChartTypeBar)))
-	assert.Equal(t, 0, len(seriesList.Filter(ChartTypeLine)))
+	assert.Len(t, seriesList.Filter(ChartTypeBar), 2)
+	assert.Empty(t, seriesList.Filter(ChartTypeLine))
 
 	min, max := seriesList.GetMinMax(0)
-	assert.Equal(t, float64(10), max)
-	assert.Equal(t, float64(1), min)
+	assert.InDelta(t, float64(10), max, 0)
+	assert.InDelta(t, float64(1), min, 0)
 }
 
 func TestSeriesSummary(t *testing.T) {

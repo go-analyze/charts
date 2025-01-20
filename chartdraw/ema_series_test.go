@@ -87,7 +87,7 @@ func TestEMASeries(t *testing.T) {
 	}
 
 	sig := ema.GetSigma()
-	assert.Equal(t, 2.0/(26.0+1), sig)
+	assert.InDelta(t, 2.0/(26.0+1), sig, 0)
 
 	var yvalues []float64
 	for x := 0; x < ema.Len(); x++ {
@@ -100,6 +100,6 @@ func TestEMASeries(t *testing.T) {
 	}
 
 	lvx, lvy := ema.GetLastValues()
-	assert.Equal(t, 50.0, lvx)
+	assert.InDelta(t, 50.0, lvx, 0)
 	assert.InDelta(t, lvy, emaExpected[49], emaDelta)
 }

@@ -26,13 +26,12 @@ func (vs Values) ValuesNormalized() []float64 {
 
 // Normalize returns the values normalized.
 func (vs Values) Normalize() []Value {
-	var output []Value
 	var total float64
-
 	for _, v := range vs {
 		total += v.Value
 	}
 
+	output := make([]Value, 0, len(vs))
 	for _, v := range vs {
 		if v.Value > 0 {
 			output = append(output, Value{

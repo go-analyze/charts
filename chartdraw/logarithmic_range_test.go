@@ -30,9 +30,9 @@ func TestGetTicks(t *testing.T) {
 
 	ticks := r.GetTicks(nil, Style{}, FloatValueFormatter)
 	require.Len(t, ticks, 7)
-	assert.Equal(t, float64(10), ticks[0].Value)
-	assert.Equal(t, float64(100), ticks[1].Value)
-	assert.Equal(t, float64(10000000), ticks[6].Value)
+	assert.InDelta(t, float64(10), ticks[0].Value, 0)
+	assert.InDelta(t, float64(100), ticks[1].Value, 0)
+	assert.InDelta(t, float64(10000000), ticks[6].Value, 0)
 }
 
 func TestGetTicksFromHigh(t *testing.T) {
@@ -44,7 +44,7 @@ func TestGetTicksFromHigh(t *testing.T) {
 
 	ticks := r.GetTicks(nil, Style{}, FloatValueFormatter)
 	require.Len(t, ticks, 5)
-	assert.Equal(t, float64(1000), ticks[0].Value)
-	assert.Equal(t, float64(10000), ticks[1].Value)
-	assert.Equal(t, float64(10000000), ticks[4].Value)
+	assert.InDelta(t, float64(1000), ticks[0].Value, 0)
+	assert.InDelta(t, float64(10000), ticks[1].Value, 0)
+	assert.InDelta(t, float64(10000000), ticks[4].Value, 0)
 }

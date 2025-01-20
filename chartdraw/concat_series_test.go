@@ -28,14 +28,14 @@ func TestConcatSeries(t *testing.T) {
 	assert.Equal(t, 30, cs.Len())
 
 	x0, y0 := cs.GetValue(0)
-	assert.Equal(t, 1.0, x0)
-	assert.Equal(t, 1.0, y0)
+	assert.InDelta(t, 1.0, x0, 0)
+	assert.InDelta(t, 1.0, y0, 0)
 
 	xm, ym := cs.GetValue(19)
-	assert.Equal(t, 20.0, xm)
-	assert.Equal(t, 1.0, ym)
+	assert.InDelta(t, 20.0, xm, 0)
+	assert.InDelta(t, 1.0, ym, 0)
 
 	xn, yn := cs.GetValue(29)
-	assert.Equal(t, 30.0, xn)
-	assert.Equal(t, 10.0, yn)
+	assert.InDelta(t, 30.0, xn, 0)
+	assert.InDelta(t, 10.0, yn, 0)
 }

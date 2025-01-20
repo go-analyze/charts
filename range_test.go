@@ -64,8 +64,8 @@ func TestPadRange(t *testing.T) {
 		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
 			min, max := padRange(tc.labelCount, tc.minValue, tc.maxValue, 1.0, 1.0)
 
-			assert.Equal(t, tc.expectedMinValue, min, "Unexpected value rounding %v", tc.minValue)
-			assert.Equal(t, tc.expectedMaxValue, max, "Unexpected value rounding %v", tc.maxValue)
+			assert.InDelta(t, tc.expectedMinValue, min, 0, "Unexpected value rounding %v", tc.minValue)
+			assert.InDelta(t, tc.expectedMaxValue, max, 0, "Unexpected value rounding %v", tc.maxValue)
 		})
 	}
 }
@@ -224,7 +224,7 @@ func TestFriendlyRound(t *testing.T) {
 			val, _ := friendlyRound(tc.value, 1.0, 0.0,
 				tc.minMultiplier, tc.maxMultiplier, tc.add)
 
-			assert.Equal(t, tc.expectedValue, val, "Unexpected value rounding %v", tc.value)
+			assert.InDelta(t, tc.expectedValue, val, 0, "Unexpected value rounding %v", tc.value)
 		})
 	}
 }

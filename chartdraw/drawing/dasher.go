@@ -50,7 +50,7 @@ func (dasher *DashVertexConverter) End() {
 func (dasher *DashVertexConverter) lineTo(x, y float64) {
 	rest := dasher.dash[dasher.currentDash] - dasher.distance
 	for rest < 0 {
-		dasher.distance = dasher.distance - dasher.dash[dasher.currentDash]
+		dasher.distance -= dasher.dash[dasher.currentDash]
 		dasher.currentDash = (dasher.currentDash + 1) % len(dasher.dash)
 		rest = dasher.dash[dasher.currentDash] - dasher.distance
 	}
@@ -67,7 +67,7 @@ func (dasher *DashVertexConverter) lineTo(x, y float64) {
 			dasher.next.End()
 			dasher.next.MoveTo(lx, ly)
 		}
-		d = d - rest
+		d -= rest
 		dasher.x, dasher.y = lx, ly
 		dasher.currentDash = (dasher.currentDash + 1) % len(dasher.dash)
 		rest = dasher.dash[dasher.currentDash]
@@ -82,7 +82,7 @@ func (dasher *DashVertexConverter) lineTo(x, y float64) {
 		dasher.next.MoveTo(x, y)
 	}
 	if dasher.distance >= dasher.dash[dasher.currentDash] {
-		dasher.distance = dasher.distance - dasher.dash[dasher.currentDash]
+		dasher.distance -= dasher.dash[dasher.currentDash]
 		dasher.currentDash = (dasher.currentDash + 1) % len(dasher.dash)
 	}
 	dasher.x, dasher.y = x, y

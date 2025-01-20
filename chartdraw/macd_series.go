@@ -1,6 +1,8 @@
 package chartdraw
 
-import "fmt"
+import (
+	"errors"
+)
 
 const (
 	// DefaultMACDPeriodPrimary is the long window.
@@ -29,18 +31,15 @@ type MACDSeries struct {
 
 // Validate validates the series.
 func (macd *MACDSeries) Validate() error {
-	var err error
 	if macd.signal != nil {
-		err = macd.signal.Validate()
-	}
-	if err != nil {
-		return err
+		if err := macd.signal.Validate(); err != nil {
+			return err
+		}
 	}
 	if macd.macdl != nil {
-		err = macd.macdl.Validate()
-	}
-	if err != nil {
-		return err
+		if err := macd.macdl.Validate(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -242,21 +241,18 @@ type MACDLineSeries struct {
 
 // Validate validates the series.
 func (macdl *MACDLineSeries) Validate() error {
-	var err error
 	if macdl.ema1 != nil {
-		err = macdl.ema1.Validate()
-	}
-	if err != nil {
-		return err
+		if err := macdl.ema1.Validate(); err != nil {
+			return err
+		}
 	}
 	if macdl.ema2 != nil {
-		err = macdl.ema2.Validate()
-	}
-	if err != nil {
-		return err
+		if err := macdl.ema2.Validate(); err != nil {
+			return err
+		}
 	}
 	if macdl.InnerSeries == nil {
-		return fmt.Errorf("MACDLineSeries: must provide an inner series")
+		return errors.New("MACDLineSeries: must provide an inner series")
 	}
 	return nil
 }

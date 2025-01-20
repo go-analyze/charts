@@ -43,8 +43,7 @@ type StackedBarChart struct {
 
 	BarSpacing int
 
-	Font        *truetype.Font
-	defaultFont *truetype.Font
+	Font *truetype.Font
 
 	IsHorizontal bool
 
@@ -65,9 +64,6 @@ func (sbc StackedBarChart) GetDPI(defaults ...float64) float64 {
 
 // GetFont returns the text font.
 func (sbc StackedBarChart) GetFont() *truetype.Font {
-	if sbc.Font == nil {
-		return sbc.defaultFont
-	}
 	return sbc.Font
 }
 
@@ -104,7 +100,7 @@ func (sbc StackedBarChart) Render(rp RendererProvider, w io.Writer) error {
 	r := rp(sbc.GetWidth(), sbc.GetHeight())
 
 	if sbc.Font == nil {
-		sbc.defaultFont = GetDefaultFont()
+		sbc.Font = GetDefaultFont()
 	}
 	r.SetDPI(sbc.GetDPI(DefaultDPI))
 
@@ -211,8 +207,8 @@ func (sbc StackedBarChart) drawBar(r Renderer, canvasBox Box, xoffset int, bar S
 
 			bv.Style.InheritFrom(sbc.styleDefaultsStackedBarValue(index)).WriteToRenderer(r)
 			tb := r.MeasureText(bv.Label)
-			lx = lx - (tb.Width() >> 1)
-			ly = ly + (tb.Height() >> 1)
+			lx -= tb.Width() >> 1
+			ly += tb.Height() >> 1
 
 			if lx < 0 {
 				lx = 0
@@ -263,8 +259,8 @@ func (sbc StackedBarChart) drawHorizontalBar(r Renderer, canvasBox Box, yoffset 
 
 			bv.Style.InheritFrom(sbc.styleDefaultsStackedBarValue(index)).WriteToRenderer(r)
 			tb := r.MeasureText(bv.Label)
-			lx = lx - (tb.Width() >> 1)
-			ly = ly + (tb.Height() >> 1)
+			lx -= tb.Width() >> 1
+			ly += tb.Height() >> 1
 
 			if lx < 0 {
 				lx = 0
@@ -294,7 +290,6 @@ func (sbc StackedBarChart) drawXAxis(r Renderer, canvasBox Box) {
 
 		cursor := canvasBox.Left
 		for _, bar := range sbc.Bars {
-
 			barLabelBox := Box{
 				Top:    canvasBox.Bottom + DefaultXAxisMargin,
 				Left:   cursor,

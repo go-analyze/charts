@@ -13,6 +13,9 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
+// DefaultDPI is the default image DPI.
+const DefaultDPI = 96.0
+
 // NewRasterGraphicContext creates a new Graphic context from an image.
 func NewRasterGraphicContext(img *image.RGBA) *RasterGraphicContext {
 	painter := raster.NewRGBAPainter(img)
@@ -131,8 +134,7 @@ func (rgc *RasterGraphicContext) CreateStringPath(s string, x, y float64) (curso
 		if hasPrev {
 			x += fUnitsToFloat64(f.Kern(fixed.Int26_6(rgc.current.Scale), prev, index))
 		}
-		err = rgc.drawGlyph(index, x, y)
-		if err != nil {
+		if err = rgc.drawGlyph(index, x, y); err != nil {
 			cursor = x - startx
 			return
 		}

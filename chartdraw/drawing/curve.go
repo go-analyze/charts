@@ -47,20 +47,15 @@ func TraceCubic(t Liner, cubic []float64, flatteningThreshold float64) {
 	// Allocation curves
 	var curves [CurveRecursionLimit * 8]float64
 	copy(curves[0:8], cubic[0:8])
-	i := 0
 
 	// current curve
-	var c []float64
+	for i := 0; i >= 0; {
+		c := curves[i*8:]
+		dx := c[6] - c[0]
+		dy := c[7] - c[1]
 
-	var dx, dy, d2, d3 float64
-
-	for i >= 0 {
-		c = curves[i*8:]
-		dx = c[6] - c[0]
-		dy = c[7] - c[1]
-
-		d2 = math.Abs((c[2]-c[6])*dy - (c[3]-c[7])*dx)
-		d3 = math.Abs((c[4]-c[6])*dy - (c[5]-c[7])*dx)
+		d2 := math.Abs((c[2]-c[6])*dy - (c[3]-c[7])*dx)
+		d3 := math.Abs((c[4]-c[6])*dy - (c[5]-c[7])*dx)
 
 		// if it's flat then trace a line
 		if (d2+d3)*(d2+d3) < flatteningThreshold*(dx*dx+dy*dy) || i == len(curves)-1 {

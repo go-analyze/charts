@@ -2,7 +2,6 @@ package chartdraw
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"math"
 
@@ -27,8 +26,7 @@ type Chart struct {
 	YAxis          YAxis
 	YAxisSecondary YAxis
 
-	Font        *truetype.Font
-	defaultFont *truetype.Font
+	Font *truetype.Font
 
 	Series   []Series
 	Elements []Renderable
@@ -47,9 +45,6 @@ func (c Chart) GetDPI(defaults ...float64) float64 {
 
 // GetFont returns the text font.
 func (c Chart) GetFont() *truetype.Font {
-	if c.Font == nil {
-		return c.defaultFont
-	}
 	return c.Font
 }
 
@@ -83,7 +78,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 	r := rp(c.GetWidth(), c.GetHeight())
 
 	if c.Font == nil {
-		c.defaultFont = GetDefaultFont()
+		c.Font = GetDefaultFont()
 	}
 	r.SetDPI(c.GetDPI(DefaultDPI))
 
@@ -141,14 +136,12 @@ func (c Chart) checkHasVisibleSeries() error {
 			return nil
 		}
 	}
-	return fmt.Errorf("chart render; must have (1) visible series")
+	return errors.New("chart render; must have (1) visible series")
 }
 
 func (c Chart) validateSeries() error {
-	var err error
 	for _, s := range c.Series {
-		err = s.Validate()
-		if err != nil {
+		if err := s.Validate(); err != nil {
 			return err
 		}
 	}

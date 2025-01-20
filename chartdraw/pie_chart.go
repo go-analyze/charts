@@ -2,7 +2,6 @@ package chartdraw
 
 import (
 	"errors"
-	"fmt"
 	"io"
 
 	"github.com/golang/freetype/truetype"
@@ -23,8 +22,7 @@ type PieChart struct {
 	Canvas     Style
 	SliceStyle Style
 
-	Font        *truetype.Font
-	defaultFont *truetype.Font
+	Font *truetype.Font
 
 	Values   []Value
 	Elements []Renderable
@@ -43,9 +41,6 @@ func (pc PieChart) GetDPI(defaults ...float64) float64 {
 
 // GetFont returns the text font.
 func (pc PieChart) GetFont() *truetype.Font {
-	if pc.Font == nil {
-		return pc.defaultFont
-	}
 	return pc.Font
 }
 
@@ -74,7 +69,7 @@ func (pc PieChart) Render(rp RendererProvider, w io.Writer) error {
 	r := rp(pc.GetWidth(), pc.GetHeight())
 
 	if pc.Font == nil {
-		pc.defaultFont = GetDefaultFont()
+		pc.Font = GetDefaultFont()
 	}
 	r.SetDPI(pc.GetDPI(DefaultDPI))
 
@@ -142,7 +137,7 @@ func (pc PieChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 			r.LineTo(cx, cy)
 			r.Close()
 			r.FillStroke()
-			total = total + v.Value
+			total += v.Value
 		}
 	}
 
@@ -156,8 +151,8 @@ func (pc PieChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 			lx, ly = CirclePoint(cx, cy, labelRadius, delta2)
 
 			tb := r.MeasureText(v.Label)
-			lx = lx - (tb.Width() >> 1)
-			ly = ly + (tb.Height() >> 1)
+			lx -= tb.Width() >> 1
+			ly += tb.Height() >> 1
 
 			if lx < 0 {
 				lx = 0
@@ -168,14 +163,14 @@ func (pc PieChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 
 			r.Text(v.Label, lx, ly)
 		}
-		total = total + v.Value
+		total += v.Value
 	}
 }
 
 func (pc PieChart) finalizeValues(values []Value) ([]Value, error) {
 	finalValues := Values(values).Normalize()
 	if len(finalValues) == 0 {
-		return nil, fmt.Errorf("pie chart must contain at least (1) non-zero value")
+		return nil, errors.New("pie chart must contain at least (1) non-zero value")
 	}
 	return finalValues, nil
 }

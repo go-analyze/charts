@@ -17,6 +17,6 @@ func TestLastValueAnnotationSeries(t *testing.T) {
 	lva := LastValueAnnotationSeries(series)
 	assert.NotEmpty(t, lva.Annotations)
 	lvaa := lva.Annotations[0]
-	assert.Equal(t, float64(5), lvaa.XValue)
-	assert.Equal(t, float64(1), lvaa.YValue)
+	assert.InDelta(t, float64(5), lvaa.XValue, 0)
+	assert.InDelta(t, float64(1), lvaa.YValue, 0)
 }

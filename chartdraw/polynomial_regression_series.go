@@ -1,6 +1,7 @@
 package chartdraw
 
 import (
+	"errors"
 	"fmt"
 	"math"
 
@@ -14,8 +15,7 @@ var (
 	_ LastValuesProvider  = (*PolynomialRegressionSeries)(nil)
 )
 
-// PolynomialRegressionSeries implements a polynomial regression over a given
-// inner series.
+// PolynomialRegressionSeries implements a polynomial regression over a given inner series.
 type PolynomialRegressionSeries struct {
 	Name  string
 	Style Style
@@ -75,7 +75,7 @@ func (prs *PolynomialRegressionSeries) GetOffset() int {
 // Validate validates the series.
 func (prs *PolynomialRegressionSeries) Validate() error {
 	if prs.InnerSeries == nil {
-		return fmt.Errorf("linear regression series requires InnerSeries to be set")
+		return errors.New("linear regression series requires InnerSeries to be set")
 	}
 
 	endIndex := prs.GetEndIndex()
@@ -144,7 +144,7 @@ func (prs *PolynomialRegressionSeries) GetLastValues() (x, y float64) {
 
 func (prs *PolynomialRegressionSeries) apply(v float64) (out float64) {
 	for index, coeff := range prs.coeffs {
-		out = out + (coeff * math.Pow(v, float64(index)))
+		out += coeff * math.Pow(v, float64(index))
 	}
 	return
 }

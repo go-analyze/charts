@@ -1,7 +1,5 @@
 package chartdraw
 
-import "fmt"
-
 // FirstValueAnnotation returns an annotation series of just the first value of a value provider as an annotation.
 func FirstValueAnnotation(innerSeries ValuesProvider, vfs ...ValueFormatter) AnnotationSeries {
 	var vf ValueFormatter
@@ -25,7 +23,7 @@ func FirstValueAnnotation(innerSeries ValuesProvider, vfs ...ValueFormatter) Ann
 	var seriesName string
 	var seriesStyle Style
 	if typed, isTyped := innerSeries.(Series); isTyped {
-		seriesName = fmt.Sprintf("%s - First Value", typed.GetName())
+		seriesName = typed.GetName() + " - First Value"
 		seriesStyle = typed.GetStyle()
 	}
 

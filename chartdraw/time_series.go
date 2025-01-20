@@ -1,7 +1,7 @@
 package chartdraw
 
 import (
-	"fmt"
+	"errors"
 	"time"
 )
 
@@ -81,11 +81,11 @@ func (ts TimeSeries) Render(r Renderer, canvasBox Box, xrange, yrange Range, def
 // Validate validates the series.
 func (ts TimeSeries) Validate() error {
 	if len(ts.XValues) == 0 {
-		return fmt.Errorf("time series must have xvalues set")
+		return errors.New("time series must have xvalues set")
 	}
 
 	if len(ts.YValues) == 0 {
-		return fmt.Errorf("time series must have yvalues set")
+		return errors.New("time series must have yvalues set")
 	}
 	return nil
 }

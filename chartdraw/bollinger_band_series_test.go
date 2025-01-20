@@ -1,7 +1,6 @@
 package chartdraw
 
 import (
-	"fmt"
 	"math"
 	"testing"
 
@@ -29,7 +28,7 @@ func TestBollingerBandSeries(t *testing.T) {
 	}
 
 	for x := bbs.GetPeriod(); x < 100; x++ {
-		assert.True(t, y1values[x] > y2values[x], fmt.Sprintf("%v vs. %v", y1values[x], y2values[x]))
+		assert.Greater(t, y1values[x], y2values[x])
 	}
 }
 
@@ -46,7 +45,7 @@ func TestBollingerBandLastValue(t *testing.T) {
 	}
 
 	x, y1, y2 := bbs.GetBoundedLastValues()
-	assert.Equal(t, 100.0, x)
-	assert.Equal(t, float64(101), math.Floor(y1))
-	assert.Equal(t, float64(83), math.Floor(y2))
+	assert.InDelta(t, 100.0, x, 0)
+	assert.InDelta(t, float64(101), math.Floor(y1), 0)
+	assert.InDelta(t, float64(83), math.Floor(y2), 0)
 }

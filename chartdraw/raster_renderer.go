@@ -14,10 +14,9 @@ import (
 // PNG returns a new png/raster renderer.
 func PNG(width, height int) Renderer {
 	i := image.NewRGBA(image.Rect(0, 0, width, height))
-	gc := drawing.NewRasterGraphicContext(i)
 	return &rasterRenderer{
 		i:  i,
-		gc: gc,
+		gc: drawing.NewRasterGraphicContext(i),
 	}
 }
 
@@ -172,21 +171,19 @@ func (rr *rasterRenderer) MeasureText(body string) Box {
 		return Box{}
 	}
 	if l < 0 {
-		r = r - l // equivalent to r+(-1*l)
+		r -= l // equivalent to r+(-1*l)
 		l = 0
 	}
 	if t < 0 {
-		b = b - t
+		b -= t
 		t = 0
 	}
-
 	if l > 0 {
-		r = r + l
+		r += l
 		l = 0
 	}
-
 	if t > 0 {
-		b = b + t
+		b += t
 		t = 0
 	}
 

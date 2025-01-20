@@ -1,7 +1,7 @@
 package chartdraw
 
 import (
-	"fmt"
+	"errors"
 )
 
 // Interface Assertions.
@@ -136,7 +136,7 @@ func (lrs *LinearRegressionSeries) Render(r Renderer, canvasBox Box, xrange, yra
 // Validate validates the series.
 func (lrs *LinearRegressionSeries) Validate() error {
 	if lrs.InnerSeries == nil {
-		return fmt.Errorf("linear regression series requires InnerSeries to be set")
+		return errors.New("linear regression series requires InnerSeries to be set")
 	}
 	return nil
 }

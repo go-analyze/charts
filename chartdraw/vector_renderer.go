@@ -105,17 +105,17 @@ func (vr *vectorRenderer) SetStrokeDashArray(dashArray []float64) {
 
 // MoveTo implements the interface method.
 func (vr *vectorRenderer) MoveTo(x, y int) {
-	vr.p = append(vr.p, fmt.Sprintf("M %d %d", x, y))
+	vr.p = append(vr.p, "M "+strconv.Itoa(x)+" "+strconv.Itoa(y))
 }
 
 // LineTo implements the interface method.
 func (vr *vectorRenderer) LineTo(x, y int) {
-	vr.p = append(vr.p, fmt.Sprintf("L %d %d", x, y))
+	vr.p = append(vr.p, "L "+strconv.Itoa(x)+" "+strconv.Itoa(y))
 }
 
 // QuadCurveTo draws a quad curve.
 func (vr *vectorRenderer) QuadCurveTo(cx, cy, x, y int) {
-	vr.p = append(vr.p, fmt.Sprintf("Q%d,%d %d,%d", cx, cy, x, y))
+	vr.p = append(vr.p, "Q"+strconv.Itoa(cx)+","+strconv.Itoa(cy)+" "+strconv.Itoa(x)+","+strconv.Itoa(y))
 }
 
 func (vr *vectorRenderer) ArcTo(cx, cy int, rx, ry, startAngle, delta float64) {
@@ -126,9 +126,9 @@ func (vr *vectorRenderer) ArcTo(cx, cy int, rx, ry, startAngle, delta float64) {
 	starty := cy - int(ry*math.Cos(startAngle))
 
 	if len(vr.p) > 0 {
-		vr.p = append(vr.p, fmt.Sprintf("L %d %d", startx, starty))
+		vr.LineTo(startx, starty)
 	} else {
-		vr.p = append(vr.p, fmt.Sprintf("M %d %d", startx, starty))
+		vr.MoveTo(startx, starty)
 	}
 
 	endx := cx + int(rx*math.Sin(endAngle))
@@ -167,7 +167,7 @@ func (vr *vectorRenderer) FillStroke() {
 // drawPath draws the path set into the p slice.
 func (vr *vectorRenderer) drawPath() {
 	vr.c.Path(strings.Join(vr.p, "\n"), vr.s.GetFillAndStrokeOptions())
-	vr.p = []string{} // clear the path
+	vr.p = vr.p[:0] // clear the path
 }
 
 // Circle implements the interface method.
@@ -255,15 +255,15 @@ func (c *canvas) Start(width, height int) {
 	c.width = width
 	c.height = height
 	// TODO - error handling on write
-	_, _ = c.w.Write([]byte(fmt.Sprintf(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 %d %d">`, c.width, c.height)))
+	_, _ = c.w.Write([]byte(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ` + strconv.Itoa(c.width) + ` ` + strconv.Itoa(c.height) + `">`))
 	if c.css != "" {
 		_, _ = c.w.Write([]byte(`<style type="text/css"`))
 		if c.nonce != "" {
 			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
-			_, _ = c.w.Write([]byte(fmt.Sprintf(` nonce="%s"`, c.nonce)))
+			_, _ = c.w.Write([]byte(` nonce="` + c.nonce + `"`))
 		}
 		// To avoid compatibility issues between XML and CSS (f.e. with child selectors) we should encapsulate the CSS with CDATA.
-		_, _ = c.w.Write([]byte(fmt.Sprintf(`><![CDATA[%s]]></style>`, c.css)))
+		_, _ = c.w.Write([]byte(`><![CDATA[` + c.css + `]]></style>`))
 	}
 }
 
@@ -275,7 +275,7 @@ func (c *canvas) Path(d string, style Style) {
 	if len(style.StrokeDashArray) > 0 {
 		strokeDashArrayProperty = c.getStrokeDashArray(style)
 	}
-	_, _ = c.w.Write([]byte(fmt.Sprintf(`<path %s d="%s" %s/>`, strokeDashArrayProperty, d, c.styleAsSVG(style, false))))
+	_, _ = c.w.Write([]byte(`<path ` + strokeDashArrayProperty + ` d="` + d + `" ` + c.styleAsSVG(style, false) + `/>`))
 }
 
 func (c *canvas) Text(x, y int, body string, style Style) {
@@ -301,11 +301,16 @@ func (c *canvas) End() {
 // getStrokeDashArray returns the stroke-dasharray property of a style.
 func (c *canvas) getStrokeDashArray(s Style) string {
 	if len(s.StrokeDashArray) > 0 {
-		var values []string
-		for _, v := range s.StrokeDashArray {
-			values = append(values, fmt.Sprintf("%0.1f", v))
+		var sb strings.Builder
+		sb.WriteString("stroke-dasharray=\"")
+		for i, v := range s.StrokeDashArray {
+			if i > 0 {
+				sb.WriteString(", ")
+			}
+			sb.WriteString(fmt.Sprintf("%0.1f", v))
 		}
-		return "stroke-dasharray=\"" + strings.Join(values, ", ") + "\""
+		sb.WriteString("\"")
+		return sb.String()
 	}
 	return ""
 }
@@ -315,11 +320,11 @@ func (c *canvas) getFontFace(s Style) string {
 	family := "sans-serif"
 	if s.GetFont() != nil {
 		name := s.GetFont().Name(truetype.NameIDFontFamily)
-		if len(name) != 0 {
-			family = fmt.Sprintf(`'%s',%s`, name, family)
+		if name != "" {
+			family = `'` + name + `',` + family
 		}
 	}
-	return fmt.Sprintf("font-family:%s", family)
+	return "font-family:" + family
 }
 
 // styleAsSVG returns the style as a svg style or class string.
@@ -331,23 +336,26 @@ func (c *canvas) styleAsSVG(s Style, applyText bool) string {
 	fnc := s.FontColor
 
 	if s.ClassName != "" {
-		var classes []string
-		classes = append(classes, s.ClassName)
+		var sb strings.Builder
+		sb.WriteString("class=\"")
+		sb.WriteString(s.ClassName)
 		if !sc.IsZero() {
-			classes = append(classes, "stroke")
+			sb.WriteRune(' ')
+			sb.WriteString("stroke")
 		}
 		if !fc.IsZero() {
-			classes = append(classes, "fill")
+			sb.WriteRune(' ')
+			sb.WriteString("fill")
 		}
 		if applyText && (fs != 0 || s.Font != nil) {
-			classes = append(classes, "text")
+			sb.WriteRune(' ')
+			sb.WriteString("text")
 		}
-
-		return fmt.Sprintf("class=\"%s\"", strings.Join(classes, " "))
+		sb.WriteString("\"")
+		return sb.String()
 	}
 
 	var pieces []string
-
 	if sw != 0 && !sc.IsTransparent() {
 		pieces = append(pieces, "stroke-width:"+formatFloatMinimized(sw))
 		pieces = append(pieces, "stroke:"+sc.String())
@@ -376,7 +384,7 @@ func (c *canvas) styleAsSVG(s Style, applyText bool) string {
 		return ""
 	}
 
-	return fmt.Sprintf("style=\"%s\"", strings.Join(pieces, ";"))
+	return "style=\"" + strings.Join(pieces, ";") + "\""
 }
 
 // formatFloatNoTrailingZero formats a float without trailing zeros, so it is as small as possible.

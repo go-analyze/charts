@@ -1,6 +1,8 @@
 package chartdraw
 
-import "fmt"
+import (
+	"errors"
+)
 
 // HistogramSeries is a special type of series that draws as a histogram.
 // Some peculiarities; it will always be lower bounded at 0 (at the very least).
@@ -61,7 +63,7 @@ func (hs HistogramSeries) Render(r Renderer, canvasBox Box, xrange, yrange Range
 // Validate validates the series.
 func (hs HistogramSeries) Validate() error {
 	if hs.InnerSeries == nil {
-		return fmt.Errorf("histogram series requires InnerSeries to be set")
+		return errors.New("histogram series requires InnerSeries to be set")
 	}
 	return nil
 }

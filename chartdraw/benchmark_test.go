@@ -38,14 +38,18 @@ func makeBenchmarkLineChart() Chart {
 func BenchmarkLineChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		buffer := bytes.Buffer{}
-		makeBenchmarkLineChart().Render(PNG, &buffer)
+		if err := makeBenchmarkLineChart().Render(PNG, &buffer); err != nil {
+			panic(err)
+		}
 	}
 }
 
 func BenchmarkLineChartSVGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		buffer := bytes.Buffer{}
-		makeBenchmarkLineChart().Render(SVG, &buffer)
+		if err := makeBenchmarkLineChart().Render(SVG, &buffer); err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -75,14 +79,18 @@ func makeBenchmarkBarChart() BarChart {
 func BenchmarkBarChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		buffer := bytes.Buffer{}
-		makeBenchmarkBarChart().Render(PNG, &buffer)
+		if err := makeBenchmarkBarChart().Render(PNG, &buffer); err != nil {
+			panic(err)
+		}
 	}
 }
 
 func BenchmarkBarChartSVGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		buffer := bytes.Buffer{}
-		makeBenchmarkBarChart().Render(SVG, &buffer)
+		if err := makeBenchmarkBarChart().Render(SVG, &buffer); err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -115,13 +123,17 @@ func makeBenchmarkPieChart() PieChart {
 func BenchmarkPieChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		buffer := bytes.Buffer{}
-		makeBenchmarkPieChart().Render(PNG, &buffer)
+		if err := makeBenchmarkPieChart().Render(PNG, &buffer); err != nil {
+			panic(err)
+		}
 	}
 }
 
 func BenchmarkPieChartSVGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		buffer := bytes.Buffer{}
-		makeBenchmarkPieChart().Render(SVG, &buffer)
+		if err := makeBenchmarkPieChart().Render(SVG, &buffer); err != nil {
+			panic(err)
+		}
 	}
 }

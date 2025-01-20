@@ -10,11 +10,10 @@ import (
 
 // PointsToPixels returns the pixels for a given number of points at a DPI.
 func PointsToPixels(dpi, points float64) (pixels float64) {
-	pixels = (points * dpi) / 72.0
-	return
+	return (points * dpi) / 72.0
 }
 
-func abs(i int) int {
+func absInt(i int) int {
 	if i < 0 {
 		return -i
 	}

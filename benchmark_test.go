@@ -143,7 +143,9 @@ func renderPainterMultiChartPNGRender(painter *Painter) {
 			Max: FloatPointer(90),
 		},
 	}
-	painter.LineChart(lineOpt)
+	if err := painter.LineChart(lineOpt); err != nil {
+		panic(err)
+	}
 
 	barOpt := NewBarChartOptionWithData([][]float64{
 		{40.1, 62.2, 69.5, 36.4, 45.2, 32.5},
@@ -152,7 +154,9 @@ func renderPainterMultiChartPNGRender(painter *Painter) {
 	barOpt.Legend = lineOpt.Legend
 	barOpt.XAxis = lineOpt.XAxis
 	barOpt.YAxis = lineOpt.YAxis
-	painter.BarChart(barOpt)
+	if err := painter.BarChart(barOpt); err != nil {
+		panic(err)
+	}
 
 	pieOpt := PieChartOption{
 		SeriesList: NewSeriesListPie([]float64{
@@ -169,7 +173,9 @@ func renderPainterMultiChartPNGRender(painter *Painter) {
 		Theme: GetDefaultTheme(),
 		Font:  GetDefaultFont(),
 	}
-	painter.PieChart(pieOpt)
+	if err := painter.PieChart(pieOpt); err != nil {
+		panic(err)
+	}
 
 	if buf, err := painter.Bytes(); err != nil {
 		panic(err)

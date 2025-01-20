@@ -1,6 +1,7 @@
 package chartdraw
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 
@@ -15,9 +16,9 @@ var defaultFontFamily = "default"
 func init() {
 	name := "roboto"
 	if err := InstallFont(name, roboto.Roboto); err != nil {
-		panic(fmt.Errorf("could not install default font - %v", err))
+		panic(fmt.Errorf("could not install default font - %w", err))
 	} else if err = SetDefaultFont(name); err != nil {
-		panic(fmt.Errorf("could not set default font - %v", err))
+		panic(fmt.Errorf("could not set default font - %w", err))
 	}
 }
 
@@ -42,7 +43,7 @@ func SetDefaultFont(fontFamily string) error {
 		fonts.Store(defaultFontFamily, value)
 		return nil
 	}
-	return fmt.Errorf("font not found: %v", fontFamily)
+	return errors.New("font not found: " + fontFamily)
 }
 
 // GetFont get the font by font family or the default if the family is not installed.

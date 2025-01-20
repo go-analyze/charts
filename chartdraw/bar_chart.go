@@ -2,7 +2,6 @@ package chartdraw
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"math"
 
@@ -33,8 +32,7 @@ type BarChart struct {
 	UseBaseValue bool
 	BaseValue    float64
 
-	Font        *truetype.Font
-	defaultFont *truetype.Font
+	Font *truetype.Font
 
 	Bars     []Value
 	Elements []Renderable
@@ -50,9 +48,6 @@ func (bc BarChart) GetDPI() float64 {
 
 // GetFont returns the text font.
 func (bc BarChart) GetFont() *truetype.Font {
-	if bc.Font == nil {
-		return bc.defaultFont
-	}
 	return bc.Font
 }
 
@@ -97,7 +92,7 @@ func (bc BarChart) Render(rp RendererProvider, w io.Writer) error {
 	r := rp(bc.GetWidth(), bc.GetHeight())
 
 	if bc.Font == nil {
-		bc.defaultFont = GetDefaultFont()
+		bc.Font = GetDefaultFont()
 	}
 	r.SetDPI(bc.GetDPI())
 
@@ -111,7 +106,7 @@ func (bc BarChart) Render(rp RendererProvider, w io.Writer) error {
 	canvasBox = bc.getDefaultCanvasBox()
 	yr = bc.getRanges()
 	if yr.GetMax()-yr.GetMin() == 0 {
-		return fmt.Errorf("invalid data range; cannot be zero")
+		return errors.New("invalid data range; cannot be zero")
 	}
 	yr = bc.setRangeDomains(canvasBox, yr)
 	yf = bc.getValueFormatters()
@@ -367,7 +362,7 @@ func (bc BarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box, yrange Range,
 
 		cursor := canvasBox.Left
 		for _, bar := range bc.Bars {
-			if len(bar.Label) > 0 {
+			if bar.Label != "" {
 				barLabelBox := Box{
 					Top:    canvasBox.Bottom + DefaultXAxisMargin,
 					Left:   cursor,

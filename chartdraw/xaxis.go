@@ -157,7 +157,7 @@ func (xa XAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 		switch tp {
 		case TickPositionUnderTick, TickPositionUnset:
 			if tickStyle.TextRotationDegrees == 0 {
-				tx = tx - tb.Width()>>1
+				tx -= tb.Width() >> 1
 				ty = canvasBox.Bottom + DefaultXAxisMargin + tb.Height()
 			} else {
 				ty = canvasBox.Bottom + (2 * DefaultXAxisMargin)

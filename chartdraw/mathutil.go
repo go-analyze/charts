@@ -3,17 +3,17 @@ package chartdraw
 import "math"
 
 const (
-	_pi   = math.Pi
-	_2pi  = 2 * math.Pi
-	_3pi4 = (3 * math.Pi) / 4.0
-	_4pi3 = (4 * math.Pi) / 3.0
+	_pi  = math.Pi
+	_2pi = 2 * math.Pi
+	//_3pi4 = (3 * math.Pi) / 4.0
+	//_4pi3 = (4 * math.Pi) / 3.0
 	_3pi2 = (3 * math.Pi) / 2.0
-	_5pi4 = (5 * math.Pi) / 4.0
-	_7pi4 = (7 * math.Pi) / 4.0
-	_pi2  = math.Pi / 2.0
-	_pi4  = math.Pi / 4.0
-	_d2r  = math.Pi / 180.0
-	_r2d  = 180.0 / math.Pi
+	//_5pi4 = (5 * math.Pi) / 4.0
+	//_7pi4 = (7 * math.Pi) / 4.0
+	_pi2 = math.Pi / 2.0
+	//_pi4  = math.Pi / 4.0
+	_d2r = math.Pi / 180.0
+	_r2d = 180.0 / math.Pi
 )
 
 // MinMax returns the minimum and maximum of a given set of values.
@@ -38,37 +38,25 @@ func MinMax(values ...float64) (min, max float64) {
 }
 
 // MinInt returns the minimum int.
-func MinInt(values ...int) (min int) {
-	if len(values) == 0 {
-		return
-	}
-
-	min = values[0]
-	var value int
-	for index := 1; index < len(values); index++ {
-		value = values[index]
-		if value < min {
-			min = value
+func MinInt(values ...int) int {
+	min := math.MaxInt32
+	for x := 0; x < len(values); x++ {
+		if values[x] < min {
+			min = values[x]
 		}
 	}
-	return
+	return min
 }
 
 // MaxInt returns the maximum int.
-func MaxInt(values ...int) (max int) {
-	if len(values) == 0 {
-		return
-	}
-
-	max = values[0]
-	var value int
-	for index := 1; index < len(values); index++ {
-		value = values[index]
-		if value > max {
-			max = value
+func MaxInt(values ...int) int {
+	max := math.MinInt32
+	for x := 0; x < len(values); x++ {
+		if values[x] > max {
+			max = values[x]
 		}
 	}
-	return
+	return max
 }
 
 // AbsInt returns the absolute value of an int.

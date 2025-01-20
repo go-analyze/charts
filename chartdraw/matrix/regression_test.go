@@ -18,7 +18,7 @@ func TestPoly(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, c, 3)
 
-	assert.InDelta(t, c[0], 0.999999999, DefaultEpsilon)
-	assert.InDelta(t, c[1], 2, DefaultEpsilon)
-	assert.InDelta(t, c[2], 3, DefaultEpsilon)
+	assert.InDelta(t, 0.999999999, c[0], DefaultEpsilon)
+	assert.InDelta(t, 2, c[1], DefaultEpsilon)
+	assert.InDelta(t, 3, c[2], DefaultEpsilon)
 }

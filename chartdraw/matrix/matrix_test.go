@@ -24,8 +24,8 @@ func TestNewWithValues(t *testing.T) {
 	rows, cols := m.Size()
 	assert.Equal(t, 5, rows)
 	assert.Equal(t, 2, cols)
-	assert.Equal(t, float64(1), m.Get(0, 0))
-	assert.Equal(t, float64(10), m.Get(4, 1))
+	assert.InDelta(t, float64(1), m.Get(0, 0), 0)
+	assert.InDelta(t, float64(10), m.Get(4, 1), 0)
 }
 
 func TestIdentity(t *testing.T) {
@@ -35,15 +35,15 @@ func TestIdentity(t *testing.T) {
 	rows, cols := id.Size()
 	assert.Equal(t, 5, rows)
 	assert.Equal(t, 5, cols)
-	assert.Equal(t, float64(1), id.Get(0, 0))
-	assert.Equal(t, float64(1), id.Get(1, 1))
-	assert.Equal(t, float64(1), id.Get(2, 2))
-	assert.Equal(t, float64(1), id.Get(3, 3))
-	assert.Equal(t, float64(1), id.Get(4, 4))
-	assert.Equal(t, float64(0), id.Get(0, 1))
-	assert.Equal(t, float64(0), id.Get(1, 0))
-	assert.Equal(t, float64(0), id.Get(4, 0))
-	assert.Equal(t, float64(0), id.Get(0, 4))
+	assert.InDelta(t, float64(1), id.Get(0, 0), 0)
+	assert.InDelta(t, float64(1), id.Get(1, 1), 0)
+	assert.InDelta(t, float64(1), id.Get(2, 2), 0)
+	assert.InDelta(t, float64(1), id.Get(3, 3), 0)
+	assert.InDelta(t, float64(1), id.Get(4, 4), 0)
+	assert.InDelta(t, float64(0), id.Get(0, 1), 0)
+	assert.InDelta(t, float64(0), id.Get(1, 0), 0)
+	assert.InDelta(t, float64(0), id.Get(4, 0), 0)
+	assert.InDelta(t, float64(0), id.Get(0, 4), 0)
 }
 
 func TestNewFromArrays(t *testing.T) {
@@ -70,7 +70,7 @@ func TestOnes(t *testing.T) {
 
 	for row := 0; row < rows; row++ {
 		for col := 0; col < cols; col++ {
-			assert.Equal(t, float64(1), ones.Get(row, col))
+			assert.InDelta(t, float64(1), ones.Get(row, col), 0)
 		}
 	}
 }
@@ -80,7 +80,7 @@ func TestMatrixEpsilon(t *testing.T) {
 
 	ones := Ones(2, 2)
 	ones = ones.WithEpsilon(0.001)
-	assert.Equal(t, 0.001, ones.Epsilon())
+	assert.InDelta(t, 0.001, ones.Epsilon(), 0)
 }
 
 func TestMatrixArrays(t *testing.T) {
@@ -95,10 +95,10 @@ func TestMatrixArrays(t *testing.T) {
 
 	arrays := m.Arrays()
 
-	assert.Equal(t, arrays, [][]float64{
+	assert.Equal(t, [][]float64{
 		{1, 2, 3},
 		{4, 5, 6},
-	})
+	}, arrays)
 }
 
 func TestMatrixIsSquare(t *testing.T) {
@@ -140,7 +140,6 @@ func TestMatrixIsSymmetric(t *testing.T) {
 		{2, 1, 2},
 		{3, 2, 1},
 	}).IsSymmetric())
-
 }
 
 func TestMatrixGet(t *testing.T) {
@@ -152,15 +151,15 @@ func TestMatrixGet(t *testing.T) {
 		{7, 8, 9},
 	})
 
-	assert.Equal(t, float64(1), m.Get(0, 0))
-	assert.Equal(t, float64(2), m.Get(0, 1))
-	assert.Equal(t, float64(3), m.Get(0, 2))
-	assert.Equal(t, float64(4), m.Get(1, 0))
-	assert.Equal(t, float64(5), m.Get(1, 1))
-	assert.Equal(t, float64(6), m.Get(1, 2))
-	assert.Equal(t, float64(7), m.Get(2, 0))
-	assert.Equal(t, float64(8), m.Get(2, 1))
-	assert.Equal(t, float64(9), m.Get(2, 2))
+	assert.InDelta(t, float64(1), m.Get(0, 0), 0)
+	assert.InDelta(t, float64(2), m.Get(0, 1), 0)
+	assert.InDelta(t, float64(3), m.Get(0, 2), 0)
+	assert.InDelta(t, float64(4), m.Get(1, 0), 0)
+	assert.InDelta(t, float64(5), m.Get(1, 1), 0)
+	assert.InDelta(t, float64(6), m.Get(1, 2), 0)
+	assert.InDelta(t, float64(7), m.Get(2, 0), 0)
+	assert.InDelta(t, float64(8), m.Get(2, 1), 0)
+	assert.InDelta(t, float64(9), m.Get(2, 2), 0)
 }
 
 func TestMatrixSet(t *testing.T) {
@@ -173,7 +172,7 @@ func TestMatrixSet(t *testing.T) {
 	})
 
 	m.Set(1, 1, 99)
-	assert.Equal(t, float64(99), m.Get(1, 1))
+	assert.InDelta(t, float64(99), m.Get(1, 1), 0)
 }
 
 func TestMatrixCol(t *testing.T) {
@@ -230,7 +229,7 @@ func TestMatrixCopy(t *testing.T) {
 	})
 
 	m2 := m.Copy()
-	assert.False(t, m == m2)
+	assert.NotSame(t, m, m2)
 	assert.True(t, m.Equals(m2))
 }
 
@@ -388,7 +387,7 @@ func TestMatrixTranspose(t *testing.T) {
 	assert.Equal(t, 3, rows)
 	assert.Equal(t, 4, cols)
 
-	assert.Equal(t, float64(1), m2.Get(0, 0))
-	assert.Equal(t, float64(10), m2.Get(0, 3))
-	assert.Equal(t, float64(3), m2.Get(2, 0))
+	assert.InDelta(t, float64(1), m2.Get(0, 0), 0)
+	assert.InDelta(t, float64(10), m2.Get(0, 3), 0)
+	assert.InDelta(t, float64(3), m2.Get(2, 0), 0)
 }

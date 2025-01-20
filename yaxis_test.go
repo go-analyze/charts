@@ -19,8 +19,7 @@ func TestRightYAxis(t *testing.T) {
 				opt := YAxisOption{
 					Data: []string{"a", "b", "c", "d"},
 				}
-				_, err := newRightYAxis(p, opt).Render()
-				if err != nil {
+				if _, err := newRightYAxis(p, opt).Render(); err != nil {
 					return nil, err
 				}
 				return p.Bytes()

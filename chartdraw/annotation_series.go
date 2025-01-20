@@ -1,7 +1,7 @@
 package chartdraw
 
 import (
-	"fmt"
+	"errors"
 	"math"
 )
 
@@ -87,7 +87,7 @@ func (as AnnotationSeries) Render(r Renderer, canvasBox Box, xrange, yrange Rang
 // Validate validates the series.
 func (as AnnotationSeries) Validate() error {
 	if len(as.Annotations) == 0 {
-		return fmt.Errorf("annotation series requires annotations to be set and not empty")
+		return errors.New("annotation series requires annotations to be set and not empty")
 	}
 	return nil
 }

@@ -21,7 +21,7 @@ func TestTextWrapWord(t *testing.T) {
 	for _, line := range output {
 		basicTextStyle.WriteToRenderer(r)
 		lineBox := r.MeasureText(line)
-		assert.True(t, lineBox.Width() < 100, line+": "+lineBox.String())
+		assert.Less(t, lineBox.Width(), 100)
 	}
 	assert.Equal(t, "this is", output[0])
 	assert.Equal(t, "a test", output[1])

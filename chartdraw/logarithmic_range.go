@@ -82,9 +82,9 @@ func (r *LogarithmicRange) Translate(value float64) int {
 
 // GetTicks calculates the needed ticks for the axis, in log scale. Only supports Y values > 0.
 func (r *LogarithmicRange) GetTicks(render Renderer, defaults Style, vf ValueFormatter) []Tick {
-	var ticks []Tick
 	exponentStart := int64(math.Max(0, math.Floor(math.Log10(r.Min)))) // one below min
 	exponentEnd := int64(math.Max(0, math.Ceil(math.Log10(r.Max))))    // one above max
+	ticks := make([]Tick, 0, exponentEnd-exponentStart+1)
 	for exp := exponentStart; exp <= exponentEnd; exp++ {
 		tickVal := math.Pow(10, float64(exp))
 		ticks = append(ticks, Tick{Value: tickVal, Label: vf(tickVal)})

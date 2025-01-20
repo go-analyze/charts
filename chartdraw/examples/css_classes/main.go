@@ -33,8 +33,7 @@ func inlineSVGWithClasses(res http.ResponseWriter, req *http.Request) {
 		},
 	}
 
-	err := pie.Render(chartdraw.SVG, res)
-	if err != nil {
+	if err := pie.Render(chartdraw.SVG, res); err != nil {
 		fmt.Printf("Error rendering pie chart: %v\n", err)
 	}
 	res.Write([]byte("</body>"))

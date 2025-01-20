@@ -75,7 +75,6 @@ func (l *LineStroker) End() {
 	l.vertices = l.vertices[0:0]
 	l.rewind = l.rewind[0:0]
 	l.x, l.y, l.nx, l.ny = 0, 0, 0, 0
-
 }
 
 func (l *LineStroker) appendVertex(vertices ...float64) {

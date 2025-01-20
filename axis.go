@@ -97,8 +97,7 @@ func (a *axisPainter) Render() (Box, error) {
 
 	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Data, opt.TextRotation, fontStyle)
 
-	width := 0
-	height := 0
+	var width, height int
 	if isVertical {
 		width = textMaxWidth + tickLength<<1
 		height = top.Height()

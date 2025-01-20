@@ -1,7 +1,7 @@
 package chartdraw
 
 import (
-	"fmt"
+	"errors"
 )
 
 // Interface Assertions.
@@ -129,7 +129,7 @@ func (bbs *BollingerBandsSeries) Render(r Renderer, canvasBox Box, xrange, yrang
 // Validate validates the series.
 func (bbs *BollingerBandsSeries) Validate() error {
 	if bbs.InnerSeries == nil {
-		return fmt.Errorf("bollinger bands series requires InnerSeries to be set")
+		return errors.New("bollinger bands series requires InnerSeries to be set")
 	}
 	return nil
 }

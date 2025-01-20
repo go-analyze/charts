@@ -362,8 +362,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			top += heights[i]
 		}
 	}
-	_, err := t.render()
-	if err != nil {
+	if _, err := t.render(); err != nil {
 		return BoxZero, err
 	}
 
