@@ -32,6 +32,35 @@ func TestNewLegend(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 184 9\nL 214 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"199\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"216\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path  d=\"M 264 9\nL 294 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"279\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"296\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path  d=\"M 346 9\nL 376 9\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"361\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"378\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text></svg>",
 		},
 		{
+			name: "border",
+			render: func(p *Painter) ([]byte, error) {
+				_, err := newLegendPainter(p.Child(PainterPaddingOption(defaultPadding)), LegendOption{
+					Data:        []string{"One", "Two", "Three"},
+					BorderWidth: 2.0,
+				}).Render()
+				if err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 184 29\nL 214 29\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"199\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"216\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path  d=\"M 264 29\nL 294 29\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"279\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"296\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path  d=\"M 346 29\nL 376 29\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"361\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"378\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text><path  d=\"M 174 50\nL 174 10\nL 426 10\nL 426 50\nL 174 50\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "vertical_border",
+			render: func(p *Painter) ([]byte, error) {
+				_, err := newLegendPainter(p.Child(PainterPaddingOption(defaultPadding)), LegendOption{
+					Data:        []string{"One", "Two", "Three"},
+					Vertical:    True(),
+					BorderWidth: 2.0,
+				}).Render()
+				if err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 29\nL 50 29\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"35\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"52\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path  d=\"M 20 49\nL 50 49\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"35\" cy=\"49\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"52\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path  d=\"M 20 69\nL 50 69\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"35\" cy=\"69\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"52\" y=\"75\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text><path  d=\"M 10 95\nL 10 10\nL 102 10\nL 102 95\nL 10 95\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+		},
+		{
 			name: "position_left",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := newLegendPainter(p, LegendOption{

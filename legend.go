@@ -2,6 +2,8 @@ package charts
 
 import (
 	"fmt"
+
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type legendPainter struct {
@@ -33,6 +35,8 @@ type LegendOption struct {
 	Icon string
 	// OverlayChart can be set to *true to render the legend over the chart. Ignored if Vertical is set to true (always overlapped).
 	OverlayChart *bool
+	// BorderWidth can be set to a non-zero value to render a box around the legend.
+	BorderWidth float64
 }
 
 // IsEmpty checks legend is empty
@@ -161,10 +165,8 @@ func (l *legendPainter) Render() (Box, error) {
 		}
 	}
 
-	startX := left
 	y := top + 10
-	startY := y
-	x0 := startX
+	x0 := left
 	y0 := y
 
 	var drawIcon func(top, left int, color Color) int
@@ -207,7 +209,7 @@ func (l *legendPainter) Render() (Box, error) {
 				itemWidth = x0 + measureList[index].Width() + legendWidth
 			}
 			if itemWidth > p.Width() {
-				newLineStart := startX
+				newLineStart := left
 				if opt.Align == AlignCenter {
 					// recalculate width and center based off remaining width
 					var remainingWidth int
@@ -219,7 +221,7 @@ func (l *legendPainter) Render() (Box, error) {
 					remainingWidth += remainingCount * legendWidth
 					remainingWidth += (remainingCount - 1) * (builtInSpacing + textOffset)
 
-					newLineStart = startX + ((p.Width() >> 1) - (remainingWidth >> 1))
+					newLineStart = left + ((p.Width() >> 1) - (remainingWidth >> 1))
 					if newLineStart < 0 {
 						newLineStart = 0
 					}
@@ -243,18 +245,39 @@ func (l *legendPainter) Render() (Box, error) {
 
 		if vertical {
 			y0 += builtInSpacing
-			x0 = startX
+			x0 = left
 		} else {
 			x0 += builtInSpacing
 			y0 = y
 		}
 	}
 
-	return Box{
-		Top:    startY,
-		Bottom: y0 + itemMaxHeight + padding.Bottom + padding.Top,
-		Left:   startX,
-		Right:  width,
+	bottom := y0 + padding.Bottom - 10
+	if !vertical {
+		bottom += itemMaxHeight
+	}
+
+	result := Box{
+		Top:    top - padding.Top,
+		Bottom: bottom,
+		Left:   left,
+		Right:  left + width,
 		IsSet:  true,
-	}, nil
+	}
+
+	if opt.BorderWidth > 0 {
+		// TODO - if drawn over the chart this can look awkward, we should try to draw this first
+		padding := 10 // built in adjustment for possible measure vs render variations
+		boxPoints := []Point{
+			{X: left - padding, Y: result.Bottom + padding},
+			{X: left - padding, Y: result.Top - padding},
+			{X: left + result.Width() + padding, Y: result.Top - padding},
+			{X: left + result.Width() + padding, Y: result.Bottom + padding},
+			{X: left - padding, Y: result.Bottom + padding},
+		}
+		// TODO - allow color to be configured via theme or configuration
+		p.LineStroke(boxPoints, drawing.ColorBlack, opt.BorderWidth)
+	}
+
+	return result, nil
 }
