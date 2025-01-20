@@ -166,7 +166,7 @@ func (vr *vectorRenderer) FillStroke() {
 
 // drawPath draws the path set into the p slice.
 func (vr *vectorRenderer) drawPath() {
-	vr.c.Path(strings.Join(vr.p, "\n"), vr.s.GetFillAndStrokeOptions())
+	vr.c.Path(vr.p, vr.s.GetFillAndStrokeOptions())
 	vr.p = vr.p[:0] // clear the path
 }
 
@@ -267,52 +267,79 @@ func (c *canvas) Start(width, height int) {
 	}
 }
 
-func (c *canvas) Path(d string, style Style) {
-	if d == "" {
+func (c *canvas) Path(parts []string, style Style) {
+	if len(parts) == 0 {
 		return
 	}
-	var strokeDashArrayProperty string
-	if len(style.StrokeDashArray) > 0 {
-		strokeDashArrayProperty = c.getStrokeDashArray(style)
+	bb := bytes.NewBuffer(make([]byte, 0, 80))
+	bb.WriteString(`<path `)
+	c.writeStrokeDashArray(bb, style)
+	bb.WriteString(` d="`)
+	for i, p := range parts {
+		if i > 0 {
+			bb.WriteRune('\n')
+		}
+		bb.WriteString(p)
 	}
-	_, _ = c.w.Write([]byte(`<path ` + strokeDashArrayProperty + ` d="` + d + `" ` + c.styleAsSVG(style, false) + `/>`))
+	bb.WriteString(`" `)
+	c.styleAsSVG(bb, style, false)
+	bb.WriteString(`/>`)
+
+	_, _ = c.w.Write(bb.Bytes())
 }
 
 func (c *canvas) Text(x, y int, body string, style Style) {
 	if body == "" {
 		return
 	}
-	if c.textTheta == nil {
-		_, _ = c.w.Write([]byte(fmt.Sprintf(`<text x="%d" y="%d" %s>%s</text>`, x, y, c.styleAsSVG(style, true), body)))
-	} else {
-		transform := fmt.Sprintf(` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y)
-		_, _ = c.w.Write([]byte(fmt.Sprintf(`<text x="%d" y="%d" %s%s>%s</text>`, x, y, c.styleAsSVG(style, true), transform, body)))
+	bb := bytes.NewBuffer(make([]byte, 0, 128))
+	bb.WriteString(`<text x="`)
+	bb.WriteString(strconv.Itoa(x))
+	bb.WriteString(`" y="`)
+	bb.WriteString(strconv.Itoa(y))
+	bb.WriteString(`" `)
+	c.styleAsSVG(bb, style, true)
+	if c.textTheta != nil {
+		bb.WriteString(fmt.Sprintf(` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y))
 	}
+	bb.WriteRune('>')
+	bb.WriteString(body)
+	bb.WriteString("</text>")
+
+	_, _ = c.w.Write(bb.Bytes())
 }
 
 func (c *canvas) Circle(x, y, r int, style Style) {
-	_, _ = c.w.Write([]byte(fmt.Sprintf(`<circle cx="%d" cy="%d" r="%d" %s/>`, x, y, r, c.styleAsSVG(style, false))))
+	bb := bytes.NewBuffer(make([]byte, 0, 80))
+	bb.WriteString(`<circle cx="`)
+	bb.WriteString(strconv.Itoa(x))
+	bb.WriteString(`" cy="`)
+	bb.WriteString(strconv.Itoa(y))
+	bb.WriteString(`" r="`)
+	bb.WriteString(strconv.Itoa(r))
+	bb.WriteString(`" `)
+	c.styleAsSVG(bb, style, true)
+	bb.WriteString(`/>`)
+
+	_, _ = c.w.Write(bb.Bytes())
 }
 
 func (c *canvas) End() {
 	_, _ = c.w.Write([]byte("</svg>"))
 }
 
-// getStrokeDashArray returns the stroke-dasharray property of a style.
-func (c *canvas) getStrokeDashArray(s Style) string {
+// writeStrokeDashArray writes the stroke-dasharray property of a style.
+func (c *canvas) writeStrokeDashArray(bb *bytes.Buffer, s Style) {
 	if len(s.StrokeDashArray) > 0 {
-		var sb strings.Builder
-		sb.WriteString("stroke-dasharray=\"")
+		bb.WriteString("stroke-dasharray=\"")
 		for i, v := range s.StrokeDashArray {
 			if i > 0 {
-				sb.WriteString(", ")
+				bb.WriteString(", ")
 			}
-			sb.WriteString(fmt.Sprintf("%0.1f", v))
+			bb.WriteString(fmt.Sprintf("%0.1f", v))
 		}
-		sb.WriteString("\"")
-		return sb.String()
+		bb.WriteString("\"")
 	}
-	return ""
 }
 
 // GetFontFace returns the font face for the style.
@@ -328,7 +355,7 @@ func (c *canvas) getFontFace(s Style) string {
 }
 
 // styleAsSVG returns the style as a svg style or class string.
-func (c *canvas) styleAsSVG(s Style, applyText bool) string {
+func (c *canvas) styleAsSVG(bb *bytes.Buffer, s Style, applyText bool) {
 	sw := s.StrokeWidth
 	sc := s.StrokeColor
 	fc := s.FillColor
@@ -336,55 +363,58 @@ func (c *canvas) styleAsSVG(s Style, applyText bool) string {
 	fnc := s.FontColor
 
 	if s.ClassName != "" {
-		var sb strings.Builder
-		sb.WriteString("class=\"")
-		sb.WriteString(s.ClassName)
+		bb.WriteString("class=\"")
+		bb.WriteString(s.ClassName)
 		if !sc.IsZero() {
-			sb.WriteRune(' ')
-			sb.WriteString("stroke")
+			bb.WriteRune(' ')
+			bb.WriteString("stroke")
 		}
 		if !fc.IsZero() {
-			sb.WriteRune(' ')
-			sb.WriteString("fill")
+			bb.WriteRune(' ')
+			bb.WriteString("fill")
 		}
 		if applyText && (fs != 0 || s.Font != nil) {
-			sb.WriteRune(' ')
-			sb.WriteString("text")
+			bb.WriteRune(' ')
+			bb.WriteString("text")
 		}
-		sb.WriteString("\"")
-		return sb.String()
+		bb.WriteString("\"")
+		return
 	}
 
-	var pieces []string
+	bb.WriteString("style=\"")
+
 	if sw != 0 && !sc.IsTransparent() {
-		pieces = append(pieces, "stroke-width:"+formatFloatMinimized(sw))
-		pieces = append(pieces, "stroke:"+sc.String())
+		bb.WriteString("stroke-width:")
+		bb.WriteString(formatFloatMinimized(sw))
+		bb.WriteString(";stroke:")
+		bb.WriteString(sc.String())
 	} else {
-		pieces = append(pieces, "stroke:none")
+		bb.WriteString("stroke:none")
 	}
 
 	if applyText && !fnc.IsTransparent() {
-		pieces = append(pieces, "fill:"+fnc.String())
+		bb.WriteString(";fill:")
+		bb.WriteString(fnc.String())
 	} else if !fc.IsTransparent() {
-		pieces = append(pieces, "fill:"+fc.String())
+		bb.WriteString(";fill:")
+		bb.WriteString(fc.String())
 	} else {
-		pieces = append(pieces, "fill:none")
+		bb.WriteString(";fill:none")
 	}
 
 	if applyText {
 		if fs != 0 {
-			pieces = append(pieces, "font-size:"+formatFloatMinimized(drawing.PointsToPixels(c.dpi, fs))+"px")
+			bb.WriteString(";font-size:")
+			bb.WriteString(formatFloatMinimized(drawing.PointsToPixels(c.dpi, fs)))
+			bb.WriteString("px")
 		}
 		if s.Font != nil {
-			pieces = append(pieces, c.getFontFace(s))
+			bb.WriteRune(';')
+			bb.WriteString(c.getFontFace(s))
 		}
 	}
 
-	if len(pieces) == 0 {
-		return ""
-	}
-
-	return "style=\"" + strings.Join(pieces, ";") + "\""
+	bb.WriteRune('"')
 }
 
 // formatFloatNoTrailingZero formats a float without trailing zeros, so it is as small as possible.

@@ -65,7 +65,9 @@ func TestCanvasStyleSVG(t *testing.T) {
 
 	canvas := &canvas{dpi: DefaultDPI}
 
-	svgString := canvas.styleAsSVG(set, false)
+	var bb bytes.Buffer
+	canvas.styleAsSVG(&bb, set, false)
+	svgString := bb.String()
 	assert.NotEmpty(t, svgString)
 	assert.True(t, strings.HasPrefix(svgString, "style=\""))
 	assert.Contains(t, svgString, "stroke:white")
@@ -75,7 +77,9 @@ func TestCanvasStyleSVG(t *testing.T) {
 	assert.NotContains(t, svgString, "font-family")
 	assert.True(t, strings.HasSuffix(svgString, "\""))
 
-	svgString = canvas.styleAsSVG(set, true)
+	bb.Reset()
+	canvas.styleAsSVG(&bb, set, true)
+	svgString = bb.String()
 	assert.True(t, strings.HasPrefix(svgString, "style=\""))
 	assert.Contains(t, svgString, "stroke:white")
 	assert.Contains(t, svgString, "stroke-width:5")
@@ -94,7 +98,9 @@ func TestCanvasClassSVG(t *testing.T) {
 
 	canvas := &canvas{dpi: DefaultDPI}
 
-	assert.Equal(t, "class=\"test-class\"", canvas.styleAsSVG(set, false))
+	var bb bytes.Buffer
+	canvas.styleAsSVG(&bb, set, false)
+	assert.Equal(t, "class=\"test-class\"", bb.String())
 }
 
 func TestCanvasCustomInlineStylesheet(t *testing.T) {
