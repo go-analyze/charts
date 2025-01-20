@@ -21,11 +21,10 @@ func SVG(width, height int) Renderer {
 	canvas := newCanvas(buffer)
 	canvas.Start(width, height)
 	return &vectorRenderer{
-		b:   buffer,
-		c:   canvas,
-		s:   &Style{},
-		p:   []string{},
-		dpi: DefaultDPI,
+		b: buffer,
+		c: canvas,
+		s: &Style{},
+		p: []string{},
 	}
 }
 
@@ -39,23 +38,24 @@ func SVGWithCSS(css string, nonce string) func(width, height int) Renderer {
 		canvas.nonce = nonce
 		canvas.Start(width, height)
 		return &vectorRenderer{
-			b:   buffer,
-			c:   canvas,
-			s:   &Style{},
-			p:   []string{},
-			dpi: DefaultDPI,
+			b: buffer,
+			c: canvas,
+			s: &Style{},
+			p: []string{},
 		}
 	}
 }
 
 // vectorRenderer renders chart commands to a bitmap.
 type vectorRenderer struct {
-	dpi float64
-	b   *bytes.Buffer
-	c   *canvas
-	s   *Style
-	p   []string
-	fc  *font.Drawer
+	b        *bytes.Buffer
+	c        *canvas
+	s        *Style
+	p        []string
+	face     font.Face
+	faceFont *truetype.Font
+	faceDPI  float64
+	faceSize float64
 }
 
 func (vr *vectorRenderer) ResetStyle() {
@@ -64,17 +64,15 @@ func (vr *vectorRenderer) ResetStyle() {
 			Font: vr.s.Font,
 		},
 	}
-	vr.fc = nil
 }
 
 // GetDPI returns the dpi.
 func (vr *vectorRenderer) GetDPI() float64 {
-	return vr.dpi
+	return vr.c.dpi
 }
 
 // SetDPI implements the interface method.
 func (vr *vectorRenderer) SetDPI(dpi float64) {
-	vr.dpi = dpi
 	vr.c.dpi = dpi
 }
 
@@ -197,17 +195,22 @@ func (vr *vectorRenderer) Text(body string, x, y int) {
 
 // MeasureText uses the truetype font drawer to measure the width of text.
 func (vr *vectorRenderer) MeasureText(body string) (box Box) {
-	if vr.s.GetFont() != nil {
-		vr.fc = &font.Drawer{
-			Face: truetype.NewFace(vr.s.GetFont(), &truetype.Options{
-				DPI:  vr.dpi,
+	textFont := vr.s.GetFont()
+	if textFont != nil {
+		// Only create a new font face if needed due to overhead in construction
+		if vr.face == nil || vr.faceDPI != vr.c.dpi || vr.faceSize != vr.s.FontSize || vr.faceFont != textFont {
+			vr.face = truetype.NewFace(textFont, &truetype.Options{
+				DPI:  vr.c.dpi,
 				Size: vr.s.FontSize,
-			}),
+			})
+			// Update the stored values to reflect the new settings.
+			vr.faceFont = textFont
+			vr.faceDPI = vr.c.dpi
+			vr.faceSize = vr.s.FontSize
 		}
-		w := vr.fc.MeasureString(body).Ceil()
 
-		box.Right = w
-		box.Bottom = int(drawing.PointsToPixels(vr.dpi, vr.s.FontSize))
+		box.Right = font.MeasureString(vr.face, body).Ceil()
+		box.Bottom = int(drawing.PointsToPixels(vr.c.dpi, vr.s.FontSize))
 		box.IsSet = true
 		if vr.c.textTheta == nil {
 			return
@@ -219,7 +222,11 @@ func (vr *vectorRenderer) MeasureText(body string) (box Box) {
 
 // SetTextRotation sets the text rotation.
 func (vr *vectorRenderer) SetTextRotation(radians float64) {
-	vr.c.textTheta = &radians
+	if radians == 0 {
+		vr.c.textTheta = nil
+	} else {
+		vr.c.textTheta = &radians
+	}
 }
 
 // ClearTextRotation clears the text rotation.
@@ -237,12 +244,14 @@ func (vr *vectorRenderer) Save(w io.Writer) error {
 func newCanvas(w io.Writer) *canvas {
 	return &canvas{
 		w:   w,
+		bb:  bytes.NewBuffer(make([]byte, 0, 200)),
 		dpi: DefaultDPI,
 	}
 }
 
 type canvas struct {
 	w         io.Writer
+	bb        *bytes.Buffer
 	dpi       float64
 	textTheta *float64
 	width     int
@@ -254,7 +263,6 @@ type canvas struct {
 func (c *canvas) Start(width, height int) {
 	c.width = width
 	c.height = height
-	// TODO - error handling on write
 	_, _ = c.w.Write([]byte(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ` + strconv.Itoa(c.width) + ` ` + strconv.Itoa(c.height) + `">`))
 	if c.css != "" {
 		_, _ = c.w.Write([]byte(`<style type="text/css"`))
@@ -271,7 +279,9 @@ func (c *canvas) Path(parts []string, style Style) {
 	if len(parts) == 0 {
 		return
 	}
-	bb := bytes.NewBuffer(make([]byte, 0, 80))
+	bb := c.bb
+	defer c.bb.Reset()
+
 	bb.WriteString(`<path `)
 	c.writeStrokeDashArray(bb, style)
 	bb.WriteString(` d="`)
@@ -282,7 +292,7 @@ func (c *canvas) Path(parts []string, style Style) {
 		bb.WriteString(p)
 	}
 	bb.WriteString(`" `)
-	c.styleAsSVG(bb, style, false)
+	styleAsSVG(bb, style, c.dpi, false)
 	bb.WriteString(`/>`)
 
 	_, _ = c.w.Write(bb.Bytes())
@@ -292,13 +302,15 @@ func (c *canvas) Text(x, y int, body string, style Style) {
 	if body == "" {
 		return
 	}
-	bb := bytes.NewBuffer(make([]byte, 0, 128))
+	bb := c.bb
+	defer c.bb.Reset()
+
 	bb.WriteString(`<text x="`)
 	bb.WriteString(strconv.Itoa(x))
 	bb.WriteString(`" y="`)
 	bb.WriteString(strconv.Itoa(y))
 	bb.WriteString(`" `)
-	c.styleAsSVG(bb, style, true)
+	styleAsSVG(bb, style, c.dpi, true)
 	if c.textTheta != nil {
 		bb.WriteString(fmt.Sprintf(` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y))
 	}
@@ -310,7 +322,9 @@ func (c *canvas) Text(x, y int, body string, style Style) {
 }
 
 func (c *canvas) Circle(x, y, r int, style Style) {
-	bb := bytes.NewBuffer(make([]byte, 0, 80))
+	bb := c.bb
+	defer c.bb.Reset()
+
 	bb.WriteString(`<circle cx="`)
 	bb.WriteString(strconv.Itoa(x))
 	bb.WriteString(`" cy="`)
@@ -318,7 +332,7 @@ func (c *canvas) Circle(x, y, r int, style Style) {
 	bb.WriteString(`" r="`)
 	bb.WriteString(strconv.Itoa(r))
 	bb.WriteString(`" `)
-	c.styleAsSVG(bb, style, true)
+	styleAsSVG(bb, style, c.dpi, true)
 	bb.WriteString(`/>`)
 
 	_, _ = c.w.Write(bb.Bytes())
@@ -342,23 +356,12 @@ func (c *canvas) writeStrokeDashArray(bb *bytes.Buffer, s Style) {
 	}
 }
 
-// GetFontFace returns the font face for the style.
-func (c *canvas) getFontFace(s Style) string {
-	family := "sans-serif"
-	if s.GetFont() != nil {
-		name := s.GetFont().Name(truetype.NameIDFontFamily)
-		if name != "" {
-			family = `'` + name + `',` + family
-		}
-	}
-	return "font-family:" + family
-}
-
 // styleAsSVG returns the style as a svg style or class string.
-func (c *canvas) styleAsSVG(bb *bytes.Buffer, s Style, applyText bool) {
+func styleAsSVG(bb *bytes.Buffer, s Style, dpi float64, applyText bool) {
 	sw := s.StrokeWidth
 	sc := s.StrokeColor
 	fc := s.FillColor
+	f := s.Font
 	fs := s.FontSize
 	fnc := s.FontColor
 
@@ -366,16 +369,13 @@ func (c *canvas) styleAsSVG(bb *bytes.Buffer, s Style, applyText bool) {
 		bb.WriteString("class=\"")
 		bb.WriteString(s.ClassName)
 		if !sc.IsZero() {
-			bb.WriteRune(' ')
-			bb.WriteString("stroke")
+			bb.WriteString(" stroke")
 		}
 		if !fc.IsZero() {
-			bb.WriteRune(' ')
-			bb.WriteString("fill")
+			bb.WriteString(" fill")
 		}
-		if applyText && (fs != 0 || s.Font != nil) {
-			bb.WriteRune(' ')
-			bb.WriteString("text")
+		if applyText && (fs != 0 || f != nil) {
+			bb.WriteString(" text")
 		}
 		bb.WriteString("\"")
 		return
@@ -405,25 +405,29 @@ func (c *canvas) styleAsSVG(bb *bytes.Buffer, s Style, applyText bool) {
 	if applyText {
 		if fs != 0 {
 			bb.WriteString(";font-size:")
-			bb.WriteString(formatFloatMinimized(drawing.PointsToPixels(c.dpi, fs)))
+			bb.WriteString(formatFloatMinimized(drawing.PointsToPixels(dpi, fs)))
 			bb.WriteString("px")
 		}
-		if s.Font != nil {
-			bb.WriteRune(';')
-			bb.WriteString(c.getFontFace(s))
+		if f != nil {
+			if name := f.Name(truetype.NameIDFontFamily); name != "" {
+				bb.WriteString(";font-family:'")
+				bb.WriteString(name)
+				bb.WriteString(`',sans-serif`)
+			} else {
+				bb.WriteString(";font-family:sans-serif")
+			}
 		}
 	}
 
 	bb.WriteRune('"')
 }
 
-// formatFloatNoTrailingZero formats a float without trailing zeros, so it is as small as possible.
+// formatFloatMinimized formats a float without trailing zeros, so it is as small as possible.
 func formatFloatMinimized(val float64) string {
 	if val == float64(int(val)) {
 		return strconv.Itoa(int(val))
 	}
-	str := fmt.Sprintf("%.1f", val)   // e.g. "1.20"
-	str = strings.TrimRight(str, "0") // e.g. "1.2"
-	str = strings.TrimRight(str, ".") // a rounding condition where an int is acceptable
-	return str
+	str := strconv.FormatFloat(val, 'f', 1, 64) // e.g. "1.20"
+	str = strings.TrimRight(str, "0")           // e.g. "1.2"
+	return strings.TrimRight(str, ".")          // finally, handle a rounding condition where an int is acceptable
 }

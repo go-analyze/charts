@@ -344,7 +344,9 @@ func (c Color) String() string {
 
 // StringRGB returns a css RGB string representation of the color.
 func (c Color) StringRGB() string {
-	return fmt.Sprintf("rgb(%v,%v,%v)", c.R, c.G, c.B)
+	return "rgb(" + strconv.Itoa(int(c.R)) + "," +
+		strconv.Itoa(int(c.G)) + "," +
+		strconv.Itoa(int(c.B)) + ")"
 }
 
 // StringRGBA returns a css RGBA string representation of the color.

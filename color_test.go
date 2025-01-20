@@ -49,3 +49,10 @@ func BenchmarkParseColor(b *testing.B) {
 		_ = ParseColor("rgba(50,51,52,250)")
 	}
 }
+
+func BenchmarkColorString(b *testing.B) {
+	c := ParseColor("rgb(31,32,33)")
+	for i := 0; i < b.N; i++ {
+		_ = c.String()
+	}
+}

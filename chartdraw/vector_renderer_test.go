@@ -63,10 +63,8 @@ func TestCanvasStyleSVG(t *testing.T) {
 		Padding: DefaultBackgroundPadding,
 	}
 
-	canvas := &canvas{dpi: DefaultDPI}
-
 	var bb bytes.Buffer
-	canvas.styleAsSVG(&bb, set, false)
+	styleAsSVG(&bb, set, DefaultDPI, false)
 	svgString := bb.String()
 	assert.NotEmpty(t, svgString)
 	assert.True(t, strings.HasPrefix(svgString, "style=\""))
@@ -78,7 +76,7 @@ func TestCanvasStyleSVG(t *testing.T) {
 	assert.True(t, strings.HasSuffix(svgString, "\""))
 
 	bb.Reset()
-	canvas.styleAsSVG(&bb, set, true)
+	styleAsSVG(&bb, set, DefaultDPI, true)
 	svgString = bb.String()
 	assert.True(t, strings.HasPrefix(svgString, "style=\""))
 	assert.Contains(t, svgString, "stroke:white")
@@ -96,10 +94,8 @@ func TestCanvasClassSVG(t *testing.T) {
 		ClassName: "test-class",
 	}
 
-	canvas := &canvas{dpi: DefaultDPI}
-
 	var bb bytes.Buffer
-	canvas.styleAsSVG(&bb, set, false)
+	styleAsSVG(&bb, set, DefaultDPI, false)
 	assert.Equal(t, "class=\"test-class\"", bb.String())
 }
 
@@ -110,6 +106,7 @@ func TestCanvasCustomInlineStylesheet(t *testing.T) {
 
 	canvas := &canvas{
 		w:   &b,
+		bb:  bytes.NewBuffer(make([]byte, 0, 80)),
 		css: ".background { fill: red }",
 	}
 
@@ -125,6 +122,7 @@ func TestCanvasCustomInlineStylesheetWithNonce(t *testing.T) {
 
 	canvas := &canvas{
 		w:     &b,
+		bb:    bytes.NewBuffer(make([]byte, 0, 80)),
 		css:   ".background { fill: red }",
 		nonce: "RAND0MSTRING",
 	}
