@@ -103,7 +103,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	seriesList := opt.seriesList
 	seriesList.init()
 	if !opt.backgroundIsFilled {
-		p.SetBackground(p.Width(), p.Height(), opt.theme.GetBackgroundColor())
+		p.drawBackground(opt.theme.GetBackgroundColor())
 	}
 	if !opt.padding.IsZero() {
 		p = p.Child(PainterPaddingOption(opt.padding))
@@ -338,7 +338,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		p = p.Child(PainterBoxOption(opt.Box))
 	}
 	if !isChild {
-		p.SetBackground(p.Width(), p.Height(), opt.Theme.GetBackgroundColor())
+		p.drawBackground(opt.Theme.GetBackgroundColor())
 	}
 	seriesList := opt.SeriesList
 	seriesList.init()

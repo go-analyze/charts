@@ -539,7 +539,7 @@ func TestMultipleChartsOnPainter(t *testing.T) {
 		Width:        800,
 		Height:       600,
 	})
-	p.SetBackground(800, 600, drawing.ColorWhite)
+	p.FilledRect(0, 0, 800, 600, drawing.ColorWhite, drawing.ColorTransparent, 0.0)
 	// set the space and theme for each chart
 	topCenterPainter := p.Child(PainterBoxOption(chartdraw.NewBox(0, 0, 800, 300)),
 		PainterThemeOption(GetTheme(ThemeVividLight)))

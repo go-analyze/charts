@@ -172,13 +172,7 @@ func (l *legendPainter) Render() (Box, error) {
 	var drawIcon func(top, left int, color Color) int
 	if opt.Icon == IconRect {
 		drawIcon = func(top, left int, color Color) int {
-			p.filledRect(Box{
-				Top:    top - legendHeight + 8,
-				Left:   left,
-				Right:  left + legendWidth,
-				Bottom: top + 1,
-				IsSet:  true,
-			}, color, color, 0)
+			p.FilledRect(left, top-legendHeight+8, left+legendWidth, top+1, color, color, 0)
 			return left + legendWidth
 		}
 	} else {

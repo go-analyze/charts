@@ -4,8 +4,6 @@ import (
 	"errors"
 
 	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type horizontalBarChart struct {
@@ -118,13 +116,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			w := xRange.getHeight(item)
 			fillColor := seriesColor
 			right := w
-			seriesPainter.filledRect(chartdraw.Box{
-				Top:    y,
-				Left:   0,
-				Right:  right,
-				Bottom: y + barHeight,
-				IsSet:  true,
-			}, fillColor, fillColor, 0.0)
+			seriesPainter.FilledRect(0, y, right, y+barHeight, fillColor, fillColor, 0.0)
 			// if the label does not need to be displayed, return
 			if labelPainter == nil {
 				continue

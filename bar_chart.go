@@ -134,13 +134,8 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				}, barWidth, true, false,
 					seriesColor, seriesColor, 0.0)
 			} else {
-				seriesPainter.filledRect(Box{
-					Top:    top,
-					Left:   x,
-					Right:  x + barWidth,
-					Bottom: barMaxHeight - 1,
-					IsSet:  true,
-				}, seriesColor, seriesColor, 0.0)
+				seriesPainter.FilledRect(x, top, x+barWidth, barMaxHeight-1,
+					seriesColor, seriesColor, 0.0)
 			}
 			// generate marker point by hand
 			points[j] = Point{

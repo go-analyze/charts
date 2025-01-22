@@ -303,7 +303,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 	}
 	opt := t.opt
 	if !opt.BackgroundColor.IsZero() {
-		p.SetBackground(p.Width(), p.Height(), opt.BackgroundColor)
+		p.drawBackground(opt.BackgroundColor)
 	}
 
 	if opt.HeaderBackgroundColor.IsZero() {
@@ -313,7 +313,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			opt.HeaderBackgroundColor = tableLightThemeSetting.headerColor
 		}
 	}
-	p.SetBackground(info.width, info.headerHeight, opt.HeaderBackgroundColor)
+	p.FilledRect(0, 0, info.width, info.headerHeight, opt.HeaderBackgroundColor, drawing.ColorTransparent, 0.0)
 
 	if opt.RowBackgroundColors == nil {
 		if opt.Theme.IsDark() {
@@ -330,7 +330,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			Top:   currentHeight,
 			IsSet: true,
 		}))
-		child.SetBackground(p.Width(), h, color)
+		child.FilledRect(0, 0, p.Width(), h, color, color, 0.0)
 		currentHeight += h
 	}
 	// adjust the background color according to the set table style
@@ -355,7 +355,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 					}))
 					w := info.columnWidths[j] - padding.Left - padding.Top
 					h := heights[i] - padding.Top - padding.Bottom
-					child.SetBackground(w, h, tc.FillColor)
+					child.FilledRect(0, 0, w, h, tc.FillColor, tc.FillColor, 0.0)
 				}
 				left += info.columnWidths[j]
 			}
@@ -376,7 +376,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 func (t *tableChart) Render() (Box, error) {
 	p := t.p
 	if !t.opt.BackgroundColor.IsZero() {
-		p.SetBackground(p.Width(), p.Height(), t.opt.BackgroundColor)
+		p.drawBackground(t.opt.BackgroundColor)
 	}
 
 	r := p.render

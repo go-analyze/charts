@@ -211,9 +211,13 @@ func (p *Painter) fill(fillColor Color) {
 func (p *Painter) fillStroke(fillColor, strokeColor Color, strokeWidth float64) {
 	defer p.render.ResetStyle()
 	p.render.SetFillColor(fillColor)
-	p.render.SetStrokeColor(strokeColor)
-	p.render.SetStrokeWidth(strokeWidth)
-	p.render.FillStroke()
+	if strokeWidth > 0 && !strokeColor.IsTransparent() {
+		p.render.SetStrokeColor(strokeColor)
+		p.render.SetStrokeWidth(strokeWidth)
+		p.render.FillStroke()
+	} else {
+		p.render.Fill()
+	}
 }
 
 // Width returns the drawable width of the painter's box.
@@ -375,14 +379,24 @@ func (p *Painter) drawSmoothCurve(points []Point, tension float64, dotForSingleP
 	p.quadCurveTo(points[n-2].X, points[n-2].Y, points[n-1].X, points[n-1].Y)
 }
 
-// SetBackground fills the entire painter area with the given color.
+// Deprecated: SetBackground is Deprecated, use FilledRect with zero for the stroke width.
 func (p *Painter) SetBackground(width, height int, color Color) {
-	p.moveTo(0, 0)
-	p.lineTo(width, 0)
-	p.lineTo(width, height)
-	p.lineTo(0, height)
-	p.lineTo(0, 0)
-	p.fill(color)
+	p.FilledRect(0, 0, width, height, color, color, 0.0)
+}
+
+// drawBackground fills the entire painter area with the given color.
+func (p *Painter) drawBackground(color Color) {
+	p.FilledRect(0, 0, p.Width(), p.Height(), color, color, 0.0)
+}
+
+// FilledRect will draw a filled box with the given coordinates.
+func (p *Painter) FilledRect(x1, y1, x2, y2 int, fillColor, strokeColor Color, strokeWidth float64) {
+	p.moveTo(x1, y1)
+	p.lineTo(x2, y1)
+	p.lineTo(x2, y2)
+	p.lineTo(x1, y2)
+	p.lineTo(x1, y1)
+	p.fillStroke(fillColor, strokeColor, strokeWidth)
 }
 
 // MarkLine draws a horizontal line with a small circle and arrow at the right.
@@ -868,16 +882,6 @@ func (p *Painter) Dots(points []Point, fillColor, strokeColor Color, strokeWidth
 		p.render.Circle(dotRadius, item.X+p.box.Left, item.Y+p.box.Top)
 	}
 	p.render.FillStroke()
-}
-
-// filledRect will draw a filled box with the given coordinates.
-func (p *Painter) filledRect(box Box, fillColor, strokeColor Color, strokeWidth float64) {
-	p.moveTo(box.Left, box.Top)
-	p.lineTo(box.Right, box.Top)
-	p.lineTo(box.Right, box.Bottom)
-	p.lineTo(box.Left, box.Bottom)
-	p.lineTo(box.Left, box.Top)
-	p.fillStroke(fillColor, strokeColor, strokeWidth)
 }
 
 // roundedRect is similar to filledRect except the top and bottom will be rounded.
