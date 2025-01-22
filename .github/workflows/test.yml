@@ -7,12 +7,37 @@ on:
     branches: [ main ]
 
 jobs:
+  lint-and-tidy:
+    name: Verify Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-  build:
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Set up golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest
+
+      - name: Run lint check
+        run: make lint
+
+      - name: Run tidy check
+        run: |
+          go mod tidy
+          # Fail if go.mod or go.sum changed
+          git diff --exit-code go.mod go.sum
+
+  test:
+    name: Verify Unit Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
         go:
+        - '1.23'
         - '1.22'
         - '1.21'
         - '1.20'
@@ -20,19 +45,13 @@ jobs:
         - '1.18'
         - '1.17'
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Go ${{ matrix.go }}
-      uses: actions/setup-go@v5
-      with:
-        go-version: ${{ matrix.go }}
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
 
-    - name: Get build dependencies
-      run:
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest
+      - name: Run unit tests
+        run: make test
 
-    - name: Test
-      run: make test
-
-    - name: Lint
-      run: make lint
