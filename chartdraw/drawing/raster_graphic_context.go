@@ -44,28 +44,29 @@ type RasterGraphicContext struct {
 	fillRasterizer   *raster.Rasterizer
 	strokeRasterizer *raster.Rasterizer
 	glyphBuf         *truetype.GlyphBuf
-	DPI              float64
+	dpi              float64
 }
 
 // SetDPI sets the screen resolution in dots per inch.
 func (rgc *RasterGraphicContext) SetDPI(dpi float64) {
-	rgc.DPI = dpi
+	rgc.dpi = dpi
 	rgc.recalc()
 }
 
 // GetDPI returns the resolution of the Image GraphicContext
 func (rgc *RasterGraphicContext) GetDPI() float64 {
-	return rgc.DPI
+	return rgc.dpi
 }
 
 // Clear fills the current canvas with a default transparent color
 func (rgc *RasterGraphicContext) Clear() {
 	width, height := rgc.img.Bounds().Dx(), rgc.img.Bounds().Dy()
-	rgc.ClearRect(0, 0, width, height)
+	rgc.current.FillColor = color.Transparent
+	rgc.FillRect(0, 0, width, height)
 }
 
-// ClearRect fills the current canvas with a default transparent color at the specified rectangle
-func (rgc *RasterGraphicContext) ClearRect(x1, y1, x2, y2 int) {
+// FillRect draws a filled rectangle with the provided coordinates and the current set FillColor.
+func (rgc *RasterGraphicContext) FillRect(x1, y1, x2, y2 int) {
 	imageColor := image.NewUniform(rgc.current.FillColor)
 	draw.Draw(rgc.img, image.Rect(x1, y1, x2, y2), imageColor, image.Point{}, draw.Over)
 }
@@ -189,7 +190,7 @@ func (rgc *RasterGraphicContext) GetStringBounds(s string) (left, top, right, bo
 // recalc recalculates scale and bounds values from the font size, screen
 // resolution and font metrics, and invalidates the glyph cache.
 func (rgc *RasterGraphicContext) recalc() {
-	rgc.current.Scale = rgc.current.FontSizePoints * rgc.DPI
+	rgc.current.Scale = rgc.current.FontSizePoints * rgc.dpi
 }
 
 // SetFont sets the font used to draw text.
@@ -217,7 +218,12 @@ func (rgc *RasterGraphicContext) paint(rasterizer *raster.Rasterizer, color colo
 
 // Stroke strokes the paths with the color specified by SetStrokeColor
 func (rgc *RasterGraphicContext) Stroke(paths ...*Path) {
+	if rgc.current.LineWidth == 0 {
+		rgc.current.Path.Clear()
+		return
+	}
 	paths = append(paths, rgc.current.Path)
+
 	rgc.strokeRasterizer.UseNonZeroWinding = true
 
 	stroker := NewLineStroker(rgc.current.Cap, rgc.current.Join, Transformer{Tr: rgc.current.Tr, Flattener: FtLineBuilder{Adder: rgc.strokeRasterizer}})
@@ -236,9 +242,60 @@ func (rgc *RasterGraphicContext) Stroke(paths ...*Path) {
 	rgc.paint(rgc.strokeRasterizer, rgc.current.StrokeColor)
 }
 
+func isRectanglePath(path *Path) bool {
+	if len(path.Components) != 5 {
+		return false
+	} else if path.Components[0] != MoveToComponent {
+		return false
+	}
+	for i := 1; i < 3; i++ {
+		if path.Components[i] != LineToComponent {
+			return false
+		}
+	}
+	x1, y1 := path.Points[0], path.Points[1]
+	x2, y2 := path.Points[2], path.Points[3]
+	x3, y3 := path.Points[4], path.Points[5]
+	var x4, y4 float64
+	if path.Components[4] == LineToComponent {
+		x4, y4 = path.Points[6], path.Points[7]
+	} else if path.Components[4] == CloseComponent {
+		x4 = x1
+		y4 = y1
+	} else {
+		return false
+	}
+
+	// Check if opposite sides are equal
+	return (x1 == x4 && x2 == x3 && y1 == y2 && y3 == y4) || (x1 == x2 && x3 == x4 && y1 == y4 && y2 == y3)
+}
+
+func getRectangleBounds(path *Path) (int, int, int, int) {
+	x1, y1 := path.Points[0], path.Points[1]
+	x2, y2 := path.Points[4], path.Points[5]
+	if x2 < x1 {
+		x1, x2 = x2, x1
+	}
+	if y2 < y1 {
+		y1, y2 = y2, y1
+	}
+	return int(math.Floor(x1)), int(math.Floor(y1)), int(math.Ceil(x2)), int(math.Ceil(y2))
+}
+
 // Fill fills the paths with the color specified by SetFillColor
 func (rgc *RasterGraphicContext) Fill(paths ...*Path) {
 	paths = append(paths, rgc.current.Path)
+	pathCount := len(paths)
+	if pathCount == 0 {
+		return
+	} else if pathCount == 1 && isRectanglePath(paths[0]) {
+		// we can draw rectangles of a uniform color using a more efficient method
+		x1, y1, x2, y2 := getRectangleBounds(paths[0])
+		rgc.FillRect(x1, y1, x2, y2)
+		rgc.current.Path.Clear() // draw complete
+		return
+	}
+
 	rgc.fillRasterizer.UseNonZeroWinding = rgc.current.FillRule == FillRuleWinding
 
 	flattener := Transformer{Tr: rgc.current.Tr, Flattener: FtLineBuilder{Adder: rgc.fillRasterizer}}
@@ -252,6 +309,17 @@ func (rgc *RasterGraphicContext) Fill(paths ...*Path) {
 // FillStroke first fills the paths and then strokes them
 func (rgc *RasterGraphicContext) FillStroke(paths ...*Path) {
 	paths = append(paths, rgc.current.Path)
+	pathCount := len(paths)
+	if pathCount == 0 {
+		return
+	} else if pathCount == 1 && isRectanglePath(paths[0]) {
+		// we can draw rectangles of a uniform color using a more efficient method, then stroke the line after
+		x1, y1, x2, y2 := getRectangleBounds(paths[0])
+		rgc.FillRect(x1, y1, x2, y2)
+		rgc.Stroke() // draw path for stroke
+		return
+	}
+
 	rgc.fillRasterizer.UseNonZeroWinding = rgc.current.FillRule == FillRuleWinding
 	rgc.strokeRasterizer.UseNonZeroWinding = true
 

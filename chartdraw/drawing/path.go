@@ -39,7 +39,7 @@ const (
 	CubicCurveToComponent
 	// ArcToComponent is a ArcTo component in a Path
 	ArcToComponent
-	// CloseComponent is a ArcTo component in a Path
+	// CloseComponent is a LineTo component in a Path
 	CloseComponent
 )
 
