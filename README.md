@@ -58,30 +58,25 @@ import (
 func main() {
 	// values specified where the first index is for each data series or source, and the second index is for each sample.
 	values := [][]float64{
-		{
-			120,
-			132,
-			101,
-			134,
-			90,
-			230,
-			210,
+		{	// Email
+			120, // Mon
+			132, // Tue
+			101, // Wed
+			134, // Thu
+			90,  // Fri
+			230, // Sat
+			210, // Sun
 		},
 		{
-			// specify values for additional data series
+			// values for 'Search Engine' go here
 		},
 	}
 	p, err := charts.LineRender(
 		values,
 		charts.TitleTextOptionFunc("Line Chart Demo"),
 		charts.XAxisDataOptionFunc([]string{
-			"Mon",	// notice the 7 labels here match to the 7 samples above
-			"Tue",
-			"Wed",
-			"Thu",
-			"Fri",
-			"Sat",
-			"Sun",
+			// The 7 labels here match to the 7 values above
+			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendLabelsOptionFunc([]string{
 			"Email",
@@ -102,57 +97,26 @@ import (
 func main() {
 	// values specified where the first index is for each data series or source, and the second index is for each sample.
 	values := [][]float64{
-		{
-			2.0,
-			4.9,
-			7.0,
-			23.2,
-			25.6,
-			76.7,
-			135.6,
-			162.2,
-			32.6,
-			20.0,
-			6.4,
-			3.3,
+		{   // Rainfall data
+			2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
 		},
 		{
-			// snip...	
+			// 'Evaporation' data goes here
 		},
 	}
 	p, err := charts.BarRender(
 		values,
 		charts.XAxisDataOptionFunc([]string{
-			"Jan",
-			"Feb",
-			"Mar",
-			"Apr",
-			"May",
-			"Jun",
-			"Jul",
-			"Aug",
-			"Sep",
-			"Oct",
-			"Nov",
-			"Dec",
+			// A label for each position in the values above
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
 		charts.LegendLabelsOptionFunc([]string{
 			"Rainfall",
 			"Evaporation",
 		}),
+		// Example of adding a mark line across the bars, or mark points for specific values
 		charts.MarkLineOptionFunc(0, charts.SeriesMarkDataTypeAverage),
-		charts.MarkPointOptionFunc(0, charts.SeriesMarkDataTypeMax,
-			charts.SeriesMarkDataTypeMin),
-		// custom option func
-		func(opt *charts.ChartOption) {
-			opt.SeriesList[1].MarkPoint = charts.NewMarkPoint(
-				charts.SeriesMarkDataTypeMax,
-				charts.SeriesMarkDataTypeMin,
-			)
-			opt.SeriesList[1].MarkLine = charts.NewMarkLine(
-				charts.SeriesMarkDataTypeAverage,
-			)
-		},
+		charts.MarkPointOptionFunc(0, charts.SeriesMarkDataTypeMax, charts.SeriesMarkDataTypeMin),
 		// other options as desired...
 ```
 
@@ -167,38 +131,27 @@ import (
 
 func main() {
 	values := [][]float64{
-		{
-			18203,
-			23489,
-			29034,
-			104970,
-			131744,
-			630230,
+		{	// 2011 data
+			18203,  // Brazil
+			23489,  // Indonesia
+			29034,  // USA
+			104970, // India
+			131744, // China
+			630230, // World
 		},
 		{
-			// snip...	
+			// 2012 data goes here
 		},
 	}
 	p, err := charts.HorizontalBarRender(
 		values,
 		charts.TitleTextOptionFunc("World Population"),
-		charts.PaddingOptionFunc(charts.Box{
-			Top:    20,
-			Right:  40,
-			Bottom: 20,
-			Left:   20,
+		charts.YAxisDataOptionFunc([]string{
+			"Brazil", "Indonesia", "USA", "India", "China", "World",
 		}),
 		charts.LegendLabelsOptionFunc([]string{
 			"2011",
 			"2012",
-		}),
-		charts.YAxisDataOptionFunc([]string{
-			"Brazil",
-			"Indonesia",
-			"USA",
-			"India",
-			"China",
-			"World",
 		}),
 		// other options as desired...
 ```
@@ -214,11 +167,11 @@ import (
 
 func main() {
 	values := []float64{
-		1048,
-		735,
-		580,
-		484,
-		300,
+		1048, // Search Engine
+		735,  // Direct
+		580,  // Email
+		484,  // Union Ads
+		300,  // Video Ads
 	}
 	p, err := charts.PieRender(
 		values,
@@ -251,12 +204,7 @@ import (
 func main() {
 	values := [][]float64{
 		{
-			4200,
-			3000,
-			20000,
-			35000,
-			50000,
-			18000,
+			4200, 3000, 20000, 35000, 50000, 18000,
 		},
 		{
 			// snip...
@@ -277,12 +225,7 @@ func main() {
 			"Development",
 			"Marketing",
 		}, []float64{
-			6500,
-			16000,
-			30000,
-			38000,
-			52000,
-			25000,
+			6500, 16000, 30000, 38000, 52000, 25000,
 		}),
 		// other options as desired...
 ```
@@ -351,11 +294,11 @@ import (
 
 func main() {
 	values := []float64{
-		100,
-		80,
-		60,
-		40,
-		20,
+		100, // Show
+		80,  // Click
+		60,  // Visit
+		40,  // Inquiry
+		20,  // Order
 	}
 	p, err := charts.FunnelRender(
 		values,
