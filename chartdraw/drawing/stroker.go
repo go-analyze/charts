@@ -46,7 +46,7 @@ func (l *LineStroker) line(x1, y1, x2, y2 float64) {
 
 // Close implements the path builder interface.
 func (l *LineStroker) Close() {
-	if len(l.vertices) > 1 {
+	if len(l.vertices) > 1 && (l.vertices[0] != l.rewind[0] || l.vertices[1] != l.rewind[1]) {
 		l.appendVertex(l.vertices[0], l.vertices[1], l.rewind[0], l.rewind[1])
 	}
 }
