@@ -20,5 +20,6 @@ func f64s(v float64) string {
 }
 
 func roundToEpsilon(value, epsilon float64) float64 {
+	// TODO - epsilon is not used here, this does not appear to be as the function describes
 	return math.Nextafter(value, value)
 }
