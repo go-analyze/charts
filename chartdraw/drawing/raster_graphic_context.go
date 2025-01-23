@@ -226,7 +226,7 @@ func (rgc *RasterGraphicContext) Stroke(paths ...*Path) {
 
 	rgc.strokeRasterizer.UseNonZeroWinding = true
 
-	stroker := NewLineStroker(rgc.current.Cap, Transformer{Tr: rgc.current.Tr, Flattener: FtLineBuilder{Adder: rgc.strokeRasterizer}})
+	stroker := NewLineStroker(Transformer{Tr: rgc.current.Tr, Flattener: FtLineBuilder{Adder: rgc.strokeRasterizer}})
 	stroker.HalfLineWidth = rgc.current.LineWidth / 2
 
 	var liner Flattener
@@ -325,7 +325,7 @@ func (rgc *RasterGraphicContext) FillStroke(paths ...*Path) {
 
 	flattener := Transformer{Tr: rgc.current.Tr, Flattener: FtLineBuilder{Adder: rgc.fillRasterizer}}
 
-	stroker := NewLineStroker(rgc.current.Cap, Transformer{Tr: rgc.current.Tr, Flattener: FtLineBuilder{Adder: rgc.strokeRasterizer}})
+	stroker := NewLineStroker(Transformer{Tr: rgc.current.Tr, Flattener: FtLineBuilder{Adder: rgc.strokeRasterizer}})
 	stroker.HalfLineWidth = rgc.current.LineWidth / 2
 
 	var liner Flattener

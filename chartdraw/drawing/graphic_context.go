@@ -33,8 +33,6 @@ type GraphicContext interface {
 	SetFillRule(f FillRule)
 	// SetLineWidth sets the current line width
 	SetLineWidth(lineWidth float64)
-	// SetLineCap sets the current line cap
-	SetLineCap(cap LineCap)
 	// SetLineDash sets the current dash
 	SetLineDash(dash []float64, dashOffset float64)
 	// SetFontSize sets the current font size

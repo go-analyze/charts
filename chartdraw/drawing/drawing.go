@@ -25,18 +25,6 @@ const (
 	FillRuleWinding
 )
 
-// LineCap is the style of line extremities
-type LineCap int
-
-const (
-	// RoundCap defines a rounded shape at the end of the line
-	RoundCap LineCap = iota
-	// ButtCap defines a squared shape exactly at the end of the line
-	ButtCap
-	// SquareCap defines a squared shape at the end of the line
-	SquareCap
-)
-
 // StrokeStyle keeps stroke style attributes
 // that is used by the Stroke method of a Drawer
 type StrokeStyle struct {
@@ -44,8 +32,6 @@ type StrokeStyle struct {
 	Color color.Color
 	// Line width
 	Width float64
-	// Line cap style rounded, butt or square
-	LineCap LineCap
 	// offset of the first dash
 	DashOffset float64
 	// array represented dash length pair values are plain dash and impair are space between dash

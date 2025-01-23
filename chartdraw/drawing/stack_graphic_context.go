@@ -22,7 +22,6 @@ type ContextStack struct {
 	StrokeColor color.Color
 	FillColor   color.Color
 	FillRule    FillRule
-	Cap         LineCap
 
 	FontSizePoints float64
 	Font           *truetype.Font
@@ -41,7 +40,6 @@ func NewStackGraphicContext() *StackGraphicContext {
 	gc.current.LineWidth = 1.0
 	gc.current.StrokeColor = image.Black
 	gc.current.FillColor = image.White
-	gc.current.Cap = RoundCap
 	gc.current.FillRule = FillRuleEvenOdd
 	gc.current.FontSizePoints = 10
 	return gc
@@ -95,11 +93,6 @@ func (gc *StackGraphicContext) SetFillRule(f FillRule) {
 // SetLineWidth sets the line width.
 func (gc *StackGraphicContext) SetLineWidth(lineWidth float64) {
 	gc.current.LineWidth = lineWidth
-}
-
-// SetLineCap sets the line cap.
-func (gc *StackGraphicContext) SetLineCap(cap LineCap) {
-	gc.current.Cap = cap
 }
 
 // SetLineDash sets the line dash.
@@ -184,7 +177,6 @@ func (gc *StackGraphicContext) Save() {
 	context.FillRule = gc.current.FillRule
 	context.Dash = gc.current.Dash
 	context.DashOffset = gc.current.DashOffset
-	context.Cap = gc.current.Cap
 	context.Path = gc.current.Path.Copy()
 	context.Font = gc.current.Font
 	context.Scale = gc.current.Scale

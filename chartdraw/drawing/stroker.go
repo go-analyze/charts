@@ -4,11 +4,10 @@
 package drawing
 
 // NewLineStroker creates a new line stroker.
-func NewLineStroker(c LineCap, flattener Flattener) *LineStroker {
+func NewLineStroker(flattener Flattener) *LineStroker {
 	l := new(LineStroker)
 	l.Flattener = flattener
 	l.HalfLineWidth = 0.5
-	l.Cap = c
 	return l
 }
 
@@ -16,7 +15,6 @@ func NewLineStroker(c LineCap, flattener Flattener) *LineStroker {
 type LineStroker struct {
 	Flattener     Flattener
 	HalfLineWidth float64
-	Cap           LineCap
 	vertices      []float64
 	rewind        []float64
 	x, y, nx, ny  float64
