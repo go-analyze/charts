@@ -136,7 +136,7 @@ func main() {
 }
 
 func populateData() (values [][]float64, xAxisLabels []string, labels []string, err error) {
-	for k, _ := range lensDefinitions {
+	for k := range lensDefinitions {
 		labels = append(labels, k)
 	}
 	sort.Slice(labels, func(i, j int) bool {

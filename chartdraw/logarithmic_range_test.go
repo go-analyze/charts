@@ -28,7 +28,7 @@ func TestGetTicks(t *testing.T) {
 	r := LogarithmicRange{Domain: 1000}
 	r.Min, r.Max = MinMax(values...)
 
-	ticks := r.GetTicks(nil, Style{}, FloatValueFormatter)
+	ticks := r.GetTicks(FloatValueFormatter)
 	require.Len(t, ticks, 7)
 	assert.InDelta(t, float64(10), ticks[0].Value, 0)
 	assert.InDelta(t, float64(100), ticks[1].Value, 0)
@@ -42,7 +42,7 @@ func TestGetTicksFromHigh(t *testing.T) {
 	r := LogarithmicRange{}
 	r.Min, r.Max = MinMax(values...)
 
-	ticks := r.GetTicks(nil, Style{}, FloatValueFormatter)
+	ticks := r.GetTicks(FloatValueFormatter)
 	require.Len(t, ticks, 5)
 	assert.InDelta(t, float64(1000), ticks[0].Value, 0)
 	assert.InDelta(t, float64(10000), ticks[1].Value, 0)

@@ -68,7 +68,7 @@ func (xa XAxis) GetTicks(r Renderer, ra Range, defaults Style, vf ValueFormatter
 		return xa.Ticks
 	}
 	if tp, isTickProvider := ra.(TicksProvider); isTickProvider {
-		return tp.GetTicks(r, defaults, vf)
+		return tp.GetTicks(vf)
 	}
 	tickStyle := xa.Style.InheritFrom(defaults)
 	return GenerateContinuousTicks(r, ra, false, tickStyle, vf)

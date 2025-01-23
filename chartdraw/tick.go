@@ -8,7 +8,7 @@ import (
 
 // TicksProvider is a type that provides ticks.
 type TicksProvider interface {
-	GetTicks(r Renderer, defaults Style, vf ValueFormatter) []Tick
+	GetTicks(vf ValueFormatter) []Tick
 }
 
 // Tick represents a label on an axis.

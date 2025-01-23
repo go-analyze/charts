@@ -108,7 +108,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 	}
 
 	if c.hasAnnotationSeries() {
-		canvasBox = c.getAnnotationAdjustedCanvasBox(r, canvasBox, xr, yr, yra, xf, yf, yfa)
+		canvasBox = c.getAnnotationAdjustedCanvasBox(r, canvasBox, xr, yr, yra)
 		xr, yr, yra = c.setRangeDomains(canvasBox, xr, yr, yra)
 		xt, yt, yta = c.getAxesTicks(r, xr, yr, yra, xf, yf, yfa)
 	}
@@ -403,7 +403,7 @@ func (c Chart) hasSecondarySeries() bool {
 	return false
 }
 
-func (c Chart) getAnnotationAdjustedCanvasBox(r Renderer, canvasBox Box, xr, yr, yra Range, xf, yf, yfa ValueFormatter) Box {
+func (c Chart) getAnnotationAdjustedCanvasBox(r Renderer, canvasBox Box, xr, yr, yra Range) Box {
 	annotationSeriesBox := canvasBox.Clone()
 	for seriesIndex, s := range c.Series {
 		if as, isAnnotationSeries := s.(AnnotationSeries); isAnnotationSeries {

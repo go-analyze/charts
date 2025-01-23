@@ -73,7 +73,7 @@ func (ya YAxis) GetTicks(r Renderer, ra Range, defaults Style, vf ValueFormatter
 		return ya.Ticks
 	}
 	if tp, isTickProvider := ra.(TicksProvider); isTickProvider {
-		return tp.GetTicks(r, defaults, vf)
+		return tp.GetTicks(vf)
 	}
 	tickStyle := ya.Style.InheritFrom(defaults)
 	return GenerateContinuousTicks(r, ra, true, tickStyle, vf)
