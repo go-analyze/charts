@@ -336,7 +336,6 @@ func (t *themeColorPalette) WithAxisColor(c Color) ColorPalette {
 	copy := *t
 	copy.name += "-axis_mod"
 	copy.axisStrokeColor = c
-	copy.axisSplitLineColor = c
 	copy.textColor = c
 	return &copy
 }

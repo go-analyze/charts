@@ -174,13 +174,12 @@ func TestWithAxisColor(t *testing.T) {
 
 	blackCP := whiteCP.WithAxisColor(drawing.ColorBlack)
 
-	assert.Equal(t, drawing.ColorWhite, whiteCP.axisSplitLineColor)
 	assert.Equal(t, drawing.ColorWhite, whiteCP.axisStrokeColor)
 	assert.Equal(t, drawing.ColorWhite, whiteCP.backgroundColor)
 	assert.Equal(t, drawing.ColorWhite, whiteCP.textColor)
 	assert.Equal(t, drawing.ColorWhite, whiteCP.seriesColors[0])
 
-	assert.Equal(t, drawing.ColorBlack, blackCP.GetAxisSplitLineColor())
+	assert.NotEqual(t, drawing.ColorBlack, blackCP.GetAxisSplitLineColor())
 	assert.Equal(t, drawing.ColorBlack, blackCP.GetAxisStrokeColor())
 	assert.Equal(t, drawing.ColorBlack, blackCP.GetTextColor())
 	assert.Equal(t, drawing.ColorWhite, blackCP.GetBackgroundColor())
