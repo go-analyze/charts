@@ -6,7 +6,7 @@ import (
 
 var (
 	// ColorWhite is white.
-	ColorWhite = drawing.Color{R: 255, G: 255, B: 255, A: 255}
+	ColorWhite = drawing.ColorWhite
 	// ColorBlue is the basic theme blue color.
 	ColorBlue = drawing.Color{R: 0, G: 116, B: 217, A: 255}
 	// ColorCyan is the basic theme cyan color.
@@ -58,16 +58,8 @@ var (
 	// DefaultAxisColor is the default chart axis line color.
 	// It is equivalent to #333333.
 	DefaultAxisColor = ColorBlack
-	// DefaultStrokeColor is the default chart border color.
-	// It is equivalent to #efefef.
-	DefaultStrokeColor = ColorLightGray
-	// DefaultFillColor is the default fill color.
-	// It is equivalent to #0074d9.
-	DefaultFillColor = ColorBlue
 	// DefaultAnnotationFillColor is the default annotation background color.
 	DefaultAnnotationFillColor = ColorWhite
-	// DefaultGridLineColor is the default grid line color.
-	DefaultGridLineColor = ColorLightGray
 )
 
 var (
