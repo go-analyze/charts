@@ -37,18 +37,6 @@ const (
 	SquareCap
 )
 
-// LineJoin is the style of segments joint
-type LineJoin int
-
-const (
-	// BevelJoin represents cut segments joint
-	BevelJoin LineJoin = iota
-	// RoundJoin represents rounded segments joint
-	RoundJoin
-	// MiterJoin represents peaker segments joint
-	MiterJoin
-)
-
 // StrokeStyle keeps stroke style attributes
 // that is used by the Stroke method of a Drawer
 type StrokeStyle struct {
@@ -58,8 +46,6 @@ type StrokeStyle struct {
 	Width float64
 	// Line cap style rounded, butt or square
 	LineCap LineCap
-	// Line join style bevel, round or miter
-	LineJoin LineJoin
 	// offset of the first dash
 	DashOffset float64
 	// array represented dash length pair values are plain dash and impair are space between dash

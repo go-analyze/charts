@@ -12,8 +12,6 @@ type Flattener interface {
 	MoveTo(x, y float64)
 	// LineTo Draw a line from the current position to the point (x, y)
 	LineTo(x, y float64)
-	// LineJoin add the most recent starting point to close the path to create a polygon
-	LineJoin()
 	// Close add the most recent starting point to close the path to create a polygon
 	Close()
 	// End mark the current line as finished so we can draw caps
@@ -40,7 +38,6 @@ func Flatten(path *Path, flattener Flattener, scale float64) {
 		case LineToComponent:
 			x, y = path.Points[i], path.Points[i+1]
 			flattener.LineTo(x, y)
-			flattener.LineJoin()
 			i += 2
 		case QuadCurveToComponent:
 			// we include the previous point for the start of the curve
@@ -79,11 +76,6 @@ func (p *SegmentedPath) MoveTo(x, y float64) {
 // LineTo implements the path interface.
 func (p *SegmentedPath) LineTo(x, y float64) {
 	p.Points = append(p.Points, x, y)
-}
-
-// LineJoin implements the path interface.
-func (p *SegmentedPath) LineJoin() {
-	// TODO need to mark the current point as linejoin
 }
 
 // Close implements the path interface.

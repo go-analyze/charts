@@ -23,7 +23,6 @@ type ContextStack struct {
 	FillColor   color.Color
 	FillRule    FillRule
 	Cap         LineCap
-	Join        LineJoin
 
 	FontSizePoints float64
 	Font           *truetype.Font
@@ -44,7 +43,6 @@ func NewStackGraphicContext() *StackGraphicContext {
 	gc.current.FillColor = image.White
 	gc.current.Cap = RoundCap
 	gc.current.FillRule = FillRuleEvenOdd
-	gc.current.Join = RoundJoin
 	gc.current.FontSizePoints = 10
 	return gc
 }
@@ -102,11 +100,6 @@ func (gc *StackGraphicContext) SetLineWidth(lineWidth float64) {
 // SetLineCap sets the line cap.
 func (gc *StackGraphicContext) SetLineCap(cap LineCap) {
 	gc.current.Cap = cap
-}
-
-// SetLineJoin sets the line join.
-func (gc *StackGraphicContext) SetLineJoin(join LineJoin) {
-	gc.current.Join = join
 }
 
 // SetLineDash sets the line dash.
@@ -192,7 +185,6 @@ func (gc *StackGraphicContext) Save() {
 	context.Dash = gc.current.Dash
 	context.DashOffset = gc.current.DashOffset
 	context.Cap = gc.current.Cap
-	context.Join = gc.current.Join
 	context.Path = gc.current.Path.Copy()
 	context.Font = gc.current.Font
 	context.Scale = gc.current.Scale

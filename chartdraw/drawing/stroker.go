@@ -4,12 +4,11 @@
 package drawing
 
 // NewLineStroker creates a new line stroker.
-func NewLineStroker(c LineCap, j LineJoin, flattener Flattener) *LineStroker {
+func NewLineStroker(c LineCap, flattener Flattener) *LineStroker {
 	l := new(LineStroker)
 	l.Flattener = flattener
 	l.HalfLineWidth = 0.5
 	l.Cap = c
-	l.Join = j
 	return l
 }
 
@@ -18,7 +17,6 @@ type LineStroker struct {
 	Flattener     Flattener
 	HalfLineWidth float64
 	Cap           LineCap
-	Join          LineJoin
 	vertices      []float64
 	rewind        []float64
 	x, y, nx, ny  float64
@@ -33,9 +31,6 @@ func (l *LineStroker) MoveTo(x, y float64) {
 func (l *LineStroker) LineTo(x, y float64) {
 	l.line(l.x, l.y, x, y)
 }
-
-// LineJoin implements the path builder interface.
-func (l *LineStroker) LineJoin() {}
 
 func (l *LineStroker) line(x1, y1, x2, y2 float64) {
 	dx := x2 - x1

@@ -20,9 +20,6 @@ func (liner FtLineBuilder) LineTo(x, y float64) {
 	liner.Adder.Add1(fixed.Point26_6{X: fixed.Int26_6(x * 64), Y: fixed.Int26_6(y * 64)})
 }
 
-// LineJoin implements the path builder interface.
-func (liner FtLineBuilder) LineJoin() {}
-
 // Close implements the path builder interface.
 func (liner FtLineBuilder) Close() {}
 

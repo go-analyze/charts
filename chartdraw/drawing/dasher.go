@@ -32,11 +32,6 @@ func (dasher *DashVertexConverter) MoveTo(x, y float64) {
 	dasher.currentDash = 0
 }
 
-// LineJoin implements the pathbuilder interface.
-func (dasher *DashVertexConverter) LineJoin() {
-	dasher.next.LineJoin()
-}
-
 // Close implements the pathbuilder interface.
 func (dasher *DashVertexConverter) Close() {
 	dasher.next.Close()

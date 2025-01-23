@@ -19,13 +19,6 @@ func (dc DemuxFlattener) LineTo(x, y float64) {
 	}
 }
 
-// LineJoin implements the path builder interface.
-func (dc DemuxFlattener) LineJoin() {
-	for _, flattener := range dc.Flatteners {
-		flattener.LineJoin()
-	}
-}
-
 // Close implements the path builder interface.
 func (dc DemuxFlattener) Close() {
 	for _, flattener := range dc.Flatteners {

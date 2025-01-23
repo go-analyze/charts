@@ -35,8 +35,6 @@ type GraphicContext interface {
 	SetLineWidth(lineWidth float64)
 	// SetLineCap sets the current line cap
 	SetLineCap(cap LineCap)
-	// SetLineJoin sets the current line join
-	SetLineJoin(join LineJoin)
 	// SetLineDash sets the current dash
 	SetLineDash(dash []float64, dashOffset float64)
 	// SetFontSize sets the current font size
