@@ -102,6 +102,20 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	seriesList := opt.seriesList
 	seriesList.init()
+
+	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
+	for _, sl := range seriesList {
+		if len(sl.MarkPoint.Data) > 0 { // if graph has markpoint
+			// adjust padding scale to give space for mark point (if not specified by user)
+			for i := range opt.yAxis {
+				if opt.yAxis[i].RangeValuePaddingScale == nil {
+					opt.yAxis[i].RangeValuePaddingScale = FloatPointer(2.5)
+				}
+			}
+			break
+		}
+	}
+
 	if !opt.backgroundIsFilled {
 		p.drawBackground(opt.theme.GetBackgroundColor())
 	}
@@ -400,10 +414,11 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(barSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newBarChart(p, BarChartOption{
-				Theme:    opt.Theme,
-				Font:     opt.Font,
-				XAxis:    opt.XAxis,
-				BarWidth: opt.BarWidth,
+				Theme:     opt.Theme,
+				Font:      opt.Font,
+				XAxis:     opt.XAxis,
+				BarWidth:  opt.BarWidth,
+				BarMargin: opt.BarMargin,
 			}).render(renderResult, barSeriesList)
 			return err
 		})
@@ -416,6 +431,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Theme:     opt.Theme,
 				Font:      opt.Font,
 				BarHeight: opt.BarHeight,
+				BarMargin: opt.BarMargin,
 				YAxis:     opt.YAxis,
 			}).render(renderResult, horizontalBarSeriesList)
 			return err

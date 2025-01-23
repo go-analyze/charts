@@ -46,6 +46,8 @@ type ChartOption struct {
 	BarWidth int
 	// BarHeight is the height of the bars for horizontal bar charts.
 	BarHeight int
+	// BarMargin specifies the margin between bars grouped together. BarWidth or BarHeight takes priority over the margin.
+	BarMargin *float64
 	// Children are Child charts to render together.
 	Children []ChartOption
 	parent   *Painter
@@ -234,20 +236,6 @@ func (o *ChartOption) fillDefault() error {
 		yAxisOptions := make([]YAxisOption, yaxisCount)
 		copy(yAxisOptions, o.YAxis)
 		o.YAxis = yAxisOptions
-	}
-	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
-	// TODO - but can't do this earlier due to needing the axis initialized
-	// TODO - we should reconsider the API for configuration
-	for _, sl := range o.SeriesList {
-		if len(sl.MarkPoint.Data) > 0 { // if graph has markpoint
-			// adjust padding scale to give space for mark point (if not specified by user)
-			for i := range o.YAxis {
-				if o.YAxis[i].RangeValuePaddingScale == nil {
-					o.YAxis[i].RangeValuePaddingScale = FloatPointer(2.5)
-				}
-			}
-			break
-		}
 	}
 
 	if o.Font == nil {

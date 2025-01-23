@@ -41,8 +41,10 @@ type HorizontalBarChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// BarHeight specifies the height of each horizontal bar.
+	// BarHeight specifies the height of each horizontal bar. Height may be reduced to ensure all series fit on the chart.
 	BarHeight int
+	// BarMargin specifies the margin between bars grouped together. BarHeight takes priority over the margin.
+	BarMargin *float64
 	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }
@@ -62,38 +64,21 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	yRange := result.axisRanges[0]
 	y0, y1 := yRange.GetRange(0)
 	height := int(y1 - y0)
-	// margin between each block
-	margin := 10
-	// margin between each bar
-	barMargin := 5
-	if height < 20 {
-		margin = 2
-		barMargin = 2
-	} else if height < 50 {
-		margin = 5
-		barMargin = 3
-	}
 	seriesCount := len(seriesList)
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
-	barHeight := (height - 2*margin - barMargin*(seriesCount-1)) / seriesCount
-	if opt.BarHeight > 0 && opt.BarHeight < barHeight {
-		barHeight = opt.BarHeight
-		margin = (height - seriesCount*barHeight - barMargin*(seriesCount-1)) / 2
-	}
-
-	theme := opt.Theme
+	margin, barMargin, barHeight := calculateBarMarginsAndSize(seriesCount, height, opt.BarHeight, opt.BarMargin)
+	seriesNames := seriesList.Names()
 
 	min, max := seriesList.GetMinMax(0)
 	xRange := newRange(p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
 		seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
-	seriesNames := seriesList.Names()
 
 	var rendererList []renderer
 	for index := range seriesList {
 		series := seriesList[index]
-		seriesColor := theme.GetSeriesColor(series.index)
+		seriesColor := opt.Theme.GetSeriesColor(series.index)
 		divideValues := yRange.AutoDivide()
 
 		var labelPainter *seriesLabelPainter

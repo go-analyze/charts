@@ -50,12 +50,47 @@ type BarChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// BarWidth specifies the width of each bar.
+	// BarWidth specifies the width of each bar. Width may be reduced to ensure all series fit on the chart.
 	BarWidth int
+	// BarMargin specifies the margin between bars grouped together. BarWidth takes priority over the margin.
+	BarMargin *float64
 	// RoundedBarCaps set to `true` to produce a bar graph where the bars have rounded tops.
 	RoundedBarCaps *bool
 	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
+}
+
+func calculateBarMarginsAndSize(seriesCount, space int, configuredBarSize int, configuredBarMargin *float64) (int, int, int) {
+	// default margins, adjusted below with config and series count
+	margin := 10   // margin between each series block
+	barMargin := 5 // margin between each bar
+	if space < 20 {
+		margin = 2
+		barMargin = 2
+	} else if space < 50 {
+		margin = 5
+		barMargin = 3
+	}
+	// check margin configuration if bar size allows margin
+	if configuredBarSize+barMargin < space/seriesCount {
+		// BarWidth is in range that we should also consider an optional margin configuration
+		if configuredBarMargin != nil {
+			barMargin = int(math.Round(*configuredBarMargin))
+			if barMargin+configuredBarSize > space/seriesCount {
+				barMargin = (space / seriesCount) - configuredBarSize
+			}
+		}
+	} // else, bar width is out of range.  Ignore margin config
+
+	barSize := (space - 2*margin - barMargin*(seriesCount-1)) / seriesCount
+	// check bar size configuration, limited by the series count and space available
+	if configuredBarSize > 0 && configuredBarSize < barSize {
+		barSize = configuredBarSize
+		// recalculate margin
+		margin = (space - seriesCount*barSize - barMargin*(seriesCount-1)) / 2
+	}
+
+	return margin, barMargin, barSize
 }
 
 func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
@@ -67,29 +102,12 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
-	// margin between each block
-	margin := 10
-	// margin between each bar
-	barMargin := 5
-	if width < 20 {
-		margin = 2
-		barMargin = 2
-	} else if width < 50 {
-		margin = 5
-		barMargin = 3
-	}
 	seriesCount := len(seriesList)
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
-	barWidth := (width - 2*margin - barMargin*(seriesCount-1)) / seriesCount
-	if opt.BarWidth > 0 && opt.BarWidth < barWidth {
-		barWidth = opt.BarWidth
-		// recalculate margin
-		margin = (width - seriesCount*barWidth - barMargin*(seriesCount-1)) / 2
-	}
+	margin, barMargin, barWidth := calculateBarMarginsAndSize(seriesCount, width, opt.BarWidth, opt.BarMargin)
 	barMaxHeight := seriesPainter.Height()
-	theme := opt.Theme
 	seriesNames := seriesList.Names()
 
 	markPointPainter := newMarkPointPainter(seriesPainter)
@@ -101,7 +119,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	for index := range seriesList {
 		series := seriesList[index]
 		yRange := result.axisRanges[series.YAxisIndex]
-		seriesColor := theme.GetSeriesColor(series.index)
+		seriesColor := opt.Theme.GetSeriesColor(series.index)
 
 		divideValues := xRange.AutoDivide()
 		points := make([]Point, len(series.Data))
