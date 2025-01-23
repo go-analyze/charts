@@ -12,14 +12,14 @@ type Flattener interface {
 	MoveTo(x, y float64)
 	// LineTo Draw a line from the current position to the point (x, y)
 	LineTo(x, y float64)
-	// Close add the most recent starting point to close the path to create a polygon
-	Close()
 	// End mark the current line as finished so we can draw caps
 	End()
 }
 
 // Flatten convert curves into straight segments keeping join segments info
 func Flatten(path *Path, flattener Flattener, scale float64) {
+	// First Point
+	var startX, startY float64
 	// Current Point
 	var x, y float64
 	var i int
@@ -27,6 +27,7 @@ func Flatten(path *Path, flattener Flattener, scale float64) {
 		switch cmp {
 		case MoveToComponent:
 			x, y = path.Points[i], path.Points[i+1]
+			startX, startY = x, y
 			if i != 0 {
 				flattener.End()
 			}
@@ -52,7 +53,9 @@ func Flatten(path *Path, flattener Flattener, scale float64) {
 			flattener.LineTo(x, y)
 			i += 6
 		case CloseComponent:
-			flattener.Close()
+			if x != startX || y != startY {
+				flattener.LineTo(startX, startY)
+			}
 		}
 	}
 	flattener.End()
@@ -60,29 +63,17 @@ func Flatten(path *Path, flattener Flattener, scale float64) {
 
 // SegmentedPath is a path of disparate point sections.
 type SegmentedPath struct {
-	startX float64
-	startY float64
 	Points []float64
 }
 
 // MoveTo implements the path interface.
 func (p *SegmentedPath) MoveTo(x, y float64) {
-	p.startX = x
-	p.startY = y
 	p.Points = append(p.Points, x, y)
 }
 
 // LineTo implements the path interface.
 func (p *SegmentedPath) LineTo(x, y float64) {
 	p.Points = append(p.Points, x, y)
-}
-
-// Close implements the path interface.
-func (p *SegmentedPath) Close() {
-	pointLen := len(p.Points)
-	if pointLen > 1 && (p.Points[pointLen-2] != p.startX || p.Points[pointLen-1] != p.startY) {
-		p.Points = append(p.Points, p.startX, p.startY)
-	}
 }
 
 // End implements the path interface.

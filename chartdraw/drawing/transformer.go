@@ -23,11 +23,6 @@ func (t Transformer) LineTo(x, y float64) {
 	t.Flattener.LineTo(u, v)
 }
 
-// Close implements the path builder interface.
-func (t Transformer) Close() {
-	t.Flattener.Close()
-}
-
 // End implements the path builder interface.
 func (t Transformer) End() {
 	t.Flattener.End()
