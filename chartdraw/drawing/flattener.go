@@ -1,27 +1,25 @@
 package drawing
 
-// Liner receive segment definition
+// Liner receive segment definition.
 type Liner interface {
-	// LineTo Draw a line from the current position to the point (x, y)
+	// LineTo Draw a line from the current position to the point (x, y).
 	LineTo(x, y float64)
 }
 
-// Flattener receive segment definition
+// Flattener receive segment definition.
 type Flattener interface {
-	// MoveTo Start a New line from the point (x, y)
+	// MoveTo Start a New line from the point (x, y).
 	MoveTo(x, y float64)
-	// LineTo Draw a line from the current position to the point (x, y)
+	// LineTo Draw a line from the current position to the point (x, y).
 	LineTo(x, y float64)
-	// End mark the current line as finished so we can draw caps
+	// End mark the current line as finished.
 	End()
 }
 
-// Flatten convert curves into straight segments keeping join segments info
+// Flatten convert curves into straight segments keeping join segments info.
 func Flatten(path *Path, flattener Flattener, scale float64) {
-	// First Point
-	var startX, startY float64
-	// Current Point
-	var x, y float64
+	var startX, startY float64 // moveTo point starting a path
+	var x, y float64           // current point
 	var i int
 	for _, cmp := range path.Components {
 		switch cmp {

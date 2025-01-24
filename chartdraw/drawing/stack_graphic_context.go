@@ -31,7 +31,7 @@ type ContextStack struct {
 	Previous *ContextStack
 }
 
-// NewStackGraphicContext Create a new Graphic context from an image
+// NewStackGraphicContext Create a new Graphic context from an image.
 func NewStackGraphicContext() *StackGraphicContext {
 	gc := &StackGraphicContext{}
 	gc.current = new(ContextStack)

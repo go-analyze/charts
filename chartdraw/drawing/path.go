@@ -7,49 +7,48 @@ import (
 
 // PathBuilder describes the interface for path drawing.
 type PathBuilder interface {
-	// LastPoint returns the current point of the current sub path
+	// LastPoint returns the current point of the current sub path.
 	LastPoint() (x, y float64)
-	// MoveTo creates a new subpath that start at the specified point
+	// MoveTo creates a new subpath that start at the specified point.
 	MoveTo(x, y float64)
-	// LineTo adds a line to the current subpath
+	// LineTo adds a line to the current subpath.
 	LineTo(x, y float64)
-	// QuadCurveTo adds a quadratic Bézier curve to the current subpath
+	// QuadCurveTo adds a quadratic Bézier curve to the current subpath.
 	QuadCurveTo(cx, cy, x, y float64)
-	// CubicCurveTo adds a cubic Bézier curve to the current subpath
+	// CubicCurveTo adds a cubic Bézier curve to the current subpath.
 	CubicCurveTo(cx1, cy1, cx2, cy2, x, y float64)
-	// ArcTo adds an arc to the current subpath
+	// ArcTo adds an arc to the current subpath.
 	ArcTo(cx, cy, rx, ry, startAngle, angle float64)
-	// Close creates a line from the current point to the last MoveTo
-	// point (if not the same) and mark the path as closed so the
-	// first and last lines join nicely.
+	// Close creates a line from the current point to the last MoveTo point (if not the same) and
+	// mark the path as closed so the first and last lines join nicely.
 	Close()
 }
 
-// PathComponent represents component of a path
+// PathComponent represents component of a path.
 type PathComponent int
 
 const (
-	// MoveToComponent is a MoveTo component in a Path
+	// MoveToComponent is a MoveTo component in a Path.
 	MoveToComponent PathComponent = iota
-	// LineToComponent is a LineTo component in a Path
+	// LineToComponent is a LineTo component in a Path.
 	LineToComponent
-	// QuadCurveToComponent is a QuadCurveTo component in a Path
+	// QuadCurveToComponent is a QuadCurveTo component in a Path.
 	QuadCurveToComponent
-	// CubicCurveToComponent is a CubicCurveTo component in a Path
+	// CubicCurveToComponent is a CubicCurveTo component in a Path.
 	CubicCurveToComponent
-	// ArcToComponent is a ArcTo component in a Path
+	// ArcToComponent is a ArcTo component in a Path.
 	ArcToComponent
-	// CloseComponent is a LineTo component in a Path
+	// CloseComponent is a LineTo component in a Path.
 	CloseComponent
 )
 
-// Path stores points
+// Path stores points.
 type Path struct {
-	// Components is a slice of PathComponent in a Path and mark the role of each points in the Path
+	// Components is a slice of PathComponent in a Path and mark the role of each points in the Path.
 	Components []PathComponent
-	// Points are combined with Components to have a specific role in the path
+	// Points are combined with Components to have a specific role in the path.
 	Points []float64
-	// Last Point of the Path
+	// Last Point of the Path.
 	x, y float64
 }
 
@@ -58,19 +57,19 @@ func (p *Path) appendToPath(cmd PathComponent, points ...float64) {
 	p.Points = append(p.Points, points...)
 }
 
-// LastPoint returns the current point of the current path
+// LastPoint returns the current point of the current path.
 func (p *Path) LastPoint() (x, y float64) {
 	return p.x, p.y
 }
 
-// MoveTo starts a new path at (x, y) position
+// MoveTo starts a new path at (x, y) position.
 func (p *Path) MoveTo(x, y float64) {
 	p.appendToPath(MoveToComponent, x, y)
 	p.x = x
 	p.y = y
 }
 
-// LineTo adds a line to the current path
+// LineTo adds a line to the current path.
 func (p *Path) LineTo(x, y float64) {
 	if len(p.Components) == 0 { //special case when no move has been done
 		p.MoveTo(0, 0)
@@ -80,7 +79,7 @@ func (p *Path) LineTo(x, y float64) {
 	p.y = y
 }
 
-// QuadCurveTo adds a quadratic bezier curve to the current path
+// QuadCurveTo adds a quadratic Bézier curve to the current path.
 func (p *Path) QuadCurveTo(cx, cy, x, y float64) {
 	if len(p.Components) == 0 { //special case when no move has been done
 		p.MoveTo(0, 0)
@@ -90,7 +89,7 @@ func (p *Path) QuadCurveTo(cx, cy, x, y float64) {
 	p.y = y
 }
 
-// CubicCurveTo adds a cubic bezier curve to the current path
+// CubicCurveTo adds a cubic Bézier curve to the current path.
 func (p *Path) CubicCurveTo(cx1, cy1, cx2, cy2, x, y float64) {
 	if len(p.Components) == 0 { //special case when no move has been done
 		p.MoveTo(0, 0)
@@ -100,7 +99,7 @@ func (p *Path) CubicCurveTo(cx1, cy1, cx2, cy2, x, y float64) {
 	p.y = y
 }
 
-// ArcTo adds an arc to the path
+// ArcTo adds an arc to the path.
 func (p *Path) ArcTo(cx, cy, rx, ry, startAngle, delta float64) {
 	endAngle := startAngle + delta
 	clockWise := true
@@ -129,12 +128,12 @@ func (p *Path) ArcTo(cx, cy, rx, ry, startAngle, delta float64) {
 	p.y = cy + math.Sin(endAngle)*ry
 }
 
-// Close closes the current path
+// Close closes the current path.
 func (p *Path) Close() {
 	p.appendToPath(CloseComponent)
 }
 
-// Copy make a clone of the current path and return it
+// Copy make a clone of the current path and return it.
 func (p *Path) Copy() (dest *Path) {
 	dest = new(Path)
 	dest.Components = make([]PathComponent, len(p.Components))
@@ -145,18 +144,18 @@ func (p *Path) Copy() (dest *Path) {
 	return dest
 }
 
-// Clear reset the path
+// Clear reset the path.
 func (p *Path) Clear() {
 	p.Components = p.Components[0:0]
 	p.Points = p.Points[0:0]
 }
 
-// IsEmpty returns true if the path is empty
+// IsEmpty returns true if the path is empty.
 func (p *Path) IsEmpty() bool {
 	return len(p.Components) == 0
 }
 
-// String returns a debug text view of the path
+// String returns a debug text view of the path.
 func (p *Path) String() string {
 	s := ""
 	j := 0

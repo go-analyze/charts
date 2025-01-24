@@ -1,6 +1,6 @@
 package drawing
 
-// DemuxFlattener is a flattener
+// DemuxFlattener is a slice of Flattener.
 type DemuxFlattener struct {
 	Flatteners []Flattener
 }

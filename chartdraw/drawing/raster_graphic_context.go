@@ -22,7 +22,7 @@ func NewRasterGraphicContext(img *image.RGBA) *RasterGraphicContext {
 	return NewRasterGraphicContextWithPainter(img, painter)
 }
 
-// NewRasterGraphicContextWithPainter creates a new Graphic context from an image and a Painter (see Freetype-go)
+// NewRasterGraphicContextWithPainter creates a new Graphic context from an image and a Painter (see Freetype-go).
 func NewRasterGraphicContextWithPainter(img draw.Image, painter Painter) *RasterGraphicContext {
 	width, height := img.Bounds().Dx(), img.Bounds().Dy()
 	return &RasterGraphicContext{
@@ -36,7 +36,7 @@ func NewRasterGraphicContextWithPainter(img draw.Image, painter Painter) *Raster
 	}
 }
 
-// RasterGraphicContext is the implementation of GraphicContext for a raster image
+// RasterGraphicContext is the implementation of GraphicContext for a raster image.
 type RasterGraphicContext struct {
 	*StackGraphicContext
 	img              draw.Image
@@ -53,12 +53,12 @@ func (rgc *RasterGraphicContext) SetDPI(dpi float64) {
 	rgc.recalc()
 }
 
-// GetDPI returns the resolution of the Image GraphicContext
+// GetDPI returns the resolution of the Image GraphicContext.
 func (rgc *RasterGraphicContext) GetDPI() float64 {
 	return rgc.dpi
 }
 
-// Clear fills the current canvas with a default transparent color
+// Clear fills the current canvas with a default transparent color.
 func (rgc *RasterGraphicContext) Clear() {
 	width, height := rgc.img.Bounds().Dx(), rgc.img.Bounds().Dy()
 	rgc.current.FillColor = color.Transparent
@@ -71,31 +71,31 @@ func (rgc *RasterGraphicContext) FillRect(x1, y1, x2, y2 int) {
 	draw.Draw(rgc.img, image.Rect(x1, y1, x2, y2), imageColor, image.Point{}, draw.Over)
 }
 
-// DrawImage draws the raster image in the current canvas
+// DrawImage draws the raster image in the current canvas.
 func (rgc *RasterGraphicContext) DrawImage(img image.Image) {
 	DrawImage(img, rgc.img, rgc.current.Tr, draw.Over, BilinearFilter)
 }
 
-// FillString draws the text at point (0, 0)
+// Deprecated: FillString is deprecated, use FillStringAt with (0, 0) for the position.
 func (rgc *RasterGraphicContext) FillString(text string) (cursor float64, err error) {
 	cursor, err = rgc.FillStringAt(text, 0, 0)
 	return
 }
 
-// FillStringAt draws the text at the specified point (x, y)
+// FillStringAt draws the text at the specified point (x, y).
 func (rgc *RasterGraphicContext) FillStringAt(text string, x, y float64) (cursor float64, err error) {
 	cursor, err = rgc.CreateStringPath(text, x, y)
 	rgc.Fill()
 	return
 }
 
-// StrokeString draws the contour of the text at point (0, 0)
+// Deprecated: StrokeString is deprecated, use StrokeStringAt with (0, 0) for the position.
 func (rgc *RasterGraphicContext) StrokeString(text string) (cursor float64, err error) {
 	cursor, err = rgc.StrokeStringAt(text, 0, 0)
 	return
 }
 
-// StrokeStringAt draws the contour of the text at point (x, y)
+// StrokeStringAt draws the contour of the text at point (x, y).
 func (rgc *RasterGraphicContext) StrokeStringAt(text string, x, y float64) (cursor float64, err error) {
 	cursor, err = rgc.CreateStringPath(text, x, y)
 	rgc.Stroke()
@@ -282,7 +282,7 @@ func getRectangleBounds(path *Path) (int, int, int, int) {
 	return int(math.Floor(x1)), int(math.Floor(y1)), int(math.Ceil(x2)), int(math.Ceil(y2))
 }
 
-// Fill fills the paths with the color specified by SetFillColor
+// Fill fills the paths with the color specified by SetFillColor.
 func (rgc *RasterGraphicContext) Fill(paths ...*Path) {
 	paths = append(paths, rgc.current.Path)
 	pathCount := len(paths)
@@ -306,7 +306,7 @@ func (rgc *RasterGraphicContext) Fill(paths ...*Path) {
 	rgc.paint(rgc.fillRasterizer, rgc.current.FillColor)
 }
 
-// FillStroke first fills the paths and then strokes them
+// FillStroke first fills the paths and then strokes them.
 func (rgc *RasterGraphicContext) FillStroke(paths ...*Path) {
 	paths = append(paths, rgc.current.Path)
 	pathCount := len(paths)

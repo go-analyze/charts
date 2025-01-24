@@ -16,7 +16,7 @@ var (
 	ColorWhite = Color{R: 255, G: 255, B: 255, A: 255}
 	// ColorBlack is R: 0, G: 0, B: 0.
 	ColorBlack = Color{R: 0, G: 0, B: 0, A: 255}
-	// ColorGray is R: 128, G: 128, B: 128,
+	// ColorGray is R: 128, G: 128, B: 128.
 	ColorGray = Color{R: 128, G: 128, B: 128, A: 255}
 	// ColorRed is R: 255, G: 0, B: 0.
 	ColorRed = Color{R: 255, G: 0, B: 0, A: 255}

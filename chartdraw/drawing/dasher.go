@@ -64,7 +64,6 @@ func (dasher *DashVertexConverter) lineTo(x, y float64) {
 	}
 	dasher.distance = d
 	if dasher.currentDash%2 == 0 {
-		// line
 		dasher.next.LineTo(x, y)
 	} else {
 		// gap
