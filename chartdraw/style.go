@@ -30,8 +30,7 @@ func Shown() Style {
 	}
 }
 
-// StyleTextDefaults returns a style for drawing outside a
-// chart context.
+// StyleTextDefaults returns a style for drawing outside a chart context.
 func StyleTextDefaults() Style {
 	return Style{
 		Hidden: false,
