@@ -4,6 +4,7 @@ import (
 	"errors"
 )
 
+// TODO - remove internal defaults from public API
 const (
 	// DefaultMACDPeriodPrimary is the long window.
 	DefaultMACDPeriodPrimary = 26

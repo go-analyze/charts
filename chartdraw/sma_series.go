@@ -4,6 +4,7 @@ import (
 	"errors"
 )
 
+// TODO - remove internal defaults from public API
 const (
 	// DefaultSimpleMovingAveragePeriod is the default number of values to average.
 	DefaultSimpleMovingAveragePeriod = 16

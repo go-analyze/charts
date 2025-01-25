@@ -1,5 +1,6 @@
 package chartdraw
 
+// TODO - remove internal defaults from public API
 const (
 	// DefaultChartHeight is the default chart height.
 	DefaultChartHeight = 400

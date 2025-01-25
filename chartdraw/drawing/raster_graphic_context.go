@@ -13,8 +13,8 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
-// DefaultDPI is the default image DPI.
-const DefaultDPI = 96.0
+// defaultDPI is the default image DPI.
+const defaultDPI = 96.0
 
 // NewRasterGraphicContext creates a new Graphic context from an image.
 func NewRasterGraphicContext(img *image.RGBA) *RasterGraphicContext {
@@ -32,7 +32,7 @@ func NewRasterGraphicContextWithPainter(img draw.Image, painter Painter) *Raster
 		raster.NewRasterizer(width, height),
 		raster.NewRasterizer(width, height),
 		&truetype.GlyphBuf{},
-		DefaultDPI,
+		defaultDPI,
 	}
 }
 

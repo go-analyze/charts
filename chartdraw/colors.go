@@ -39,6 +39,7 @@ var (
 	ColorTransparent = drawing.Color{R: 1, G: 1, B: 1, A: 0}
 )
 
+// TODO - remove internal defaults from public API
 var (
 	// DefaultBackgroundColor is the default chart background color.
 	// It is equivalent to css color:white.
