@@ -378,11 +378,11 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			YAxis: []charts.YAxisOption{
 				{
 					Formatter: "{value}ml",
-					AxisColor: charts.Color{R: 84, G: 112, B: 198, A: 255},
+					AxisColor: charts.ColorRGB(84, 112, 198),
 				},
 				{
 					Formatter: "{value}°C",
-					AxisColor: charts.Color{R: 250, G: 200, B: 88, A: 255},
+					AxisColor: charts.ColorRGB(250, 200, 88),
 				},
 			},
 			SeriesList: append(charts.NewSeriesListBar([][]float64{

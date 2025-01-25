@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"image/color"
 	"math"
 	"strings"
 
@@ -151,7 +152,13 @@ func ColorFromRGBA(color string) Color {
 	return drawing.ColorFromRGBA(color)
 }
 
-// ColorFromRGBAValues returns the system alpha mixed rgba values.
-func ColorFromRGBAValues(r, g, b, a uint32) Color {
-	return drawing.ColorFromAlphaMixedRGBA(r, g, b, a)
+// ColorRGB constructs a fully opaque color with the color specified.
+func ColorRGB(r, g, b uint8) Color {
+	return Color{R: r, G: g, B: b, A: 255}
+}
+
+// ColorConvertGo converts go's built in colors to our Color struct.
+// This allows easy use of colors defined in image/colornames.
+func ColorConvertGo(c color.RGBA) Color {
+	return Color{R: c.R, G: c.G, B: c.B, A: c.A}
 }

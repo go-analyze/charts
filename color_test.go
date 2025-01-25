@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/image/colornames"
 )
 
 func BenchmarkParseColor(b *testing.B) {
@@ -39,7 +40,11 @@ func testColorShades(t *testing.T, colors ...Color) {
 
 	sampleWidth := p.Width() / len(colors)
 	for i, c := range colors {
-		p.FilledRect(i*sampleWidth, 0, (i+1)*sampleWidth, p.Height(),
+		endX := (i + 1) * sampleWidth
+		if i == len(colors)-1 {
+			endX = p.Width() // ensure edge is painted
+		}
+		p.FilledRect(i*sampleWidth, 0, endX, p.Height(),
 			c, ColorTransparent, 0.0)
 	}
 
@@ -49,19 +54,22 @@ func testColorShades(t *testing.T, colors ...Color) {
 }
 
 func TestGrayColors(t *testing.T) {
-	testColorShades(t, ColorDarkGray, ColorGray, ColorLightGray)
+	testColorShades(t, ColorDarkGray, ColorGray, ColorSilver, ColorLightGray, ColorAzure,
+		ColorSlateGray, ColorLightSlateGray)
 }
 
 func TestBlueColors(t *testing.T) {
-	testColorShades(t, ColorBlue, ColorBlueAlt1, ColorBlueAlt2)
+	testColorShades(t, ColorBlue, ColorNavy, ColorBlueAlt1, ColorBlueAlt2, ColorLightSlateGray)
 }
 
 func TestGreenColors(t *testing.T) {
-	testColorShades(t, ColorGreen, ColorGreenAlt1, ColorGreenAlt2, ColorGreenAlt3, ColorGreenAlt4)
+	testColorShades(t, ColorGreen, ColorOlive, ColorLime,
+		ColorGreenAlt1, ColorGreenAlt2, ColorGreenAlt3, ColorGreenAlt4)
 }
 
 func TestRedColors(t *testing.T) {
-	testColorShades(t, ColorRed, ColorRedAlt1, ColorRedAlt2)
+	testColorShades(t, ColorRed, ColorPink, ColorSalmon, ColorMaroon, ColorBrown, ColorChocolate,
+		ColorRedAlt1, ColorRedAlt2)
 }
 
 func TestOrangeColors(t *testing.T) {
@@ -69,15 +77,19 @@ func TestOrangeColors(t *testing.T) {
 }
 
 func TestAquaColors(t *testing.T) {
-	testColorShades(t, ColorAqua, ColorAquaAlt1)
+	testColorShades(t, ColorAqua, ColorTeal, ColorTurquoise, ColorAquaAlt1)
 }
 
 func TestYellowColors(t *testing.T) {
-	testColorShades(t, ColorYellow, ColorYellowAlt1)
+	testColorShades(t, ColorYellow, ColorGold, ColorYellowAlt1)
+}
+
+func TestTanColors(t *testing.T) {
+	testColorShades(t, ColorAzure, ColorIvory, ColorBeige, ColorKhaki, ColorTan, ColorCoral, ColorSalmon)
 }
 
 func TestPurpleColors(t *testing.T) {
-	testColorShades(t, ColorPurple, ColorViolet, ColorPlum, ColorFuchsia)
+	testColorShades(t, ColorPurple, ColorViolet, ColorIndigo, ColorPlum, ColorFuchsia)
 }
 
 func TestIsLightColor(t *testing.T) {
@@ -97,6 +109,9 @@ func TestParseColor(t *testing.T) {
 	c := ParseColor("")
 	assert.True(t, c.IsZero())
 
+	c = ParseColor("unknown")
+	assert.Equal(t, ColorBlack, c)
+
 	c = ParseColor("#333")
 	assert.Equal(t, Color{R: 51, G: 51, B: 51, A: 255}, c)
 
@@ -111,4 +126,19 @@ func TestParseColor(t *testing.T) {
 
 	c = ParseColor("rgba(50,51,52,250)")
 	assert.Equal(t, Color{R: 50, G: 51, B: 52, A: 250}, c)
+}
+
+func TestColorConvertGo(t *testing.T) {
+	t.Parallel()
+
+	goC := colornames.Lavender
+	ourC := ColorConvertGo(goC)
+
+	goR, goG, goB, goA := goC.RGBA()
+	ourR, ourG, ourB, ourA := ourC.RGBA()
+
+	assert.Equal(t, goR, ourR)
+	assert.Equal(t, goG, ourG)
+	assert.Equal(t, goB, ourB)
+	assert.Equal(t, goA, ourA)
 }

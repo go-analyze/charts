@@ -78,11 +78,11 @@ func main() {
 		panic(err)
 	}
 
-	bgColor := charts.Color{R: 28, G: 28, B: 32, A: 255}
+	bgColor := charts.ColorRGB(28, 28, 32)
 	p, err = charts.TableOptionRenderDirect(charts.TableChartOption{
 		Header:                []string{"Name", "Price", "Change"},
 		BackgroundColor:       bgColor,
-		HeaderBackgroundColor: charts.Color{R: 80, G: 80, B: 80, A: 255},
+		HeaderBackgroundColor: charts.ColorRGB(80, 80, 80),
 		RowBackgroundColors:   []charts.Color{bgColor},
 		HeaderFontColor:       charts.ColorWhite,
 		FontStyle: charts.FontStyle{
@@ -127,9 +127,9 @@ func main() {
 			}
 
 			if value > 0 {
-				tc.FillColor = charts.Color{R: 179, G: 53, B: 20, A: 255}
+				tc.FillColor = charts.ColorRGB(179, 53, 20)
 			} else {
-				tc.FillColor = charts.Color{R: 33, G: 124, B: 50, A: 255}
+				tc.FillColor = charts.ColorRGB(33, 124, 50)
 			}
 			return tc
 		},
