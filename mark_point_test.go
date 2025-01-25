@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestMarkPoint(t *testing.T) {
@@ -24,7 +22,7 @@ func TestMarkPoint(t *testing.T) {
 				series.MarkPoint = NewMarkPoint(SeriesMarkDataTypeMax)
 				markPoint := newMarkPointPainter(p)
 				markPoint.Add(markPointRenderOption{
-					FillColor: drawing.ColorBlack,
+					FillColor: ColorBlack,
 					Series:    series,
 					Points: []Point{
 						{X: 10, Y: 10},

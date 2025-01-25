@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestMarkLine(t *testing.T) {
@@ -28,9 +26,9 @@ func TestMarkLine(t *testing.T) {
 					SeriesMarkDataTypeMin,
 				)
 				markLine.Add(markLineRenderOption{
-					FillColor:   drawing.ColorBlack,
-					FontColor:   drawing.ColorBlack,
-					StrokeColor: drawing.ColorBlack,
+					FillColor:   ColorBlack,
+					FontColor:   ColorBlack,
+					StrokeColor: ColorBlack,
 					Series:      series,
 					Range: newRange(p, nil,
 						p.Height(), 6, 0.0, 5.0, 0.0, 0.0),

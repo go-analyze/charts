@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestInstallGetTheme(t *testing.T) {
@@ -130,7 +128,7 @@ func TestLightThemeSeriesRepeat(t *testing.T) {
 			isDarkMode:         false,
 			axisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
 			axisSplitLineColor: Color{R: 224, G: 230, B: 242, A: 255},
-			backgroundColor:    drawing.ColorWhite,
+			backgroundColor:    ColorWhite,
 			textColor:          Color{R: 70, G: 70, B: 70, A: 255},
 			seriesColors: []Color{
 				{R: 50, G: 50, B: 50, A: 255},
@@ -165,25 +163,25 @@ func TestWithAxisColor(t *testing.T) {
 	whiteCP := &themeColorPalette{
 		name:               t.Name(),
 		isDarkMode:         false,
-		axisSplitLineColor: drawing.ColorWhite,
-		axisStrokeColor:    drawing.ColorWhite,
-		backgroundColor:    drawing.ColorWhite,
-		textColor:          drawing.ColorWhite,
-		seriesColors:       []Color{drawing.ColorWhite},
+		axisSplitLineColor: ColorWhite,
+		axisStrokeColor:    ColorWhite,
+		backgroundColor:    ColorWhite,
+		textColor:          ColorWhite,
+		seriesColors:       []Color{ColorWhite},
 	}
 
-	blackCP := whiteCP.WithAxisColor(drawing.ColorBlack)
+	blackCP := whiteCP.WithAxisColor(ColorBlack)
 
-	assert.Equal(t, drawing.ColorWhite, whiteCP.axisStrokeColor)
-	assert.Equal(t, drawing.ColorWhite, whiteCP.backgroundColor)
-	assert.Equal(t, drawing.ColorWhite, whiteCP.textColor)
-	assert.Equal(t, drawing.ColorWhite, whiteCP.seriesColors[0])
+	assert.Equal(t, ColorWhite, whiteCP.axisStrokeColor)
+	assert.Equal(t, ColorWhite, whiteCP.backgroundColor)
+	assert.Equal(t, ColorWhite, whiteCP.textColor)
+	assert.Equal(t, ColorWhite, whiteCP.seriesColors[0])
 
-	assert.NotEqual(t, drawing.ColorBlack, blackCP.GetAxisSplitLineColor())
-	assert.Equal(t, drawing.ColorBlack, blackCP.GetAxisStrokeColor())
-	assert.Equal(t, drawing.ColorBlack, blackCP.GetTextColor())
-	assert.Equal(t, drawing.ColorWhite, blackCP.GetBackgroundColor())
-	assert.Equal(t, drawing.ColorWhite, blackCP.GetSeriesColor(0))
+	assert.NotEqual(t, ColorBlack, blackCP.GetAxisSplitLineColor())
+	assert.Equal(t, ColorBlack, blackCP.GetAxisStrokeColor())
+	assert.Equal(t, ColorBlack, blackCP.GetTextColor())
+	assert.Equal(t, ColorWhite, blackCP.GetBackgroundColor())
+	assert.Equal(t, ColorWhite, blackCP.GetSeriesColor(0))
 }
 
 func TestWithTextColor(t *testing.T) {
@@ -192,26 +190,26 @@ func TestWithTextColor(t *testing.T) {
 	whiteCP := &themeColorPalette{
 		name:               t.Name(),
 		isDarkMode:         false,
-		axisSplitLineColor: drawing.ColorWhite,
-		axisStrokeColor:    drawing.ColorWhite,
-		backgroundColor:    drawing.ColorWhite,
-		textColor:          drawing.ColorWhite,
-		seriesColors:       []Color{drawing.ColorWhite},
+		axisSplitLineColor: ColorWhite,
+		axisStrokeColor:    ColorWhite,
+		backgroundColor:    ColorWhite,
+		textColor:          ColorWhite,
+		seriesColors:       []Color{ColorWhite},
 	}
 
-	blackCP := whiteCP.WithTextColor(drawing.ColorBlack)
+	blackCP := whiteCP.WithTextColor(ColorBlack)
 
-	assert.Equal(t, drawing.ColorWhite, whiteCP.axisSplitLineColor)
-	assert.Equal(t, drawing.ColorWhite, whiteCP.axisStrokeColor)
-	assert.Equal(t, drawing.ColorWhite, whiteCP.backgroundColor)
-	assert.Equal(t, drawing.ColorWhite, whiteCP.textColor)
-	assert.Equal(t, drawing.ColorWhite, whiteCP.seriesColors[0])
+	assert.Equal(t, ColorWhite, whiteCP.axisSplitLineColor)
+	assert.Equal(t, ColorWhite, whiteCP.axisStrokeColor)
+	assert.Equal(t, ColorWhite, whiteCP.backgroundColor)
+	assert.Equal(t, ColorWhite, whiteCP.textColor)
+	assert.Equal(t, ColorWhite, whiteCP.seriesColors[0])
 
-	assert.Equal(t, drawing.ColorBlack, blackCP.GetTextColor())
-	assert.Equal(t, drawing.ColorWhite, blackCP.GetAxisSplitLineColor())
-	assert.Equal(t, drawing.ColorWhite, blackCP.GetAxisStrokeColor())
-	assert.Equal(t, drawing.ColorWhite, blackCP.GetBackgroundColor())
-	assert.Equal(t, drawing.ColorWhite, blackCP.GetSeriesColor(0))
+	assert.Equal(t, ColorBlack, blackCP.GetTextColor())
+	assert.Equal(t, ColorWhite, blackCP.GetAxisSplitLineColor())
+	assert.Equal(t, ColorWhite, blackCP.GetAxisStrokeColor())
+	assert.Equal(t, ColorWhite, blackCP.GetBackgroundColor())
+	assert.Equal(t, ColorWhite, blackCP.GetSeriesColor(0))
 }
 
 func TestWithSeriesColors(t *testing.T) {
@@ -220,11 +218,11 @@ func TestWithSeriesColors(t *testing.T) {
 	yellowCP := &themeColorPalette{
 		name:               t.Name(),
 		isDarkMode:         false,
-		axisSplitLineColor: drawing.ColorYellow,
-		axisStrokeColor:    drawing.ColorYellow,
-		backgroundColor:    drawing.ColorYellow,
-		textColor:          drawing.ColorYellow,
-		seriesColors:       []Color{drawing.ColorYellow},
+		axisSplitLineColor: ColorYellow,
+		axisStrokeColor:    ColorYellow,
+		backgroundColor:    ColorYellow,
+		textColor:          ColorYellow,
+		seriesColors:       []Color{ColorYellow},
 	}
 
 	t.Run("ignored", func(t *testing.T) {
@@ -233,13 +231,13 @@ func TestWithSeriesColors(t *testing.T) {
 		assert.Equal(t, yellowCP.GetSeriesColor(0), invalidCP.GetSeriesColor(0))
 	})
 	t.Run("updated", func(t *testing.T) {
-		blackCP := yellowCP.WithSeriesColors([]Color{drawing.ColorBlack})
+		blackCP := yellowCP.WithSeriesColors([]Color{ColorBlack})
 
-		assert.Equal(t, drawing.ColorYellow, blackCP.GetTextColor())
-		assert.Equal(t, drawing.ColorYellow, blackCP.GetAxisSplitLineColor())
-		assert.Equal(t, drawing.ColorYellow, blackCP.GetAxisStrokeColor())
-		assert.Equal(t, drawing.ColorYellow, blackCP.GetBackgroundColor())
-		assert.Equal(t, drawing.ColorBlack, blackCP.GetSeriesColor(0))
+		assert.Equal(t, ColorYellow, blackCP.GetTextColor())
+		assert.Equal(t, ColorYellow, blackCP.GetAxisSplitLineColor())
+		assert.Equal(t, ColorYellow, blackCP.GetAxisStrokeColor())
+		assert.Equal(t, ColorYellow, blackCP.GetBackgroundColor())
+		assert.Equal(t, ColorBlack, blackCP.GetSeriesColor(0))
 	})
 }
 
@@ -249,19 +247,19 @@ func TestWithBackgroundColor(t *testing.T) {
 	whiteCP := &themeColorPalette{
 		name:               t.Name(),
 		isDarkMode:         false,
-		axisSplitLineColor: drawing.ColorWhite,
-		axisStrokeColor:    drawing.ColorWhite,
-		backgroundColor:    drawing.ColorWhite,
-		textColor:          drawing.ColorWhite,
-		seriesColors:       []Color{drawing.ColorWhite},
+		axisSplitLineColor: ColorWhite,
+		axisStrokeColor:    ColorWhite,
+		backgroundColor:    ColorWhite,
+		textColor:          ColorWhite,
+		seriesColors:       []Color{ColorWhite},
 	}
 
-	blackCP := whiteCP.WithBackgroundColor(drawing.ColorBlack)
+	blackCP := whiteCP.WithBackgroundColor(ColorBlack)
 
 	require.False(t, whiteCP.IsDark())
 	assert.True(t, blackCP.IsDark())
 
-	yellowCP := blackCP.WithBackgroundColor(drawing.ColorYellow)
+	yellowCP := blackCP.WithBackgroundColor(ColorYellow)
 
 	require.False(t, yellowCP.IsDark())
 }

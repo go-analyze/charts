@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/go-analyze/charts"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 /*
@@ -95,7 +94,7 @@ func main() {
 	// Custom drawing directly on the Painter
 	fontStyle := charts.FontStyle{
 		FontSize:  12,
-		FontColor: drawing.ColorBlack,
+		FontColor: charts.ColorBlack,
 		Font:      charts.GetDefaultFont(),
 	}
 	//p.Text("f/stop", 10, 170, chartdraw.DegreesToRadians(90), fontStyle)

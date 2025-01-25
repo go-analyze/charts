@@ -7,7 +7,6 @@ import (
 	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type radarChart struct {
@@ -191,7 +190,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			linePoints = append(linePoints, p)
 		}
 		color := theme.GetSeriesColor(series.index)
-		dotFillColor := drawing.ColorWhite
+		dotFillColor := ColorWhite
 		if theme.IsDark() {
 			dotFillColor = color
 		}

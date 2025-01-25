@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func makeDefaultTableChartOptions() TableChartOption {
@@ -85,14 +83,14 @@ func TestTableChart(t *testing.T) {
 				opt := makeDefaultTableChartOptions()
 				opt.CellModifier = func(tc TableCell) TableCell {
 					if tc.Column%2 == 0 {
-						tc.FillColor = drawing.ColorWhite
-						tc.FontStyle.FontColor = drawing.ColorBlue
+						tc.FillColor = ColorWhite
+						tc.FontStyle.FontColor = ColorBlue
 					} else if tc.Row%2 == 0 {
-						tc.FillColor = drawing.ColorAqua
-						tc.FontStyle.FontColor = drawing.ColorBlack
+						tc.FillColor = ColorAqua
+						tc.FontStyle.FontColor = ColorBlack
 					} else {
-						tc.FillColor = drawing.ColorYellow
-						tc.FontStyle.FontColor = drawing.ColorPurple
+						tc.FillColor = ColorYellow
+						tc.FontStyle.FontColor = ColorPurple
 					}
 					return tc
 				}

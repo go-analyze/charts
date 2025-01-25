@@ -4,8 +4,6 @@ import (
 	"math"
 
 	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type lineChart struct {
@@ -192,7 +190,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 
 		// draw dots
 		if showSymbol {
-			dotFillColor := drawing.ColorWhite
+			dotFillColor := ColorWhite
 			if opt.Theme.IsDark() {
 				dotFillColor = seriesColor
 			}

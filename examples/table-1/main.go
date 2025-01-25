@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/go-analyze/charts"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 /*
@@ -85,9 +84,9 @@ func main() {
 		BackgroundColor:       bgColor,
 		HeaderBackgroundColor: charts.Color{R: 80, G: 80, B: 80, A: 255},
 		RowBackgroundColors:   []charts.Color{bgColor},
-		HeaderFontColor:       drawing.ColorWhite,
+		HeaderFontColor:       charts.ColorWhite,
 		FontStyle: charts.FontStyle{
-			FontColor: drawing.ColorWhite,
+			FontColor: charts.ColorWhite,
 		},
 		Padding: charts.Box{
 			Top:    15,

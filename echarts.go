@@ -136,7 +136,7 @@ func (ey *EChartsYAxis) UnmarshalJSON(data []byte) error {
 }
 
 type EChartsPadding struct {
-	Box chartdraw.Box
+	Box Box
 }
 
 func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
@@ -344,7 +344,7 @@ type EChartsOption struct {
 	Theme      string         `json:"theme"`
 	FontFamily string         `json:"fontFamily"`
 	Padding    EChartsPadding `json:"padding"`
-	Box        chartdraw.Box  `json:"box"`
+	Box        Box            `json:"box"`
 	Width      int            `json:"width"`
 	Height     int            `json:"height"`
 	Title      struct {

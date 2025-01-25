@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestAxis(t *testing.T) {
@@ -201,7 +200,7 @@ func TestAxis(t *testing.T) {
 					Data: letterLabels,
 					FontStyle: FontStyle{
 						FontSize:  40.0,
-						FontColor: drawing.ColorBlue,
+						FontColor: ColorBlue,
 					},
 				}
 			},
@@ -232,8 +231,8 @@ func TestAxis(t *testing.T) {
 	axisTheme := MakeTheme(ThemeOption{
 		IsDarkMode:         false,
 		AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
-		AxisSplitLineColor: drawing.ColorBlack,
-		BackgroundColor:    drawing.ColorWhite,
+		AxisSplitLineColor: ColorBlack,
+		BackgroundColor:    ColorWhite,
 		TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
 	})
 	for i, tt := range tests {

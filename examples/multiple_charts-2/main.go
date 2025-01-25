@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-analyze/charts"
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 /*
@@ -65,7 +64,7 @@ func main() {
 	hBarOpt := charts.HorizontalBarChartOption{
 		Padding: chartdraw.NewBox(10, 10, 10, 10),
 		// set a transparent background theme to not overwrite the chart below
-		Theme: charts.GetDefaultTheme().WithBackgroundColor(drawing.ColorFromAlphaMixedRGBA(0, 0, 0, 0)),
+		Theme: charts.GetDefaultTheme().WithBackgroundColor(charts.ColorTransparent),
 		Legend: charts.LegendOption{
 			Data: []string{
 				"2011", "2012",

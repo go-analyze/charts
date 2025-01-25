@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestTitleRenderer(t *testing.T) {
@@ -158,11 +156,11 @@ func TestTitleRenderer(t *testing.T) {
 					Subtext: "subTitle",
 					FontStyle: FontStyle{
 						FontSize:  40.0,
-						FontColor: drawing.ColorBlue,
+						FontColor: ColorBlue,
 					},
 					SubtextFontStyle: FontStyle{
 						FontSize:  20.0,
-						FontColor: drawing.ColorPurple,
+						FontColor: ColorPurple,
 					},
 				}).Render()
 				if err != nil {

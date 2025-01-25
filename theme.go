@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 // ThemeLight is the default theme used, with series colors from echarts.
@@ -70,21 +69,34 @@ var palettes = sync.Map{}
 
 const defaultTheme = "default"
 
-var defaultLightFontColor = drawing.Color{R: 70, G: 70, B: 70, A: 255}
-var defaultDarkFontColor = drawing.Color{R: 238, G: 238, B: 238, A: 255}
+var defaultLightFontColor = Color{R: 70, G: 70, B: 70, A: 255}
+var defaultDarkFontColor = Color{R: 238, G: 238, B: 238, A: 255}
 
 func init() {
-	darkGray := Color{R: 40, G: 40, B: 40, A: 255}
 	echartSeriesColors := []Color{
-		drawing.ColorFromHex("#5470c6"),
-		drawing.ColorFromHex("#91cc75"),
-		drawing.ColorFromHex("#fac858"),
-		drawing.ColorFromHex("#ee6666"),
-		drawing.ColorFromHex("#73c0de"),
-		drawing.ColorFromHex("#3ba272"),
-		drawing.ColorFromHex("#fc8452"),
-		drawing.ColorFromHex("#9a60b4"),
-		drawing.ColorFromHex("#ea7ccc"),
+		{ // blue
+			R: 84, G: 112, B: 198, A: 255,
+		},
+		{ // green
+			R: 145, G: 204, B: 117, A: 255,
+		},
+		ColorOrangeAlt2,
+		{ // red
+			R: 238, G: 102, B: 102, A: 255,
+		},
+		{ // aqua
+			R: 115, G: 192, B: 222, A: 255,
+		},
+		ColorGreenAlt3,
+		{ // dark orange
+			R: 252, G: 132, B: 82, A: 255,
+		},
+		{ // dark purple
+			R: 154, G: 96, B: 180, A: 255,
+		},
+		{ // light purple
+			R: 234, G: 124, B: 204, A: 255,
+		},
 	}
 	InstallTheme(
 		ThemeLight,
@@ -92,7 +104,7 @@ func init() {
 			IsDarkMode:         false,
 			AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
 			AxisSplitLineColor: Color{R: 224, G: 230, B: 242, A: 255},
-			BackgroundColor:    drawing.ColorWhite,
+			BackgroundColor:    ColorWhite,
 			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
 			SeriesColors:       echartSeriesColors,
 		},
@@ -103,7 +115,7 @@ func init() {
 			IsDarkMode:         true,
 			AxisStrokeColor:    Color{R: 185, G: 184, B: 206, A: 255},
 			AxisSplitLineColor: Color{R: 72, G: 71, B: 83, A: 255},
-			BackgroundColor:    darkGray,
+			BackgroundColor:    ColorDarkGray,
 			TextColor:          Color{R: 238, G: 238, B: 238, A: 255},
 			SeriesColors:       echartSeriesColors,
 		},
@@ -143,7 +155,7 @@ func init() {
 			IsDarkMode:         false,
 			AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
 			AxisSplitLineColor: Color{R: 224, G: 230, B: 242, A: 255},
-			BackgroundColor:    drawing.ColorWhite,
+			BackgroundColor:    ColorWhite,
 			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
 			SeriesColors:       vividSeriesColors,
 		},
@@ -154,7 +166,7 @@ func init() {
 			IsDarkMode:         true,
 			AxisStrokeColor:    Color{R: 185, G: 184, B: 206, A: 255},
 			AxisSplitLineColor: Color{R: 72, G: 71, B: 83, A: 255},
-			BackgroundColor:    darkGray,
+			BackgroundColor:    ColorDarkGray,
 			TextColor:          Color{R: 238, G: 238, B: 238, A: 255},
 			SeriesColors:       vividSeriesColors,
 		},
@@ -165,17 +177,31 @@ func init() {
 			IsDarkMode:         false,
 			AxisStrokeColor:    Color{R: 110, G: 112, B: 121, A: 255},
 			AxisSplitLineColor: Color{R: 224, G: 230, B: 242, A: 255},
-			BackgroundColor:    drawing.ColorWhite,
+			BackgroundColor:    ColorWhite,
 			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
 			SeriesColors: []Color{
-				drawing.ColorFromHex("#5b8ff9"),
-				drawing.ColorFromHex("#5ad8a6"),
-				drawing.ColorFromHex("#5d7092"),
-				drawing.ColorFromHex("#f6bd16"),
-				drawing.ColorFromHex("#6f5ef9"),
-				drawing.ColorFromHex("#6dc8ec"),
-				drawing.ColorFromHex("#945fb9"),
-				drawing.ColorFromHex("#ff9845"),
+				{ // light blue
+					R: 91, G: 143, B: 249, A: 255,
+				},
+				{ // light green
+					R: 90, G: 216, B: 166, A: 255,
+				},
+				{ // dark blue
+					R: 93, G: 112, B: 146, A: 255,
+				},
+				{ // dark yellow
+					R: 246, G: 189, B: 22, A: 255,
+				},
+				{ // blue
+					R: 111, G: 94, B: 249, A: 255,
+				},
+				{ // aqua
+					R: 109, G: 200, B: 236, A: 255,
+				},
+				{ // purple
+					R: 148, G: 95, B: 185, A: 255,
+				},
+				ColorOrangeAlt3,
 			},
 		},
 	)
@@ -188,14 +214,26 @@ func init() {
 			BackgroundColor:    Color{R: 31, G: 29, B: 29, A: 255},
 			TextColor:          Color{R: 216, G: 217, B: 218, A: 255},
 			SeriesColors: []Color{
-				drawing.ColorFromHex("#7EB26D"),
-				drawing.ColorFromHex("#EAB839"),
-				drawing.ColorFromHex("#6ED0E0"),
-				drawing.ColorFromHex("#EF843C"),
-				drawing.ColorFromHex("#E24D42"),
-				drawing.ColorFromHex("#1F78C1"),
-				drawing.ColorFromHex("#705DA0"),
-				drawing.ColorFromHex("#508642"),
+				{ // dark green
+					R: 126, G: 178, B: 109, A: 255,
+				},
+				{ // orange
+					R: 234, G: 184, B: 57, A: 255,
+				},
+				{ // aqua
+					R: 110, G: 208, B: 224, A: 255,
+				},
+				{ // orange
+					R: 239, G: 132, B: 60, A: 255,
+				},
+				ColorRedAlt2,
+				{ // dark blue
+					R: 31, G: 120, B: 193, A: 255,
+				},
+				{ // dark purple
+					R: 112, G: 93, B: 160, A: 255,
+				},
+				ColorGreenAlt4,
 			},
 		},
 	)

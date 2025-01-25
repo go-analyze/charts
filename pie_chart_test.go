@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func makeBasicPieChartOption() PieChartOption {
@@ -282,7 +280,7 @@ func TestPieChart(t *testing.T) {
 				opt := makeBasicPieChartOption()
 				customFont := FontStyle{
 					FontSize:  4.0,
-					FontColor: drawing.ColorBlue,
+					FontColor: ColorBlue,
 				}
 				opt.Legend.FontStyle = customFont
 				opt.Title.FontStyle = customFont

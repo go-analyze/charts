@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func makeBasicHorizontalBarChartOption() HorizontalBarChartOption {
@@ -102,7 +100,7 @@ func TestHorizontalBarChart(t *testing.T) {
 				opt := makeBasicHorizontalBarChartOption()
 				customFont := FontStyle{
 					FontSize:  4.0,
-					FontColor: drawing.ColorBlue,
+					FontColor: ColorBlue,
 				}
 				opt.Legend.FontStyle = customFont
 				opt.XAxis.FontStyle = customFont

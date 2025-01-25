@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestNewLegend(t *testing.T) {
@@ -99,7 +98,7 @@ func TestNewLegend(t *testing.T) {
 					Data: []string{"One", "Two", "Three"},
 					FontStyle: FontStyle{
 						FontSize:  20.0,
-						FontColor: drawing.ColorBlue,
+						FontColor: ColorBlue,
 					},
 					Padding: chartdraw.NewBox(200, 20, 20, 20),
 				}).Render()

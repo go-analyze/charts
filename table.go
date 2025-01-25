@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 // TableOptionRenderDirect table render with the provided options directly to an image. Table options are different
@@ -81,7 +80,7 @@ type TableCell struct {
 	// FontStyle contains the configuration for the cell text font.
 	FontStyle FontStyle
 	// FillColor sets a color for this table cell.
-	FillColor drawing.Color
+	FillColor Color
 	// Row the row index of table cell.
 	Row int
 	// Column the column index of table cell.
@@ -135,7 +134,7 @@ var tableLightThemeSetting = tableSetting{
 	headerFontColor: Color{R: 80, G: 80, B: 80, A: 255},
 	fontColor:       Color{R: 50, G: 50, B: 50, A: 255},
 	rowColors: []Color{
-		drawing.ColorWhite,
+		ColorWhite,
 		{R: 245, G: 245, B: 245, A: 255},
 	},
 }
@@ -313,7 +312,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			opt.HeaderBackgroundColor = tableLightThemeSetting.headerColor
 		}
 	}
-	p.FilledRect(0, 0, info.width, info.headerHeight, opt.HeaderBackgroundColor, drawing.ColorTransparent, 0.0)
+	p.FilledRect(0, 0, info.width, info.headerHeight, opt.HeaderBackgroundColor, ColorTransparent, 0.0)
 
 	if opt.RowBackgroundColors == nil {
 		if opt.Theme.IsDark() {

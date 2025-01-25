@@ -641,7 +641,7 @@ func (p *Painter) Text(body string, x, y int, radians float64, fontStyle FontSty
 }
 
 // TextFit draws multi-line text constrained to a given width.
-func (p *Painter) TextFit(body string, x, y, width int, fontStyle FontStyle, textAligns ...string) chartdraw.Box {
+func (p *Painter) TextFit(body string, x, y, width int, fontStyle FontStyle, textAligns ...string) Box {
 	if fontStyle.Font == nil {
 		fontStyle.Font = getPreferredFont(p.font)
 	}
@@ -657,7 +657,7 @@ func (p *Painter) TextFit(body string, x, y, width int, fontStyle FontStyle, tex
 
 	lines := chartdraw.Text.WrapFit(r, body, width, style)
 
-	var output chartdraw.Box
+	var output Box
 	textAlign := ""
 	if len(textAligns) != 0 {
 		textAlign = textAligns[0]

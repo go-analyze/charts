@@ -2,8 +2,6 @@ package charts
 
 import (
 	"fmt"
-
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 type legendPainter struct {
@@ -270,7 +268,7 @@ func (l *legendPainter) Render() (Box, error) {
 			{X: left - padding, Y: result.Bottom + padding},
 		}
 		// TODO - allow color to be configured via theme or configuration
-		p.LineStroke(boxPoints, drawing.ColorBlack, opt.BorderWidth)
+		p.LineStroke(boxPoints, ColorBlack, opt.BorderWidth)
 	}
 
 	return result, nil

@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-analyze/charts"
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 /*
@@ -29,7 +28,7 @@ func main() {
 		Width:        800,
 		Height:       600,
 	})
-	p.FilledRect(0, 0, 800, 600, drawing.ColorWhite, drawing.ColorWhite, 0.0)
+	p.FilledRect(0, 0, 800, 600, charts.ColorWhite, charts.ColorWhite, 0.0)
 	// set the space and theme for each chart
 	topCenterPainter := p.Child(charts.PainterBoxOption(chartdraw.NewBox(0, 0, 800, 300)),
 		charts.PainterThemeOption(charts.GetTheme(charts.ThemeVividLight)))

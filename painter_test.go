@@ -10,7 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw"
-	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestPainterOption(t *testing.T) {
@@ -69,7 +68,7 @@ func TestPainterInternal(t *testing.T) {
 		{
 			name: "circle",
 			fn: func(p *Painter) {
-				p.Circle(5, 2, 3, drawing.ColorTransparent, drawing.ColorTransparent, 1.0)
+				p.Circle(5, 2, 3, ColorTransparent, ColorTransparent, 1.0)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><circle cx=\"7\" cy=\"13\" r=\"5\" style=\"stroke:none;fill:none\"/></svg>",
 		},
@@ -78,7 +77,7 @@ func TestPainterInternal(t *testing.T) {
 			fn: func(p *Painter) {
 				p.moveTo(1, 1)
 				p.lineTo(2, 2)
-				p.stroke(drawing.ColorTransparent, 1.0)
+				p.stroke(ColorTransparent, 1.0)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 6 11\nL 7 12\" style=\"stroke:none;fill:none\"/></svg>",
 		},
@@ -87,9 +86,16 @@ func TestPainterInternal(t *testing.T) {
 			fn: func(p *Painter) {
 				p.arcTo(100, 100, 100, 100, 0, math.Pi/2)
 				p.close()
-				p.fillStroke(drawing.ColorBlue, drawing.ColorBlack, 1)
+				p.fillStroke(ColorBlue, ColorBlack, 1)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 205 110\nA 100 100 90.00 0 1 105 210\nZ\" style=\"stroke-width:1;stroke:black;fill:blue\"/></svg>",
+		},
+		{
+			name: "draw_background",
+			fn: func(p *Painter) {
+				p.drawBackground(ColorWhite)
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 5 10\nL 400 10\nL 400 300\nL 5 300\nL 5 10\" style=\"stroke:none;fill:white\"/></svg>",
 		},
 	}
 
@@ -99,7 +105,7 @@ func TestPainterInternal(t *testing.T) {
 				OutputFormat: ChartOutputSVG,
 				Width:        400,
 				Height:       300,
-			}, PainterPaddingOption(chartdraw.Box{Left: 5, Top: 10}))
+			}, PainterPaddingOption(Box{Left: 5, Top: 10}))
 			tt.fn(p)
 			data, err := p.Bytes()
 			require.NoError(t, err)
@@ -137,7 +143,7 @@ func TestPainterExternal(t *testing.T) {
 					{X: 10, Y: 20},
 					{X: 30, Y: 40},
 					{X: 50, Y: 20},
-				}, drawing.ColorBlack, 1)
+				}, ColorBlack, 1)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 15 30\nL 35 50\nL 55 30\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
@@ -151,16 +157,37 @@ func TestPainterExternal(t *testing.T) {
 					{X: 40, Y: 50},
 					{X: 50, Y: 40},
 					{X: 60, Y: 80},
-				}, 0.5, drawing.ColorBlack, 1)
+				}, 0.5, ColorBlack, 1)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 15 30\nQ25,50 27,55\nQ35,70 37,67\nQ45,60 47,57\nQ55,50 57,60\nQ55,50 65,90\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "background",
 			fn: func(p *Painter) {
-				p.SetBackground(400, 300, chartdraw.ColorWhite)
+				p.SetBackground(400, 300, ColorWhite)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 5 10\nL 405 10\nL 405 310\nL 5 310\nL 5 10\" style=\"stroke:none;fill:white\"/></svg>",
+		},
+		{
+			name: "filled_rect",
+			fn: func(p *Painter) {
+				p.FilledRect(0, 0, 400, 300, ColorWhite, ColorWhite, 0.0)
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 5 10\nL 405 10\nL 405 310\nL 5 310\nL 5 10\" style=\"stroke:none;fill:white\"/></svg>",
+		},
+		{
+			name: "filled_rect_center",
+			fn: func(p *Painter) {
+				p.FilledRect(100, 100, 200, 150, ColorWhite, ColorWhite, 0.0)
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 105 110\nL 205 110\nL 205 160\nL 105 160\nL 105 110\" style=\"stroke:none;fill:white\"/></svg>",
+		},
+		{
+			name: "filled_rect_center_border",
+			fn: func(p *Painter) {
+				p.FilledRect(100, 100, 200, 150, ColorWhite, ColorBlue, 1.0)
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 105 110\nL 205 110\nL 205 160\nL 105 160\nL 105 110\" style=\"stroke-width:1;stroke:blue;fill:white\"/></svg>",
 		},
 		{
 			name: "pin",
@@ -239,7 +266,7 @@ func TestPainterExternal(t *testing.T) {
 				_ = p.LineChart(opt)
 				p = p.Child(PainterBoxOption(chartdraw.NewBox(0, 200, 400, 200)))
 				opt = makeMinimalLineChartOption()
-				opt.Theme = GetDefaultTheme().WithBackgroundColor(drawing.ColorFromAlphaMixedRGBA(0, 0, 0, 0))
+				opt.Theme = GetDefaultTheme().WithBackgroundColor(ColorFromRGBAValues(0, 0, 0, 0))
 				_ = p.LineChart(opt)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 5 10\nL 400 10\nL 400 300\nL 5 300\nL 5 10\" style=\"stroke:none;fill:white\"/><text x=\"15\" y=\"27\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1440</text><text x=\"15\" y=\"53\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1280</text><text x=\"15\" y=\"80\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1120</text><text x=\"23\" y=\"107\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"23\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"23\" y=\"160\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"23\" y=\"187\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"23\" y=\"213\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"23\" y=\"240\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"41\" y=\"267\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 60 20\nL 390 20\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 46\nL 390 46\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 73\nL 390 73\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 100\nL 390 100\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 126\nL 390 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 153\nL 390 153\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 180\nL 390 180\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 206\nL 390 206\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 60 233\nL 390 233\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 83 240\nL 130 238\nL 177 244\nL 224 238\nL 271 245\nL 318 222\nL 366 225\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 83 124\nL 130 105\nL 177 110\nL 224 105\nL 271 45\nL 318 39\nL 366 40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/><path  d=\"M 200 0\nL 400 0\nL 400 200\nL 200 200\nL 200 0\" style=\"stroke:none;fill:none\"/><text x=\"210\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.44k</text><text x=\"210\" y=\"33\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.28k</text><text x=\"210\" y=\"50\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.12k</text><text x=\"222\" y=\"67\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"222\" y=\"83\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"222\" y=\"100\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"222\" y=\"117\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"222\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"222\" y=\"150\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"240\" y=\"167\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 259 10\nL 390 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 26\nL 390 26\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 43\nL 390 43\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 60\nL 390 60\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 76\nL 390 76\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 93\nL 390 93\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 110\nL 390 110\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 126\nL 390 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 143\nL 390 143\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 259 148\nL 280 147\nL 302 150\nL 324 147\nL 346 151\nL 368 137\nL 390 139\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 259 75\nL 280 63\nL 302 67\nL 324 63\nL 346 26\nL 368 22\nL 390 23\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/></svg>",
@@ -252,7 +279,7 @@ func TestPainterExternal(t *testing.T) {
 				OutputFormat: ChartOutputSVG,
 				Width:        400,
 				Height:       300,
-			}, PainterPaddingOption(chartdraw.Box{Left: 5, Top: 10}))
+			}, PainterPaddingOption(Box{Left: 5, Top: 10}))
 			tt.fn(p)
 			data, err := p.Bytes()
 			require.NoError(t, err)
@@ -269,7 +296,7 @@ func TestTextRotationHeightAdjustment(t *testing.T) {
 	fontStyle := FontStyle{
 		Font:      GetDefaultFont(),
 		FontSize:  32,
-		FontColor: drawing.ColorBlack,
+		FontColor: ColorBlack,
 	}
 	drawDebugBox := false
 
@@ -386,7 +413,7 @@ func TestTextRotationHeightAdjustment(t *testing.T) {
 				OutputFormat: ChartOutputSVG,
 				Width:        600,
 				Height:       400,
-			}, PainterPaddingOption(chartdraw.Box{Left: padding, Top: padding}))
+			}, PainterPaddingOption(Box{Left: padding, Top: padding}))
 
 			radians := DegreesToRadians(float64(tt.degrees))
 			testText := text + name
@@ -400,7 +427,7 @@ func TestTextRotationHeightAdjustment(t *testing.T) {
 					{X: textBox.Width(), Y: 0},
 					{X: 0, Y: 0},
 				}
-				p.LineStroke(debugBox, drawing.ColorBlue, 1)
+				p.LineStroke(debugBox, ColorBlue, 1)
 			}
 
 			assert.Equal(t, tt.expectedY, padding-textRotationHeightAdjustment(textBox.Width(), textBox.Height(), radians))
@@ -436,7 +463,7 @@ func TestPainterRoundedRect(t *testing.T) {
 					Right:  30,
 					Bottom: 150,
 					Top:    10,
-				}, 5, true, true, drawing.ColorBlue, drawing.ColorBlue, 1)
+				}, 5, true, true, ColorBlue, ColorBlue, 1)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 15 10\nL 25 10\nL 25 10\nA 5 5 90.00 0 1 30 15\nL 30 145\nL 30 145\nA 5 5 90.00 0 1 25 150\nL 15 150\nL 15 150\nA 5 5 90.00 0 1 10 145\nL 10 15\nL 10 15\nA 5 5 90.00 0 1 15 10\nZ\" style=\"stroke-width:1;stroke:blue;fill:blue\"/></svg>",
 		},
@@ -448,7 +475,7 @@ func TestPainterRoundedRect(t *testing.T) {
 					Right:  30,
 					Bottom: 150,
 					Top:    10,
-				}, 5, false, true, drawing.ColorBlue, drawing.ColorBlue, 1)
+				}, 5, false, true, ColorBlue, ColorBlue, 1)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 10 10\nL 30 10\nL 30 145\nL 30 145\nA 5 5 90.00 0 1 25 150\nL 15 150\nL 15 150\nA 5 5 90.00 0 1 10 145\nL 10 10\nZ\" style=\"stroke-width:1;stroke:blue;fill:blue\"/></svg>",
 		},
@@ -460,7 +487,7 @@ func TestPainterRoundedRect(t *testing.T) {
 					Right:  30,
 					Bottom: 150,
 					Top:    10,
-				}, 5, true, false, drawing.ColorBlue, drawing.ColorBlue, 1)
+				}, 5, true, false, ColorBlue, ColorBlue, 1)
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 15 10\nL 25 10\nL 25 10\nA 5 5 90.00 0 1 30 15\nL 30 150\nL 10 150\nL 10 15\nL 10 15\nA 5 5 90.00 0 1 15 10\nZ\" style=\"stroke-width:1;stroke:blue;fill:blue\"/></svg>",
 		},
@@ -496,13 +523,13 @@ func TestPainterMeasureText(t *testing.T) {
 	})
 	style := FontStyle{
 		FontSize:  12,
-		FontColor: chartdraw.ColorBlack,
+		FontColor: ColorBlack,
 		Font:      GetDefaultFont(),
 	}
 
-	assert.Equal(t, chartdraw.Box{Right: 84, Bottom: 15, IsSet: true},
+	assert.Equal(t, Box{Right: 84, Bottom: 15, IsSet: true},
 		svgP.MeasureText("Hello World!", 0, style))
-	assert.Equal(t, chartdraw.Box{Right: 99, Bottom: 14, IsSet: true},
+	assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
 		pngP.MeasureText("Hello World!", 0, style))
 }
 
@@ -516,15 +543,16 @@ func TestPainterTextFit(t *testing.T) {
 	})
 	fontStyle := FontStyle{
 		FontSize:  12,
-		FontColor: chartdraw.ColorBlack,
+		FontColor: ColorBlackAlt1,
 		Font:      GetDefaultFont(),
 	}
 
-	box := p.TextFit("Hello World!", 0, 20, 80, fontStyle)
-	assert.Equal(t, chartdraw.Box{Right: 45, Bottom: 35, IsSet: true}, box)
+	text := "Hello World!"
+	box := p.TextFit(text, 0, 20, 80, fontStyle)
+	assert.Equal(t, Box{Right: 45, Bottom: 35, IsSet: true}, box)
 
-	box = p.TextFit("Hello World!", 0, 100, 200, fontStyle)
-	assert.Equal(t, chartdraw.Box{Right: 84, Bottom: 15, IsSet: true}, box)
+	box = p.TextFit(text, 0, 100, 200, fontStyle)
+	assert.Equal(t, Box{Right: 84, Bottom: 15, IsSet: true}, box)
 
 	buf, err := p.Bytes()
 	require.NoError(t, err)
@@ -539,7 +567,7 @@ func TestMultipleChartsOnPainter(t *testing.T) {
 		Width:        800,
 		Height:       600,
 	})
-	p.FilledRect(0, 0, 800, 600, drawing.ColorWhite, drawing.ColorTransparent, 0.0)
+	p.FilledRect(0, 0, 800, 600, ColorWhite, ColorTransparent, 0.0)
 	// set the space and theme for each chart
 	topCenterPainter := p.Child(PainterBoxOption(chartdraw.NewBox(0, 0, 800, 300)),
 		PainterThemeOption(GetTheme(ThemeVividLight)))

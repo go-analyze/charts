@@ -3,8 +3,6 @@ package charts
 import (
 	"errors"
 	"testing"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func makeDefaultMultiChartOptions() ChartOption {
@@ -18,7 +16,7 @@ func makeDefaultMultiChartOptions() ChartOption {
 				"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 			},
 		},
-		Padding: chartdraw.Box{
+		Padding: Box{
 			Top:    10,
 			Right:  10,
 			Bottom: 10,
@@ -53,7 +51,7 @@ func makeDefaultMultiChartOptions() ChartOption {
 						"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 					},
 				},
-				Box: chartdraw.Box{
+				Box: Box{
 					Top:    20,
 					Left:   400,
 					Right:  500,
