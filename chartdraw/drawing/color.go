@@ -47,6 +47,12 @@ var (
 
 	// select extended colors
 
+	// ColorLightGray is R: 211, G: 211, B: 211.
+	ColorLightGray = Color{R: 211, G: 211, B: 211, A: 255}
+	// ColorSlateGray is R: 112, G: 128, B: 144.
+	ColorSlateGray = Color{R: 112, G: 128, B: 144, A: 255}
+	// ColorLightSlateGray is R: 119, G: 136, B: 211.
+	ColorLightSlateGray = Color{R: 119, G: 136, B: 211, A: 255}
 	// ColorAzure is R: 240, G: 255, B: 255.
 	ColorAzure = Color{R: 240, G: 255, B: 255, A: 255}
 	// ColorBeige is R: 245, G: 245, B: 220.
@@ -73,6 +79,8 @@ var (
 	ColorSalmon = Color{R: 250, G: 128, B: 114, A: 255}
 	// ColorTan is R: 210, G: 180, B: 140.
 	ColorTan = Color{R: 210, G: 180, B: 140, A: 255}
+	// ColorKhaki is R: 240, G: 230, B: 140.
+	ColorKhaki = Color{R: 240, G: 230, B: 140, A: 255}
 	// ColorTurquoise is R: 64, G: 224, B: 208.
 	ColorTurquoise = Color{R: 64, G: 224, B: 208, A: 255}
 	// ColorViolet is R: 238, G: 130, B: 238.
@@ -166,6 +174,10 @@ func ColorFromKnown(known string) Color {
 		return ColorBlack
 	case "grey", "gray":
 		return ColorGray
+	case "lightgrey", "lightgray":
+		return ColorLightGray
+	case "lightslategrey", "lightslategray":
+		return ColorLightSlateGray
 	case "red":
 		return ColorRed
 	case "blue":
