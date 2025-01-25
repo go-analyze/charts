@@ -234,8 +234,10 @@ func ColorFromKnown(known string) Color {
 		return ColorTurquoise
 	case "violet":
 		return ColorViolet
-	default:
+	case "":
 		return Color{}
+	default:
+		return ColorBlack
 	}
 }
 

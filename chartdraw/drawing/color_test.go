@@ -86,10 +86,13 @@ func TestParseColor(t *testing.T) {
 		Expected Color
 	}{
 		{"", Color{}},
+		{"unknown", ColorBlack},
 		{"white", ColorWhite},
 		{"WHITE", ColorWhite}, // caps!
 		{"black", ColorBlack},
 		{"red", ColorRed},
+		{"gray", ColorGray},
+		{"grey", ColorGray},
 		{"green", ColorGreen},
 		{"blue", ColorBlue},
 		{"silver", ColorSilver},
