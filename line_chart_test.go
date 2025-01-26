@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 func makeFullLineChartOption() LineChartOption {
@@ -639,6 +641,62 @@ func TestLineChart(t *testing.T) {
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"94\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"211\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"289\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"328\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><text x=\"10\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text><path  d=\"M 26 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 48\nL 590 48\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 87\nL 590 87\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 165\nL 590 165\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 204\nL 590 204\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 282\nL 590 282\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 26 321\nL 590 321\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 66 331\nL 146 328\nL 227 336\nL 307 328\nL 388 339\nL 468 305\nL 549 309\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 66 161\nL 146 134\nL 227 142\nL 307 133\nL 388 47\nL 468 37\nL 549 40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/></svg>",
+		},
+		{
+			name:         "mark_line",
+			defaultTheme: true,
+			makeOptions: func() LineChartOption {
+				opt := makeMinimalLineChartOption()
+				opt.Padding = chartdraw.NewBox(40, 40, 40, 40)
+				opt.YAxis[0].Show = False()
+				for i := range opt.SeriesList {
+					markLine := NewMarkLine("min", "max", "average")
+					markLine.ValueFormatter = func(f float64) string {
+						return FormatValueHumanizeShort(f, 0, false)
+					}
+					opt.SeriesList[i].MarkLine = markLine
+				}
+				return opt
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 77 306\nL 151 304\nL 225 310\nL 299 304\nL 374 312\nL 448 284\nL 522 288\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 77 165\nL 151 143\nL 225 149\nL 299 142\nL 374 71\nL 448 63\nL 522 65\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"43\" cy=\"312\" r=\"3\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 49 312\nL 542 312\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 542 307\nL 558 312\nL 542 317\nL 547 312\nL 542 307\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"560\" y=\"316\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">90</text><circle cx=\"43\" cy=\"284\" r=\"3\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 49 284\nL 542 284\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 542 279\nL 558 284\nL 542 289\nL 547 284\nL 542 279\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"560\" y=\"288\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">230</text><circle cx=\"43\" cy=\"301\" r=\"3\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 49 301\nL 542 301\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 542 296\nL 558 301\nL 542 306\nL 547 301\nL 542 296\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"560\" y=\"305\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">145</text><circle cx=\"43\" cy=\"165\" r=\"3\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 49 165\nL 542 165\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 542 160\nL 558 165\nL 542 170\nL 547 165\nL 542 160\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"560\" y=\"169\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">820</text><circle cx=\"43\" cy=\"63\" r=\"3\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 49 63\nL 542 63\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 542 58\nL 558 63\nL 542 68\nL 547 63\nL 542 58\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"560\" y=\"67\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">1k</text><circle cx=\"43\" cy=\"114\" r=\"3\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 49 114\nL 542 114\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 542 109\nL 558 114\nL 542 119\nL 547 114\nL 542 109\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"560\" y=\"118\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">1k</text></svg>",
+		},
+		{
+			name:         "mark_point",
+			defaultTheme: true,
+			makeOptions: func() LineChartOption {
+				opt := makeMinimalLineChartOption()
+				opt.YAxis[0].Show = False()
+				for i := range opt.SeriesList {
+					markPoint := NewMarkPoint("min", "max")
+					markPoint.ValueFormatter = func(f float64) string {
+						return FormatValueHumanizeShort(f, 0, false)
+					}
+					opt.SeriesList[i].MarkPoint = markPoint
+				}
+				return opt
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 51 337\nL 133 335\nL 216 341\nL 299 334\nL 382 343\nL 465 316\nL 548 320\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 51 201\nL 133 179\nL 216 185\nL 299 179\nL 382 110\nL 465 102\nL 548 104\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/><path  d=\"M 379 335\nA 14 14 330.00 1 1 385 335\nL 382 322\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 368 322\nQ382,357 396,322\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><text x=\"375\" y=\"327\" style=\"stroke:none;fill:rgb(238,238,238);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">90</text><path  d=\"M 462 308\nA 14 14 330.00 1 1 468 308\nL 465 295\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 451 295\nQ465,330 479,295\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><text x=\"454\" y=\"300\" style=\"stroke:none;fill:rgb(238,238,238);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">230</text><path  d=\"M 48 193\nA 14 14 330.00 1 1 54 193\nL 51 180\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 37 180\nQ51,215 65,180\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><text x=\"40\" y=\"185\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">820</text><path  d=\"M 462 94\nA 14 14 330.00 1 1 468 94\nL 465 81\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 451 81\nQ465,116 479,81\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><text x=\"458\" y=\"86\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">1k</text></svg>",
+		},
+		{
+			name:         "series_label",
+			defaultTheme: true,
+			makeOptions: func() LineChartOption {
+				opt := makeMinimalLineChartOption()
+				opt.YAxis[0].Show = False()
+				for i := range opt.SeriesList {
+					opt.SeriesList[i].Label.Show = True()
+					opt.SeriesList[i].Label.FontStyle = FontStyle{
+						FontSize:  12.0,
+						Font:      GetDefaultFont(),
+						FontColor: ColorBlue,
+					}
+					opt.SeriesList[i].Label.ValueFormatter = func(f float64) string {
+						return FormatValueHumanizeShort(f, 2, false)
+					}
+				}
+				return opt
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 51 331\nL 133 328\nL 216 336\nL 299 328\nL 382 339\nL 465 305\nL 548 309\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 51 161\nL 133 134\nL 216 142\nL 299 133\nL 382 47\nL 465 37\nL 548 40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/><text x=\"56\" y=\"336\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">120</text><text x=\"138\" y=\"333\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">132</text><text x=\"221\" y=\"341\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">101</text><text x=\"304\" y=\"333\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">134</text><text x=\"387\" y=\"344\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">90</text><text x=\"470\" y=\"310\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">230</text><text x=\"553\" y=\"314\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">210</text><text x=\"56\" y=\"166\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">820</text><text x=\"138\" y=\"139\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">932</text><text x=\"221\" y=\"147\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">901</text><text x=\"304\" y=\"138\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">934</text><text x=\"387\" y=\"52\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.29k</text><text x=\"470\" y=\"42\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.33k</text><text x=\"553\" y=\"45\" style=\"stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.32k</text></svg>",
 		},
 	}
 

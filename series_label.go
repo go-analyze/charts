@@ -46,11 +46,22 @@ func newSeriesLabelPainter(p *Painter, seriesNames []string, label SeriesLabel,
 
 func (o *seriesLabelPainter) Add(value labelValue) {
 	label := o.label
+	if flagIs(false, label.Show) {
+		return
+	}
 	distance := label.Distance
 	if distance == 0 {
 		distance = 5
 	}
-	text := labelFormatValue(o.seriesNames, label.Formatter, value.index, value.value, -1)
+	var text string
+	if label.ValueFormatter != nil {
+		text = label.ValueFormatter(value.value)
+	} else {
+		if label.FormatTemplate == "" {
+			label.FormatTemplate = label.Formatter
+		}
+		text = labelFormatValue(o.seriesNames, label.FormatTemplate, value.index, value.value, -1)
+	}
 	labelStyle := FontStyle{
 		FontColor: o.theme.GetTextColor(),
 		FontSize:  labelFontSize,

@@ -67,6 +67,7 @@ func (m *markPointPainter) Render() (Box, error) {
 		} else {
 			textStyle.FontColor = defaultDarkFontColor
 		}
+		valueFormatter := getPreferredValueFormatter(opt.Series.MarkPoint.ValueFormatter, opt.Series.Label.ValueFormatter)
 		for _, markPointData := range opt.Series.MarkPoint.Data {
 			textStyle.FontSize = labelFontSize
 			p := points[summary.MinIndex]
@@ -78,9 +79,9 @@ func (m *markPointPainter) Render() (Box, error) {
 			}
 
 			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize, opt.FillColor, opt.FillColor, 0.0)
-			text := defaultValueFormatter(value)
+			text := valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, textStyle.FontStyle)
-			if textBox.Width() > symbolSize {
+			if textStyle.FontSize > smallLabelFontSize && textBox.Width() > symbolSize {
 				textStyle.FontSize = smallLabelFontSize
 				textBox = painter.MeasureText(text, 0, textStyle.FontStyle)
 			}

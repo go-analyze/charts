@@ -31,11 +31,15 @@ func newSeriesListFromValues(values [][]float64, chartType string, label SeriesL
 }
 
 type SeriesLabel struct {
-	// Data label formatter, which supports string template.
+	// Deprecated: Formatter is deprecated, use FormatTemplate as a direct replacement.
+	Formatter string
+	// FormatTemplate is a string template for formatting the data label.
 	// {b}: the name of a data item.
 	// {c}: the value of a data item.
 	// {d}: the percent of a data item(pie chart).
-	Formatter string
+	FormatTemplate string
+	// ValueFormatter is an alternative method of providing a format for the data label.
+	ValueFormatter ValueFormatter
 	// FontStyle specifies the font and style for the label.
 	FontStyle FontStyle
 	// Show flag for label, if unset the behavior will be defaulted based on the chart.
@@ -62,11 +66,15 @@ type SeriesMarkData struct {
 type SeriesMarkPoint struct {
 	// SymbolSize is the width of symbol, default value is 30.
 	SymbolSize int
+	// ValueFormatter is used to produce the label for the Mark Point.
+	ValueFormatter ValueFormatter
 	// Data is the mark data for the series mark point.
 	Data []SeriesMarkData
 }
 
 type SeriesMarkLine struct {
+	// ValueFormatter is used to produce the label for the Mark Line.
+	ValueFormatter ValueFormatter
 	// Data is the mark data for the series mark line.
 	Data []SeriesMarkData
 }
@@ -88,7 +96,8 @@ type Series struct {
 	Radius string
 	// MarkPoint provides a series for mark points.
 	MarkPoint SeriesMarkPoint
-	// MarkLine provides a series for mark lines.
+	// MarkLine provides a series for mark lines. When using a MarkLine, you will want to configure padding to the
+	// chart on the right for the values.
 	MarkLine SeriesMarkLine
 }
 

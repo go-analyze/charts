@@ -56,6 +56,7 @@ func (m *markLinePainter) Render() (Box, error) {
 			FontColor: opt.FontColor,
 			FontSize:  labelFontSize,
 		}
+		valueFormatter := getPreferredValueFormatter(opt.Series.MarkLine.ValueFormatter, opt.Series.Label.ValueFormatter)
 		for _, markLine := range s.MarkLine.Data {
 			var value float64
 			switch markLine.Type {
@@ -67,9 +68,9 @@ func (m *markLinePainter) Render() (Box, error) {
 				value = summary.Average
 			}
 			y := opt.Range.getRestHeight(value)
-			width := painter.Width()
-			text := defaultValueFormatter(value)
+			text := valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, fontStyle)
+			width := painter.Width()
 			painter.MarkLine(0, y, width-2, opt.FillColor, opt.StrokeColor, 1, []float64{4, 2})
 			painter.Text(text, width, y+textBox.Height()>>1-2, 0, fontStyle)
 		}
