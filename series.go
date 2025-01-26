@@ -46,7 +46,8 @@ type SeriesLabel struct {
 	Show *bool
 	// Distance to the host graphic element.
 	Distance int // TODO - do we want to replace with just Offset?
-	// Position defines the label position.
+	// Deprecated: Position is deprecated, this value was only used on bar and horizontal bar charts. Instead use
+	// SeriesLabelPosition on those chart options directly.
 	Position string
 	// Offset specifies an offset from the position.
 	Offset OffsetInt
@@ -137,15 +138,26 @@ func (sl SeriesList) getYAxisCount() int {
 	return 1
 }
 
-// GetMinMax get max and min value of series list for a given y-axis index (either 0 or 1).
+// Deprecated: GetMinMax is deprecated, instead use Series.Summary().  For example seriesList[0].Summary().
 func (sl SeriesList) GetMinMax(yaxisIndex int) (float64, float64) {
+	min, max, _ := sl.getMinMaxSumMax(yaxisIndex, false)
+	return min, max
+}
+
+// getMinMaxSum returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1). This is a
+// higher performance option for internal use. calcSum provides an optimization to only calculate the sumMax if it will be used.
+func (sl SeriesList) getMinMaxSumMax(yaxisIndex int, calcSum bool) (float64, float64, float64) {
 	min := math.MaxFloat64
 	max := -math.MaxFloat64
+	var sums []float64
+	if calcSum {
+		sums = make([]float64, len(sl[0].Data)) // all data sizes assumed to be the same
+	}
 	for _, series := range sl {
 		if series.YAxisIndex != yaxisIndex {
 			continue
 		}
-		for _, item := range series.Data {
+		for i, item := range series.Data {
 			if item == GetNullValue() {
 				continue
 			}
@@ -155,9 +167,20 @@ func (sl SeriesList) GetMinMax(yaxisIndex int) (float64, float64) {
 			if item < min {
 				min = item
 			}
+			if calcSum {
+				sums[i] += item
+			}
 		}
 	}
-	return min, max
+	maxSum := max
+	if calcSum {
+		for _, val := range sums {
+			if val > maxSum {
+				maxSum = val
+			}
+		}
+	}
+	return min, max, maxSum
 }
 
 // LineSeriesOption provides series customization for NewSeriesListLine.

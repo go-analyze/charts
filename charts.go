@@ -75,6 +75,8 @@ type defaultRenderOption struct {
 	padding Box
 	// seriesList provides the data series.
 	seriesList SeriesList
+	// stackSeries can be set to true if the series data will be stacked (summed).
+	stackSeries bool
 	// xAxis are options for the x-axis.
 	xAxis *XAxisOption
 	// yAxis are options for the y-axis (at most two).
@@ -218,11 +220,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			minPadRange = *yAxisOption.RangeValuePaddingScale
 			maxPadRange = *yAxisOption.RangeValuePaddingScale
 		}
-		min, max := opt.seriesList.GetMinMax(index)
+		min, max, sumMax := opt.seriesList.getMinMaxSumMax(index, opt.stackSeries)
 		decimalData := min != math.Floor(min) || (max-min) != math.Floor(max-min)
 		if yAxisOption.Min != nil && *yAxisOption.Min < min {
 			min = *yAxisOption.Min
 			minPadRange = 0.0
+		}
+		if opt.stackSeries {
+			// If stacking, max should be the highest sum
+			max = sumMax
 		}
 		if yAxisOption.Max != nil && *yAxisOption.Max > max {
 			max = *yAxisOption.Max

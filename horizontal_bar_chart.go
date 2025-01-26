@@ -33,6 +33,14 @@ type HorizontalBarChartOption struct {
 	Font *truetype.Font
 	// SeriesList provides the data series.
 	SeriesList SeriesList
+	// StackSeries if set to *true a single bar with the colored series stacked together will be rendered.
+	// This feature will result in some options being ignored, including BarMargin and SeriesLabelPosition.
+	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
+	// base bar, other bars are influenced by prior values).
+	StackSeries *bool
+	// SeriesLabelPosition specifies the position of the label for the series. Currently supported values are
+	// "left" or "right".
+	SeriesLabelPosition string
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
 	// YAxis are options for the y-axis (at most two).
@@ -68,8 +76,19 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
-	min, max := seriesList.GetMinMax(0)
-	margin, barMargin, barHeight := calculateBarMarginsAndSize(seriesCount, height, opt.BarHeight, opt.BarMargin)
+	stackedSeries := flagIs(true, opt.StackSeries)
+	min, max, sumMax := seriesList.getMinMaxSumMax(0, stackedSeries)
+	// If stacking, keep track of accumulated widths for each data index (after the “reverse” logic).
+	var accumulatedWidths []int
+	var margin, barMargin, barHeight int
+	if stackedSeries {
+		// If stacking, max should be the highest sum
+		max = sumMax
+		accumulatedWidths = make([]int, yRange.divideCount)
+		margin, _, barHeight = calculateBarMarginsAndSize(1, height, opt.BarHeight, nil)
+	} else {
+		margin, barMargin, barHeight = calculateBarMarginsAndSize(seriesCount, height, opt.BarHeight, opt.BarMargin)
+	}
 
 	seriesNames := seriesList.Names()
 	// xRange is used to convert data values into horizontal bar widths
@@ -101,25 +120,44 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			// Determine the width (horizontal length) of the bar based on the data value
 			w := xRange.getHeight(item)
 
-			// Offset each series in its own lane
-			if index != 0 {
-				y += index * (barHeight + barMargin)
+			var left, right int
+			if stackedSeries {
+				// Start where the previous series ended
+				left = accumulatedWidths[reversedJ]
+				right = left + w
+				accumulatedWidths[reversedJ] = right
+			} else {
+				// Offset each series in its own lane
+				if index != 0 {
+					y += index * (barHeight + barMargin)
+				}
+				left = 0
+				right = w
 			}
 
-			seriesPainter.FilledRect(0, y, w, y+barHeight, seriesColor, seriesColor, 0.0)
+			seriesPainter.FilledRect(left, y, right, y+barHeight, seriesColor, seriesColor, 0.0)
 
 			if labelPainter != nil {
-				labelX := w
-				if series.Label.Position == PositionLeft {
+				fontStyle := series.Label.FontStyle
+				labelX := right
+				labelY := y + (barHeight >> 1)
+				labelLeft := (opt.SeriesLabelPosition == PositionLeft || series.Label.Position == PositionLeft) && !stackedSeries
+				if labelLeft {
 					labelX = 0
 				}
-				labelY := y + (barHeight >> 1)
-				fontStyle := series.Label.FontStyle
-				if series.Label.Position == PositionLeft && fontStyle.FontColor.IsZero() {
-					if isLightColor(seriesColor) {
-						fontStyle.FontColor = defaultLightFontColor
-					} else {
-						fontStyle.FontColor = defaultDarkFontColor
+				if fontStyle.FontColor.IsZero() {
+					var testColor Color
+					if labelLeft {
+						testColor = seriesColor
+					} else if stackedSeries && index+1 < seriesCount {
+						testColor = opt.Theme.GetSeriesColor(index + 1)
+					}
+					if !testColor.IsZero() {
+						if isLightColor(testColor) {
+							fontStyle.FontColor = defaultLightFontColor
+						} else {
+							fontStyle.FontColor = defaultDarkFontColor
+						}
 					}
 				}
 
@@ -153,6 +191,7 @@ func (h *horizontalBarChart) Render() (Box, error) {
 		theme:          opt.Theme,
 		padding:        opt.Padding,
 		seriesList:     opt.SeriesList,
+		stackSeries:    flagIs(true, opt.StackSeries),
 		xAxis:          &h.opt.XAxis,
 		yAxis:          opt.YAxis,
 		title:          opt.Title,
