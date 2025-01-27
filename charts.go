@@ -434,13 +434,21 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	// horizontal bar chart
 	if len(horizontalBarSeriesList) != 0 {
+		var yAxis YAxisOption
+		if len(opt.YAxis) > 0 {
+			if len(opt.YAxis) > 1 {
+				return nil, errors.New("horizontal bar chart only accepts a single Y-Axis")
+			}
+			yAxis = opt.YAxis[0]
+		}
+
 		handler.Add(func() error {
 			_, err := newHorizontalBarChart(p, HorizontalBarChartOption{
 				Theme:       opt.Theme,
 				Font:        opt.Font,
 				BarHeight:   opt.BarHeight,
 				BarMargin:   opt.BarMargin,
-				YAxis:       opt.YAxis,
+				YAxis:       yAxis,
 				StackSeries: opt.StackSeries,
 			}).render(renderResult, horizontalBarSeriesList)
 			return err

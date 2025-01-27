@@ -38,11 +38,9 @@ func main() {
 	opt.Legend.Data = []string{
 		"2011", "2012",
 	}
-	opt.YAxis = []charts.YAxisOption{
-		{
-			Data: []string{
-				"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
-			},
+	opt.YAxis = charts.YAxisOption{
+		Data: []string{
+			"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
 		},
 	}
 
