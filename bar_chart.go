@@ -118,8 +118,6 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	seriesNames := seriesList.Names()
 	divideValues := xRange.AutoDivide()
 	stackedSeries := flagIs(true, opt.StackSeries)
-
-	// Basic margins around each bar or bar cluster
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
 	if stackedSeries {

@@ -84,7 +84,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	opt := l.opt
 	seriesPainter := result.seriesPainter
 
-	boundaryGap := !opt.FillArea // boundary gap default enabled unless fill area is set
+	stackedSeries := flagIs(true, opt.StackSeries)
+	fillArea := stackedSeries || opt.FillArea // fill area defaults to on if the series is stacked
+	boundaryGap := !fillArea                  // boundary gap default enabled unless fill area is set
 	if opt.XAxis.BoundaryGap != nil {
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
@@ -99,8 +101,12 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 	xDivideValues := autoDivide(seriesPainter.Width(), xDivideCount)
 	xValues := make([]int, len(xDivideValues)-1)
+	dataCount := seriesList.getMaxDataCount(ChartTypeLine)
 	// accumulatedValues is used for stacking: it holds the summed data values at each X index
 	var accumulatedValues []float64
+	if stackedSeries {
+		accumulatedValues = make([]float64, dataCount)
+	}
 	if boundaryGap {
 		for i := 0; i < len(xDivideValues)-1; i++ {
 			xValues[i] = (xDivideValues[i] + xDivideValues[i+1]) >> 1
@@ -108,27 +114,10 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	} else {
 		xValues = xDivideValues
 	}
-
-	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
-	markPointPainter := newMarkPointPainter(seriesPainter)
-	markLinePainter := newMarkLinePainter(seriesPainter)
-	rendererList := []renderer{
-		markPointPainter,
-		markLinePainter,
-	}
-
 	strokeWidth := opt.LineStrokeWidth
 	if strokeWidth == 0 {
 		strokeWidth = defaultStrokeWidth
 	}
-
-	dataCount := seriesList.getMaxDataCount(ChartTypeLine)
-
-	stackedSeries := flagIs(true, opt.StackSeries)
-	if stackedSeries {
-		accumulatedValues = make([]float64, dataCount)
-	}
-
 	showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
 	if opt.StrokeSmoothingTension > 0 {
 		showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
@@ -136,6 +125,11 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	if opt.SymbolShow != nil {
 		showSymbol = *opt.SymbolShow
 	}
+
+	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
+	markPointPainter := newMarkPointPainter(seriesPainter)
+	markLinePainter := newMarkLinePainter(seriesPainter)
+	rendererList := []renderer{markPointPainter, markLinePainter}
 
 	seriesCount := len(seriesList)
 	seriesNames := seriesList.Names()
@@ -178,7 +172,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 		}
 
-		if stackedSeries || opt.FillArea {
+		if fillArea {
 			areaPoints := make([]Point, len(points))
 			copy(areaPoints, points)
 			bottomY := yRange.getRestHeight(yRange.min)
@@ -293,7 +287,8 @@ func (l *lineChart) Render() (Box, error) {
 	}
 	// boundary gap default must be set here as it's used by the x-axis as well
 	if opt.XAxis.BoundaryGap == nil {
-		boundaryGap := !opt.FillArea // boundary gap default enabled unless fill area is set
+		fillArea := flagIs(true, opt.StackSeries) || opt.FillArea
+		boundaryGap := !fillArea // boundary gap default enabled unless fill area is set
 		l.opt.XAxis.BoundaryGap = &boundaryGap
 	}
 
