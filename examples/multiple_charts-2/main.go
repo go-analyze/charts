@@ -69,11 +69,9 @@ func main() {
 				"2011", "2012",
 			},
 		},
-		YAxis: []charts.YAxisOption{
-			{
-				Labels: []string{
-					"USA", "India", "China", "World",
-				},
+		YAxis: charts.YAxisOption{
+			Labels: []string{
+				"USA", "India", "China", "World",
 			},
 		},
 		SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
