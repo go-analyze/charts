@@ -224,7 +224,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			SeriesList: charts.NewSeriesListLine([][]float64{
 				{120, 132, 101, 134, 90, 230, 210},
 			}),
-			FillArea: true,
+			FillArea: charts.True(),
 		},
 		// histogram
 		{
