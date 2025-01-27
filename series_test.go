@@ -29,12 +29,14 @@ func TestSeriesLists(t *testing.T) {
 	seriesList := NewSeriesListBar([][]float64{
 		{1, 2},
 		{10},
+		{1, 2, 3, 4, 5, 6, 7, 8, 9},
 	})
 
-	assert.Len(t, seriesList.Filter(ChartTypeBar), 2)
+	assert.Len(t, seriesList.Filter(ChartTypeBar), 3)
 	assert.Empty(t, seriesList.Filter(ChartTypeLine))
 
-	min, max := seriesList.GetMinMax(0)
+	min, max, maxSum := seriesList.getMinMaxSumMax(0, true)
+	assert.InDelta(t, float64(12), maxSum, 0)
 	assert.InDelta(t, float64(10), max, 0)
 	assert.InDelta(t, float64(1), min, 0)
 }

@@ -158,7 +158,7 @@ func (sl SeriesList) getMinMaxSumMax(yaxisIndex int, calcSum bool) (float64, flo
 	max := -math.MaxFloat64
 	var sums []float64
 	if calcSum {
-		sums = make([]float64, len(sl[0].Data)) // all data sizes assumed to be the same
+		sums = make([]float64, sl.getMaxDataCount(""))
 	}
 	for _, series := range sl {
 		if series.YAxisIndex != yaxisIndex {
