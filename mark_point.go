@@ -24,7 +24,7 @@ type markPointPainter struct {
 	options []markPointRenderOption
 }
 
-func (m *markPointPainter) Add(opt markPointRenderOption) {
+func (m *markPointPainter) add(opt markPointRenderOption) {
 	if len(opt.series.MarkPoint.Data) > 0 {
 		m.options = append(m.options, opt)
 	}

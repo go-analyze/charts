@@ -69,6 +69,9 @@ type SeriesMarkPoint struct {
 	SymbolSize int
 	// ValueFormatter is used to produce the label for the Mark Point.
 	ValueFormatter ValueFormatter
+	// GlobalPoint specifies optionally that the point should reference the sum of series. This option is only
+	// used when the Series is "Stacked" and the point is on the LAST Series of the SeriesList.
+	GlobalPoint bool
 	// Data is the mark data for the series mark point.
 	Data []SeriesMarkData
 }
@@ -76,6 +79,9 @@ type SeriesMarkPoint struct {
 type SeriesMarkLine struct {
 	// ValueFormatter is used to produce the label for the Mark Line.
 	ValueFormatter ValueFormatter
+	// GlobalLine specifies optionally that the line should reference the sum of series. This option is only
+	// used when the Series is "Stacked" and the line is on the LAST Series of the SeriesList.
+	GlobalLine bool
 	// Data is the mark data for the series mark line.
 	Data []SeriesMarkData
 }
@@ -144,8 +150,9 @@ func (sl SeriesList) GetMinMax(yaxisIndex int) (float64, float64) {
 	return min, max
 }
 
-// getMinMaxSum returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1). This is a
-// higher performance option for internal use. calcSum provides an optimization to only calculate the sumMax if it will be used.
+// getMinMaxSumMax returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1).
+// This is a higher performance option for internal use. calcSum provides an optimization to
+// only calculate the sumMax if it will be used.
 func (sl SeriesList) getMinMaxSumMax(yaxisIndex int, calcSum bool) (float64, float64, float64) {
 	min := math.MaxFloat64
 	max := -math.MaxFloat64
@@ -433,6 +440,34 @@ func (sl SeriesList) Names() []string {
 		names[index] = s.Name
 	}
 	return names
+}
+
+func (sl SeriesList) makeSumSeries(chartType string) Series {
+	var result Series
+	sumValues := make([]float64, sl.getMaxDataCount(chartType))
+	for _, s := range sl {
+		if chartType == "" || s.Type == chartType || (chartType == ChartTypeLine && s.Type == "") {
+			result = s
+			for i := range s.Data {
+				sumValues[i] += s.Data[i]
+			}
+		}
+	}
+	result.Data = sumValues
+	return result
+}
+
+func (sl SeriesList) getMaxDataCount(chartType string) int {
+	result := 0
+	for _, s := range sl {
+		if chartType == "" || s.Type == chartType || (chartType == ChartTypeLine && s.Type == "") {
+			count := len(s.Data)
+			if count > result {
+				result = count
+			}
+		}
+	}
+	return result
 }
 
 // labelFormatPie formats the value for a pie chart label.

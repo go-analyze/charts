@@ -56,6 +56,7 @@ func main() {
 		return "Max:" + charts.FormatValueHumanizeShort(f, 0, false)
 	}
 	opt.SeriesList[1].MarkPoint.SymbolSize = 32
+	//opt.SeriesList[1].MarkPoint.GlobalPoint = true	// would change the mark point to put the total of the stack
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,

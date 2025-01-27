@@ -122,13 +122,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		strokeWidth = defaultStrokeWidth
 	}
 
-	var dataCount int
-	for _, s := range seriesList {
-		l := len(s.Data)
-		if l > dataCount {
-			dataCount = l
-		}
-	}
+	dataCount := seriesList.getMaxDataCount(ChartTypeLine)
 
 	stackedSeries := flagIs(true, opt.StackSeries)
 	if stackedSeries {
@@ -143,6 +137,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		showSymbol = *opt.SymbolShow
 	}
 
+	seriesCount := len(seriesList)
 	seriesNames := seriesList.Names()
 	var priorSeriesPoints []Point
 	for index := range seriesList {
@@ -238,9 +233,19 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			seriesPainter.Dots(points, dotFillColor, seriesColor, 1, 2)
 		}
 
-		// In stacked mode we only support the line painter for the first series
-		if !stackedSeries || index == 0 {
-			markLinePainter.Add(markLineRenderOption{
+		if series.MarkLine.GlobalLine && stackedSeries && index == seriesCount-1 {
+			markLinePainter.add(markLineRenderOption{
+				fillColor:      defaultGlobalMarkFillColor,
+				fontColor:      opt.Theme.GetTextColor(),
+				strokeColor:    defaultGlobalMarkFillColor,
+				font:           opt.Font,
+				series:         seriesList.makeSumSeries(ChartTypeLine),
+				axisRange:      yRange,
+				valueFormatter: opt.ValueFormatter,
+			})
+		} else if !stackedSeries || index == 0 {
+			// In stacked mode we only support the line painter for the first series
+			markLinePainter.add(markLineRenderOption{
 				fillColor:      seriesColor,
 				fontColor:      opt.Theme.GetTextColor(),
 				strokeColor:    seriesColor,
@@ -250,14 +255,25 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				valueFormatter: opt.ValueFormatter,
 			})
 		}
-		markPointPainter.Add(markPointRenderOption{
-			fillColor:          seriesColor,
-			font:               opt.Font,
-			points:             points,
-			series:             series,
-			valueFormatter:     opt.ValueFormatter,
-			seriesLabelPainter: labelPainter,
-		})
+		if series.MarkPoint.GlobalPoint && stackedSeries && index == seriesCount-1 {
+			markPointPainter.add(markPointRenderOption{
+				fillColor:          defaultGlobalMarkFillColor,
+				font:               opt.Font,
+				points:             points,
+				series:             seriesList.makeSumSeries(ChartTypeLine),
+				valueFormatter:     opt.ValueFormatter,
+				seriesLabelPainter: labelPainter,
+			})
+		} else {
+			markPointPainter.add(markPointRenderOption{
+				fillColor:          seriesColor,
+				font:               opt.Font,
+				points:             points,
+				series:             series,
+				valueFormatter:     opt.ValueFormatter,
+				seriesLabelPainter: labelPainter,
+			})
+		}
 
 		// Save these points as "priorSeriesPoints" for the next series to stack onto (if needed)
 		priorSeriesPoints = points

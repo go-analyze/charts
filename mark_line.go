@@ -22,7 +22,7 @@ type markLinePainter struct {
 	options []markLineRenderOption
 }
 
-func (m *markLinePainter) Add(opt markLineRenderOption) {
+func (m *markLinePainter) add(opt markLineRenderOption) {
 	if len(opt.series.MarkLine.Data) > 0 {
 		m.options = append(m.options, opt)
 	}

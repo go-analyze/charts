@@ -220,9 +220,19 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 		}
 
-		// in stacked mode we only support the line painter for the first series
-		if !stackedSeries || index == 0 {
-			markLinePainter.Add(markLineRenderOption{
+		if series.MarkLine.GlobalLine && stackedSeries && index == seriesCount-1 {
+			markLinePainter.add(markLineRenderOption{
+				fillColor:      defaultGlobalMarkFillColor,
+				fontColor:      opt.Theme.GetTextColor(),
+				strokeColor:    defaultGlobalMarkFillColor,
+				font:           opt.Font,
+				series:         seriesList.makeSumSeries(ChartTypeBar),
+				axisRange:      yRange,
+				valueFormatter: opt.ValueFormatter,
+			})
+		} else if !stackedSeries || index == 0 {
+			// in stacked mode we only support the line painter for the first series
+			markLinePainter.add(markLineRenderOption{
 				fillColor:      seriesColor,
 				fontColor:      opt.Theme.GetTextColor(),
 				strokeColor:    seriesColor,
@@ -232,14 +242,25 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				valueFormatter: opt.ValueFormatter,
 			})
 		}
-		markPointPainter.Add(markPointRenderOption{
-			fillColor:          seriesColor,
-			font:               opt.Font,
-			series:             series,
-			points:             points,
-			valueFormatter:     opt.ValueFormatter,
-			seriesLabelPainter: labelPainter,
-		})
+		if series.MarkPoint.GlobalPoint && stackedSeries && index == seriesCount-1 {
+			markPointPainter.add(markPointRenderOption{
+				fillColor:          defaultGlobalMarkFillColor,
+				font:               opt.Font,
+				series:             seriesList.makeSumSeries(ChartTypeBar),
+				points:             points,
+				valueFormatter:     opt.ValueFormatter,
+				seriesLabelPainter: labelPainter,
+			})
+		} else {
+			markPointPainter.add(markPointRenderOption{
+				fillColor:          seriesColor,
+				font:               opt.Font,
+				series:             series,
+				points:             points,
+				valueFormatter:     opt.ValueFormatter,
+				seriesLabelPainter: labelPainter,
+			})
+		}
 	}
 
 	if err := doRender(rendererList...); err != nil {

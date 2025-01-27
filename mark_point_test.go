@@ -21,7 +21,7 @@ func TestMarkPoint(t *testing.T) {
 				}
 				series.MarkPoint = NewMarkPoint(SeriesMarkDataTypeMax)
 				markPoint := newMarkPointPainter(p)
-				markPoint.Add(markPointRenderOption{
+				markPoint.add(markPointRenderOption{
 					fillColor: ColorBlack,
 					series:    series,
 					points: []Point{

@@ -25,7 +25,7 @@ func TestMarkLine(t *testing.T) {
 					SeriesMarkDataTypeAverage,
 					SeriesMarkDataTypeMin,
 				)
-				markLine.Add(markLineRenderOption{
+				markLine.add(markLineRenderOption{
 					fillColor:   ColorBlack,
 					fontColor:   ColorBlack,
 					strokeColor: ColorBlack,

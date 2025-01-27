@@ -71,6 +71,7 @@ const defaultTheme = "default"
 
 var defaultLightFontColor = Color{R: 70, G: 70, B: 70, A: 255}
 var defaultDarkFontColor = Color{R: 238, G: 238, B: 238, A: 255}
+var defaultGlobalMarkFillColor = ColorLightGray
 
 func init() {
 	echartSeriesColors := []Color{
