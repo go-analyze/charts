@@ -87,8 +87,8 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      True(),
-							Formatter: "{b} ({c} ≅ {d})",
+							Show:           True(),
+							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
 					}),
@@ -150,8 +150,8 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      True(),
-							Formatter: "{b} ({c} ≅ {d})",
+							Show:           True(),
+							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
 					}),
@@ -244,8 +244,8 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      True(),
-							Formatter: "{b} ({c} ≅ {d})",
+							Show:           True(),
+							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "150",
 					}),

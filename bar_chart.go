@@ -184,7 +184,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				labelY := top
 				radians := float64(0)
 				fontStyle := series.Label.FontStyle
-				labelBottom := (opt.SeriesLabelPosition == PositionBottom || series.Label.Position == PositionBottom) && !stackedSeries
+				labelBottom := opt.SeriesLabelPosition == PositionBottom && !stackedSeries
 				if labelBottom {
 					labelY = barMaxHeight
 					radians = -math.Pi / 2 // Rotated label at the bottom

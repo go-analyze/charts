@@ -57,9 +57,6 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 	if label.ValueFormatter != nil {
 		text = label.ValueFormatter(value.value)
 	} else {
-		if label.FormatTemplate == "" {
-			label.FormatTemplate = label.Formatter
-		}
 		text = labelFormatValue(o.seriesNames, label.FormatTemplate, value.index, value.value, -1)
 	}
 	labelStyle := FontStyle{

@@ -262,8 +262,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					},
 					Type: charts.ChartTypeBar,
 					Label: charts.SeriesLabel{
-						Show:     charts.True(),
-						Position: charts.PositionBottom,
+						Show: charts.True(),
 					},
 				},
 			},

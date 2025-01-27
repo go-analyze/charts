@@ -162,13 +162,6 @@ func TestPainterExternal(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 15 30\nQ25,50 27,55\nQ35,70 37,67\nQ45,60 47,57\nQ55,50 57,60\nQ55,50 65,90\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
-			name: "background",
-			fn: func(p *Painter) {
-				p.SetBackground(400, 300, ColorWhite)
-			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 5 10\nL 405 10\nL 405 310\nL 5 310\nL 5 10\" style=\"stroke:none;fill:white\"/></svg>",
-		},
-		{
 			name: "filled_rect",
 			fn: func(p *Painter) {
 				p.FilledRect(0, 0, 400, 300, ColorWhite, ColorWhite, 0.0)

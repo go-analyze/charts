@@ -76,22 +76,10 @@ func (rgc *RasterGraphicContext) DrawImage(img image.Image) {
 	DrawImage(img, rgc.img, rgc.current.Tr, draw.Over, BilinearFilter)
 }
 
-// Deprecated: FillString is deprecated, use FillStringAt with (0, 0) for the position.
-func (rgc *RasterGraphicContext) FillString(text string) (cursor float64, err error) {
-	cursor, err = rgc.FillStringAt(text, 0, 0)
-	return
-}
-
 // FillStringAt draws the text at the specified point (x, y).
 func (rgc *RasterGraphicContext) FillStringAt(text string, x, y float64) (cursor float64, err error) {
 	cursor, err = rgc.CreateStringPath(text, x, y)
 	rgc.Fill()
-	return
-}
-
-// Deprecated: StrokeString is deprecated, use StrokeStringAt with (0, 0) for the position.
-func (rgc *RasterGraphicContext) StrokeString(text string) (cursor float64, err error) {
-	cursor, err = rgc.StrokeStringAt(text, 0, 0)
 	return
 }
 
