@@ -21,10 +21,8 @@ func makeBasicHorizontalBarChartOption() HorizontalBarChartOption {
 		Legend: LegendOption{
 			SeriesNames: []string{"2011", "2012"},
 		},
-		YAxis: []YAxisOption{
-			{
-				Labels: []string{"Brazil", "Indonesia", "USA", "India", "China", "World"},
-			},
+		YAxis: YAxisOption{
+			Labels: []string{"Brazil", "Indonesia", "USA", "India", "China", "World"},
 		},
 	}
 }
@@ -34,11 +32,9 @@ func makeMinimalHorizontalBarChartOption() HorizontalBarChartOption {
 		{12, 24},
 		{24, 48},
 	})
-	opt.YAxis = []YAxisOption{
-		{
-			Show:   False(),
-			Labels: []string{"A", "B"},
-		},
+	opt.YAxis = YAxisOption{
+		Show:   False(),
+		Labels: []string{"A", "B"},
 	}
 	opt.XAxis.Show = False()
 	return opt
@@ -65,10 +61,8 @@ func makeFullHorizontalBarChartStackedOption() HorizontalBarChartOption {
 		Legend: LegendOption{
 			SeriesNames: dataLabels,
 		},
-		YAxis: []YAxisOption{
-			{
-				Labels: []string{"1", "2", "3", "4", "5", "6", "7", "8"},
-			},
+		YAxis: YAxisOption{
+			Labels: []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 		},
 	}
 }
@@ -83,7 +77,6 @@ func TestNewHorizontalBarChartOptionWithData(t *testing.T) {
 
 	assert.Len(t, opt.SeriesList, 2)
 	assert.Equal(t, ChartTypeHorizontalBar, opt.SeriesList[0].Type)
-	assert.Len(t, opt.YAxis, 1)
 	assert.Equal(t, defaultPadding, opt.Padding)
 
 	p := NewPainter(PainterOptions{})
@@ -160,7 +153,7 @@ func TestHorizontalBarChart(t *testing.T) {
 				opt := makeBasicHorizontalBarChartOption()
 				opt.Title.Show = False()
 				opt.XAxis.Show = False()
-				opt.YAxis[0].Show = False()
+				opt.YAxis.Show = False()
 				opt.Legend.Show = False()
 				opt.BarHeight = 1000
 				return opt
