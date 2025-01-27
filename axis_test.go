@@ -39,10 +39,10 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Labels:       dayLabels,
-					BoundaryGap:  True(),
-					FontStyle:    NewFontStyleWithSize(18),
-					TextRotation: DegreesToRadians(45),
+					Labels:        dayLabels,
+					BoundaryGap:   True(),
+					FontStyle:     NewFontStyleWithSize(18),
+					LabelRotation: DegreesToRadians(45),
 				}
 				return opt.toAxisOption(nil)
 			},
@@ -53,10 +53,10 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Labels:       dayLabels,
-					BoundaryGap:  True(),
-					FontStyle:    NewFontStyleWithSize(18),
-					TextRotation: DegreesToRadians(90),
+					Labels:        dayLabels,
+					BoundaryGap:   True(),
+					FontStyle:     NewFontStyleWithSize(18),
+					LabelRotation: DegreesToRadians(90),
 				}
 				return opt.toAxisOption(nil)
 			},
@@ -67,11 +67,11 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Labels:       dayLabels,
-					BoundaryGap:  True(),
-					FontStyle:    NewFontStyleWithSize(18),
-					Position:     PositionTop,
-					TextRotation: DegreesToRadians(45),
+					Labels:        dayLabels,
+					BoundaryGap:   True(),
+					FontStyle:     NewFontStyleWithSize(18),
+					Position:      PositionTop,
+					LabelRotation: DegreesToRadians(45),
 				}
 				return opt.toAxisOption(nil)
 			},
@@ -82,11 +82,11 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Labels:       dayLabels,
-					BoundaryGap:  True(),
-					FontStyle:    NewFontStyleWithSize(18),
-					Position:     PositionTop,
-					TextRotation: DegreesToRadians(90),
+					Labels:        dayLabels,
+					BoundaryGap:   True(),
+					FontStyle:     NewFontStyleWithSize(18),
+					Position:      PositionTop,
+					LabelRotation: DegreesToRadians(90),
 				}
 				return opt.toAxisOption(nil)
 			},

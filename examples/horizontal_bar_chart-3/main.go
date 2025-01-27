@@ -40,13 +40,13 @@ func main() {
 	for i := range opt.SeriesList {
 		opt.SeriesList[i].Label.Show = charts.True()
 	}
-	opt.Legend.Data = []string{
+	opt.Legend.SeriesNames = []string{
 		"2011", "2012",
 	}
 	opt.XAxis.Show = charts.False()
 	opt.YAxis = []charts.YAxisOption{
 		{
-			Data: []string{
+			Labels: []string{
 				"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
 			},
 		},

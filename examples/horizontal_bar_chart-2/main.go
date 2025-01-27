@@ -35,12 +35,12 @@ func main() {
 		Bottom: 20,
 		Left:   20,
 	}
-	opt.Legend.Data = []string{
+	opt.Legend.SeriesNames = []string{
 		"2011", "2012",
 	}
 	opt.YAxis = []charts.YAxisOption{
 		{
-			Data: []string{
+			Labels: []string{
 				"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
 			},
 		},

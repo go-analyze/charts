@@ -17,8 +17,8 @@ func TestChartOption(t *testing.T) {
 		ThemeNameOptionFunc(ThemeVividDark),
 		TitleTextOptionFunc("title"),
 		LegendLabelsOptionFunc([]string{"label"}),
-		XAxisDataOptionFunc([]string{"xaxis"}),
-		YAxisDataOptionFunc([]string{"yaxis"}),
+		XAxisLabelsOptionFunc([]string{"xaxis"}),
+		YAxisLabelsOptionFunc([]string{"yaxis"}),
 		DimensionsOptionFunc(800, 600),
 		PaddingOptionFunc(NewBoxEqual(10)),
 	}
@@ -102,7 +102,7 @@ func TestLineRender(t *testing.T) {
 		values,
 		SVGOutputOptionFunc(),
 		TitleTextOptionFunc("Line"),
-		XAxisDataOptionFunc([]string{
+		XAxisLabelsOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		LegendLabelsOptionFunc([]string{
@@ -130,25 +130,20 @@ func TestBarRender(t *testing.T) {
 	p, err := BarRender(
 		values,
 		SVGOutputOptionFunc(),
-		XAxisDataOptionFunc([]string{
+		XAxisLabelsOptionFunc([]string{
 			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
 		LegendLabelsOptionFunc([]string{
 			"Rainfall", "Evaporation",
 		}),
-		MarkLineOptionFunc(0, SeriesMarkDataTypeAverage),
-		MarkPointOptionFunc(0, SeriesMarkDataTypeMax, SeriesMarkDataTypeMin),
+		MarkLineOptionFunc(0, SeriesMarkTypeAverage),
+		MarkPointOptionFunc(0, SeriesMarkTypeMax, SeriesMarkTypeMin),
 		// custom option func
 		func(opt *ChartOption) {
 			opt.Legend.Offset = OffsetRight
 			opt.Legend.OverlayChart = True()
-			opt.SeriesList[1].MarkPoint = NewMarkPoint(
-				SeriesMarkDataTypeMax,
-				SeriesMarkDataTypeMin,
-			)
-			opt.SeriesList[1].MarkLine = NewMarkLine(
-				SeriesMarkDataTypeAverage,
-			)
+			opt.SeriesList[1].MarkPoint = NewMarkPoint(SeriesMarkTypeMax, SeriesMarkTypeMin)
+			opt.SeriesList[1].MarkLine = NewMarkLine(SeriesMarkTypeAverage)
 		},
 	)
 	require.NoError(t, err)
@@ -175,9 +170,7 @@ func TestHorizontalBarRender(t *testing.T) {
 			Left:   20,
 		}),
 		LegendLabelsOptionFunc([]string{"2011", "2012"}),
-		YAxisDataOptionFunc([]string{
-			"Brazil", "Indonesia", "USA", "India", "China", "World",
-		}),
+		YAxisLabelsOptionFunc([]string{"Brazil", "Indonesia", "USA", "India", "China", "World"}),
 	)
 	require.NoError(t, err)
 	data, err := p.Bytes()
@@ -199,11 +192,9 @@ func TestPieRender(t *testing.T) {
 		}),
 		PaddingOptionFunc(NewBoxEqual(20)),
 		LegendOptionFunc(LegendOption{
-			Vertical: True(),
-			Data: []string{
-				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
-			},
-			Offset: OffsetLeft,
+			Vertical:    True(),
+			SeriesNames: []string{"Search Engine", "Direct", "Email", "Union Ads", "Video Ads"},
+			Offset:      OffsetLeft,
 		}),
 	)
 	require.NoError(t, err)
@@ -271,9 +262,7 @@ func TestChildRender(t *testing.T) {
 			{320, 332, 301, 334, 390, 330, 320},
 		},
 		SVGOutputOptionFunc(),
-		XAxisDataOptionFunc([]string{
-			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
-		}),
+		XAxisLabelsOptionFunc([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}),
 		ChildOptionFunc(ChartOption{
 			Box: NewBox(10, 200, 200, 500),
 			SeriesList: NewSeriesListHorizontalBar([][]float64{
@@ -281,15 +270,11 @@ func TestChildRender(t *testing.T) {
 				{80, 100, 120, 140},
 			}),
 			Legend: LegendOption{
-				Data: []string{
-					"2011", "2012",
-				},
+				SeriesNames: []string{"2011", "2012"},
 			},
 			YAxis: []YAxisOption{
 				{
-					Data: []string{
-						"USA", "India", "China", "World",
-					},
+					Labels: []string{"USA", "India", "China", "World"},
 				},
 			},
 		}),

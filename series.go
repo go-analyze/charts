@@ -30,8 +30,6 @@ func newSeriesListFromValues(values [][]float64, chartType string, label SeriesL
 }
 
 type SeriesLabel struct {
-	// Deprecated: Formatter is deprecated, use FormatTemplate as a direct replacement.
-	Formatter string
 	// FormatTemplate is a string template for formatting the data label.
 	// {b}: the name of a data item.
 	// {c}: the value of a data item.
@@ -45,23 +43,14 @@ type SeriesLabel struct {
 	Show *bool
 	// Distance to the host graphic element.
 	Distance int // TODO - do we want to replace with just Offset?
-	// Deprecated: Position is deprecated, this value was only used on bar and horizontal bar charts. Instead use
-	// SeriesLabelPosition on those chart options directly.
-	Position string
 	// Offset specifies an offset from the position.
 	Offset OffsetInt
 }
 
 const (
-	// Deprecated: SeriesMarkDataTypeMax is deprecated, use SeriesMarkTypeMax.
-	SeriesMarkDataTypeMax = SeriesMarkTypeMax
-	// Deprecated: SeriesMarkDataTypeMin is deprecated, use SeriesMarkTypeMin.
-	SeriesMarkDataTypeMin = SeriesMarkTypeMin
-	// Deprecated: SeriesMarkDataTypeAverage is deprecated, use SeriesMarkTypeAverage.
-	SeriesMarkDataTypeAverage = SeriesMarkTypeAverage
-	SeriesMarkTypeMax         = "max"
-	SeriesMarkTypeMin         = "min"
-	SeriesMarkTypeAverage     = "average"
+	SeriesMarkTypeMax     = "max"
+	SeriesMarkTypeMin     = "min"
+	SeriesMarkTypeAverage = "average"
 )
 
 type SeriesMarkData struct {
@@ -143,12 +132,6 @@ func (sl SeriesList) getYAxisCount() int {
 		}
 	}
 	return 1
-}
-
-// Deprecated: GetMinMax is deprecated, instead use Series.Summary().  For example seriesList[0].Summary().
-func (sl SeriesList) GetMinMax(yaxisIndex int) (float64, float64) {
-	min, max, _ := sl.getMinMaxSumMax(yaxisIndex, false)
-	return min, max
 }
 
 // getMinMaxSumMax returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1).
@@ -242,10 +225,8 @@ func NewSeriesListHorizontalBar(values [][]float64, opts ...BarSeriesOption) Ser
 
 // PieSeriesOption provides series customization for NewSeriesListPie.
 type PieSeriesOption struct {
-	// Deprecated: Radius is deprecated, instead set the Radius in PieChartOption.
-	Radius string
-	Label  SeriesLabel
-	Names  []string
+	Label SeriesLabel
+	Names []string
 }
 
 // NewSeriesListPie builds a SeriesList for a pie chart.
@@ -261,11 +242,10 @@ func NewSeriesListPie(values []float64, opts ...PieSeriesOption) SeriesList {
 			name = opt.Names[index]
 		}
 		s := Series{
-			Type:   ChartTypePie,
-			Data:   []float64{v},
-			Radius: opt.Radius,
-			Label:  opt.Label,
-			Name:   name,
+			Type:  ChartTypePie,
+			Data:  []float64{v},
+			Label: opt.Label,
+			Name:  name,
 		}
 		result[index] = s
 	}

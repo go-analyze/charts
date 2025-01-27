@@ -23,9 +23,9 @@ func TestMarkLine(t *testing.T) {
 					strokeColor: ColorBlack,
 					seriesData:  []float64{1, 2, 3},
 					markline: NewMarkLine(
-						SeriesMarkDataTypeMax,
-						SeriesMarkDataTypeAverage,
-						SeriesMarkDataTypeMin,
+						SeriesMarkTypeMax,
+						SeriesMarkTypeAverage,
+						SeriesMarkTypeMin,
 					),
 					axisRange: newRange(p, nil,
 						p.Height(), 6, 0.0, 5.0, 0.0, 0.0),

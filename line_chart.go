@@ -60,8 +60,6 @@ type LineChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// Deprecated: SymbolShow is deprecated, use Symbol to specify 'none' or a specific symbol option.
-	SymbolShow *bool
 	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
 	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
 	Symbol Symbol
@@ -91,9 +89,6 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 	seriesPainter := result.seriesPainter
 
-	if len(opt.XAxis.Labels) == 0 {
-		opt.XAxis.Labels = opt.XAxis.Data
-	}
 	stackedSeries := flagIs(true, opt.StackSeries)
 	fillAreaY0 := stackedSeries || opt.FillArea // fill area defaults to on if the series is stacked
 	fillAreaY1 := opt.FillArea
@@ -132,15 +127,13 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	symbol := opt.Symbol
 	if symbol == "" {
 		showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
-		if opt.SymbolShow != nil {
-			showSymbol = *opt.SymbolShow
-		} else if opt.StrokeSmoothingTension > 0 {
+		if opt.StrokeSmoothingTension > 0 {
 			showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
 		}
 		if showSymbol {
-			symbol = "circle"
+			symbol = SymbolCircle
 		} else {
-			symbol = "none"
+			symbol = SymbolNone
 		}
 	}
 

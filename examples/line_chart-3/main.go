@@ -40,7 +40,7 @@ func main() {
 			Offset: charts.OffsetCenter,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Critical", "High", "Medium", "Low",
 			},
 			// Legend Vertical, on the right, and with smaller font to give more space for data
@@ -58,15 +58,15 @@ func main() {
 			LabelSkipCount: 1,
 		}),
 		charts.XAxisOptionFunc(charts.XAxisOption{
-			Data:         xAxisLabels,
-			FontStyle:    axisFont,
-			BoundaryGap:  charts.True(),
-			LabelCount:   10,
-			TextRotation: charts.DegreesToRadians(45),
+			Labels:        xAxisLabels,
+			FontStyle:     axisFont,
+			BoundaryGap:   charts.True(),
+			LabelCount:    10,
+			LabelRotation: charts.DegreesToRadians(45),
 		}),
 		func(opt *charts.ChartOption) {
 			// disable the symbols and reduce the stroke width to give more fidelity on the line
-			opt.SymbolShow = charts.False()
+			opt.Symbol = charts.SymbolNone
 			opt.LineStrokeWidth = 1.6
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)

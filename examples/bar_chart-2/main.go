@@ -28,26 +28,26 @@ func main() {
 	}
 
 	opt := charts.NewBarChartOptionWithData(values)
-	opt.XAxis.Data = []string{
+	opt.XAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}
 	opt.XAxis.LabelCount = 12 // force label count due to the labels being very close
 	opt.Legend = charts.LegendOption{
-		Data: []string{
+		SeriesNames: []string{
 			"Rainfall", "Evaporation",
 		},
 		Offset:       charts.OffsetRight,
 		OverlayChart: charts.True(),
 	}
-	opt.SeriesList[0].MarkLine = charts.NewMarkLine(charts.SeriesMarkDataTypeAverage)
+	opt.SeriesList[0].MarkLine = charts.NewMarkLine(charts.SeriesMarkTypeAverage)
 	opt.SeriesList[0].MarkPoint = charts.NewMarkPoint(
-		charts.SeriesMarkDataTypeMax,
-		charts.SeriesMarkDataTypeMin,
+		charts.SeriesMarkTypeMax,
+		charts.SeriesMarkTypeMin,
 	)
-	opt.SeriesList[1].MarkLine = charts.NewMarkLine(charts.SeriesMarkDataTypeAverage)
+	opt.SeriesList[1].MarkLine = charts.NewMarkLine(charts.SeriesMarkTypeAverage)
 	opt.SeriesList[1].MarkPoint = charts.NewMarkPoint(
-		charts.SeriesMarkDataTypeMax,
-		charts.SeriesMarkDataTypeMin,
+		charts.SeriesMarkTypeMax,
+		charts.SeriesMarkTypeMin,
 	)
 
 	p := charts.NewPainter(charts.PainterOptions{

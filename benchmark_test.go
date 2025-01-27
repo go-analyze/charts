@@ -12,15 +12,11 @@ func makeDefaultMultiChartOptions() ChartOption {
 			Offset: OffsetStr{
 				Top: "-90",
 			},
-			Data: []string{
-				"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
-			},
+			SeriesNames: []string{"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie"},
 		},
 		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
-			Data: []string{
-				"2012", "2013", "2014", "2015", "2016", "2017",
-			},
+			Labels: []string{"2012", "2013", "2014", "2015", "2016", "2017"},
 		},
 		YAxis: []YAxisOption{
 			{
@@ -41,10 +37,8 @@ func makeDefaultMultiChartOptions() ChartOption {
 		Children: []ChartOption{
 			{
 				Legend: LegendOption{
-					Show: False(),
-					Data: []string{
-						"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
-					},
+					Show:        False(),
+					SeriesNames: []string{"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie"},
 				},
 				Box: Box{
 					Top:    20,
@@ -52,10 +46,9 @@ func makeDefaultMultiChartOptions() ChartOption {
 					Right:  500,
 					Bottom: 120,
 				},
+				Radius: "35%",
 				SeriesList: NewSeriesListPie([]float64{
 					435.9, 354.3, 285.9, 204.5,
-				}, PieSeriesOption{
-					Radius: "35%",
 				}),
 			},
 		},
@@ -115,9 +108,7 @@ func BenchmarkPainterFunnelChartSVGRender(b *testing.B) {
 func renderPainterFunnel(painter *Painter) {
 	funnelOpt := NewFunnelChartOptionWithData([]float64{100, 80, 60, 40, 20, 10, 2})
 	funnelOpt.Title.Text = "Funnel"
-	funnelOpt.Legend.Data = []string{
-		"Show", "Click", "Visit", "Inquiry", "Order", "Pay", "Cancel",
-	}
+	funnelOpt.Legend.SeriesNames = []string{"Show", "Click", "Visit", "Inquiry", "Order", "Pay", "Cancel"}
 	funnelOpt.Legend.Padding = Box{Left: 100}
 	if err := painter.FunnelChart(funnelOpt); err != nil {
 		panic(err)
@@ -159,14 +150,10 @@ func renderPainterLine(painter *Painter) {
 		Offset: OffsetStr{
 			Top: "-90",
 		},
-		Data: []string{
-			"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
-		},
+		SeriesNames: []string{"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie"},
 	}
 	lineOpt.XAxis = XAxisOption{
-		Data: []string{
-			"2012", "2013", "2014", "2015", "2016", "2017",
-		},
+		Labels: []string{"2012", "2013", "2014", "2015", "2016", "2017"},
 	}
 	lineOpt.YAxis = []YAxisOption{
 		{
@@ -210,19 +197,19 @@ func renderPainterBar(painter *Painter) {
 		{2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3},
 		{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
 	})
-	barOpt.XAxis.Data = []string{
+	barOpt.XAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}
 	barOpt.XAxis.LabelCount = 12
 	barOpt.Legend = LegendOption{
-		Data:         []string{"Rainfall", "Evaporation"},
+		SeriesNames:  []string{"Rainfall", "Evaporation"},
 		Offset:       OffsetRight,
 		OverlayChart: True(),
 	}
-	barOpt.SeriesList[0].MarkLine = NewMarkLine(SeriesMarkDataTypeAverage)
-	barOpt.SeriesList[0].MarkPoint = NewMarkPoint(SeriesMarkDataTypeMax, SeriesMarkDataTypeMin)
-	barOpt.SeriesList[1].MarkLine = NewMarkLine(SeriesMarkDataTypeAverage)
-	barOpt.SeriesList[1].MarkPoint = NewMarkPoint(SeriesMarkDataTypeMax, SeriesMarkDataTypeMin)
+	barOpt.SeriesList[0].MarkLine = NewMarkLine(SeriesMarkTypeAverage)
+	barOpt.SeriesList[0].MarkPoint = NewMarkPoint(SeriesMarkTypeMax, SeriesMarkTypeMin)
+	barOpt.SeriesList[1].MarkLine = NewMarkLine(SeriesMarkTypeAverage)
+	barOpt.SeriesList[1].MarkPoint = NewMarkPoint(SeriesMarkTypeMax, SeriesMarkTypeMin)
 	if err := painter.BarChart(barOpt); err != nil {
 		panic(err)
 	} else if buf, err := painter.Bytes(); err != nil {
@@ -263,10 +250,8 @@ func renderPainterPie(painter *Painter) {
 	}
 	pieOpt.Padding = NewBoxEqual(20)
 	pieOpt.Legend = LegendOption{
-		Data: []string{
-			"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
-		},
-		Vertical: True(),
+		SeriesNames: []string{"Search Engine", "Direct", "Email", "Union Ads", "Video Ads"},
+		Vertical:    True(),
 		Offset: OffsetStr{
 			Left: "80%",
 			Top:  PositionBottom,
@@ -319,10 +304,8 @@ func renderPainterRadar(painter *Painter) {
 		FontStyle: NewFontStyleWithSize(16),
 	}
 	radarOpt.Legend = LegendOption{
-		Data: []string{
-			"Allocated Budget", "Actual Spending",
-		},
-		Offset: OffsetRight,
+		SeriesNames: []string{"Allocated Budget", "Actual Spending"},
+		Offset:      OffsetRight,
 	}
 	if err := painter.RadarChart(radarOpt); err != nil {
 		panic(err)

@@ -57,10 +57,10 @@ func main() {
 	opt.Title.Offset = charts.OffsetCenter
 	opt.Title.FontStyle.FontSize = 16
 
-	opt.XAxis.Data = xAxisLabels
+	opt.XAxis.Labels = xAxisLabels
 	opt.XAxis.Unit = 40
 	opt.XAxis.LabelCount = 10
-	opt.XAxis.TextRotation = charts.DegreesToRadians(45)
+	opt.XAxis.LabelRotation = charts.DegreesToRadians(45)
 	opt.XAxis.BoundaryGap = charts.True()
 	opt.XAxis.FontStyle = charts.NewFontStyleWithSize(6.0)
 	opt.YAxis = []charts.YAxisOption{
@@ -74,7 +74,7 @@ func main() {
 		},
 	}
 	opt.Legend.Show = charts.False()
-	opt.SymbolShow = charts.False()
+	opt.Symbol = charts.SymbolNone
 	opt.LineStrokeWidth = 1.5
 
 	p := charts.NewPainter(charts.PainterOptions{

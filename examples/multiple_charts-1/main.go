@@ -39,13 +39,13 @@ func main() {
 	lineOpt := charts.LineChartOption{
 		Padding: charts.NewBoxEqual(10),
 		XAxis: charts.XAxisOption{
-			Data: []string{
+			Labels: []string{
 				"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 			},
 			LabelCount: 7,
 		},
 		Legend: charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 			},
 		},

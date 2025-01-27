@@ -13,8 +13,6 @@ type YAxisOption struct {
 	Max *float64
 	// RangeValuePaddingScale suggest a scale of padding added to the max and min values.
 	RangeValuePaddingScale *float64
-	// Deprecated: Data is deprecated, use Labels instead.
-	Data []string
 	// Labels provides labels for each value on the y-axis.
 	Labels []string
 	// Position describes the position of y-axis, it can be 'left' or 'right'.
@@ -46,9 +44,6 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 	position := PositionLeft
 	if opt.Position == PositionRight {
 		position = PositionRight
-	}
-	if len(opt.Labels) == 0 {
-		opt.Labels = opt.Data
 	}
 	theme := getPreferredTheme(opt.Theme, fallbackTheme)
 	if opt.FontStyle.FontColor.IsZero() {
