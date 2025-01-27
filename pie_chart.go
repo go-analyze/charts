@@ -114,9 +114,6 @@ func newSector(cx int, cy int, radius float64, labelRadius float64,
 		if seriesLabel.ValueFormatter != nil || altFormatter != nil {
 			s.label = getPreferredValueFormatter(seriesLabel.ValueFormatter, altFormatter)(s.value)
 		} else {
-			if seriesLabel.FormatTemplate == "" {
-				seriesLabel.FormatTemplate = seriesLabel.Formatter
-			}
 			s.label = labelFormatPie([]string{label}, seriesLabel.FormatTemplate, 0, s.value, s.percent)
 		}
 	}
@@ -190,9 +187,6 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	}
 	labelRadius := radius + float64(labelLineWidth)
 	seriesNames := opt.Legend.SeriesNames
-	if len(seriesNames) == 0 {
-		seriesNames = opt.Legend.Data
-	}
 	if len(seriesNames) == 0 {
 		seriesNames = seriesList.Names()
 	}

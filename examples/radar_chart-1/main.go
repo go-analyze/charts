@@ -33,7 +33,7 @@ func main() {
 			FontStyle: charts.NewFontStyleWithSize(16),
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Allocated Budget", "Actual Spending",
 			},
 			Offset: charts.OffsetRight,

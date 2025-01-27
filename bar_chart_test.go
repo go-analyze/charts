@@ -20,11 +20,11 @@ func makeBasicBarChartOption() BarChartOption {
 		Padding:    NewBoxEqual(10),
 		SeriesList: seriesList,
 		XAxis: XAxisOption{
-			Data: []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+			Labels: []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
 		},
 		YAxis: []YAxisOption{
 			{
-				Data: []string{"Rainfall", "Evaporation"},
+				Labels: []string{"Rainfall", "Evaporation"},
 			},
 		},
 	}
@@ -36,8 +36,8 @@ func makeMinimalBarChartOption() BarChartOption {
 		{24, 48},
 	})
 	opt.XAxis = XAxisOption{
-		Show: False(),
-		Data: []string{"A", "B"},
+		Show:   False(),
+		Labels: []string{"A", "B"},
 	}
 	opt.YAxis[0].Show = False()
 	return opt
@@ -61,17 +61,15 @@ func makeFullBarChartStackedOption() BarChartOption {
 		SeriesList:  seriesList,
 		StackSeries: True(),
 		XAxis: XAxisOption{
-			Data: []string{
-				"1", "2", "3", "4", "5", "6", "7", "8",
-			},
+			Labels: []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 		},
 		Legend: LegendOption{
-			Data: dataLabels,
+			SeriesNames: dataLabels,
 		},
 		YAxis: []YAxisOption{
 			{
 				RangeValuePaddingScale: FloatPointer(1.0),
-				Data:                   dataLabels,
+				Labels:                 dataLabels,
 			},
 		},
 	}

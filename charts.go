@@ -120,9 +120,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	// association between legend and series name
 	if len(opt.legend.SeriesNames) == 0 {
-		opt.legend.SeriesNames = opt.legend.Data
-	}
-	if len(opt.legend.SeriesNames) == 0 {
 		opt.legend.SeriesNames = opt.seriesList.Names()
 	} else {
 		seriesCount := len(opt.seriesList)
@@ -278,9 +275,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			// since the x-axis is the value part, it's label is calculated and processed separately
 			opt.xAxis.Labels = r.Values()
 			opt.xAxis.isValueAxis = true
-		}
-		if len(yAxisOption.Labels) == 0 {
-			yAxisOption.Labels = yAxisOption.Data
 		}
 		reverseStringSlice(yAxisOption.Labels)
 		child := p.Child(PainterPaddingOption(Box{
@@ -450,8 +444,9 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(pieSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newPieChart(p, PieChartOption{
-				Theme: opt.Theme,
-				Font:  opt.Font,
+				Theme:  opt.Theme,
+				Font:   opt.Font,
+				Radius: opt.Radius,
 			}).render(renderResult, pieSeriesList)
 			return err
 		})
@@ -465,7 +460,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Font:            opt.Font,
 				XAxis:           opt.XAxis,
 				StackSeries:     opt.StackSeries,
-				SymbolShow:      opt.SymbolShow,
 				Symbol:          opt.Symbol,
 				LineStrokeWidth: opt.LineStrokeWidth,
 				FillArea:        opt.FillArea,
@@ -482,6 +476,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Theme:           opt.Theme,
 				Font:            opt.Font,
 				RadarIndicators: opt.RadarIndicators,
+				Radius:          opt.Radius,
 			}).render(renderResult, radarSeriesList)
 			return err
 		})

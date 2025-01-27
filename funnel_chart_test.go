@@ -14,9 +14,7 @@ func makeBasicFunnelChartOption() FunnelChartOption {
 			100, 80, 60, 40, 20,
 		}),
 		Legend: LegendOption{
-			Data: []string{
-				"Show", "Click", "Visit", "Inquiry", "Order",
-			},
+			SeriesNames: []string{"Show", "Click", "Visit", "Inquiry", "Order"},
 		},
 		Title: TitleOption{
 			Text: "Funnel",

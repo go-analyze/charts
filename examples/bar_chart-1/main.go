@@ -28,26 +28,26 @@ func main() {
 	}
 	p, err := charts.BarRender(
 		values,
-		charts.XAxisDataOptionFunc([]string{
+		charts.XAxisLabelsOptionFunc([]string{
 			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Rainfall", "Evaporation",
 			},
 			Offset:       charts.OffsetRight,
 			OverlayChart: charts.True(),
 		}),
-		charts.MarkLineOptionFunc(0, charts.SeriesMarkDataTypeAverage),
-		charts.MarkPointOptionFunc(0, charts.SeriesMarkDataTypeMax,
-			charts.SeriesMarkDataTypeMin),
+		charts.MarkLineOptionFunc(0, charts.SeriesMarkTypeAverage),
+		charts.MarkPointOptionFunc(0, charts.SeriesMarkTypeMax,
+			charts.SeriesMarkTypeMin),
 		func(opt *charts.ChartOption) {
 			opt.SeriesList[1].MarkPoint = charts.NewMarkPoint(
-				charts.SeriesMarkDataTypeMax,
-				charts.SeriesMarkDataTypeMin,
+				charts.SeriesMarkTypeMax,
+				charts.SeriesMarkTypeMin,
 			)
 			opt.SeriesList[1].MarkLine = charts.NewMarkLine(
-				charts.SeriesMarkDataTypeAverage,
+				charts.SeriesMarkTypeAverage,
 			)
 			opt.XAxis.LabelCount = 12 // force label count due to the labels being very close
 		},

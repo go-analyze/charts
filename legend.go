@@ -9,19 +9,11 @@ type legendPainter struct {
 	opt *LegendOption
 }
 
-// Deprecated: IconRect is deprecated, use SymbolSquare instead.
-const IconRect = "rect"
-
-// Deprecated: IconDot is deprecated, use SymbolDot instead.
-const IconDot = "dot"
-
 type LegendOption struct {
 	// Show specifies if the legend should be rendered, set this to *false (through False()) to hide the legend.
 	Show *bool
 	// Theme specifies the colors used for the legend.
 	Theme ColorPalette
-	// Deprecated: Data is deprecated, use SeriesNames instead.
-	Data []string
 	// SeriesNames provides text labels for the legend.
 	SeriesNames []string
 	// FontStyle specifies the font, size, and style for rendering the legend.
@@ -34,8 +26,6 @@ type LegendOption struct {
 	Align string
 	// Vertical can be set to *true to set the legend orientation to be vertical.
 	Vertical *bool
-	// Deprecated: Icon is deprecated, use Symbol.
-	Icon string
 	// Symbol defines the icon shape next to the label. Can be 'square', 'dot', or 'diamond'.
 	Symbol Symbol
 	// OverlayChart can be set to *true to render the legend over the chart. Ignored if Vertical is set to true (always overlapped).
@@ -46,9 +36,6 @@ type LegendOption struct {
 
 // IsEmpty checks legend is empty
 func (opt *LegendOption) IsEmpty() bool {
-	if len(opt.SeriesNames) == 0 {
-		opt.SeriesNames = opt.Data
-	}
 	for _, v := range opt.SeriesNames {
 		if v != "" {
 			return false
@@ -71,9 +58,6 @@ func (l *legendPainter) Render() (Box, error) {
 		return BoxZero, nil
 	}
 
-	if len(opt.SeriesNames) == 0 {
-		opt.SeriesNames = opt.Data
-	}
 	theme := opt.Theme
 	if theme == nil {
 		theme = getPreferredTheme(l.p.theme)
@@ -178,13 +162,6 @@ func (l *legendPainter) Render() (Box, error) {
 	x0 := left
 	y0 := y
 
-	if opt.Symbol == "" {
-		if opt.Icon == IconRect {
-			opt.Symbol = SymbolSquare
-		} else {
-			opt.Symbol = SymbolDot
-		}
-	}
 	var drawIcon func(top, left int, color Color) int
 	switch opt.Symbol {
 	case SymbolSquare:
