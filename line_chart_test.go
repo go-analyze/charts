@@ -595,7 +595,7 @@ func TestLineChart(t *testing.T) {
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
 				opt.SeriesList[0].Data[3] = GetNullValue()
-				opt.FillArea = true
+				opt.FillArea = True()
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.44k</text><text x=\"10\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.28k</text><text x=\"10\" y=\"94\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.12k</text><text x=\"22\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"22\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"22\" y=\"211\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"22\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"22\" y=\"289\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"22\" y=\"328\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 48\nL 590 48\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 87\nL 590 87\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 165\nL 590 165\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 204\nL 590 204\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 282\nL 590 282\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 321\nL 590 321\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 331\nL 147 328\nL 236 336\" style=\"stroke:none;fill:rgba(84,112,198,0.8)\"/><path  d=\"M 413 339\nL 501 305\nL 590 309\nL 590 360\nL 59 360\nL 59 331\" style=\"stroke:none;fill:rgba(84,112,198,0.8)\"/><path  d=\"M 59 331\nL 147 328\nL 236 336\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 413 339\nL 501 305\nL 590 309\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 59 161\nL 147 134\nL 236 142\nL 324 133\nL 413 47\nL 501 37\nL 590 40\nL 590 360\nL 59 360\nL 59 161\" style=\"stroke:none;fill:rgba(145,204,117,0.8)\"/><path  d=\"M 59 161\nL 147 134\nL 236 142\nL 324 133\nL 413 47\nL 501 37\nL 590 40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/></svg>",
@@ -618,7 +618,7 @@ func TestLineChart(t *testing.T) {
 				opt := makeMinimalLineChartOption()
 				opt.StrokeSmoothingTension = 0.8
 				opt.SeriesList[0].Data[3] = GetNullValue()
-				opt.FillArea = true
+				opt.FillArea = True()
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.44k</text><text x=\"10\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.28k</text><text x=\"10\" y=\"94\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.12k</text><text x=\"22\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"22\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"22\" y=\"211\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"22\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"22\" y=\"289\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"22\" y=\"328\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 48\nL 590 48\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 87\nL 590 87\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 165\nL 590 165\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 204\nL 590 204\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 282\nL 590 282\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 321\nL 590 321\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 331\nQ147,328 182,331\nQ147,328 236,336\nM 413 339\nQ501,305 536,306\nQ501,305 590,309\nL 590 360\nL 59 360\nL 59 331\" style=\"stroke:none;fill:rgba(84,112,198,0.8)\"/><path  d=\"M 59 331\nQ147,328 182,331\nQ147,328 236,336\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 413 339\nQ501,305 536,306\nQ501,305 590,309\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 59 161\nQ147,134 182,137\nQ236,142 271,138\nQ324,133 359,98\nQ413,47 448,43\nQ501,37 536,38\nQ501,37 590,40\nL 590 360\nL 59 360\nL 59 161\" style=\"stroke:none;fill:rgba(145,204,117,0.8)\"/><path  d=\"M 59 161\nQ147,134 182,137\nQ236,142 271,138\nQ324,133 359,98\nQ413,47 448,43\nQ501,37 536,38\nQ501,37 590,40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/></svg>",
@@ -628,7 +628,7 @@ func TestLineChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.FillArea = true
+				opt.FillArea = True()
 				opt.FillOpacity = 100
 				return opt
 			},
@@ -639,7 +639,7 @@ func TestLineChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() LineChartOption {
 				opt := makeFullLineChartOption()
-				opt.FillArea = true
+				opt.FillArea = True()
 				opt.FillOpacity = 100
 				opt.XAxis.BoundaryGap = True()
 				return opt
@@ -651,7 +651,7 @@ func TestLineChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.FillArea = true
+				opt.FillArea = True()
 				opt.StrokeSmoothingTension = 0.8
 				opt.XAxis.BoundaryGap = True()
 				return opt
@@ -663,7 +663,7 @@ func TestLineChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.FillArea = true
+				opt.FillArea = True()
 				opt.StrokeSmoothingTension = 0.8
 				opt.XAxis.BoundaryGap = False()
 				return opt

@@ -66,9 +66,8 @@ type LineChartOption struct {
 	// smoother lines. Because the tension smooths out the line, the line will no longer hit the data points exactly.
 	// The more variable the points, and the higher the tension, the more the line will be moved from the points.
 	StrokeSmoothingTension float64
-	// TODO - make FillArea a pointer so that it can be disabled for stacking, update StackSeries docs when done
 	// FillArea set this to true to fill the area below the line.
-	FillArea bool
+	FillArea *bool
 	// FillOpacity is the opacity (alpha) of the area fill.
 	FillOpacity uint8
 	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
@@ -85,9 +84,12 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	seriesPainter := result.seriesPainter
 
 	stackedSeries := flagIs(true, opt.StackSeries)
-	fillArea := stackedSeries || opt.FillArea // fill area defaults to on if the series is stacked
-	boundaryGap := !fillArea                  // boundary gap default enabled unless fill area is set
-	if opt.XAxis.BoundaryGap != nil {
+	fillArea := stackedSeries // fill area defaults to on if the series is stacked
+	if opt.FillArea != nil {  // default override
+		fillArea = *opt.FillArea
+	}
+	boundaryGap := !fillArea          // boundary gap default enabled unless fill area is set
+	if opt.XAxis.BoundaryGap != nil { // default override
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
 	xDivideCount := len(opt.XAxis.Data)
@@ -287,7 +289,10 @@ func (l *lineChart) Render() (Box, error) {
 	}
 	// boundary gap default must be set here as it's used by the x-axis as well
 	if opt.XAxis.BoundaryGap == nil {
-		fillArea := flagIs(true, opt.StackSeries) || opt.FillArea
+		fillArea := flagIs(true, opt.StackSeries) // fill area default based on StackedSeries state
+		if opt.FillArea != nil {                  // default override
+			fillArea = *opt.FillArea
+		}
 		boundaryGap := !fillArea // boundary gap default enabled unless fill area is set
 		l.opt.XAxis.BoundaryGap = &boundaryGap
 	}
