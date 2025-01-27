@@ -42,8 +42,8 @@ type ChartOption struct {
 	Symbol Symbol
 	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
-	// FillArea set to true to fill the area under the line in line charts
-	FillArea bool
+	// FillArea set to *true to fill the area under the line in line charts
+	FillArea *bool
 	// FillOpacity is the opacity (alpha) of the area fill in line charts.
 	FillOpacity uint8
 	// BarWidth is the width of the bars for bar charts.

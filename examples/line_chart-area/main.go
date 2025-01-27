@@ -43,7 +43,7 @@ func main() {
 		}),
 		// setup fill styling below
 		func(opt *charts.ChartOption) {
-			opt.FillArea = true                    // shade the area under the line
+			opt.FillArea = charts.True()           // shade the area under the line
 			opt.FillOpacity = 150                  // set the fill opacity a little lighter than default
 			opt.XAxis.BoundaryGap = charts.False() // BoundaryGap is less appealing when enabling FillArea
 		},
