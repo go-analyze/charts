@@ -135,11 +135,6 @@ func ColorFromRGBA(color string) Color {
 	return c
 }
 
-// Deprecated: ColorFromRGB is deprecated, use ColorFromRGBA to get colors from RGB or RGBA format strings.
-func ColorFromRGB(rgb string) (output Color) {
-	return ColorFromRGBA(rgb)
-}
-
 func parseHex(hex string) uint8 {
 	v, _ := strconv.ParseInt(hex, 16, 16)
 	return uint8(v)

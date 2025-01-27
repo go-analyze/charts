@@ -21,11 +21,9 @@ func makeBasicPieChartOption() PieChartOption {
 		},
 		Padding: NewBoxEqual(20),
 		Legend: LegendOption{
-			Vertical: True(),
-			Data: []string{
-				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
-			},
-			Offset: OffsetLeft,
+			Vertical:    True(),
+			SeriesNames: []string{"Search Engine", "Direct", "Email", "Union Ads", "Video Ads"},
+			Offset:      OffsetLeft,
 		},
 	}
 }
@@ -82,14 +80,14 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      True(),
-							Formatter: "{b} ({c} ≅ {d})",
+							Show:           True(),
+							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
 					}),
 					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
-						Data: []string{
+						SeriesNames: []string{
 							"Germany",
 							"France",
 							"Italy",
@@ -140,14 +138,14 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      True(),
-							Formatter: "{b} ({c} ≅ {d})",
+							Show:           True(),
+							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
 					}),
 					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
-						Data: []string{
+						SeriesNames: []string{
 							"Austria",
 							"Belgium",
 							"Bulgaria",
@@ -201,8 +199,8 @@ func TestPieChart(t *testing.T) {
 					}),
 					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
-						Data: labels,
-						Show: False(),
+						SeriesNames: labels,
+						Show:        False(),
 					},
 				}
 			},
@@ -224,8 +222,8 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:      True(),
-							Formatter: "{b} ({c} ≅ {d})",
+							Show:           True(),
+							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "150",
 					}),
@@ -235,7 +233,7 @@ func TestPieChart(t *testing.T) {
 					},
 					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
-						Data: []string{
+						SeriesNames: []string{
 							"A", "B", "C", "D", "E", "F", "G", "H",
 							"I", "J", "K", "L", "M", "N", "O", "P",
 							"Q", "R", "S", "T", "U", "V", "W", "X",

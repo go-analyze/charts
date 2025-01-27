@@ -28,12 +28,12 @@ func main() {
 	}
 
 	opt := charts.NewBarChartOptionWithData(values)
-	opt.XAxis.Data = []string{
+	opt.XAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}
 	opt.XAxis.LabelCount = 12 // force label count due to the labels being very close
 	opt.Legend = charts.LegendOption{
-		Data: []string{
+		SeriesNames: []string{
 			"Rainfall", "Evaporation",
 		},
 		Offset:       charts.OffsetRight,

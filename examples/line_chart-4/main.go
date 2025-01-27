@@ -54,17 +54,17 @@ func main() {
 		SeriesList:  seriesList,
 		StackSeries: charts.True(),
 		XAxis: charts.XAxisOption{
-			Data: []string{
+			Labels: []string{
 				"1", "2", "3", "4", "5", "6", "7", "8",
 			},
 			BoundaryGap: charts.False(),
 		},
 		Legend: charts.LegendOption{
-			Data: dataLabels,
+			SeriesNames: dataLabels,
 		},
 		YAxis: []charts.YAxisOption{
 			{
-				Data: dataLabels,
+				Labels: dataLabels,
 				FontStyle: charts.FontStyle{
 					FontSize:  8,
 					FontColor: charts.ColorBlack,

@@ -37,8 +37,6 @@ type ChartOption struct {
 	StackSeries *bool
 	// RadarIndicators are radar indicator list for radar charts.
 	RadarIndicators []RadarIndicator
-	// Deprecated: SymbolShow is deprecated, set Symbol to `none` or `circle` to match prior behavior.
-	SymbolShow *bool
 	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
 	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
 	Symbol Symbol
@@ -142,11 +140,6 @@ func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 	}
 }
 
-// Deprecated: XAxisDataOptionFunc is deprecated, use XAxisLabelsOptionFunc instead.
-func XAxisDataOptionFunc(data []string) OptionFunc {
-	return XAxisLabelsOptionFunc(data)
-}
-
 // XAxisLabelsOptionFunc sets the x-axis labels of the chart.
 func XAxisLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
@@ -161,11 +154,6 @@ func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxis = yAxisOption
 	}
-}
-
-// Deprecated: YAxisDataOptionFunc is deprecated, use YAxisLabelsOptionFunc instead.
-func YAxisDataOptionFunc(data []string) OptionFunc {
-	return YAxisLabelsOptionFunc(data)
 }
 
 // YAxisLabelsOptionFunc sets the y-axis labels of the chart.
