@@ -44,11 +44,9 @@ func main() {
 		"2011", "2012",
 	}
 	opt.XAxis.Show = charts.False()
-	opt.YAxis = []charts.YAxisOption{
-		{
-			Data: []string{
-				"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
-			},
+	opt.YAxis = charts.YAxisOption{
+		Data: []string{
+			"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
 		},
 	}
 

@@ -19,7 +19,6 @@ func NewHorizontalBarChartOptionWithData(data [][]float64) HorizontalBarChartOpt
 		Padding:        defaultPadding,
 		Theme:          GetDefaultTheme(),
 		Font:           GetDefaultFont(),
-		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
 		ValueFormatter: defaultValueFormatter,
 	}
 }
@@ -43,8 +42,8 @@ type HorizontalBarChartOption struct {
 	SeriesLabelPosition string
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
-	// YAxis are options for the y-axis (at most two).
-	YAxis []YAxisOption
+	// YAxis are options for the y-axis.
+	YAxis YAxisOption
 	// Title are options for rendering the title.
 	Title TitleOption
 	// Legend are options for the data legend.
@@ -193,7 +192,7 @@ func (h *horizontalBarChart) Render() (Box, error) {
 		seriesList:     opt.SeriesList,
 		stackSeries:    flagIs(true, opt.StackSeries),
 		xAxis:          &h.opt.XAxis,
-		yAxis:          opt.YAxis,
+		yAxis:          []YAxisOption{opt.YAxis},
 		title:          opt.Title,
 		legend:         &h.opt.Legend,
 		valueFormatter: opt.ValueFormatter,
