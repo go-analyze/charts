@@ -54,7 +54,7 @@ type BarChartOption struct {
 	BarWidth int
 	// BarMargin specifies the margin between bars grouped together. BarWidth takes priority over the margin.
 	BarMargin *float64
-	// RoundedBarCaps set to `true` to produce a bar graph where the bars have rounded tops.
+	// RoundedBarCaps set to *true to produce a bar graph where the bars have rounded tops.
 	RoundedBarCaps *bool
 	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
@@ -106,110 +106,104 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
-	margin, barMargin, barWidth := calculateBarMarginsAndSize(seriesCount, width, opt.BarWidth, opt.BarMargin)
-	barMaxHeight := seriesPainter.Height()
+	barMaxHeight := seriesPainter.Height() // total vertical space for bars
 	seriesNames := seriesList.Names()
+	divideValues := xRange.AutoDivide()
+	margin, barMargin, barWidth := calculateBarMarginsAndSize(seriesCount, width, opt.BarWidth, opt.BarMargin)
 
 	markPointPainter := newMarkPointPainter(seriesPainter)
 	markLinePainter := newMarkLinePainter(seriesPainter)
-	rendererList := []renderer{
-		markPointPainter,
-		markLinePainter,
-	}
-	for index := range seriesList {
-		series := seriesList[index]
+	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
+	rendererList := []renderer{markPointPainter, markLinePainter}
+
+	for index, series := range seriesList {
 		yRange := result.axisRanges[series.YAxisIndex]
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
 
-		divideValues := xRange.AutoDivide()
-		points := make([]Point, len(series.Data))
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
 
+		points := make([]Point, len(series.Data)) // used for mark points
 		for j, item := range series.Data {
 			if j >= xRange.divideCount {
 				continue
 			}
-			x := divideValues[j]
-			x += margin
-			if index != 0 {
-				x += index * (barWidth + barMargin)
-			}
 
+			var x, top, bottom int
 			h := yRange.getHeight(item)
-			top := barMaxHeight - h
+			x = divideValues[j] + margin + index*(barWidth+barMargin)
+			top = barMaxHeight - h
+			bottom = barMaxHeight - 1
 
 			if flagIs(true, opt.RoundedBarCaps) {
-				seriesPainter.roundedRect(Box{
-					Top:    top,
-					Left:   x,
-					Right:  x + barWidth,
-					Bottom: barMaxHeight - 1,
-					IsSet:  true,
-				}, barWidth, true, false,
+				seriesPainter.roundedRect(
+					Box{Top: top, Left: x, Right: x + barWidth, Bottom: bottom, IsSet: true},
+					barWidth, true, false,
 					seriesColor, seriesColor, 0.0)
 			} else {
-				seriesPainter.FilledRect(x, top, x+barWidth, barMaxHeight-1,
-					seriesColor, seriesColor, 0.0)
+				seriesPainter.FilledRect(x, top, x+barWidth, bottom, seriesColor, seriesColor, 0.0)
 			}
-			// generate marker point by hand
+
+			// Prepare point for mark points
 			points[j] = Point{
-				X: x + (barWidth >> 1), // centered position
-				Y: top,
+				X: x + (barWidth >> 1), // center of the bar horizontally
+				Y: top,                 // top of bar
 			}
-			// return if the label does not need to be displayed
-			if labelPainter == nil {
-				continue
-			}
-			y := barMaxHeight - h
-			radians := float64(0)
-			fontStyle := series.Label.FontStyle
-			if series.Label.Position == PositionBottom {
-				y = barMaxHeight
-				radians = -math.Pi / 2
-				if fontStyle.FontColor.IsZero() {
+
+			if labelPainter != nil {
+				labelY := top
+				radians := float64(0)
+				fontStyle := series.Label.FontStyle
+				if series.Label.Position == PositionBottom {
+					labelY = barMaxHeight
+					radians = -math.Pi / 2 // Rotated label at the bottom
+				}
+				if series.Label.Position == PositionBottom && fontStyle.FontColor.IsZero() {
 					if isLightColor(seriesColor) {
 						fontStyle.FontColor = defaultLightFontColor
 					} else {
 						fontStyle.FontColor = defaultDarkFontColor
 					}
 				}
+
+				labelPainter.Add(labelValue{
+					vertical:  true, // label is vertically oriented
+					index:     index,
+					value:     item,
+					fontStyle: fontStyle,
+					x:         x + (barWidth >> 1),
+					y:         labelY,
+					radians:   radians,
+					offset:    series.Label.Offset,
+				})
 			}
-			labelPainter.Add(labelValue{
-				vertical:  true, // label is above bar
-				index:     index,
-				value:     item,
-				fontStyle: fontStyle,
-				x:         x + (barWidth >> 1),
-				y:         y,
-				radians:   radians,
-				offset:    series.Label.Offset,
-			})
 		}
 
-		markPointPainter.Add(markPointRenderOption{
-			FillColor: seriesColor,
-			Font:      opt.Font,
-			Series:    series,
-			Points:    points,
-		})
 		markLinePainter.Add(markLineRenderOption{
-			FillColor:   seriesColor,
-			FontColor:   opt.Theme.GetTextColor(),
-			StrokeColor: seriesColor,
-			Font:        opt.Font,
-			Series:      series,
-			Range:       yRange,
+			fillColor:      seriesColor,
+			fontColor:      opt.Theme.GetTextColor(),
+			strokeColor:    seriesColor,
+			font:           opt.Font,
+			series:         series,
+			axisRange:      yRange,
+			valueFormatter: opt.ValueFormatter,
+		})
+		markPointPainter.Add(markPointRenderOption{
+			fillColor:          seriesColor,
+			font:               opt.Font,
+			series:             series,
+			points:             points,
+			valueFormatter:     opt.ValueFormatter,
+			seriesLabelPainter: labelPainter,
 		})
 	}
-	// the largest and smallest mark point
+
 	if err := doRender(rendererList...); err != nil {
 		return BoxZero, err
 	}
-
 	return p.box, nil
 }
 

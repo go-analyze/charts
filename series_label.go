@@ -104,7 +104,9 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 
 func (o *seriesLabelPainter) Render() (Box, error) {
 	for _, item := range o.values {
-		o.p.Text(item.Text, item.X, item.Y, item.Radians, item.FontStyle)
+		if item.Text != "" {
+			o.p.Text(item.Text, item.X, item.Y, item.Radians, item.FontStyle)
+		}
 	}
 	return BoxZero, nil
 }

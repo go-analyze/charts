@@ -99,16 +99,20 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	} else {
 		xValues = xDivideValues
 	}
+
+	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
 	markPointPainter := newMarkPointPainter(seriesPainter)
 	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []renderer{
 		markPointPainter,
 		markLinePainter,
 	}
+
 	strokeWidth := opt.LineStrokeWidth
 	if strokeWidth == 0 {
 		strokeWidth = defaultStrokeWidth
 	}
+
 	var dataCount int
 	for _, s := range seriesList {
 		l := len(s.Data)
@@ -123,57 +127,61 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	if opt.SymbolShow != nil {
 		showSymbol = *opt.SymbolShow
 	}
+
 	seriesNames := seriesList.Names()
 	for index := range seriesList {
 		series := seriesList[index]
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
-
 		yRange := result.axisRanges[series.YAxisIndex]
-		points := make([]Point, 0)
+		points := make([]Point, len(series.Data))
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
-		for i, item := range series.Data {
-			h := yRange.getRestHeight(item)
-			if item == GetNullValue() {
-				h = math.MaxInt32
-			}
-			p := Point{
-				X: xValues[i],
-				Y: h,
-			}
-			points = append(points, p)
 
-			// if the label does not need to be displayed, return
-			if labelPainter == nil {
-				continue
+		for i, item := range series.Data {
+			if item == GetNullValue() {
+				points[i] = Point{X: xValues[i], Y: math.MaxInt32}
+			} else {
+				points[i] = Point{
+					X: xValues[i],
+					Y: yRange.getRestHeight(item),
+				}
 			}
-			labelPainter.Add(labelValue{
-				index:     index,
-				value:     item,
-				x:         p.X,
-				y:         p.Y,
-				fontStyle: series.Label.FontStyle,
-			})
+
+			if labelPainter != nil {
+				labelPainter.Add(labelValue{
+					index:     index,
+					value:     item,
+					x:         points[i].X,
+					y:         points[i].Y,
+					fontStyle: series.Label.FontStyle,
+				})
+			}
 		}
+
 		if opt.FillArea {
 			areaPoints := make([]Point, len(points))
 			copy(areaPoints, points)
 			bottomY := yRange.getRestHeight(yRange.min)
+			areaPoints = append(areaPoints,
+				Point{
+					X: areaPoints[len(areaPoints)-1].X,
+					Y: bottomY,
+				}, Point{
+					X: areaPoints[0].X,
+					Y: bottomY,
+				},
+				areaPoints[0],
+			)
+
 			var opacity uint8 = 200
 			if opt.FillOpacity > 0 {
 				opacity = opt.FillOpacity
 			}
-			areaPoints = append(areaPoints, Point{
-				X: areaPoints[len(areaPoints)-1].X,
-				Y: bottomY,
-			}, Point{
-				X: areaPoints[0].X,
-				Y: bottomY,
-			}, areaPoints[0])
 			fillColor := seriesColor.WithAlpha(opacity)
+
 			if opt.StrokeSmoothingTension > 0 {
 				seriesPainter.smoothFillChartArea(areaPoints, opt.StrokeSmoothingTension, fillColor)
 			} else {
@@ -181,14 +189,14 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 		}
 
-		// draw line
+		// Draw the line
 		if opt.StrokeSmoothingTension > 0 {
 			seriesPainter.SmoothLineStroke(points, opt.StrokeSmoothingTension, seriesColor, strokeWidth)
 		} else {
 			seriesPainter.LineStroke(points, seriesColor, strokeWidth)
 		}
 
-		// draw dots
+		// Draw dots if enabled
 		if showSymbol {
 			dotFillColor := ColorWhite
 			if opt.Theme.IsDark() {
@@ -196,26 +204,29 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 			seriesPainter.Dots(points, dotFillColor, seriesColor, 1, 2)
 		}
-		markPointPainter.Add(markPointRenderOption{
-			FillColor: seriesColor,
-			Font:      opt.Font,
-			Points:    points,
-			Series:    series,
-		})
+
 		markLinePainter.Add(markLineRenderOption{
-			FillColor:   seriesColor,
-			FontColor:   opt.Theme.GetTextColor(),
-			StrokeColor: seriesColor,
-			Font:        opt.Font,
-			Series:      series,
-			Range:       yRange,
+			fillColor:      seriesColor,
+			fontColor:      opt.Theme.GetTextColor(),
+			strokeColor:    seriesColor,
+			font:           opt.Font,
+			series:         series,
+			axisRange:      yRange,
+			valueFormatter: opt.ValueFormatter,
+		})
+		markPointPainter.Add(markPointRenderOption{
+			fillColor:          seriesColor,
+			font:               opt.Font,
+			points:             points,
+			series:             series,
+			valueFormatter:     opt.ValueFormatter,
+			seriesLabelPainter: labelPainter,
 		})
 	}
-	// the largest and smallest mark point
+
 	if err := doRender(rendererList...); err != nil {
 		return BoxZero, err
 	}
-
 	return p.box, nil
 }
 

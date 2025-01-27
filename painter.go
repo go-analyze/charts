@@ -561,7 +561,8 @@ func (p *Painter) FillArea(points []Point, fillColor Color) {
 // smoothFillChartArea draws a smooth curve for the "top" portion of points but uses straight lines for
 // the bottom corners, producing a fill with sharp corners.
 func (p *Painter) smoothFillChartArea(points []Point, tension float64, fillColor Color) {
-	if tension <= 0 {
+	pointCount := len(points)
+	if tension <= 0 || pointCount < 4 /* need at least 4 points to curve the line */ {
 		p.FillArea(points, fillColor)
 		return
 	} else if tension > 1 {
@@ -570,16 +571,9 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64, fillColor
 
 	// Typically, areaPoints has the shape:
 	//   [ top data points... ] + [ bottom-right corner, bottom-left corner, first top point ]
-	// We'll separate them:
-	if len(points) < 3 {
-		// Not enough to separate top from bottom
-		p.FillArea(points, fillColor)
-		return
-	}
-
 	// The final 3 points are the corners + repeated first point
-	top := points[:len(points)-3]
-	bottom := points[len(points)-3:] // [corner1, corner2, firstTopAgain]
+	top := points[:pointCount-3]
+	bottom := points[pointCount-3:] // [corner1, corner2, firstTopAgain]
 
 	// If top portion is empty or 1 point, just fill straight
 	if len(top) < 2 {

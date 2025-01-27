@@ -64,7 +64,7 @@ type SeriesMarkData struct {
 }
 
 type SeriesMarkPoint struct {
-	// SymbolSize is the width of symbol, default value is 30.
+	// SymbolSize is the width of symbol, default value is 28.
 	SymbolSize int
 	// ValueFormatter is used to produce the label for the Mark Point.
 	ValueFormatter ValueFormatter
@@ -94,7 +94,8 @@ type Series struct {
 	Name string
 	// Radius for Pie chart, e.g.: 40%, default is "40%"
 	Radius string
-	// MarkPoint provides a series for mark points.
+	// MarkPoint provides a series for mark points. If Label is also enabled, the MarkPoint will replace the label
+	// where rendered.
 	MarkPoint SeriesMarkPoint
 	// MarkLine provides a series for mark lines. When using a MarkLine, you will want to configure padding to the
 	// chart on the right for the values.
@@ -116,7 +117,7 @@ func (sl SeriesList) init() {
 }
 
 func (sl SeriesList) Filter(chartType string) SeriesList {
-	arr := make(SeriesList, 0)
+	arr := make(SeriesList, 0, len(sl))
 	for index, item := range sl {
 		if item.Type == chartType || (chartType == ChartTypeLine && item.Type == "") {
 			arr = append(arr, sl[index])

@@ -23,7 +23,9 @@ type markLinePainter struct {
 }
 
 func (m *markLinePainter) Add(opt markLineRenderOption) {
-	m.options = append(m.options, opt)
+	if len(opt.series.MarkLine.Data) > 0 {
+		m.options = append(m.options, opt)
+	}
 }
 
 // newMarkLinePainter returns a mark line renderer
@@ -35,28 +37,30 @@ func newMarkLinePainter(p *Painter) *markLinePainter {
 }
 
 type markLineRenderOption struct {
-	FillColor   Color
-	FontColor   Color
-	StrokeColor Color
-	Font        *truetype.Font
-	Series      Series
-	Range       axisRange
+	fillColor      Color
+	fontColor      Color
+	strokeColor    Color
+	font           *truetype.Font
+	series         Series
+	axisRange      axisRange
+	valueFormatter ValueFormatter
 }
 
 func (m *markLinePainter) Render() (Box, error) {
 	painter := m.p
 	for _, opt := range m.options {
-		s := opt.Series
+		s := opt.series
 		if len(s.MarkLine.Data) == 0 {
 			continue
 		}
 		summary := s.Summary()
 		fontStyle := FontStyle{
-			Font:      getPreferredFont(opt.Font),
-			FontColor: opt.FontColor,
+			Font:      getPreferredFont(opt.font),
+			FontColor: opt.fontColor,
 			FontSize:  labelFontSize,
 		}
-		valueFormatter := getPreferredValueFormatter(opt.Series.MarkLine.ValueFormatter, opt.Series.Label.ValueFormatter)
+		valueFormatter := getPreferredValueFormatter(opt.series.MarkLine.ValueFormatter,
+			opt.series.Label.ValueFormatter, opt.valueFormatter)
 		for _, markLine := range s.MarkLine.Data {
 			var value float64
 			switch markLine.Type {
@@ -67,11 +71,11 @@ func (m *markLinePainter) Render() (Box, error) {
 			default:
 				value = summary.Average
 			}
-			y := opt.Range.getRestHeight(value)
+			y := opt.axisRange.getRestHeight(value)
 			text := valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, fontStyle)
 			width := painter.Width()
-			painter.MarkLine(0, y, width-2, opt.FillColor, opt.StrokeColor, 1, []float64{4, 2})
+			painter.MarkLine(0, y, width-2, opt.fillColor, opt.strokeColor, 1, []float64{4, 2})
 			painter.Text(text, width, y+textBox.Height()>>1-2, 0, fontStyle)
 		}
 	}

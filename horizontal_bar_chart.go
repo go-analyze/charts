@@ -68,67 +68,74 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
-	margin, barMargin, barHeight := calculateBarMarginsAndSize(seriesCount, height, opt.BarHeight, opt.BarMargin)
-	seriesNames := seriesList.Names()
-
 	min, max := seriesList.GetMinMax(0)
+	margin, barMargin, barHeight := calculateBarMarginsAndSize(seriesCount, height, opt.BarHeight, opt.BarMargin)
+
+	seriesNames := seriesList.Names()
+	// xRange is used to convert data values into horizontal bar widths
 	xRange := newRange(p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
 		seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
+	divideValues := yRange.AutoDivide()
 
 	var rendererList []renderer
 	for index := range seriesList {
 		series := seriesList[index]
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
-		divideValues := yRange.AutoDivide()
 
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
+
 		for j, item := range series.Data {
 			if j >= yRange.divideCount {
 				continue
 			}
-			// display position switch
-			j = yRange.divideCount - j - 1
-			y := divideValues[j]
-			y += margin
+			// Reverse the category index for drawing from top to bottom
+			reversedJ := yRange.divideCount - j - 1
+
+			// Compute the top of this bar “row”
+			y := divideValues[reversedJ] + margin
+
+			// Determine the width (horizontal length) of the bar based on the data value
+			w := xRange.getHeight(item)
+
+			// Offset each series in its own lane
 			if index != 0 {
 				y += index * (barHeight + barMargin)
 			}
 
-			w := xRange.getHeight(item)
-			fillColor := seriesColor
-			right := w
-			seriesPainter.FilledRect(0, y, right, y+barHeight, fillColor, fillColor, 0.0)
-			// if the label does not need to be displayed, return
-			if labelPainter == nil {
-				continue
-			}
-			fontStyle := series.Label.FontStyle
-			if fontStyle.FontColor.IsZero() {
-				if isLightColor(fillColor) {
-					fontStyle.FontColor = defaultLightFontColor
-				} else {
-					fontStyle.FontColor = defaultDarkFontColor
+			seriesPainter.FilledRect(0, y, w, y+barHeight, seriesColor, seriesColor, 0.0)
+
+			if labelPainter != nil {
+				labelX := w
+				if series.Label.Position == PositionLeft {
+					labelX = 0
 				}
+				labelY := y + (barHeight >> 1)
+				fontStyle := series.Label.FontStyle
+				if series.Label.Position == PositionLeft && fontStyle.FontColor.IsZero() {
+					if isLightColor(seriesColor) {
+						fontStyle.FontColor = defaultLightFontColor
+					} else {
+						fontStyle.FontColor = defaultDarkFontColor
+					}
+				}
+
+				labelPainter.Add(labelValue{
+					vertical:  false, // horizontal label
+					index:     index,
+					value:     item,
+					x:         labelX,
+					y:         labelY,
+					offset:    series.Label.Offset,
+					fontStyle: fontStyle,
+				})
 			}
-			labelValue := labelValue{
-				vertical:  false, // label beside bar
-				index:     index,
-				value:     item,
-				x:         right,
-				y:         y + (barHeight >> 1),
-				offset:    series.Label.Offset,
-				fontStyle: fontStyle,
-			}
-			if series.Label.Position == PositionLeft {
-				labelValue.x = 0
-			}
-			labelPainter.Add(labelValue)
 		}
 	}
+
 	if err := doRender(rendererList...); err != nil {
 		return BoxZero, err
 	}

@@ -26,11 +26,11 @@ func TestMarkLine(t *testing.T) {
 					SeriesMarkDataTypeMin,
 				)
 				markLine.Add(markLineRenderOption{
-					FillColor:   ColorBlack,
-					FontColor:   ColorBlack,
-					StrokeColor: ColorBlack,
-					Series:      series,
-					Range: newRange(p, nil,
+					fillColor:   ColorBlack,
+					fontColor:   ColorBlack,
+					strokeColor: ColorBlack,
+					series:      series,
+					axisRange: newRange(p, nil,
 						p.Height(), 6, 0.0, 5.0, 0.0, 0.0),
 				})
 				if _, err := markLine.Render(); err != nil {

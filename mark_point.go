@@ -25,14 +25,18 @@ type markPointPainter struct {
 }
 
 func (m *markPointPainter) Add(opt markPointRenderOption) {
-	m.options = append(m.options, opt)
+	if len(opt.series.MarkPoint.Data) > 0 {
+		m.options = append(m.options, opt)
+	}
 }
 
 type markPointRenderOption struct {
-	FillColor Color
-	Font      *truetype.Font
-	Series    Series
-	Points    []Point
+	fillColor          Color
+	font               *truetype.Font
+	series             Series
+	seriesLabelPainter *seriesLabelPainter
+	points             []Point
+	valueFormatter     ValueFormatter
 }
 
 // newMarkPointPainter returns a mark point renderer
@@ -46,39 +50,46 @@ func newMarkPointPainter(p *Painter) *markPointPainter {
 func (m *markPointPainter) Render() (Box, error) {
 	painter := m.p
 	for _, opt := range m.options {
-		if len(opt.Series.MarkPoint.Data) == 0 {
+		if len(opt.series.MarkPoint.Data) == 0 {
 			continue
 		}
-		points := opt.Points
-		summary := opt.Series.Summary()
-		symbolSize := opt.Series.MarkPoint.SymbolSize
+		points := opt.points
+		summary := opt.series.Summary()
+		symbolSize := opt.series.MarkPoint.SymbolSize
 		if symbolSize == 0 {
 			symbolSize = 28
 		}
 		textStyle := chartdraw.Style{
 			FontStyle: FontStyle{
 				FontSize: labelFontSize,
-				Font:     opt.Font,
+				Font:     opt.font,
 			},
 			StrokeWidth: 1,
 		}
-		if isLightColor(opt.FillColor) {
+		if isLightColor(opt.fillColor) {
 			textStyle.FontColor = defaultLightFontColor
 		} else {
 			textStyle.FontColor = defaultDarkFontColor
 		}
-		valueFormatter := getPreferredValueFormatter(opt.Series.MarkPoint.ValueFormatter, opt.Series.Label.ValueFormatter)
-		for _, markPointData := range opt.Series.MarkPoint.Data {
+		valueFormatter := getPreferredValueFormatter(opt.series.MarkPoint.ValueFormatter,
+			opt.series.Label.ValueFormatter, opt.valueFormatter)
+		for _, markPointData := range opt.series.MarkPoint.Data {
 			textStyle.FontSize = labelFontSize
-			p := points[summary.MinIndex]
+			index := summary.MinIndex
 			value := summary.Min
 			switch markPointData.Type {
 			case SeriesMarkDataTypeMax:
-				p = points[summary.MaxIndex]
+				index = summary.MaxIndex
 				value = summary.Max
 			}
+			p := points[index]
+			if opt.seriesLabelPainter != nil {
+				// the series label has been replaced by our MarkPoint
+				// This is why MarkPoints must be rendered BEFORE series labels
+				opt.seriesLabelPainter.values[index].Text = ""
+			}
 
-			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize, opt.FillColor, opt.FillColor, 0.0)
+			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize, opt.fillColor, opt.fillColor, 0.0)
 			text := valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, textStyle.FontStyle)
 			if textStyle.FontSize > smallLabelFontSize && textBox.Width() > symbolSize {
