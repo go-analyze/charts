@@ -139,11 +139,6 @@ func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 	}
 }
 
-// Deprecated: XAxisDataOptionFunc is deprecated, use XAxisLabelsOptionFunc instead.
-func XAxisDataOptionFunc(data []string) OptionFunc {
-	return XAxisLabelsOptionFunc(data)
-}
-
 // XAxisLabelsOptionFunc sets the x-axis labels of the chart.
 func XAxisLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
@@ -158,11 +153,6 @@ func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxis = yAxisOption
 	}
-}
-
-// Deprecated: YAxisDataOptionFunc is deprecated, use YAxisLabelsOptionFunc instead.
-func YAxisDataOptionFunc(data []string) OptionFunc {
-	return YAxisLabelsOptionFunc(data)
 }
 
 // YAxisLabelsOptionFunc sets the y-axis labels of the chart.

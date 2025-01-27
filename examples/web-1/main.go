@@ -147,13 +147,13 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				FontStyle: charts.NewFontStyleWithSize(18),
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 				},
 				Padding: charts.Box{Left: 100},
 			},
 			XAxis: charts.XAxisOption{
-				Data: []string{
+				Labels: []string{
 					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 			},
@@ -177,12 +177,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Bottom: 20,
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"Highest", "Lowest",
 				},
 			},
 			XAxis: charts.XAxisOption{
-				Data: []string{
+				Labels: []string{
 					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 				BoundaryGap: charts.False(),
@@ -211,10 +211,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				FontStyle: charts.NewFontStyleWithSize(18),
 			},
 			Legend: charts.LegendOption{
-				Data: []string{"Email"},
+				SeriesNames: []string{"Email"},
 			},
 			XAxis: charts.XAxisOption{
-				Data: []string{
+				Labels: []string{
 					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 			},
@@ -233,12 +233,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				FontStyle: charts.NewFontStyleWithSize(18),
 			},
 			XAxis: charts.XAxisOption{
-				Data: []string{
+				Labels: []string{
 					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"Rainfall", "Evaporation",
 				},
 				Icon: charts.IconRect,
@@ -274,13 +274,13 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Left:   20,
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"2011", "2012",
 				},
 			},
 			YAxis: []charts.YAxisOption{
 				{
-					Data: []string{
+					Labels: []string{
 						"Brazil", "Indonesia", "USA", "India", "China", "World",
 					},
 				},
@@ -300,12 +300,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			Padding: charts.NewBoxEqual(20),
 			XAxis: charts.XAxisOption{
-				Data: []string{
+				Labels: []string{
 					"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 				},
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"Rainfall", "Evaporation",
 				},
 			},
@@ -345,12 +345,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				FontStyle: charts.NewFontStyleWithSize(16),
 			},
 			XAxis: charts.XAxisOption{
-				Data: []string{
+				Labels: []string{
 					"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 				},
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"Evaporation", "Precipitation", "Temperature",
 				},
 				Padding: charts.Box{Left: 100},
@@ -387,7 +387,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			Legend: charts.LegendOption{
 				Vertical: charts.True(),
-				Data: []string{
+				SeriesNames: []string{
 					"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 				},
 				Offset: charts.OffsetLeft,
@@ -405,7 +405,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				FontStyle: charts.NewFontStyleWithSize(16),
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"Allocated Budget", "Actual Spending",
 				},
 				Padding: charts.Box{Left: 100},
@@ -447,7 +447,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Text: "Funnel",
 			},
 			Legend: charts.LegendOption{
-				Data: []string{
+				SeriesNames: []string{
 					"Show", "Click", "Visit", "Inquiry", "Order",
 				},
 			},
@@ -485,7 +485,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Offset: charts.OffsetStr{
 					Top: "-90",
 				},
-				Data: []string{
+				SeriesNames: []string{
 					"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 				},
 			},
@@ -496,7 +496,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Left:   10,
 			},
 			XAxis: charts.XAxisOption{
-				Data: []string{
+				Labels: []string{
 					"2012", "2013", "2014", "2015", "2016", "2017",
 				},
 			},
@@ -519,7 +519,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				{
 					Legend: charts.LegendOption{
 						Show: charts.False(),
-						Data: []string{
+						SeriesNames: []string{
 							"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 						},
 					},

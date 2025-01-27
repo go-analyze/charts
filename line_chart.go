@@ -90,9 +90,6 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 	seriesPainter := result.seriesPainter
 
-	if len(opt.XAxis.Labels) == 0 {
-		opt.XAxis.Labels = opt.XAxis.Data
-	}
 	stackedSeries := flagIs(true, opt.StackSeries)
 	fillAreaY0 := stackedSeries || opt.FillArea // fill area defaults to on if the series is stacked
 	fillAreaY1 := opt.FillArea

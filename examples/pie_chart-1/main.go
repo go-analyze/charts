@@ -36,7 +36,7 @@ func main() {
 		}),
 		charts.PaddingOptionFunc(charts.NewBoxEqual(20)),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 			},
 			Vertical: charts.True(),

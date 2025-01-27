@@ -141,7 +141,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				fontStyle := series.Label.FontStyle
 				labelX := right
 				labelY := y + (barHeight >> 1)
-				labelLeft := (opt.SeriesLabelPosition == PositionLeft || series.Label.Position == PositionLeft) && !stackedSeries
+				labelLeft := opt.SeriesLabelPosition == PositionLeft && !stackedSeries
 				if labelLeft {
 					labelX = 0
 				}

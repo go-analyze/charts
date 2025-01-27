@@ -30,11 +30,11 @@ func main() {
 	}
 	p, err := charts.LineRender(
 		values,
-		charts.XAxisDataOptionFunc([]string{
+		charts.XAxisLabelsOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Email", "Video Ads", "Direct",
 			},
 			OverlayChart: charts.False(),
@@ -65,13 +65,13 @@ func main() {
 		// set a transparent background theme to not overwrite the chart below
 		Theme: charts.GetDefaultTheme().WithBackgroundColor(charts.ColorTransparent),
 		Legend: charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"2011", "2012",
 			},
 		},
 		YAxis: []charts.YAxisOption{
 			{
-				Data: []string{
+				Labels: []string{
 					"USA", "India", "China", "World",
 				},
 			},

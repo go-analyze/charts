@@ -22,11 +22,11 @@ func makeFullLineChartOption() LineChartOption {
 		},
 		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
-			Data: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
+			Labels: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
 		},
 		YAxis: make([]YAxisOption, 1),
 		Legend: LegendOption{
-			Data: []string{"Email", "Union Ads", "Video Ads", "Direct", "Search Engine"},
+			SeriesNames: []string{"Email", "Union Ads", "Video Ads", "Direct", "Search Engine"},
 		},
 		SeriesList: NewSeriesListLine(values),
 	}
@@ -43,11 +43,11 @@ func makeBasicLineChartOption() LineChartOption {
 		},
 		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
-			Data: []string{"A", "B", "C", "D", "E", "F", "G"},
+			Labels: []string{"A", "B", "C", "D", "E", "F", "G"},
 		},
 		YAxis: make([]YAxisOption, 1),
 		Legend: LegendOption{
-			Data: []string{"1", "2"},
+			SeriesNames: []string{"1", "2"},
 		},
 		SeriesList: NewSeriesListLine(values),
 	}
@@ -56,7 +56,7 @@ func makeBasicLineChartOption() LineChartOption {
 func makeMinimalLineChartLegendOption() LineChartOption {
 	opt := makeMinimalLineChartOption()
 	opt.Legend = LegendOption{
-		Data: []string{"1", "2"},
+		SeriesNames: []string{"1", "2"},
 	}
 	return opt
 }
@@ -69,8 +69,8 @@ func makeMinimalLineChartOption() LineChartOption {
 	return LineChartOption{
 		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
-			Data: []string{"1", "2", "3", "4", "5", "6", "7"},
-			Show: False(),
+			Labels: []string{"1", "2", "3", "4", "5", "6", "7"},
+			Show:   False(),
 		},
 		YAxis:      make([]YAxisOption, 1),
 		SymbolShow: False(),
@@ -96,16 +96,16 @@ func makeFullLineChartStackedOption() LineChartOption {
 		SeriesList:  seriesList,
 		StackSeries: True(),
 		XAxis: XAxisOption{
-			Data:        []string{"1", "2", "3", "4", "5", "6", "7", "8"},
+			Labels:      []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 			BoundaryGap: True(),
 		},
 		Legend: LegendOption{
-			Data: dataLabels,
+			SeriesNames: dataLabels,
 		},
 		YAxis: []YAxisOption{
 			{
 				RangeValuePaddingScale: FloatPointer(1.0),
-				Data:                   dataLabels,
+				Labels:                 dataLabels,
 			},
 		},
 	}
@@ -729,11 +729,11 @@ func TestLineChart(t *testing.T) {
 			makeOptions: func() LineChartOption {
 				opt := makeFullLineChartOption()
 				// set names in weird order, series should shuffle to match legend order
-				opt.SeriesList[0].Name = opt.Legend.Data[3]
-				opt.SeriesList[1].Name = opt.Legend.Data[4]
-				opt.SeriesList[2].Name = opt.Legend.Data[0]
-				opt.SeriesList[3].Name = opt.Legend.Data[1]
-				opt.SeriesList[4].Name = opt.Legend.Data[2]
+				opt.SeriesList[0].Name = opt.Legend.SeriesNames[3]
+				opt.SeriesList[1].Name = opt.Legend.SeriesNames[4]
+				opt.SeriesList[2].Name = opt.Legend.SeriesNames[0]
+				opt.SeriesList[3].Name = opt.Legend.SeriesNames[1]
+				opt.SeriesList[4].Name = opt.Legend.SeriesNames[2]
 				opt.SeriesList[4].MarkLine = NewMarkLine("min")
 				// disable extra stuff
 				opt.YAxis[0].Show = False()

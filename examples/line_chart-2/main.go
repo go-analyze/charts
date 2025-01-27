@@ -33,10 +33,10 @@ func main() {
 	opt := charts.NewLineChartOptionWithData(values)
 	opt.Title.Text = "Line"
 	opt.Title.FontStyle.FontSize = 16
-	opt.XAxis.Data = []string{
+	opt.XAxis.Labels = []string{
 		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 	}
-	opt.Legend.Data = []string{
+	opt.Legend.SeriesNames = []string{
 		"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 	}
 	opt.Legend.Padding = charts.Box{

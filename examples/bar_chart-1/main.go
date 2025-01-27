@@ -28,11 +28,11 @@ func main() {
 	}
 	p, err := charts.BarRender(
 		values,
-		charts.XAxisDataOptionFunc([]string{
+		charts.XAxisLabelsOptionFunc([]string{
 			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Rainfall", "Evaporation",
 			},
 			Offset:       charts.OffsetRight,

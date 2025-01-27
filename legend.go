@@ -17,8 +17,6 @@ type LegendOption struct {
 	Show *bool
 	// Theme specifies the colors used for the legend.
 	Theme ColorPalette
-	// Deprecated: Data is deprecated, use SeriesNames instead.
-	Data []string
 	// SeriesNames provides text labels for the legend.
 	SeriesNames []string
 	// FontStyle specifies the font, size, and style for rendering the legend.
@@ -41,9 +39,6 @@ type LegendOption struct {
 
 // IsEmpty checks legend is empty
 func (opt *LegendOption) IsEmpty() bool {
-	if len(opt.SeriesNames) == 0 {
-		opt.SeriesNames = opt.Data
-	}
 	for _, v := range opt.SeriesNames {
 		if v != "" {
 			return false
@@ -66,9 +61,6 @@ func (l *legendPainter) Render() (Box, error) {
 		return BoxZero, nil
 	}
 
-	if len(opt.SeriesNames) == 0 {
-		opt.SeriesNames = opt.Data
-	}
 	theme := opt.Theme
 	if theme == nil {
 		theme = getPreferredTheme(l.p.theme)

@@ -110,9 +110,6 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	}
 	seriesPainter := result.seriesPainter
 
-	if len(opt.XAxis.Labels) == 0 {
-		opt.XAxis.Labels = opt.XAxis.Data
-	}
 	xRange := newRange(b.p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
 		seriesPainter.Width(), len(opt.XAxis.Labels), 0.0, 0.0, 0.0, 0.0)
 	x0, x1 := xRange.GetRange(0)
@@ -193,7 +190,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				labelY := top
 				var radians float64
 				fontStyle := series.Label.FontStyle
-				labelBottom := (opt.SeriesLabelPosition == PositionBottom || series.Label.Position == PositionBottom) && !stackSeries
+				labelBottom := opt.SeriesLabelPosition == PositionBottom && !stackSeries
 				if labelBottom {
 					labelY = barMaxHeight
 					radians = -math.Pi / 2 // Rotated label at the bottom

@@ -120,9 +120,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	// association between legend and series name
 	if len(opt.legend.SeriesNames) == 0 {
-		opt.legend.SeriesNames = opt.legend.Data
-	}
-	if len(opt.legend.SeriesNames) == 0 {
 		opt.legend.SeriesNames = opt.seriesList.Names()
 	} else {
 		seriesCount := len(opt.seriesList)
@@ -278,9 +275,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			// since the x-axis is the value part, it's label is calculated and processed separately
 			opt.xAxis.Labels = r.Values()
 			opt.xAxis.isValueAxis = true
-		}
-		if len(yAxisOption.Labels) == 0 {
-			yAxisOption.Labels = yAxisOption.Data
 		}
 		reverseStringSlice(yAxisOption.Labels)
 		child := p.Child(PainterPaddingOption(Box{

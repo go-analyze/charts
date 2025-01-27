@@ -30,8 +30,6 @@ func newSeriesListFromValues(values [][]float64, chartType string, label SeriesL
 }
 
 type SeriesLabel struct {
-	// Deprecated: Formatter is deprecated, use FormatTemplate as a direct replacement.
-	Formatter string
 	// FormatTemplate is a string template for formatting the data label.
 	// {b}: the name of a data item.
 	// {c}: the value of a data item.
@@ -45,9 +43,6 @@ type SeriesLabel struct {
 	Show *bool
 	// Distance to the host graphic element.
 	Distance int // TODO - do we want to replace with just Offset?
-	// Deprecated: Position is deprecated, this value was only used on bar and horizontal bar charts. Instead use
-	// SeriesLabelPosition on those chart options directly.
-	Position string
 	// Offset specifies an offset from the position.
 	Offset OffsetInt
 }
@@ -137,12 +132,6 @@ func (sl SeriesList) getYAxisCount() int {
 		}
 	}
 	return 1
-}
-
-// Deprecated: GetMinMax is deprecated, instead use Series.Summary().  For example seriesList[0].Summary().
-func (sl SeriesList) GetMinMax(yaxisIndex int) (float64, float64) {
-	min, max, _ := sl.getMinMaxSumMax(yaxisIndex, false)
-	return min, max
 }
 
 // getMinMaxSumMax returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1).

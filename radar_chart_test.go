@@ -19,9 +19,7 @@ func makeBasicRadarChartOption() RadarChartOption {
 			Text: "Basic Radar Chart",
 		},
 		Legend: LegendOption{
-			Data: []string{
-				"Allocated Budget", "Actual Spending",
-			},
+			SeriesNames: []string{"Allocated Budget", "Actual Spending"},
 		},
 		RadarIndicators: NewRadarIndicators([]string{
 			"Sales",

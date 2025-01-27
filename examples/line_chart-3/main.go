@@ -40,7 +40,7 @@ func main() {
 			Offset: charts.OffsetCenter,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Critical", "High", "Medium", "Low",
 			},
 			// Legend Vertical, on the right, and with smaller font to give more space for data
@@ -58,7 +58,7 @@ func main() {
 			LabelSkipCount: 1,
 		}),
 		charts.XAxisOptionFunc(charts.XAxisOption{
-			Data:         xAxisLabels,
+			Labels:       xAxisLabels,
 			FontStyle:    axisFont,
 			BoundaryGap:  charts.True(),
 			LabelCount:   10,

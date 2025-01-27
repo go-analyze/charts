@@ -33,7 +33,7 @@ func main() {
 	p, err := charts.LineRender(
 		values,
 		charts.TitleTextOptionFunc("Line"),
-		charts.XAxisDataOptionFunc([]string{
+		charts.XAxisLabelsOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendLabelsOptionFunc([]string{

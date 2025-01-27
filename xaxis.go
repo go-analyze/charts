@@ -5,8 +5,6 @@ type XAxisOption struct {
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
-	// Deprecated: Data is deprecated, use Labels instead.
-	Data []string
 	// Labels provides labels for each value on the x-axis (index matching to the series index).
 	Labels []string
 	// DataStartIndex specifies what index the Data values should start from.
@@ -42,9 +40,6 @@ func (opt *XAxisOption) toAxisOption() axisOption {
 	position := PositionBottom
 	if opt.Position == PositionTop {
 		position = PositionTop
-	}
-	if len(opt.Labels) == 0 {
-		opt.Labels = opt.Data
 	}
 	axisOpt := axisOption{
 		Theme:                opt.Theme,
