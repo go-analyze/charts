@@ -32,6 +32,9 @@ type ChartOption struct {
 	Box Box
 	// SeriesList provides the data series.
 	SeriesList SeriesList
+	// StackSeries if set to *true the lines will be layered or stacked. This option significantly changes the chart
+	// visualization, please see the specific chart docs for full details.
+	StackSeries *bool
 	// RadarIndicators are radar indicator list for radar charts.
 	RadarIndicators []RadarIndicator
 	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.

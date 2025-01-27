@@ -44,6 +44,12 @@ type LineChartOption struct {
 	Font *truetype.Font
 	// SeriesList provides the data series.
 	SeriesList SeriesList
+	// StackSeries if set to *true the lines will be layered over each other, with the last series value representing
+	// the sum of all the values. Enabling this will also enable FillArea (which until v0.5 can't be disabled).
+	// Some options will be ignored when StackedSeries is enabled, this includes StrokeSmoothingTension.
+	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
+	// base bar, other bars are influenced by prior values).
+	StackSeries *bool
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
 	// YAxis are options for the y-axis (at most two).
@@ -60,6 +66,7 @@ type LineChartOption struct {
 	// smoother lines. Because the tension smooths out the line, the line will no longer hit the data points exactly.
 	// The more variable the points, and the higher the tension, the more the line will be moved from the points.
 	StrokeSmoothingTension float64
+	// TODO - make FillArea a pointer so that it can be disabled for stacking, update StackSeries docs when done
 	// FillArea set this to true to fill the area below the line.
 	FillArea bool
 	// FillOpacity is the opacity (alpha) of the area fill.
@@ -92,6 +99,8 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 	xDivideValues := autoDivide(seriesPainter.Width(), xDivideCount)
 	xValues := make([]int, len(xDivideValues)-1)
+	// accumulatedValues is used for stacking: it holds the summed data values at each X index
+	var accumulatedValues []float64
 	if boundaryGap {
 		for i := 0; i < len(xDivideValues)-1; i++ {
 			xValues[i] = (xDivideValues[i] + xDivideValues[i+1]) >> 1
@@ -120,6 +129,12 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			dataCount = l
 		}
 	}
+
+	stackedSeries := flagIs(true, opt.StackSeries)
+	if stackedSeries {
+		accumulatedValues = make([]float64, dataCount)
+	}
+
 	showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
 	if opt.StrokeSmoothingTension > 0 {
 		showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
@@ -129,6 +144,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 
 	seriesNames := seriesList.Names()
+	var priorSeriesPoints []Point
 	for index := range seriesList {
 		series := seriesList[index]
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
@@ -143,6 +159,12 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		for i, item := range series.Data {
 			if item == GetNullValue() {
 				points[i] = Point{X: xValues[i], Y: math.MaxInt32}
+			} else if stackedSeries {
+				accumulatedValues[i] += item
+				points[i] = Point{
+					X: xValues[i],
+					Y: yRange.getRestHeight(accumulatedValues[i]),
+				}
 			} else {
 				points[i] = Point{
 					X: xValues[i],
@@ -161,20 +183,30 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 		}
 
-		if opt.FillArea {
+		if stackedSeries || opt.FillArea {
 			areaPoints := make([]Point, len(points))
 			copy(areaPoints, points)
 			bottomY := yRange.getRestHeight(yRange.min)
-			areaPoints = append(areaPoints,
-				Point{
-					X: areaPoints[len(areaPoints)-1].X,
-					Y: bottomY,
-				}, Point{
-					X: areaPoints[0].X,
-					Y: bottomY,
-				},
-				areaPoints[0],
-			)
+			if stackedSeries && len(priorSeriesPoints) > 0 {
+				// Fill between current line (areaPoints) and priorSeriesPoints
+				for i := len(priorSeriesPoints) - 1; i >= 0; i-- {
+					areaPoints = append(areaPoints, priorSeriesPoints[i])
+				}
+				// Close the shape by re-appending the first of point
+				areaPoints = append(areaPoints, areaPoints[0])
+			} else {
+				// Not stacked or first stacked series: fill down to bottom and then back to the first point
+				areaPoints = append(areaPoints,
+					Point{
+						X: areaPoints[len(areaPoints)-1].X,
+						Y: bottomY,
+					}, Point{
+						X: areaPoints[0].X,
+						Y: bottomY,
+					},
+					areaPoints[0],
+				)
+			}
 
 			var opacity uint8 = 200
 			if opt.FillOpacity > 0 {
@@ -182,7 +214,8 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 			fillColor := seriesColor.WithAlpha(opacity)
 
-			if opt.StrokeSmoothingTension > 0 {
+			// If smoothing is enabled, do a smooth fill (not currently supported for stacked series)
+			if !stackedSeries && opt.StrokeSmoothingTension > 0 {
 				seriesPainter.smoothFillChartArea(areaPoints, opt.StrokeSmoothingTension, fillColor)
 			} else {
 				seriesPainter.FillArea(areaPoints, fillColor)
@@ -205,15 +238,18 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			seriesPainter.Dots(points, dotFillColor, seriesColor, 1, 2)
 		}
 
-		markLinePainter.Add(markLineRenderOption{
-			fillColor:      seriesColor,
-			fontColor:      opt.Theme.GetTextColor(),
-			strokeColor:    seriesColor,
-			font:           opt.Font,
-			series:         series,
-			axisRange:      yRange,
-			valueFormatter: opt.ValueFormatter,
-		})
+		// In stacked mode we only support the line painter for the first series
+		if !stackedSeries || index == 0 {
+			markLinePainter.Add(markLineRenderOption{
+				fillColor:      seriesColor,
+				fontColor:      opt.Theme.GetTextColor(),
+				strokeColor:    seriesColor,
+				font:           opt.Font,
+				series:         series,
+				axisRange:      yRange,
+				valueFormatter: opt.ValueFormatter,
+			})
+		}
 		markPointPainter.Add(markPointRenderOption{
 			fillColor:          seriesColor,
 			font:               opt.Font,
@@ -222,6 +258,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			valueFormatter:     opt.ValueFormatter,
 			seriesLabelPainter: labelPainter,
 		})
+
+		// Save these points as "priorSeriesPoints" for the next series to stack onto (if needed)
+		priorSeriesPoints = points
 	}
 
 	if err := doRender(rendererList...); err != nil {
@@ -246,6 +285,7 @@ func (l *lineChart) Render() (Box, error) {
 		theme:              opt.Theme,
 		padding:            opt.Padding,
 		seriesList:         opt.SeriesList,
+		stackSeries:        flagIs(true, opt.StackSeries),
 		xAxis:              &l.opt.XAxis,
 		yAxis:              opt.YAxis,
 		title:              opt.Title,

@@ -388,6 +388,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		seriesList:     opt.SeriesList,
 		xAxis:          &opt.XAxis,
 		yAxis:          opt.YAxis,
+		stackSeries:    flagIs(true, opt.StackSeries),
 		title:          opt.Title,
 		legend:         &opt.Legend,
 		axisReversed:   axisReversed,
@@ -420,11 +421,12 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(barSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newBarChart(p, BarChartOption{
-				Theme:     opt.Theme,
-				Font:      opt.Font,
-				XAxis:     opt.XAxis,
-				BarWidth:  opt.BarWidth,
-				BarMargin: opt.BarMargin,
+				Theme:       opt.Theme,
+				Font:        opt.Font,
+				XAxis:       opt.XAxis,
+				StackSeries: opt.StackSeries,
+				BarWidth:    opt.BarWidth,
+				BarMargin:   opt.BarMargin,
 			}).render(renderResult, barSeriesList)
 			return err
 		})
@@ -434,11 +436,12 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(horizontalBarSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newHorizontalBarChart(p, HorizontalBarChartOption{
-				Theme:     opt.Theme,
-				Font:      opt.Font,
-				BarHeight: opt.BarHeight,
-				BarMargin: opt.BarMargin,
-				YAxis:     opt.YAxis,
+				Theme:       opt.Theme,
+				Font:        opt.Font,
+				BarHeight:   opt.BarHeight,
+				BarMargin:   opt.BarMargin,
+				YAxis:       opt.YAxis,
+				StackSeries: opt.StackSeries,
 			}).render(renderResult, horizontalBarSeriesList)
 			return err
 		})
@@ -462,6 +465,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Theme:           opt.Theme,
 				Font:            opt.Font,
 				XAxis:           opt.XAxis,
+				StackSeries:     opt.StackSeries,
 				SymbolShow:      opt.SymbolShow,
 				LineStrokeWidth: opt.LineStrokeWidth,
 				FillArea:        opt.FillArea,
