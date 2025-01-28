@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/go-analyze/charts"
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 /*
@@ -62,7 +61,7 @@ func main() {
 	}
 
 	hBarOpt := charts.HorizontalBarChartOption{
-		Padding: chartdraw.NewBox(10, 10, 10, 10),
+		Padding: charts.NewBoxEqual(10),
 		// set a transparent background theme to not overwrite the chart below
 		Theme: charts.GetDefaultTheme().WithBackgroundColor(charts.ColorTransparent),
 		Legend: charts.LegendOption{
@@ -82,7 +81,7 @@ func main() {
 			{80, 100, 120, 140},
 		}),
 	}
-	p = p.Child(charts.PainterBoxOption(chartdraw.NewBox(0, 200, 600, 200)))
+	p = p.Child(charts.PainterBoxOption(charts.NewBox(0, 200, 200, 600)))
 	if err = p.HorizontalBarChart(hBarOpt); err != nil {
 		panic(err)
 	}

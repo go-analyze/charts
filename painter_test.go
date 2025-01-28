@@ -8,8 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func TestPainterOption(t *testing.T) {
@@ -264,7 +262,7 @@ func TestPainterExternal(t *testing.T) {
 					return fmt.Sprintf("%.0f", f)
 				}
 				_ = p.LineChart(opt)
-				p = p.Child(PainterBoxOption(chartdraw.NewBox(0, 200, 400, 200)))
+				p = p.Child(PainterBoxOption(NewBox(0, 200, 200, 400)))
 				opt = makeMinimalLineChartOption()
 				opt.Theme = GetDefaultTheme().WithBackgroundColor(ColorTransparent)
 				_ = p.LineChart(opt)
@@ -569,11 +567,11 @@ func TestMultipleChartsOnPainter(t *testing.T) {
 	})
 	p.FilledRect(0, 0, 800, 600, ColorWhite, ColorTransparent, 0.0)
 	// set the space and theme for each chart
-	topCenterPainter := p.Child(PainterBoxOption(chartdraw.NewBox(0, 0, 800, 300)),
+	topCenterPainter := p.Child(PainterBoxOption(NewBox(0, 300, 0, 800)),
 		PainterThemeOption(GetTheme(ThemeVividLight)))
-	bottomLeftPainter := p.Child(PainterBoxOption(chartdraw.NewBox(300, 0, 400, 600)),
+	bottomLeftPainter := p.Child(PainterBoxOption(NewBox(300, 600, 0, 400)),
 		PainterThemeOption(GetTheme(ThemeAnt)))
-	bottomRightPainter := p.Child(PainterBoxOption(chartdraw.NewBox(300, 400, 800, 600)),
+	bottomRightPainter := p.Child(PainterBoxOption(NewBox(300, 600, 400, 800)),
 		PainterThemeOption(GetTheme(ThemeLight)))
 
 	pieOpt := makeBasicPieChartOption()

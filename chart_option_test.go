@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func TestChartOption(t *testing.T) {
@@ -294,7 +292,7 @@ func TestChildRender(t *testing.T) {
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		ChildOptionFunc(ChartOption{
-			Box: chartdraw.NewBox(10, 200, 500, 200),
+			Box: NewBox(10, 200, 200, 500),
 			SeriesList: NewSeriesListHorizontalBar([][]float64{
 				{70, 90, 110, 130},
 				{80, 100, 120, 140},

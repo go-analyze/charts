@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func TestNewLegend(t *testing.T) {
@@ -100,7 +98,7 @@ func TestNewLegend(t *testing.T) {
 						FontSize:  20.0,
 						FontColor: ColorBlue,
 					},
-					Padding: chartdraw.NewBox(200, 20, 20, 20),
+					Padding: NewBox(200, 20, 20, 20),
 				}).Render()
 				if err != nil {
 					return nil, err

@@ -17,7 +17,7 @@ const defaultYAxisLabelCountLow = 3
 
 var defaultChartWidth = 600
 var defaultChartHeight = 400
-var defaultPadding = chartdraw.NewBox(20, 20, 20, 20)
+var defaultPadding = NewBoxEqual(20)
 
 // SetDefaultChartDimensions sets default width and height of charts if not otherwise specified in their configuration.
 func SetDefaultChartDimensions(width, height int) {

@@ -14,6 +14,22 @@ type FontStyle = chartdraw.FontStyle
 
 var BoxZero = chartdraw.BoxZero
 
+// NewBox returns a new box with the provided top, bottom, left, and right sizes.
+func NewBox(top, bottom, left, right int) Box {
+	return Box{
+		IsSet:  true,
+		Top:    top,
+		Bottom: bottom,
+		Left:   left,
+		Right:  right,
+	}
+}
+
+// NewBoxEqual returns a new box with equal sizes to each side.
+func NewBoxEqual(size int) Box {
+	return NewBox(size, size, size, size)
+}
+
 // OffsetInt provides an ability to configure a shift from the top or left alignments.
 type OffsetInt struct {
 	// Left indicates a vertical spacing adjustment from the top.

@@ -25,9 +25,9 @@ func NewBox(top, left, right, bottom int) Box {
 // Box represents the main 4 dimensions of a box.
 type Box struct {
 	Top    int
+	Bottom int
 	Left   int
 	Right  int
-	Bottom int
 	IsSet  bool
 }
 

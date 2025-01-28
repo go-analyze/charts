@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/go-analyze/charts"
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 /*
@@ -53,12 +51,12 @@ func main() {
 			opt.SymbolShow = charts.True()
 			opt.LineStrokeWidth = 1.2
 			opt.ValueFormatter = func(f float64) string {
-				return fmt.Sprintf("%.0f", f)
+				return charts.FormatValueHumanize(f, 1, true)
 			}
 
 			opt.Children = []charts.ChartOption{
 				{
-					Box: chartdraw.NewBox(10, 200, 500, 200),
+					Box: charts.NewBox(10, 200, 200, 500),
 					SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
 						{70, 90, 110, 130},
 						{80, 100, 120, 140},

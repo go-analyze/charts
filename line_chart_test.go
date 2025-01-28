@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func makeFullLineChartOption() LineChartOption {
@@ -687,7 +685,7 @@ func TestLineChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.Padding = chartdraw.NewBox(40, 40, 40, 40)
+				opt.Padding = NewBoxEqual(40)
 				opt.YAxis[0].Show = False()
 				for i := range opt.SeriesList {
 					markLine := NewMarkLine("min", "max", "average")
@@ -753,7 +751,7 @@ func TestLineChart(t *testing.T) {
 				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.GlobalPoint = true
 				// disable extra stuff
 				opt.SeriesList[0].MarkLine = SeriesMarkLine{}
-				opt.Padding = chartdraw.NewBox(40, 20, 20, 20)
+				opt.Padding = NewBox(40, 20, 20, 20)
 				opt.Legend.Show = False()
 				opt.YAxis[0].Show = False()
 				opt.XAxis.Show = False()
@@ -773,7 +771,7 @@ func TestLineChart(t *testing.T) {
 					opt.SeriesList[i].MarkPoint = SeriesMarkPoint{}
 					opt.SeriesList[i].Label.Show = False()
 				}
-				opt.Padding = chartdraw.NewBox(40, 20, 20, 20)
+				opt.Padding = NewBox(40, 20, 20, 20)
 				opt.Legend.Show = False()
 				opt.YAxis[0].Show = False()
 				opt.XAxis.Show = False()

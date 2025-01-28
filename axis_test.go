@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func TestAxis(t *testing.T) {
@@ -243,7 +241,7 @@ func TestAxis(t *testing.T) {
 				Height:       400,
 			}, PainterThemeOption(axisTheme))
 			if tt.padPainter {
-				p = p.Child(PainterPaddingOption(chartdraw.NewBox(50, 50, 50, 50)))
+				p = p.Child(PainterPaddingOption(NewBoxEqual(50)))
 			}
 
 			_, err := newAxisPainter(p, tt.optionFactory()).Render()
