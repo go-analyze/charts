@@ -4,7 +4,10 @@ import (
 	"errors"
 )
 
+// TODO - remove internal defaults from public API
 const (
+	// Deprecated: DefaultEMAPeriod is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultEMAPeriod is the default EMA period used in the sigma calculation.
 	DefaultEMAPeriod = 12
 )

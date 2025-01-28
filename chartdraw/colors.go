@@ -41,29 +41,45 @@ var (
 
 // TODO - remove internal defaults from public API
 var (
+	// Deprecated: DefaultBackgroundColor is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultBackgroundColor is the default chart background color.
 	// It is equivalent to css color:white.
 	DefaultBackgroundColor = ColorWhite
+	// Deprecated: DefaultBackgroundStrokeColor is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultBackgroundStrokeColor is the default chart border color.
 	// It is equivalent to color:white.
 	DefaultBackgroundStrokeColor = ColorWhite
+	// Deprecated: DefaultCanvasColor is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultCanvasColor is the default chart canvas color.
 	// It is equivalent to css color:white.
 	DefaultCanvasColor = ColorWhite
+	// Deprecated: DefaultCanvasStrokeColor is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultCanvasStrokeColor is the default chart canvas stroke color.
 	// It is equivalent to css color:white.
 	DefaultCanvasStrokeColor = ColorWhite
+	// Deprecated: DefaultTextColor is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultTextColor is the default chart text color.
 	// It is equivalent to #333333.
 	DefaultTextColor = ColorBlack
+	// Deprecated: DefaultAxisColor is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultAxisColor is the default chart axis line color.
 	// It is equivalent to #333333.
 	DefaultAxisColor = ColorBlack
+	// Deprecated: DefaultAnnotationFillColor is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultAnnotationFillColor is the default annotation background color.
 	DefaultAnnotationFillColor = ColorWhite
 )
 
 var (
+	// Deprecated: DefaultColors is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultColors are a couple default series colors.
 	DefaultColors = []drawing.Color{
 		ColorBlue,
@@ -73,6 +89,8 @@ var (
 		ColorOrange,
 	}
 
+	// Deprecated: DefaultAlternateColors is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultAlternateColors are a couple alternate colors.
 	DefaultAlternateColors = []drawing.Color{
 		ColorAlternateBlue,
@@ -145,7 +163,7 @@ func (dp defaultColorPalette) GetSeriesColor(index int) drawing.Color {
 	return GetDefaultColor(index)
 }
 
-// AlternateColorPalette represents the default palette.
+// AlternateColorPalette represents the an alternate default palette.
 var AlternateColorPalette alternateColorPalette
 
 type alternateColorPalette struct{}

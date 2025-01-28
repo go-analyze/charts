@@ -550,5 +550,6 @@ func (c Chart) Box() Box {
 		Left:   c.Background.Padding.GetLeft(DefaultBackgroundPadding.Left),
 		Right:  c.GetWidth() - dpr,
 		Bottom: c.GetHeight() - dpb,
+		IsSet:  true,
 	}
 }

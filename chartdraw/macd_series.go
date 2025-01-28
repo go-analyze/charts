@@ -6,10 +6,16 @@ import (
 
 // TODO - remove internal defaults from public API
 const (
+	// Deprecated: DefaultMACDPeriodPrimary is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultMACDPeriodPrimary is the long window.
 	DefaultMACDPeriodPrimary = 26
+	// Deprecated: DefaultMACDPeriodSecondary is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultMACDPeriodSecondary is the short window.
 	DefaultMACDPeriodSecondary = 12
+	// Deprecated: DefaultMACDSignalPeriod is deprecated, it's not expected to be used externally. If you
+	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultMACDSignalPeriod is the signal period to compute for the MACD.
 	DefaultMACDSignalPeriod = 9
 )
