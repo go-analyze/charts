@@ -62,9 +62,7 @@ func main() {
 	opt.XAxis.LabelCount = 10
 	opt.XAxis.TextRotation = charts.DegreesToRadians(45)
 	opt.XAxis.BoundaryGap = charts.True()
-	opt.XAxis.FontStyle = charts.FontStyle{
-		FontSize: 6.0,
-	}
+	opt.XAxis.FontStyle = charts.NewFontStyleWithSize(6.0)
 	opt.YAxis = []charts.YAxisOption{
 		{
 			Show:          charts.False(), // disabling in favor of manually printed y-values
@@ -72,9 +70,7 @@ func main() {
 			Max:           charts.FloatPointer(8.0),
 			LabelCount:    4,
 			SpineLineShow: charts.True(),
-			FontStyle: charts.FontStyle{
-				FontSize: 8.0,
-			},
+			FontStyle:     charts.NewFontStyleWithSize(8.0),
 		},
 	}
 	opt.Legend.Show = charts.False()

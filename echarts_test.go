@@ -82,13 +82,7 @@ func TestEChartsPadding(t *testing.T) {
 	eb := EChartsPadding{}
 
 	require.NoError(t, eb.UnmarshalJSON([]byte(`1`)))
-	assert.Equal(t, Box{
-		Left:   1,
-		Top:    1,
-		Right:  1,
-		Bottom: 1,
-		IsSet:  true,
-	}, eb.Box)
+	assert.Equal(t, NewBoxEqual(1), eb.Box)
 
 	require.NoError(t, eb.UnmarshalJSON([]byte(`[2, 3]`)))
 	assert.Equal(t, Box{

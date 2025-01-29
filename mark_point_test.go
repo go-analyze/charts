@@ -46,12 +46,7 @@ func TestMarkPoint(t *testing.T) {
 				Width:        600,
 				Height:       400,
 			}, PainterThemeOption(GetTheme(ThemeLight)))
-			data, err := tt.render(p.Child(PainterPaddingOption(Box{
-				Left:   20,
-				Top:    20,
-				Right:  20,
-				Bottom: 20,
-			})))
+			data, err := tt.render(p.Child(PainterPaddingOption(NewBoxEqual(20))))
 			require.NoError(t, err)
 			assertEqualSVG(t, tt.result, data)
 		})

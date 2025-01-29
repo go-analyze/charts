@@ -29,9 +29,7 @@ func writeFile(buf []byte) error {
 func main() {
 	values := generateRandomData(4, dataPointCount, 10)
 	xAxisLabels := generateLabels(dataPointCount, "foo ")
-	axisFont := charts.FontStyle{
-		FontSize: 6.0,
-	}
+	axisFont := charts.NewFontStyleWithSize(6.0)
 
 	p, err := charts.LineRender(
 		values,
@@ -44,19 +42,12 @@ func main() {
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{"Critical", "High", "Medium", "Low"},
 			// Legend Vertical, on the right, and with smaller font to give more space for data
-			Vertical: charts.True(),
-			Offset:   charts.OffsetRight,
-			Align:    charts.AlignRight,
-			FontStyle: charts.FontStyle{
-				FontSize: 6.0,
-			},
+			Vertical:  charts.True(),
+			Offset:    charts.OffsetRight,
+			Align:     charts.AlignRight,
+			FontStyle: charts.NewFontStyleWithSize(6.0),
 		}),
-		charts.PaddingOptionFunc(charts.Box{
-			Top:    12,
-			Bottom: 12,
-			Left:   12,
-			Right:  12,
-		}),
+		charts.PaddingOptionFunc(charts.NewBoxEqual(12)),
 		charts.YAxisOptionFunc(charts.YAxisOption{
 			Min:       charts.FloatPointer(0.0), // force min to be zero
 			FontStyle: axisFont,

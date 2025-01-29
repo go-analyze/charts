@@ -28,22 +28,13 @@ func main() {
 
 	opt := charts.NewPieChartOptionWithData(values)
 	opt.Title = charts.TitleOption{
-		Text:    "Rainfall vs Evaporation",
-		Subtext: "(Fake Data)",
-		Offset:  charts.OffsetCenter,
-		FontStyle: charts.FontStyle{
-			FontSize: 16,
-		},
-		SubtextFontStyle: charts.FontStyle{
-			FontSize: 10,
-		},
+		Text:             "Rainfall vs Evaporation",
+		Subtext:          "(Fake Data)",
+		Offset:           charts.OffsetCenter,
+		FontStyle:        charts.NewFontStyleWithSize(16),
+		SubtextFontStyle: charts.NewFontStyleWithSize(10),
 	}
-	opt.Padding = charts.Box{
-		Top:    20,
-		Right:  20,
-		Bottom: 20,
-		Left:   20,
-	}
+	opt.Padding = charts.NewBoxEqual(20)
 	opt.Legend = charts.LegendOption{
 		Data: []string{
 			"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
@@ -53,9 +44,7 @@ func main() {
 			Left: "80%",
 			Top:  charts.PositionBottom,
 		},
-		FontStyle: charts.FontStyle{
-			FontSize: 10,
-		},
+		FontStyle: charts.NewFontStyleWithSize(10),
 	}
 
 	p := charts.NewPainter(charts.PainterOptions{
@@ -65,9 +54,7 @@ func main() {
 	})
 	if err := p.PieChart(opt); err != nil {
 		panic(err)
-	}
-
-	if buf, err := p.Bytes(); err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf); err != nil {
 		panic(err)

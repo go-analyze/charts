@@ -143,10 +143,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 	chartOptions := []charts.ChartOption{
 		{
 			Title: charts.TitleOption{
-				Text: "Line",
-				FontStyle: charts.FontStyle{
-					FontSize: 18,
-				},
+				Text:      "Line",
+				FontStyle: charts.NewFontStyleWithSize(18),
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
@@ -209,10 +207,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		},
 		{
 			Title: charts.TitleOption{
-				Text: "Line Area",
-				FontStyle: charts.FontStyle{
-					FontSize: 18,
-				},
+				Text:      "Line Area",
+				FontStyle: charts.NewFontStyleWithSize(18),
 			},
 			Legend: charts.LegendOption{
 				Data: []string{"Email"},
@@ -233,10 +229,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// histogram
 		{
 			Title: charts.TitleOption{
-				Text: "Bar",
-				FontStyle: charts.FontStyle{
-					FontSize: 18,
-				},
+				Text:      "Bar",
+				FontStyle: charts.NewFontStyleWithSize(18),
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
@@ -262,8 +256,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					},
 					Type: charts.ChartTypeBar,
 					Label: charts.SeriesLabel{
-						Show:     charts.True(),
-						Position: charts.PositionBottom,
+						Show: charts.True(),
 					},
 				},
 			},
@@ -271,10 +264,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// horizontal bar chart
 		{
 			Title: charts.TitleOption{
-				Text: "World Population",
-				FontStyle: charts.FontStyle{
-					FontSize: 18,
-				},
+				Text:      "World Population",
+				FontStyle: charts.NewFontStyleWithSize(18),
 			},
 			Padding: charts.Box{
 				Top:    20,
@@ -302,21 +293,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// histogram+marker
 		{
 			Title: charts.TitleOption{
-				Text:    "Rainfall vs Evaporation",
-				Subtext: "(Fake Data)",
-				FontStyle: charts.FontStyle{
-					FontSize: 16,
-				},
-				SubtextFontStyle: charts.FontStyle{
-					FontSize: 10,
-				},
+				Text:             "Rainfall vs Evaporation",
+				Subtext:          "(Fake Data)",
+				FontStyle:        charts.NewFontStyleWithSize(16),
+				SubtextFontStyle: charts.NewFontStyleWithSize(10),
 			},
-			Padding: charts.Box{
-				Top:    20,
-				Right:  20,
-				Bottom: 20,
-				Left:   20,
-			},
+			Padding: charts.NewBoxEqual(20),
 			XAxis: charts.XAxisOption{
 				Data: []string{
 					"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -359,10 +341,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// dual y-axis
 		{
 			Title: charts.TitleOption{
-				Text: "Temperature",
-				FontStyle: charts.FontStyle{
-					FontSize: 16,
-				},
+				Text:      "Temperature",
+				FontStyle: charts.NewFontStyleWithSize(16),
 			},
 			XAxis: charts.XAxisOption{
 				Data: []string{
@@ -399,15 +379,11 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// pie chart
 		{
 			Title: charts.TitleOption{
-				Text:    "Referer of a Website",
-				Subtext: "(Fake Data)",
-				Offset:  charts.OffsetCenter,
-				FontStyle: charts.FontStyle{
-					FontSize: 16,
-				},
-				SubtextFontStyle: charts.FontStyle{
-					FontSize: 10,
-				},
+				Text:             "Referer of a Website",
+				Subtext:          "(Fake Data)",
+				Offset:           charts.OffsetCenter,
+				FontStyle:        charts.NewFontStyleWithSize(16),
+				SubtextFontStyle: charts.NewFontStyleWithSize(10),
 			},
 			Legend: charts.LegendOption{
 				Vertical: charts.True(),
@@ -425,10 +401,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		// radar chart
 		{
 			Title: charts.TitleOption{
-				Text: "Basic Radar Chart",
-				FontStyle: charts.FontStyle{
-					FontSize: 16,
-				},
+				Text:      "Basic Radar Chart",
+				FontStyle: charts.NewFontStyleWithSize(16),
 			},
 			Legend: charts.LegendOption{
 				Data: []string{
@@ -528,7 +502,6 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			YAxis: []charts.YAxisOption{
 				{
-
 					Min: charts.FloatPointer(0),
 					Max: charts.FloatPointer(90),
 				},

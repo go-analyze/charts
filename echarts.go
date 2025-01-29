@@ -328,7 +328,7 @@ type EChartsTextStyle struct {
 
 func (et *EChartsTextStyle) ToStyle() chartdraw.Style {
 	s := chartdraw.Style{
-		FontStyle: chartdraw.FontStyle{
+		FontStyle: FontStyle{
 			FontSize:  et.FontSize,
 			FontColor: ParseColor(et.Color),
 		},

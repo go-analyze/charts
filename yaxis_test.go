@@ -33,12 +33,7 @@ func TestRightYAxis(t *testing.T) {
 				OutputFormat: ChartOutputSVG,
 				Width:        600,
 				Height:       400,
-			}, PainterThemeOption(GetTheme(ThemeLight)), PainterPaddingOption(Box{
-				Top:    10,
-				Right:  10,
-				Bottom: 10,
-				Left:   10,
-			}))
+			}, PainterThemeOption(GetTheme(ThemeLight)), PainterPaddingOption(NewBoxEqual(10)))
 			data, err := tt.render(p)
 			require.NoError(t, err)
 			assertEqualSVG(t, tt.result, data)

@@ -16,12 +16,7 @@ func makeDefaultMultiChartOptions() ChartOption {
 				"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 			},
 		},
-		Padding: Box{
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-			Left:   10,
-		},
+		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
 			Data: []string{
 				"2012", "2013", "2014", "2015", "2016", "2017",
@@ -230,9 +225,7 @@ func renderPainterBar(painter *Painter) {
 	barOpt.SeriesList[1].MarkPoint = NewMarkPoint(SeriesMarkDataTypeMax, SeriesMarkDataTypeMin)
 	if err := painter.BarChart(barOpt); err != nil {
 		panic(err)
-	}
-
-	if buf, err := painter.Bytes(); err != nil {
+	} else if buf, err := painter.Bytes(); err != nil {
 		panic(err)
 	} else if len(buf) == 0 {
 		panic(errors.New("data is nil"))
@@ -262,22 +255,13 @@ func BenchmarkPainterPieChartSVGRender(b *testing.B) {
 func renderPainterPie(painter *Painter) {
 	pieOpt := NewPieChartOptionWithData([]float64{1048, 735, 580, 484, 300})
 	pieOpt.Title = TitleOption{
-		Text:    "Rainfall vs Evaporation",
-		Subtext: "(Fake Data)",
-		Offset:  OffsetCenter,
-		FontStyle: FontStyle{
-			FontSize: 16,
-		},
-		SubtextFontStyle: FontStyle{
-			FontSize: 10,
-		},
+		Text:             "Rainfall vs Evaporation",
+		Subtext:          "(Fake Data)",
+		Offset:           OffsetCenter,
+		FontStyle:        NewFontStyleWithSize(16),
+		SubtextFontStyle: NewFontStyleWithSize(10),
 	}
-	pieOpt.Padding = Box{
-		Top:    20,
-		Right:  20,
-		Bottom: 20,
-		Left:   20,
-	}
+	pieOpt.Padding = NewBoxEqual(20)
 	pieOpt.Legend = LegendOption{
 		Data: []string{
 			"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
@@ -287,15 +271,11 @@ func renderPainterPie(painter *Painter) {
 			Left: "80%",
 			Top:  PositionBottom,
 		},
-		FontStyle: FontStyle{
-			FontSize: 10,
-		},
+		FontStyle: NewFontStyleWithSize(10),
 	}
 	if err := painter.PieChart(pieOpt); err != nil {
 		panic(err)
-	}
-
-	if buf, err := painter.Bytes(); err != nil {
+	} else if buf, err := painter.Bytes(); err != nil {
 		panic(err)
 	} else if len(buf) == 0 {
 		panic(errors.New("data is nil"))
@@ -335,10 +315,8 @@ func renderPainterRadar(painter *Painter) {
 		"Marketing",
 	}, []float64{6500, 16000, 30000, 38000, 52000, 25000})
 	radarOpt.Title = TitleOption{
-		Text: "Basic Radar Chart",
-		FontStyle: FontStyle{
-			FontSize: 16,
-		},
+		Text:      "Basic Radar Chart",
+		FontStyle: NewFontStyleWithSize(16),
 	}
 	radarOpt.Legend = LegendOption{
 		Data: []string{
@@ -348,9 +326,7 @@ func renderPainterRadar(painter *Painter) {
 	}
 	if err := painter.RadarChart(radarOpt); err != nil {
 		panic(err)
-	}
-
-	if buf, err := painter.Bytes(); err != nil {
+	} else if buf, err := painter.Bytes(); err != nil {
 		panic(err)
 	} else if len(buf) == 0 {
 		panic(errors.New("data is nil"))

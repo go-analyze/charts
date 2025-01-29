@@ -20,12 +20,7 @@ func TestChartOption(t *testing.T) {
 		XAxisDataOptionFunc([]string{"xaxis"}),
 		YAxisDataOptionFunc([]string{"yaxis"}),
 		DimensionsOptionFunc(800, 600),
-		PaddingOptionFunc(Box{
-			Left:   10,
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-		}),
+		PaddingOptionFunc(NewBoxEqual(10)),
 	}
 	opt := ChartOption{}
 	for _, fn := range fns {
@@ -49,14 +44,9 @@ func TestChartOption(t *testing.T) {
 				Data: []string{"yaxis"},
 			},
 		},
-		Width:  800,
-		Height: 600,
-		Padding: Box{
-			Left:   10,
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-		},
+		Width:   800,
+		Height:  600,
+		Padding: NewBoxEqual(10),
 	}, opt)
 }
 
@@ -209,12 +199,7 @@ func TestPieRender(t *testing.T) {
 			Subtext: "Fake Data",
 			Offset:  OffsetCenter,
 		}),
-		PaddingOptionFunc(Box{
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-			Left:   20,
-		}),
+		PaddingOptionFunc(NewBoxEqual(20)),
 		LegendOptionFunc(LegendOption{
 			Vertical: True(),
 			Data: []string{

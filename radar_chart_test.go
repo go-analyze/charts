@@ -94,12 +94,8 @@ func TestRadarChart(t *testing.T) {
 			t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
 				p := NewPainter(painterOptions)
 
-				validateRadarChartRender(t, p.Child(PainterPaddingOption(Box{
-					Left:   20,
-					Top:    20,
-					Right:  20,
-					Bottom: 20,
-				})), tt.makeOptions(), tt.result)
+				validateRadarChartRender(t, p.Child(PainterPaddingOption(NewBoxEqual(20))),
+					tt.makeOptions(), tt.result)
 			})
 		} else {
 			t.Run(strconv.Itoa(i)+"-"+tt.name+"-painter", func(t *testing.T) {

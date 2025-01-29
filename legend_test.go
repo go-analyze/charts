@@ -93,12 +93,9 @@ func TestNewLegend(t *testing.T) {
 			name: "custom_padding_and_font",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := newLegendPainter(p, LegendOption{
-					Data: []string{"One", "Two", "Three"},
-					FontStyle: FontStyle{
-						FontSize:  20.0,
-						FontColor: ColorBlue,
-					},
-					Padding: NewBox(200, 20, 20, 20),
+					Data:      []string{"One", "Two", "Three"},
+					FontStyle: NewFontStyleWithSize(20.0).WithColor(ColorBlue),
+					Padding:   NewBox(200, 20, 20, 20),
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -191,12 +188,10 @@ func TestNewLegend(t *testing.T) {
 			name: "vertical_right_position_custom_font_size",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := newLegendPainter(p, LegendOption{
-					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
-					Vertical: True(),
-					Offset:   OffsetRight,
-					FontStyle: FontStyle{
-						FontSize: 6.0,
-					},
+					Data:      []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
+					Vertical:  True(),
+					Offset:    OffsetRight,
+					FontStyle: NewFontStyleWithSize(6.0),
 				}).Render()
 				if err != nil {
 					return nil, err
@@ -212,7 +207,7 @@ func TestNewLegend(t *testing.T) {
 					Data:     []string{"One", "Two Word", "Three Word Item", "Four Words Is Longer"},
 					Vertical: True(),
 					Offset:   OffsetRight,
-					Padding:  Box{Top: 120, Left: 120, Right: 120, Bottom: 120},
+					Padding:  NewBoxEqual(120),
 				}).Render()
 				if err != nil {
 					return nil, err

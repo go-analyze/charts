@@ -28,22 +28,13 @@ func main() {
 	p, err := charts.PieRender(
 		values,
 		charts.TitleOptionFunc(charts.TitleOption{
-			Text:    "Rainfall vs Evaporation",
-			Subtext: "(Fake Data)",
-			Offset:  charts.OffsetCenter,
-			FontStyle: charts.FontStyle{
-				FontSize: 16,
-			},
-			SubtextFontStyle: charts.FontStyle{
-				FontSize: 10,
-			},
+			Text:             "Rainfall vs Evaporation",
+			Subtext:          "(Fake Data)",
+			Offset:           charts.OffsetCenter,
+			FontStyle:        charts.NewFontStyleWithSize(16),
+			SubtextFontStyle: charts.NewFontStyleWithSize(10),
 		}),
-		charts.PaddingOptionFunc(charts.Box{
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-			Left:   20,
-		}),
+		charts.PaddingOptionFunc(charts.NewBoxEqual(20)),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{
 				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
@@ -53,16 +44,12 @@ func main() {
 				Left: "80%",
 				Top:  charts.PositionBottom,
 			},
-			FontStyle: charts.FontStyle{
-				FontSize: 10,
-			},
+			FontStyle: charts.NewFontStyleWithSize(10),
 		}),
 	)
 	if err != nil {
 		panic(err)
-	}
-
-	if buf, err := p.Bytes(); err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf); err != nil {
 		panic(err)

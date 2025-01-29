@@ -28,9 +28,7 @@ func TestAxis(t *testing.T) {
 				opt := XAxisOption{
 					Data:        dayLabels,
 					BoundaryGap: True(),
-					FontStyle: FontStyle{
-						FontSize: 18,
-					},
+					FontStyle:   NewFontStyleWithSize(18),
 				}
 				return opt.toAxisOption()
 			},
@@ -41,11 +39,9 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:        dayLabels,
-					BoundaryGap: True(),
-					FontStyle: FontStyle{
-						FontSize: 18,
-					},
+					Data:         dayLabels,
+					BoundaryGap:  True(),
+					FontStyle:    NewFontStyleWithSize(18),
 					TextRotation: DegreesToRadians(45),
 				}
 				return opt.toAxisOption()
@@ -57,11 +53,9 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:        dayLabels,
-					BoundaryGap: True(),
-					FontStyle: FontStyle{
-						FontSize: 18,
-					},
+					Data:         dayLabels,
+					BoundaryGap:  True(),
+					FontStyle:    NewFontStyleWithSize(18),
 					TextRotation: DegreesToRadians(90),
 				}
 				return opt.toAxisOption()
@@ -73,11 +67,9 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:        dayLabels,
-					BoundaryGap: True(),
-					FontStyle: FontStyle{
-						FontSize: 18,
-					},
+					Data:         dayLabels,
+					BoundaryGap:  True(),
+					FontStyle:    NewFontStyleWithSize(18),
 					Position:     PositionTop,
 					TextRotation: DegreesToRadians(45),
 				}
@@ -90,11 +82,9 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:        dayLabels,
-					BoundaryGap: True(),
-					FontStyle: FontStyle{
-						FontSize: 18,
-					},
+					Data:         dayLabels,
+					BoundaryGap:  True(),
+					FontStyle:    NewFontStyleWithSize(18),
 					Position:     PositionTop,
 					TextRotation: DegreesToRadians(90),
 				}

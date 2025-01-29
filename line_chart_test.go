@@ -20,12 +20,7 @@ func makeFullLineChartOption() LineChartOption {
 		Title: TitleOption{
 			Text: "Line",
 		},
-		Padding: Box{
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-			Left:   10,
-		},
+		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
 			Data: []string{
 				"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
@@ -50,12 +45,7 @@ func makeBasicLineChartOption() LineChartOption {
 		Title: TitleOption{
 			Text: "Line",
 		},
-		Padding: Box{
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-			Left:   10,
-		},
+		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
 			Data: []string{
 				"A", "B", "C", "D", "E", "F", "G",
@@ -83,12 +73,7 @@ func makeMinimalLineChartOption() LineChartOption {
 		{820, 932, 901, 934, 1290, 1330, 1320},
 	}
 	return LineChartOption{
-		Padding: Box{
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-			Left:   10,
-		},
+		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
 			Data: []string{
 				"1", "2", "3", "4", "5", "6", "7",
@@ -115,12 +100,7 @@ func makeFullLineChartStackedOption() LineChartOption {
 	})
 	dataLabels := []string{"A", "B", "C"}
 	return LineChartOption{
-		Padding: Box{
-			Left:   20,
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-		},
+		Padding:     NewBoxEqual(20),
 		SeriesList:  seriesList,
 		StackSeries: True(),
 		XAxis: XAxisOption{
@@ -423,10 +403,7 @@ func TestLineChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() LineChartOption {
 				opt := makeFullLineChartOption()
-				customFont := FontStyle{
-					FontSize:  4.0,
-					FontColor: ColorBlue,
-				}
+				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
 				opt.XAxis.FontStyle = customFont
 				opt.Title.FontStyle = customFont

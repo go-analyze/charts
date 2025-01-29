@@ -41,9 +41,7 @@ func TestCustomFontSizeRender(t *testing.T) {
 	opt.XAxis.FontStyle.FontSize = 4.0
 	opt.YAxis = []YAxisOption{
 		{
-			FontStyle: FontStyle{
-				FontSize: 4.0,
-			},
+			FontStyle: NewFontStyleWithSize(4.0),
 		},
 	}
 	opt.Title.FontStyle.FontSize = 4.0

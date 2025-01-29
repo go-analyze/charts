@@ -30,6 +30,15 @@ func NewBoxEqual(size int) Box {
 	return NewBox(size, size, size, size)
 }
 
+// NewFontStyleWithSize constructs a new FontStyle with the specified font size. If you want to avoid directly
+// constructing the FontStyle struct, you can use this followed by additional `WithX` function calls on the returned
+// FontStyle.
+func NewFontStyleWithSize(size float64) FontStyle {
+	return FontStyle{
+		FontSize: size,
+	}
+}
+
 // OffsetInt provides an ability to configure a shift from the top or left alignments.
 type OffsetInt struct {
 	// Left indicates a vertical spacing adjustment from the top.

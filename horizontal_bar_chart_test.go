@@ -10,12 +10,7 @@ import (
 
 func makeBasicHorizontalBarChartOption() HorizontalBarChartOption {
 	return HorizontalBarChartOption{
-		Padding: Box{
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-			Left:   10,
-		},
+		Padding: NewBoxEqual(10),
 		SeriesList: NewSeriesListHorizontalBar([][]float64{
 			{18203, 23489, 29034, 104970, 131744, 630230},
 			{19325, 23438, 31000, 121594, 134141, 681807},
@@ -70,12 +65,7 @@ func makeFullHorizontalBarChartStackedOption() HorizontalBarChartOption {
 	})
 	dataLabels := []string{"A", "B", "C"}
 	return HorizontalBarChartOption{
-		Padding: Box{
-			Left:   20,
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-		},
+		Padding:     NewBoxEqual(20),
 		SeriesList:  seriesList,
 		StackSeries: True(),
 		Legend: LegendOption{
@@ -134,10 +124,7 @@ func TestHorizontalBarChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() HorizontalBarChartOption {
 				opt := makeBasicHorizontalBarChartOption()
-				customFont := FontStyle{
-					FontSize:  4.0,
-					FontColor: ColorBlue,
-				}
+				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
 				opt.XAxis.FontStyle = customFont
 				opt.Title.FontStyle = customFont

@@ -9,12 +9,7 @@ import (
 
 func makeDefaultTableChartOptions() TableChartOption {
 	return TableChartOption{
-		Padding: Box{
-			Left:   10,
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-		},
+		Padding: NewBoxEqual(10),
 		Header: []string{
 			"Name", "Age", "Address", "Tag", "Action",
 		},

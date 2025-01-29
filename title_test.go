@@ -152,16 +152,10 @@ func TestTitleRenderer(t *testing.T) {
 			name: "custom_font",
 			render: func(p *Painter) ([]byte, error) {
 				_, err := newTitlePainter(p, TitleOption{
-					Text:    "title",
-					Subtext: "subTitle",
-					FontStyle: FontStyle{
-						FontSize:  40.0,
-						FontColor: ColorBlue,
-					},
-					SubtextFontStyle: FontStyle{
-						FontSize:  20.0,
-						FontColor: ColorPurple,
-					},
+					Text:             "title",
+					Subtext:          "subTitle",
+					FontStyle:        NewFontStyleWithSize(40.0).WithColor(ColorBlue),
+					SubtextFontStyle: NewFontStyleWithSize(20.0).WithColor(ColorPurple),
 				}).Render()
 				if err != nil {
 					return nil, err

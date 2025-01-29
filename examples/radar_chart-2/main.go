@@ -45,10 +45,8 @@ func main() {
 			25000,
 		})
 	opt.Title = charts.TitleOption{
-		Text: "Basic Radar Chart",
-		FontStyle: charts.FontStyle{
-			FontSize: 16,
-		},
+		Text:      "Basic Radar Chart",
+		FontStyle: charts.NewFontStyleWithSize(16),
 	}
 	opt.Legend = charts.LegendOption{
 		Data: []string{
@@ -64,9 +62,7 @@ func main() {
 	})
 	if err := p.RadarChart(opt); err != nil {
 		panic(err)
-	}
-
-	if buf, err := p.Bytes(); err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf); err != nil {
 		panic(err)

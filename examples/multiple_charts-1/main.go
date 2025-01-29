@@ -37,12 +37,7 @@ func main() {
 		charts.PainterThemeOption(charts.GetTheme(charts.ThemeLight)))
 
 	lineOpt := charts.LineChartOption{
-		Padding: charts.Box{
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-			Left:   10,
-		},
+		Padding: charts.NewBoxEqual(10),
 		XAxis: charts.XAxisOption{
 			Data: []string{
 				"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",

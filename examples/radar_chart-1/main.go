@@ -29,10 +29,8 @@ func main() {
 	p, err := charts.RadarRender(
 		values,
 		charts.TitleOptionFunc(charts.TitleOption{
-			Text: "Basic Radar Chart",
-			FontStyle: charts.FontStyle{
-				FontSize: 16,
-			},
+			Text:      "Basic Radar Chart",
+			FontStyle: charts.NewFontStyleWithSize(16),
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{
@@ -48,19 +46,12 @@ func main() {
 			"Development",
 			"Marketing",
 		}, []float64{
-			6500,
-			16000,
-			30000,
-			38000,
-			52000,
-			25000,
+			6500, 16000, 30000, 38000, 52000, 25000,
 		}),
 	)
 	if err != nil {
 		panic(err)
-	}
-
-	if buf, err := p.Bytes(); err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf); err != nil {
 		panic(err)

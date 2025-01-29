@@ -19,12 +19,7 @@ func makeBasicPieChartOption() PieChartOption {
 			Subtext: "Fake Data",
 			Offset:  OffsetCenter,
 		},
-		Padding: Box{
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-			Left:   20,
-		},
+		Padding: NewBoxEqual(20),
 		Legend: LegendOption{
 			Vertical: True(),
 			Data: []string{
@@ -92,12 +87,7 @@ func TestPieChart(t *testing.T) {
 						},
 						Radius: "200",
 					}),
-					Padding: Box{
-						Top:    20,
-						Right:  20,
-						Bottom: 20,
-						Left:   20,
-					},
+					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
 						Data: []string{
 							"Germany",
@@ -155,12 +145,7 @@ func TestPieChart(t *testing.T) {
 						},
 						Radius: "200",
 					}),
-					Padding: Box{
-						Top:    20,
-						Right:  20,
-						Bottom: 20,
-						Left:   20,
-					},
+					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
 						Data: []string{
 							"Austria",
@@ -214,12 +199,7 @@ func TestPieChart(t *testing.T) {
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Radius: "200",
 					}),
-					Padding: Box{
-						Top:    20,
-						Right:  20,
-						Bottom: 20,
-						Left:   20,
-					},
+					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
 						Data: labels,
 						Show: False(),
@@ -253,12 +233,7 @@ func TestPieChart(t *testing.T) {
 						Text:   "Fix label K (72586)",
 						Offset: OffsetRight,
 					},
-					Padding: Box{
-						Top:    20,
-						Right:  20,
-						Bottom: 20,
-						Left:   20,
-					},
+					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
 						Data: []string{
 							"A", "B", "C", "D", "E", "F", "G", "H",
@@ -278,10 +253,7 @@ func TestPieChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() PieChartOption {
 				opt := makeBasicPieChartOption()
-				customFont := FontStyle{
-					FontSize:  4.0,
-					FontColor: ColorBlue,
-				}
+				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
 				opt.Title.FontStyle = customFont
 				return opt
@@ -319,12 +291,8 @@ func TestPieChart(t *testing.T) {
 			t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
 				p := NewPainter(painterOptions)
 
-				validatePieChartRender(t, p.Child(PainterPaddingOption(Box{
-					Left:   20,
-					Top:    20,
-					Right:  20,
-					Bottom: 20,
-				})), tt.makeOptions(), tt.result)
+				validatePieChartRender(t, p.Child(PainterPaddingOption(NewBoxEqual(20))),
+					tt.makeOptions(), tt.result)
 			})
 		} else {
 			t.Run(strconv.Itoa(i)+"-"+tt.name+"-painter", func(t *testing.T) {

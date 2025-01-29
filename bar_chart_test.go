@@ -17,12 +17,7 @@ func makeBasicBarChartOption() BarChartOption {
 		seriesList[index].Label.Show = True()
 	}
 	return BarChartOption{
-		Padding: Box{
-			Left:   10,
-			Top:    10,
-			Right:  10,
-			Bottom: 10,
-		},
+		Padding:    NewBoxEqual(10),
 		SeriesList: seriesList,
 		XAxis: XAxisOption{
 			Data: []string{
@@ -68,12 +63,7 @@ func makeFullBarChartStackedOption() BarChartOption {
 	})
 	dataLabels := []string{"A", "B", "C"}
 	return BarChartOption{
-		Padding: Box{
-			Left:   20,
-			Top:    20,
-			Right:  20,
-			Bottom: 20,
-		},
+		Padding:     NewBoxEqual(20),
 		SeriesList:  seriesList,
 		StackSeries: True(),
 		XAxis: XAxisOption{
@@ -146,10 +136,7 @@ func TestBarChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() BarChartOption {
 				opt := makeBasicBarChartOption()
-				customFont := FontStyle{
-					FontSize:  4.0,
-					FontColor: ColorBlue,
-				}
+				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
 				opt.XAxis.FontStyle = customFont
 				opt.Title.FontStyle = customFont
