@@ -12,14 +12,10 @@ func TestNewSeriesListDataFromValues(t *testing.T) {
 	assert.Equal(t, SeriesList{
 		{
 			Type: ChartTypeBar,
-			Data: []float64{
-				1.0,
-			},
+			Data: []float64{1.0},
 		},
 	}, NewSeriesListBar([][]float64{
-		{
-			1,
-		},
+		{1},
 	}))
 }
 
@@ -39,6 +35,58 @@ func TestSeriesLists(t *testing.T) {
 	assert.InDelta(t, float64(12), maxSum, 0)
 	assert.InDelta(t, float64(10), max, 0)
 	assert.InDelta(t, float64(1), min, 0)
+}
+
+func TestSumSeries(t *testing.T) {
+	t.Parallel()
+
+	t.Run("empty", func(t *testing.T) {
+		var sl SeriesList
+		result := sl.SumSeries()
+
+		assert.Equal(t, "", result.Type)
+		assert.Empty(t, result.Data)
+	})
+
+	t.Run("single", func(t *testing.T) {
+		sl := SeriesList{
+			{
+				Type:       ChartTypeLine,
+				Data:       []float64{1.5, 2.5},
+				Name:       "SingleLine",
+				YAxisIndex: 1,
+				Radius:     "50%",
+			},
+		}
+
+		result := sl.SumSeries()
+
+		assert.Equal(t, sl[0], result)
+	})
+
+	t.Run("multiple", func(t *testing.T) {
+		sl := NewSeriesListLine([][]float64{
+			{1, 2, 3},
+			{4, 5, 6},
+		})
+
+		result := sl.SumSeries()
+
+		assert.Equal(t, ChartTypeLine, result.Type)
+		assert.Equal(t, []float64{5, 7, 9}, result.Data)
+	})
+
+	t.Run("unequal_data_length", func(t *testing.T) {
+		sl := NewSeriesListLine([][]float64{
+			{1, 2},
+			{3, 4, 5},
+		})
+
+		result := sl.SumSeries()
+
+		assert.Equal(t, ChartTypeLine, result.Type)
+		assert.Equal(t, []float64{4, 6, 5}, result.Data)
+	})
 }
 
 func TestSeriesSummary(t *testing.T) {
@@ -128,13 +176,9 @@ func TestSeriesSummary(t *testing.T) {
 func TestFormatter(t *testing.T) {
 	t.Parallel()
 
-	assert.Equal(t, "a: 12%", labelFormatPie([]string{
-		"a",
-		"b",
-	}, "", 0, 10, 0.12))
+	assert.Equal(t, "a: 12%",
+		labelFormatPie([]string{"a", "b"}, "", 0, 10, 0.12))
 
-	assert.Equal(t, "10", labelFormatValue([]string{
-		"a",
-		"b",
-	}, "", 0, 10, 0.12))
+	assert.Equal(t, "10",
+		labelFormatValue([]string{"a", "b"}, "", 0, 10, 0.12))
 }

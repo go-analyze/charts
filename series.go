@@ -126,11 +126,15 @@ func (sl SeriesList) init() {
 func (sl SeriesList) Filter(chartType string) SeriesList {
 	arr := make(SeriesList, 0, len(sl))
 	for index, item := range sl {
-		if item.Type == chartType || (chartType == ChartTypeLine && item.Type == "") {
+		if chartTypeMatch(chartType, item.Type) {
 			arr = append(arr, sl[index])
 		}
 	}
 	return arr
+}
+
+func chartTypeMatch(expected, actual string) bool {
+	return expected == "" || expected == actual || (expected == ChartTypeLine && actual == "")
 }
 
 func (sl SeriesList) getYAxisCount() int {
@@ -442,12 +446,32 @@ func (sl SeriesList) Names() []string {
 	return names
 }
 
+// SumSeries will return a single Series which represents the sum of the entire SeriesList. This is useful for
+// providing global statistics through Series.Summary().
+func (sl SeriesList) SumSeries() Series {
+	return sl.makeSumSeries("")
+}
+
 func (sl SeriesList) makeSumSeries(chartType string) Series {
-	var result Series
+	result := Series{
+		Type: chartType,
+	}
+	// check for fast path result
+	switch len(sl) {
+	case 0:
+		return result
+	case 1:
+		if chartTypeMatch(chartType, sl[0].Type) {
+			return sl[0]
+		} else {
+			return result
+		}
+	}
+
 	sumValues := make([]float64, sl.getMaxDataCount(chartType))
 	for _, s := range sl {
-		if chartType == "" || s.Type == chartType || (chartType == ChartTypeLine && s.Type == "") {
-			result = s
+		if chartTypeMatch(chartType, s.Type) {
+			result = s // ensure other series values are set into the result
 			for i := range s.Data {
 				sumValues[i] += s.Data[i]
 			}
@@ -460,7 +484,7 @@ func (sl SeriesList) makeSumSeries(chartType string) Series {
 func (sl SeriesList) getMaxDataCount(chartType string) int {
 	result := 0
 	for _, s := range sl {
-		if chartType == "" || s.Type == chartType || (chartType == ChartTypeLine && s.Type == "") {
+		if chartTypeMatch(chartType, s.Type) {
 			count := len(s.Data)
 			if count > result {
 				result = count
