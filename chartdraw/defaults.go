@@ -139,13 +139,9 @@ var (
 )
 
 const (
-	// Deprecated: ContentTypePNG is deprecated, it's not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
 	// ContentTypePNG is the png mime type.
 	ContentTypePNG = "image/png"
 
-	// Deprecated: ContentTypeSVG is deprecated, it's not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
 	// ContentTypeSVG is the svg mime type.
 	ContentTypeSVG = "image/svg+xml"
 )
