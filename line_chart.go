@@ -48,7 +48,8 @@ type LineChartOption struct {
 	// the sum of all the values. Enabling this will also enable FillArea (which until v0.5 can't be disabled).
 	// Some options will be ignored when StackedSeries is enabled, this includes StrokeSmoothingTension.
 	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
-	// base bar, other bars are influenced by prior values).
+	// base bar, other bars are influenced by prior values). Additionally only the 0 index y-axis is stacked,
+	// allowing a non-stacked line to also be included on y-axis 1.
 	StackSeries *bool
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
@@ -85,8 +86,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	seriesPainter := result.seriesPainter
 
 	stackedSeries := flagIs(true, opt.StackSeries)
-	fillArea := stackedSeries || opt.FillArea // fill area defaults to on if the series is stacked
-	boundaryGap := !fillArea                  // boundary gap default enabled unless fill area is set
+	fillAreaY0 := stackedSeries || opt.FillArea // fill area defaults to on if the series is stacked
+	fillAreaY1 := opt.FillArea
+	boundaryGap := !fillAreaY0 // boundary gap default enabled unless fill area is set
 	if opt.XAxis.BoundaryGap != nil {
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
@@ -136,6 +138,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	var priorSeriesPoints []Point
 	for index := range seriesList {
 		series := seriesList[index]
+		stackSeries := stackedSeries && series.YAxisIndex == 0
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
 		yRange := result.axisRanges[series.YAxisIndex]
 		points := make([]Point, len(series.Data))
@@ -148,7 +151,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		for i, item := range series.Data {
 			if item == GetNullValue() {
 				points[i] = Point{X: xValues[i], Y: math.MaxInt32}
-			} else if stackedSeries {
+			} else if stackSeries {
 				accumulatedValues[i] += item
 				points[i] = Point{
 					X: xValues[i],
@@ -172,11 +175,11 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			}
 		}
 
-		if fillArea {
+		if (series.YAxisIndex == 0 && fillAreaY0) || fillAreaY1 {
 			areaPoints := make([]Point, len(points))
 			copy(areaPoints, points)
 			bottomY := yRange.getRestHeight(yRange.min)
-			if stackedSeries && len(priorSeriesPoints) > 0 {
+			if stackSeries && len(priorSeriesPoints) > 0 {
 				// Fill between current line (areaPoints) and priorSeriesPoints
 				for i := len(priorSeriesPoints) - 1; i >= 0; i-- {
 					areaPoints = append(areaPoints, priorSeriesPoints[i])
@@ -204,7 +207,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			fillColor := seriesColor.WithAlpha(opacity)
 
 			// If smoothing is enabled, do a smooth fill (not currently supported for stacked series)
-			if !stackedSeries && opt.StrokeSmoothingTension > 0 {
+			if !stackSeries && opt.StrokeSmoothingTension > 0 {
 				seriesPainter.smoothFillChartArea(areaPoints, opt.StrokeSmoothingTension, fillColor)
 			} else {
 				seriesPainter.FillArea(areaPoints, fillColor)
@@ -227,7 +230,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			seriesPainter.Dots(points, dotFillColor, seriesColor, 1, 2)
 		}
 
-		if series.MarkLine.GlobalLine && stackedSeries && index == seriesCount-1 {
+		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
 			markLinePainter.add(markLineRenderOption{
 				fillColor:      defaultGlobalMarkFillColor,
 				fontColor:      opt.Theme.GetTextColor(),
@@ -237,7 +240,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				axisRange:      yRange,
 				valueFormatter: opt.ValueFormatter,
 			})
-		} else if !stackedSeries || index == 0 {
+		} else if !stackSeries || index == 0 {
 			// In stacked mode we only support the line painter for the first series
 			markLinePainter.add(markLineRenderOption{
 				fillColor:      seriesColor,
@@ -249,7 +252,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				valueFormatter: opt.ValueFormatter,
 			})
 		}
-		if series.MarkPoint.GlobalPoint && stackedSeries && index == seriesCount-1 {
+		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
 			markPointPainter.add(markPointRenderOption{
 				fillColor:          defaultGlobalMarkFillColor,
 				font:               opt.Font,
