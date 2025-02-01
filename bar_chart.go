@@ -45,7 +45,7 @@ type BarChartOption struct {
 	// StackSeries if set to *true a single bar with the colored series stacked together will be rendered.
 	// This feature will result in some options being ignored, including BarMargin and SeriesLabelPosition.
 	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
-	// base bar, other bars are influenced by prior values).
+	// base bar, other bars are influenced by prior values). StackSeries will only apply to the first YAxis (index 0).
 	StackSeries *bool
 	// SeriesLabelPosition specifies the position of the label for the series. Currently supported values are
 	// "top" or "bottom".
@@ -121,7 +121,12 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
 	if stackedSeries {
-		margin, _, barWidth = calculateBarMarginsAndSize(1, width, opt.BarWidth, nil)
+		barCount := seriesList.getYAxisCount() // only two bars if two y-axis
+		configuredMargin := opt.BarMargin
+		if barCount == 1 {
+			configuredMargin = nil // no margin needed with a single bar
+		}
+		margin, _, barWidth = calculateBarMarginsAndSize(barCount, width, opt.BarWidth, configuredMargin)
 		accumulatedHeights = make([]int, xRange.divideCount)
 	} else {
 		margin, barMargin, barWidth = calculateBarMarginsAndSize(seriesCount, width, opt.BarWidth, opt.BarMargin)
@@ -133,6 +138,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	rendererList := []renderer{markPointPainter, markLinePainter}
 
 	for index, series := range seriesList {
+		stackSeries := stackedSeries && series.YAxisIndex == 0
 		yRange := result.axisRanges[series.YAxisIndex]
 		seriesColor := opt.Theme.GetSeriesColor(series.index)
 
@@ -152,7 +158,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			var x, top, bottom int
 			h := yRange.getHeight(item)
 
-			if stackedSeries {
+			if stackSeries {
 				// Use accumulatedHeights to stack
 				x = divideValues[j] + margin
 				top = barMaxHeight - (accumulatedHeights[j] + h)
@@ -166,7 +172,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 
 			// In stacked mode, only round caps on the last series
-			if flagIs(true, opt.RoundedBarCaps) && (!stackedSeries || index == seriesCount-1) {
+			if flagIs(true, opt.RoundedBarCaps) && (!stackSeries || index == seriesCount-1) {
 				seriesPainter.roundedRect(
 					Box{Top: top, Left: x, Right: x + barWidth, Bottom: bottom, IsSet: true},
 					barWidth, true, false, seriesColor, seriesColor, 0.0)
@@ -184,7 +190,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				labelY := top
 				radians := float64(0)
 				fontStyle := series.Label.FontStyle
-				labelBottom := (opt.SeriesLabelPosition == PositionBottom || series.Label.Position == PositionBottom) && !stackedSeries
+				labelBottom := (opt.SeriesLabelPosition == PositionBottom || series.Label.Position == PositionBottom) && !stackSeries
 				if labelBottom {
 					labelY = barMaxHeight
 					radians = -math.Pi / 2 // Rotated label at the bottom
@@ -193,7 +199,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 					var testColor Color
 					if labelBottom {
 						testColor = seriesColor
-					} else if stackedSeries && index+1 < seriesCount {
+					} else if stackSeries && index+1 < seriesCount {
 						testColor = opt.Theme.GetSeriesColor(index + 1)
 					}
 					if !testColor.IsZero() {
@@ -218,7 +224,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 		}
 
-		if series.MarkLine.GlobalLine && stackedSeries && index == seriesCount-1 {
+		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
 			markLinePainter.add(markLineRenderOption{
 				fillColor:      defaultGlobalMarkFillColor,
 				fontColor:      opt.Theme.GetTextColor(),
@@ -228,7 +234,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				axisRange:      yRange,
 				valueFormatter: opt.ValueFormatter,
 			})
-		} else if !stackedSeries || index == 0 {
+		} else if !stackSeries || index == 0 {
 			// in stacked mode we only support the line painter for the first series
 			markLinePainter.add(markLineRenderOption{
 				fillColor:      seriesColor,
@@ -240,7 +246,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				valueFormatter: opt.ValueFormatter,
 			})
 		}
-		if series.MarkPoint.GlobalPoint && stackedSeries && index == seriesCount-1 {
+		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
 			markPointPainter.add(markPointRenderOption{
 				fillColor:          defaultGlobalMarkFillColor,
 				font:               opt.Font,
