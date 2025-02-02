@@ -102,11 +102,8 @@ type defaultRenderResult struct {
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
 	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis)
 
-	seriesList := opt.seriesList
-	seriesList.init()
-
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
-	for _, sl := range seriesList {
+	for _, sl := range opt.seriesList {
 		if len(sl.MarkPoint.Data) > 0 { // if graph has markpoint
 			// adjust padding scale to give space for mark point (if not specified by user)
 			for i := range opt.yAxis {
@@ -282,7 +279,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		} else {
 			yAxisOption.isCategoryAxis = true
 			// we need to update the range labels or the bars won't be aligned to the Y axis
-			r.divideCount = len(seriesList[0].Data)
+			r.divideCount = len(opt.seriesList[0].Data)
 			result.axisRanges[index] = r
 			// since the x-axis is the value part, it's label is calculated and processed separately
 			opt.xAxis.Data = r.Values()
@@ -360,9 +357,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if !isChild {
 		p.drawBackground(opt.Theme.GetBackgroundColor())
 	}
-	seriesList := opt.SeriesList
-	seriesList.init()
 
+	seriesList := opt.SeriesList
 	lineSeriesList := seriesList.Filter(ChartTypeLine)
 	barSeriesList := seriesList.Filter(ChartTypeBar)
 	horizontalBarSeriesList := seriesList.Filter(ChartTypeHorizontalBar)

@@ -173,7 +173,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 	// radar chart
 	angles := getPolygonPointAngles(sides)
 	maxCount := len(indicators)
-	for _, series := range seriesList {
+	for index, series := range seriesList {
 		linePoints := make([]Point, 0, maxCount)
 		for j, item := range series.Data {
 			if j >= maxCount {
@@ -189,7 +189,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 			p := getPolygonPoint(center, r, angles[j])
 			linePoints = append(linePoints, p)
 		}
-		color := theme.GetSeriesColor(series.index)
+		color := theme.GetSeriesColor(index)
 		dotFillColor := ColorWhite
 		if theme.IsDark() {
 			dotFillColor = color

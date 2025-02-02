@@ -14,7 +14,6 @@ func newSeriesListFromValues(values [][]float64, chartType string, label SeriesL
 	seriesList := make(SeriesList, len(values))
 	for index, value := range values {
 		s := Series{
-			index:     index,
 			Data:      value,
 			Type:      chartType,
 			Label:     label,
@@ -88,7 +87,6 @@ type SeriesMarkLine struct {
 
 // Series references a population of data.
 type Series struct {
-	index int
 	// Type is the type of series, it can be "line", "bar" or "pie". Default value is "line".
 	Type string
 	// Data provides the series data list.
@@ -113,15 +111,6 @@ type Series struct {
 // NewSeriesListBar, NewSeriesListHorizontalBar, NewSeriesListPie, NewSeriesListRadar, or NewSeriesListFunnel.
 // These Series can be appended to each other if multiple chart types should be rendered to the same axis.
 type SeriesList []Series
-
-func (sl SeriesList) init() {
-	if len(sl) == 0 || sl[len(sl)-1].index != 0 {
-		return // already initialized
-	}
-	for i := 0; i < len(sl); i++ {
-		sl[i].index = i
-	}
-}
 
 func (sl SeriesList) Filter(chartType string) SeriesList {
 	arr := make(SeriesList, 0, len(sl))

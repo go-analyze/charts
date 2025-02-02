@@ -140,7 +140,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	for index, series := range seriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
 		yRange := result.axisRanges[series.YAxisIndex]
-		seriesColor := opt.Theme.GetSeriesColor(series.index)
+		seriesColor := opt.Theme.GetSeriesColor(index)
 
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {

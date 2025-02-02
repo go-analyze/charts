@@ -92,7 +92,6 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	}
 
 	for index, w := range widthList {
-		series := seriesList[index]
 		nextWidth := 0
 		if index+1 < len(widthList) {
 			nextWidth = widthList[index+1]
@@ -124,7 +123,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 			},
 		}
 
-		seriesPainter.FillArea(points, theme.GetSeriesColor(series.index))
+		seriesPainter.FillArea(points, theme.GetSeriesColor(index))
 
 		text := textList[index]
 		fontStyle := FontStyle{

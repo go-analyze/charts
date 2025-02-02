@@ -99,7 +99,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	var rendererList []renderer
 	for index := range seriesList {
 		series := seriesList[index]
-		seriesColor := opt.Theme.GetSeriesColor(series.index)
+		seriesColor := opt.Theme.GetSeriesColor(index)
 
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
