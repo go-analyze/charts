@@ -97,9 +97,9 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		}
 	}
 
-	radiusValue := ""
+	var radiusValue string
 	for _, series := range seriesList {
-		if len(series.Radius) != 0 {
+		if series.Radius != "" {
 			radiusValue = series.Radius
 		}
 	}

@@ -58,7 +58,7 @@ type ChartOption struct {
 	ValueFormatter ValueFormatter
 }
 
-// OptionFunc option function
+// OptionFunc option function.
 type OptionFunc func(opt *ChartOption)
 
 // SVGOutputOptionFunc set svg type of chart's output.
@@ -92,21 +92,21 @@ func ThemeNameOptionFunc(theme string) OptionFunc {
 	}
 }
 
-// ThemeOptionFunc set them of chart
+// ThemeOptionFunc set them of chart.
 func ThemeOptionFunc(theme ColorPalette) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Theme = theme
 	}
 }
 
-// TitleOptionFunc set title of chart
+// TitleOptionFunc set title of chart.
 func TitleOptionFunc(title TitleOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Title = title
 	}
 }
 
-// TitleTextOptionFunc set title text of chart
+// TitleTextOptionFunc set title text of chart.
 func TitleTextOptionFunc(text string, subtext ...string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Title.Text = text
@@ -116,14 +116,14 @@ func TitleTextOptionFunc(text string, subtext ...string) OptionFunc {
 	}
 }
 
-// LegendOptionFunc set legend of chart
+// LegendOptionFunc set legend of chart.
 func LegendOptionFunc(legend LegendOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Legend = legend
 	}
 }
 
-// LegendLabelsOptionFunc set legend labels of chart
+// LegendLabelsOptionFunc set legend labels of chart.
 func LegendLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Legend = LegendOption{
@@ -132,14 +132,14 @@ func LegendLabelsOptionFunc(labels []string) OptionFunc {
 	}
 }
 
-// XAxisOptionFunc set x-axis of chart
+// XAxisOptionFunc set x-axis of chart.
 func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.XAxis = xAxisOption
 	}
 }
 
-// XAxisDataOptionFunc set x-axis data of chart
+// XAxisDataOptionFunc set x-axis data of chart.
 func XAxisDataOptionFunc(data []string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.XAxis = XAxisOption{
@@ -155,7 +155,7 @@ func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 	}
 }
 
-// YAxisDataOptionFunc set y-axis data of chart
+// YAxisDataOptionFunc set y-axis data of chart.
 func YAxisDataOptionFunc(data []string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxis = []YAxisOption{
@@ -174,7 +174,7 @@ func DimensionsOptionFunc(width, height int) OptionFunc {
 	}
 }
 
-// PaddingOptionFunc set padding of chart
+// PaddingOptionFunc set padding of chart.
 func PaddingOptionFunc(padding Box) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Padding = padding
@@ -207,7 +207,7 @@ func RadarIndicatorOptionFunc(names []string, values []float64) OptionFunc {
 	}
 }
 
-// MarkLineOptionFunc set mark line for series of chart
+// MarkLineOptionFunc set mark line for series of chart.
 func MarkLineOptionFunc(seriesIndex int, markLineTypes ...string) OptionFunc {
 	return func(opt *ChartOption) {
 		if len(opt.SeriesList) <= seriesIndex {
@@ -217,7 +217,7 @@ func MarkLineOptionFunc(seriesIndex int, markLineTypes ...string) OptionFunc {
 	}
 }
 
-// MarkPointOptionFunc set mark point for series of chart
+// MarkPointOptionFunc set mark point for series of chart.
 func MarkPointOptionFunc(seriesIndex int, markPointTypes ...string) OptionFunc {
 	return func(opt *ChartOption) {
 		if len(opt.SeriesList) <= seriesIndex {
@@ -267,42 +267,42 @@ func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *Le
 	}
 }
 
-// LineRender line chart render
+// LineRender line chart render.
 func LineRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListLine(values),
 	}, opts...)
 }
 
-// BarRender bar chart render
+// BarRender bar chart render.
 func BarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListBar(values),
 	}, opts...)
 }
 
-// HorizontalBarRender horizontal bar chart render
+// HorizontalBarRender horizontal bar chart render.
 func HorizontalBarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListHorizontalBar(values),
 	}, opts...)
 }
 
-// PieRender pie chart render
+// PieRender pie chart render.
 func PieRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListPie(values),
 	}, opts...)
 }
 
-// RadarRender radar chart render
+// RadarRender radar chart render.
 func RadarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListRadar(values),
 	}, opts...)
 }
 
-// FunnelRender funnel chart render
+// FunnelRender funnel chart render.
 func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListFunnel(values),

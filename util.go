@@ -209,7 +209,7 @@ const defaultRadiusPercent = 0.4
 
 func getRadius(diameter float64, radiusValue string) float64 {
 	var radius float64
-	if len(radiusValue) != 0 {
+	if radiusValue != "" {
 		v, _ := convertPercent(radiusValue)
 		if v != -1 {
 			radius = diameter * v

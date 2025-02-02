@@ -247,7 +247,7 @@ func NewSeriesListPie(values []float64, opts ...PieSeriesOption) SeriesList {
 		opt = opts[0]
 	}
 	for index, v := range values {
-		name := ""
+		var name string
 		if index < len(opt.Names) {
 			name = opt.Names[index]
 		}
@@ -293,7 +293,7 @@ func NewSeriesListFunnel(values []float64, opts ...FunnelSeriesOption) SeriesLis
 	}
 	seriesList := make(SeriesList, len(values))
 	for index, value := range values {
-		name := ""
+		var name string
 		if index < len(opt.Names) {
 			name = opt.Names[index]
 		}

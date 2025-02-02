@@ -83,7 +83,7 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 
 	formatter := opt.Formatter
-	if len(formatter) != 0 {
+	if formatter != "" {
 		for index, text := range opt.Data {
 			opt.Data[index] = strings.ReplaceAll(formatter, "{value}", text)
 		}

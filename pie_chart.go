@@ -150,9 +150,9 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	opt := p.opt
 	values := make([]float64, len(seriesList))
 	total := float64(0)
-	radiusValue := ""
+	var radiusValue string
 	for index, series := range seriesList {
-		if len(series.Radius) != 0 {
+		if series.Radius != "" {
 			radiusValue = series.Radius
 		}
 		value := chartdraw.SumFloat64(series.Data...)
@@ -185,13 +185,17 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	var quadrant1, quadrant2, quadrant3, quadrant4 []sector
 	for index, v := range values {
 		series := seriesList[index]
+		seriesRadius := radius
+		if series.Radius != "" {
+			seriesRadius = getRadius(float64(diameter), series.Radius)
+		}
 		color := theme.GetSeriesColor(index)
 		if index == len(values)-1 {
 			if color == theme.GetSeriesColor(0) {
 				color = theme.GetSeriesColor(1)
 			}
 		}
-		s := newSector(cx, cy, radius, labelRadius, v, currentValue, total, labelLineWidth, seriesNames[index], series, color)
+		s := newSector(cx, cy, seriesRadius, labelRadius, v, currentValue, total, labelLineWidth, seriesNames[index], series, color)
 		switch quadrant := s.quadrant; quadrant {
 		case 1:
 			quadrant1 = append([]sector{s}, quadrant1...)
