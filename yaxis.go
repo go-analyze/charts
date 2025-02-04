@@ -1,7 +1,7 @@
 package charts
 
 type YAxisOption struct {
-	// Show specifies if the y-axis should be rendered, set this to *false (through False()) to hide the axis.
+	// Show specifies if the y-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
@@ -58,7 +58,7 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
 		axisColor:            theme.GetAxisStrokeColor(),
 		strokeWidth:          -1,
-		boundaryGap:          False(),
+		boundaryGap:          Ptr(false),
 		unit:                 opt.Unit,
 		labelCount:           opt.LabelCount,
 		labelCountAdjustment: opt.LabelCountAdjustment,
@@ -70,7 +70,7 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		axisOpt.axisColor = opt.AxisColor
 	}
 	if opt.isCategoryAxis {
-		axisOpt.boundaryGap = True()
+		axisOpt.boundaryGap = Ptr(true)
 		axisOpt.strokeWidth = 1
 		axisOpt.splitLineShow = false
 	}

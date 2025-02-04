@@ -36,7 +36,7 @@ func main() {
 		{80.0, 40.4, 28.4, 48.8, 24.4, 24.2, 40.8, 80.8},
 	}, charts.LineSeriesOption{
 		Label: charts.SeriesLabel{
-			Show: charts.True(),
+			Show: charts.Ptr(true),
 			ValueFormatter: func(f float64) string {
 				return charts.FormatValueHumanizeShort(f, 1, true)
 			},
@@ -52,12 +52,12 @@ func main() {
 			Bottom: 20,
 		},
 		SeriesList:  seriesList,
-		StackSeries: charts.True(),
+		StackSeries: charts.Ptr(true),
 		XAxis: charts.XAxisOption{
 			Labels: []string{
 				"1", "2", "3", "4", "5", "6", "7", "8",
 			},
-			BoundaryGap: charts.False(),
+			BoundaryGap: charts.Ptr(false),
 		},
 		Legend: charts.LegendOption{
 			SeriesNames: dataLabels,

@@ -1,7 +1,7 @@
 package charts
 
 type XAxisOption struct {
-	// Show specifies if the x-axis should be rendered, set this to *false (through False()) to hide the axis.
+	// Show specifies if the x-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
@@ -13,7 +13,7 @@ type XAxisOption struct {
 	Position string
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
-	// graph. Specify a *bool (through charts.False() or charts.True()) to enforce a spacing.
+	// graph. Specify a *bool (through charts.Ptr(false) or charts.Ptr(true)) to enforce a spacing.
 	BoundaryGap *bool
 	// FontStyle specifies the font configuration for each label.
 	FontStyle FontStyle
@@ -63,7 +63,7 @@ func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 	if opt.isValueAxis {
 		axisOpt.splitLineShow = true
 		axisOpt.strokeWidth = -1
-		axisOpt.boundaryGap = False()
+		axisOpt.boundaryGap = Ptr(false)
 	}
 	return axisOpt
 }

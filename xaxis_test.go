@@ -29,7 +29,7 @@ func TestBottomXAxis(t *testing.T) {
 			makeOption: func() XAxisOption {
 				return XAxisOption{
 					Labels:      []string{"a", "b", "c", "d"},
-					BoundaryGap: False(),
+					BoundaryGap: Ptr(false),
 				}
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 100 275\nL 100 270\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 233 275\nL 233 270\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 366 275\nL 366 270\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 500 275\nL 500 270\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 100 270\nL 500 270\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"99\" y=\"295\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"232\" y=\"295\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"365\" y=\"295\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"491\" y=\"295\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text></svg>",
