@@ -152,11 +152,11 @@ func (f *funnelChart) Render() (Box, error) {
 		padding:    opt.Padding,
 		seriesList: opt.SeriesList,
 		xAxis: &XAxisOption{
-			Show: False(),
+			Show: Ptr(false),
 		},
 		yAxis: []YAxisOption{
 			{
-				Show: False(),
+				Show: Ptr(false),
 			},
 		},
 		title:  opt.Title,

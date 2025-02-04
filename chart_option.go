@@ -188,7 +188,7 @@ func PaddingOptionFunc(padding Box) OptionFunc {
 func SeriesShowLabel(show bool) OptionFunc {
 	return func(opt *ChartOption) {
 		for index := range opt.SeriesList {
-			opt.SeriesList[index].Label.Show = BoolPointer(show)
+			opt.SeriesList[index].Label.Show = Ptr(show)
 		}
 	}
 }

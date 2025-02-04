@@ -185,7 +185,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				Labels: []string{
 					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
-				BoundaryGap: charts.False(),
+				BoundaryGap: charts.Ptr(false),
 			},
 			SeriesList: []charts.Series{
 				{
@@ -219,12 +219,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 			YAxis: []charts.YAxisOption{{
-				Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
+				Min: charts.Ptr(0.0), // ensure y-axis starts at 0
 			}},
 			SeriesList: charts.NewSeriesListLine([][]float64{
 				{120, 132, 101, 134, 90, 230, 210},
 			}),
-			FillArea: charts.True(),
+			FillArea: charts.Ptr(true),
 		},
 		// histogram
 		{
@@ -256,7 +256,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					},
 					Type: charts.ChartTypeBar,
 					Label: charts.SeriesLabel{
-						Show: charts.True(),
+						Show: charts.Ptr(true),
 					},
 				},
 			},
@@ -386,7 +386,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				SubtextFontStyle: charts.NewFontStyleWithSize(10),
 			},
 			Legend: charts.LegendOption{
-				Vertical: charts.True(),
+				Vertical: charts.Ptr(true),
 				SeriesNames: []string{
 					"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 				},
@@ -501,8 +501,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			YAxis: []charts.YAxisOption{
 				{
-					Min: charts.FloatPointer(0),
-					Max: charts.FloatPointer(90),
+					Min: charts.Ptr(0.0),
+					Max: charts.Ptr(90.0),
 				},
 			},
 			SeriesList: append(
@@ -517,7 +517,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			Children: []charts.ChartOption{
 				{
 					Legend: charts.LegendOption{
-						Show: charts.False(),
+						Show: charts.Ptr(false),
 						SeriesNames: []string{
 							"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 						},
