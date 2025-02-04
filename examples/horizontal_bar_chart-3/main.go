@@ -36,14 +36,12 @@ func main() {
 		Bottom: 0,
 		Left:   20,
 	}
-	opt.StackSeries = charts.True()
+	opt.StackSeries = charts.Ptr(true)
 	for i := range opt.SeriesList {
-		opt.SeriesList[i].Label.Show = charts.True()
+		opt.SeriesList[i].Label.Show = charts.Ptr(true)
 	}
-	opt.Legend.Data = []string{
-		"2011", "2012",
-	}
-	opt.XAxis.Show = charts.False()
+	opt.Legend.Data = []string{"2011", "2012"}
+	opt.XAxis.Show = charts.Ptr(false)
 	opt.YAxis = charts.YAxisOption{
 		Data: []string{
 			"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",

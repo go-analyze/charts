@@ -25,8 +25,8 @@ func makeDefaultMultiChartOptions() ChartOption {
 		YAxis: []YAxisOption{
 			{
 
-				Min: FloatPointer(0),
-				Max: FloatPointer(90),
+				Min: Ptr(0.0),
+				Max: Ptr(90.0),
 			},
 		},
 		SeriesList: append(
@@ -41,7 +41,7 @@ func makeDefaultMultiChartOptions() ChartOption {
 		Children: []ChartOption{
 			{
 				Legend: LegendOption{
-					Show: False(),
+					Show: Ptr(false),
 					Data: []string{
 						"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie",
 					},
@@ -170,8 +170,8 @@ func renderPainterLine(painter *Painter) {
 	}
 	lineOpt.YAxis = []YAxisOption{
 		{
-			Min: FloatPointer(0),
-			Max: FloatPointer(90),
+			Min: Ptr(0.0),
+			Max: Ptr(90.0),
 		},
 	}
 	if err := painter.LineChart(lineOpt); err != nil {
@@ -217,7 +217,7 @@ func renderPainterBar(painter *Painter) {
 	barOpt.Legend = LegendOption{
 		Data:         []string{"Rainfall", "Evaporation"},
 		Offset:       OffsetRight,
-		OverlayChart: True(),
+		OverlayChart: Ptr(true),
 	}
 	barOpt.SeriesList[0].MarkLine = NewMarkLine(SeriesMarkDataTypeAverage)
 	barOpt.SeriesList[0].MarkPoint = NewMarkPoint(SeriesMarkDataTypeMax, SeriesMarkDataTypeMin)
@@ -266,7 +266,7 @@ func renderPainterPie(painter *Painter) {
 		Data: []string{
 			"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 		},
-		Vertical: True(),
+		Vertical: Ptr(true),
 		Offset: OffsetStr{
 			Left: "80%",
 			Top:  PositionBottom,

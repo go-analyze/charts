@@ -109,16 +109,14 @@ func TestGetRadius(t *testing.T) {
 func TestReverseSlice(t *testing.T) {
 	t.Parallel()
 
-	arr := []string{
-		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
-	}
-	reverseStringSlice(arr)
+	arr := []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
+	reverseSlice(arr)
 	assert.Equal(t, []string{
 		"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon",
 	}, arr)
 
 	numbers := []int{1, 3, 5, 7, 9}
-	reverseIntSlice(numbers)
+	reverseSlice(numbers)
 	assert.Equal(t, []int{9, 7, 5, 3, 1}, numbers)
 }
 

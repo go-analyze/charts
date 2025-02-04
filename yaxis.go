@@ -53,7 +53,7 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		Position:             position,
 		FontStyle:            opt.FontStyle,
 		StrokeWidth:          -1,
-		BoundaryGap:          False(),
+		BoundaryGap:          Ptr(false),
 		Unit:                 opt.Unit,
 		LabelCount:           opt.LabelCount,
 		LabelCountAdjustment: opt.LabelCountAdjustment,
@@ -68,7 +68,7 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		axisOpt.Theme = theme.WithAxisColor(opt.AxisColor)
 	}
 	if opt.isCategoryAxis {
-		axisOpt.BoundaryGap = True()
+		axisOpt.BoundaryGap = Ptr(true)
 		axisOpt.StrokeWidth = 1
 		axisOpt.SplitLineShow = false
 	}

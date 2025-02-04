@@ -108,7 +108,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			// adjust padding scale to give space for mark point (if not specified by user)
 			for i := range opt.yAxis {
 				if opt.yAxis[i].RangeValuePaddingScale == nil {
-					opt.yAxis[i].RangeValuePaddingScale = FloatPointer(2.5)
+					opt.yAxis[i].RangeValuePaddingScale = Ptr(2.5)
 				}
 			}
 			break
@@ -204,7 +204,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	rangeWidthLeft := 0
 	rangeWidthRight := 0
 
-	reverseIntSlice(axisIndexList)
+	reverseSlice(axisIndexList)
 
 	// calculate the axis range
 	for _, index := range axisIndexList {
@@ -285,7 +285,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			opt.xAxis.Data = r.Values()
 			opt.xAxis.isValueAxis = true
 		}
-		reverseStringSlice(yAxisOption.Data)
+		reverseSlice(yAxisOption.Data)
 		child := p.Child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
 			Right: rangeWidthRight,
@@ -395,10 +395,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(pieSeriesList) != 0 ||
 		len(radarSeriesList) != 0 ||
 		len(funnelSeriesList) != 0 {
-		renderOpt.xAxis.Show = False()
+		renderOpt.xAxis.Show = Ptr(false)
 		renderOpt.yAxis = []YAxisOption{
 			{
-				Show: False(),
+				Show: Ptr(false),
 			},
 		}
 	}
