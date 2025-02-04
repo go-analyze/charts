@@ -711,17 +711,17 @@ func TestMeanInt(t *testing.T) {
 		expectedMean int
 	}{
 		{
-			name:         "PositiveValues",
+			name:         "positive_values",
 			values:       []int{10, 20, 30},
 			expectedMean: 20,
 		},
 		{
-			name:         "IncludingNegative",
+			name:         "include_negative",
 			values:       []int{-10, 0, 10},
 			expectedMean: 0,
 		},
 		{
-			name:         "AllZero",
+			name:         "all_zero",
 			values:       []int{0, 0, 0},
 			expectedMean: 0,
 		},
@@ -744,17 +744,17 @@ func TestSumFloat64(t *testing.T) {
 		expectedSum float64
 	}{
 		{
-			name:        "PositiveValues",
+			name:        "positive_values",
 			values:      []float64{1.0, 2.0, 3.0},
 			expectedSum: 6.0,
 		},
 		{
-			name:        "IncludingNegative",
+			name:        "include_negative",
 			values:      []float64{-1.0, 2.0, -3.0},
 			expectedSum: -2.0,
 		},
 		{
-			name:        "AllZeros",
+			name:        "all_zero",
 			values:      []float64{0.0, 0.0, 0.0},
 			expectedSum: 0.0,
 		},
@@ -777,19 +777,49 @@ func TestSumInt(t *testing.T) {
 		expectedSum int
 	}{
 		{
-			name:        "PositiveValues",
+			name:        "positive_values",
 			values:      []int{1, 2, 3},
 			expectedSum: 6,
 		},
 		{
-			name:        "IncludingNegative",
+			name:        "include_negative",
 			values:      []int{-1, 2, -3},
 			expectedSum: -2,
 		},
 		{
-			name:        "AllZeros",
+			name:        "all_zero",
 			values:      []int{0, 0, 0},
 			expectedSum: 0,
+		},
+		{
+			name:        "overflow_add",
+			values:      []int{1, math.MaxInt},
+			expectedSum: math.MaxInt,
+		},
+		{
+			name:        "overflow_add",
+			values:      []int{1, math.MaxInt - 1},
+			expectedSum: math.MaxInt,
+		},
+		{
+			name:        "overflow_add",
+			values:      []int{math.MaxInt, math.MaxInt},
+			expectedSum: math.MaxInt,
+		},
+		{
+			name:        "overflow_sub",
+			values:      []int{-1, math.MinInt},
+			expectedSum: math.MinInt,
+		},
+		{
+			name:        "overflow_sub",
+			values:      []int{-1, math.MinInt + 1},
+			expectedSum: math.MinInt,
+		},
+		{
+			name:        "overflow_sub",
+			values:      []int{math.MinInt, math.MinInt},
+			expectedSum: math.MinInt,
 		},
 	}
 
@@ -810,37 +840,37 @@ func TestPercentDifference(t *testing.T) {
 		expectedDifference float64
 	}{
 		{
-			name:               "ZeroInitial",
+			name:               "zero_initial",
 			v1:                 0,
 			v2:                 10,
 			expectedDifference: 0,
 		},
 		{
-			name:               "PositiveIncrease",
+			name:               "positive_increase",
 			v1:                 10,
 			v2:                 20,
 			expectedDifference: 1.0,
 		},
 		{
-			name:               "NegativeDecrease",
+			name:               "negative_decrease",
 			v1:                 20,
 			v2:                 10,
 			expectedDifference: -0.5,
 		},
 		{
-			name:               "NoChange",
+			name:               "no_change",
 			v1:                 10,
 			v2:                 10,
 			expectedDifference: 0.0,
 		},
 		{
-			name:               "NegativeToPositive",
+			name:               "negative_to_positive",
 			v1:                 -10,
 			v2:                 10,
 			expectedDifference: -2.0,
 		},
 		{
-			name:               "LargeIncrease",
+			name:               "large_increase",
 			v1:                 1,
 			v2:                 1000,
 			expectedDifference: 999.0,
@@ -865,31 +895,31 @@ func TestRoundPlaces(t *testing.T) {
 		expectedOutput float64
 	}{
 		{
-			name:           "RoundToTwoPlaces",
+			name:           "round_to_2_places",
 			input:          3.14159,
 			places:         2,
 			expectedOutput: 3.14,
 		},
 		{
-			name:           "RoundToZeroPlaces",
+			name:           "round_to_0_places",
 			input:          3.14159,
 			places:         0,
 			expectedOutput: 3.0,
 		},
 		{
-			name:           "NegativeValue",
+			name:           "negative_value",
 			input:          -3.14159,
 			places:         2,
 			expectedOutput: -3.14,
 		},
 		{
-			name:           "SmallDecimal",
+			name:           "small_decimal",
 			input:          0.00098765,
 			places:         5,
 			expectedOutput: 0.00099,
 		},
 		{
-			name:           "NegativeDecimal",
+			name:           "negative_decimal",
 			input:          -0.00098765,
 			places:         5,
 			expectedOutput: -0.00099,

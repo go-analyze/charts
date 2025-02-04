@@ -150,8 +150,7 @@ func main() {
 			"Brazil", "Indonesia", "USA", "India", "China", "World",
 		}),
 		charts.LegendLabelsOptionFunc([]string{
-			"2011",
-			"2012",
+			"2011", "2012",
 		}),
 		// other options as desired...
 ```

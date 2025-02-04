@@ -167,13 +167,19 @@ func SumFloat64(values ...float64) float64 {
 	return total
 }
 
-// SumInt sums a set of values.
+// SumInt sums a set of values, if an overflow occurs math.MaxInt will be returned exactly. Similar on an underflow
+// math.MinInt is returned.
 func SumInt(values ...int) int {
-	var total int
+	var sum int
 	for _, v := range values {
-		total += v
+		if v > 0 && sum > math.MaxInt-v {
+			return math.MaxInt
+		} else if v < 0 && sum < math.MinInt-v {
+			return math.MinInt
+		}
+		sum += v
 	}
-	return total
+	return sum
 }
 
 // PercentDifference computes the percentage difference between two values.

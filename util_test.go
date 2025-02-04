@@ -98,24 +98,6 @@ func TestAutoDivide(t *testing.T) {
 	}, autoDivide(600, 7))
 }
 
-func TestSumInt(t *testing.T) {
-	t.Parallel()
-
-	t.Run("basic", func(t *testing.T) {
-		assert.Equal(t, 3, sumInt([]int{1, 2}))
-	})
-	t.Run("overflow-add", func(t *testing.T) {
-		assert.Equal(t, math.MaxInt, sumInt([]int{1, math.MaxInt}))
-		assert.Equal(t, math.MaxInt, sumInt([]int{1, math.MaxInt - 1}))
-		assert.Equal(t, math.MaxInt, sumInt([]int{math.MaxInt, math.MaxInt}))
-	})
-	t.Run("overflow-sub", func(t *testing.T) {
-		assert.Equal(t, math.MinInt, sumInt([]int{-1, math.MinInt}))
-		assert.Equal(t, math.MinInt, sumInt([]int{-1, math.MinInt + 1}))
-		assert.Equal(t, math.MinInt, sumInt([]int{math.MinInt, math.MinInt}))
-	})
-}
-
 func TestGetRadius(t *testing.T) {
 	t.Parallel()
 

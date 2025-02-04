@@ -39,7 +39,6 @@ func flagIs(is bool, flag *bool) bool {
 	return *flag == is
 }
 
-// TODO - replace when we support a newer version of go
 func containsInt(values []int, value int) bool {
 	for _, v := range values {
 		if v == value {
@@ -98,20 +97,6 @@ func autoDivideSpans(max, size int, spans []int) []int {
 		values = newValues
 	}
 	return values
-}
-
-func sumInt(values []int) int {
-	// chart.SumInt() also exists, but it does not handle overflow like we are
-	sum := 0
-	for _, v := range values {
-		if v > 0 && (math.MaxInt-sum) < v {
-			return math.MaxInt
-		} else if v < 0 && math.MinInt-sum > v {
-			return math.MinInt
-		}
-		sum += v
-	}
-	return sum
 }
 
 // TODO - replace when we support a newer version of go

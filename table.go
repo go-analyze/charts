@@ -205,7 +205,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 		spans = newSpans
 	}
 
-	sum := sumInt(spans)
+	sum := chartdraw.SumInt(spans...)
 	values := autoDivideSpans(p.Width(), sum, spans)
 	columnWidths := make([]int, 0)
 	for index, v := range values {
