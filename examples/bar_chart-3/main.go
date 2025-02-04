@@ -35,7 +35,7 @@ func main() {
 		Bottom: 20,
 		Left:   20,
 	}
-	opt.StackSeries = charts.True()
+	opt.StackSeries = charts.Ptr(true)
 	opt.XAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}
@@ -45,7 +45,7 @@ func main() {
 			"Rainfall", "Evaporation",
 		},
 		Offset:       charts.OffsetRight,
-		OverlayChart: charts.True(),
+		OverlayChart: charts.Ptr(true),
 	}
 	// Markline to show the max for the first series, as well as the average for the first series
 	opt.SeriesList[0].MarkLine = charts.NewMarkLine(charts.SeriesMarkDataTypeAverage, charts.SeriesMarkDataTypeMax)

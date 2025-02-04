@@ -21,7 +21,7 @@ func makeBasicPieChartOption() PieChartOption {
 		},
 		Padding: NewBoxEqual(20),
 		Legend: LegendOption{
-			Vertical:    True(),
+			Vertical:    Ptr(true),
 			SeriesNames: []string{"Search Engine", "Direct", "Email", "Union Ads", "Video Ads"},
 			Offset:      OffsetLeft,
 		},
@@ -80,7 +80,7 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:           True(),
+							Show:           Ptr(true),
 							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
@@ -116,7 +116,7 @@ func TestPieChart(t *testing.T) {
 							"Luxembourg",
 							"Malta",
 						},
-						Show: False(),
+						Show: Ptr(false),
 					},
 				}
 			},
@@ -138,7 +138,7 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:           True(),
+							Show:           Ptr(true),
 							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "200",
@@ -174,7 +174,7 @@ func TestPieChart(t *testing.T) {
 							"Spain",
 							"Sweden",
 						},
-						Show: False(),
+						Show: Ptr(false),
 					},
 				}
 			},
@@ -200,7 +200,7 @@ func TestPieChart(t *testing.T) {
 					Padding: NewBoxEqual(20),
 					Legend: LegendOption{
 						SeriesNames: labels,
-						Show:        False(),
+						Show:        Ptr(false),
 					},
 				}
 			},
@@ -222,7 +222,7 @@ func TestPieChart(t *testing.T) {
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:           True(),
+							Show:           Ptr(true),
 							FormatTemplate: "{b} ({c} ≅ {d})",
 						},
 						Radius: "150",
@@ -240,7 +240,7 @@ func TestPieChart(t *testing.T) {
 							"Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF",
 							"AG", "AH", "AI", "AJ", "AK", "AL", "AM",
 						},
-						Show: False(),
+						Show: Ptr(false),
 					},
 				}
 			},
@@ -280,8 +280,8 @@ func TestPieChart(t *testing.T) {
 					opt.SeriesList[i].Radius = strconv.Itoa((i+1)*10) + "%"
 				}
 				// disable extras
-				opt.Title.Show = False()
-				opt.Legend.Show = False()
+				opt.Title.Show = Ptr(false)
+				opt.Legend.Show = Ptr(false)
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 300 185\nL 300 156\nA 29 29 119.89 0 1 325 199\nL 300 185\nZ\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path  d=\"M 325 171\nL 438 105\nM 438 105\nL 453 105\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><text x=\"456\" y=\"110\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Search Engine: 33.3%</text><path  d=\"M 300 185\nL 350 213\nA 58 58 84.08 0 1 277 237\nL 300 185\nZ\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><path  d=\"M 317 240\nL 349 337\nM 349 337\nL 364 337\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><text x=\"367\" y=\"342\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Direct: 23.35%</text><path  d=\"M 300 185\nL 265 264\nA 87 87 66.35 0 1 214 185\nL 300 185\nZ\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><path  d=\"M 227 232\nL 166 271\nM 166 271\nL 151 271\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><text x=\"67\" y=\"276\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Email: 18.43%</text><path  d=\"M 300 185\nL 185 185\nA 116 116 55.37 0 1 235 90\nL 300 185\nZ\" style=\"stroke-width:1;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><path  d=\"M 198 131\nL 159 110\nM 159 110\nL 144 110\" style=\"stroke-width:1;stroke:rgb(238,102,102);fill:none\"/><text x=\"33\" y=\"115\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Union Ads: 15.37%</text><path  d=\"M 300 185\nL 219 66\nA 145 145 34.32 0 1 300 40\nL 300 185\nZ\" style=\"stroke-width:1;stroke:rgb(115,192,222);fill:rgb(115,192,222)\"/><path  d=\"M 258 47\nL 253 33\nM 253 33\nL 238 33\" style=\"stroke-width:1;stroke:rgb(115,192,222);fill:none\"/><text x=\"135\" y=\"38\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Video Ads: 9.53%</text></svg>",

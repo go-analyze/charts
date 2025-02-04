@@ -33,10 +33,10 @@ func makeMinimalHorizontalBarChartOption() HorizontalBarChartOption {
 		{24, 48},
 	})
 	opt.YAxis = YAxisOption{
-		Show:   False(),
+		Show:   Ptr(false),
 		Labels: []string{"A", "B"},
 	}
-	opt.XAxis.Show = False()
+	opt.XAxis.Show = Ptr(false)
 	return opt
 }
 
@@ -47,7 +47,7 @@ func makeFullHorizontalBarChartStackedOption() HorizontalBarChartOption {
 		{80.0, 40.4, 28.4, 28.8, 24.4, 24.2, 40.8, 80.8},
 	}, BarSeriesOption{
 		Label: SeriesLabel{
-			Show: True(),
+			Show: Ptr(true),
 			ValueFormatter: func(f float64) string {
 				return strconv.Itoa(int(f))
 			},
@@ -57,7 +57,7 @@ func makeFullHorizontalBarChartStackedOption() HorizontalBarChartOption {
 	return HorizontalBarChartOption{
 		Padding:     NewBoxEqual(20),
 		SeriesList:  seriesList,
-		StackSeries: True(),
+		StackSeries: Ptr(true),
 		Legend: LegendOption{
 			SeriesNames: dataLabels,
 		},
@@ -124,7 +124,7 @@ func TestHorizontalBarChart(t *testing.T) {
 				opt := makeBasicHorizontalBarChartOption()
 				series := opt.SeriesList
 				for i := range series {
-					series[i].Label.Show = True()
+					series[i].Label.Show = Ptr(true)
 				}
 				return opt
 			},
@@ -137,7 +137,7 @@ func TestHorizontalBarChart(t *testing.T) {
 				opt := makeBasicHorizontalBarChartOption()
 				series := opt.SeriesList
 				for i := range series {
-					series[i].Label.Show = True()
+					series[i].Label.Show = Ptr(true)
 				}
 				opt.ValueFormatter = func(f float64) string {
 					return "f"
@@ -151,10 +151,10 @@ func TestHorizontalBarChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() HorizontalBarChartOption {
 				opt := makeBasicHorizontalBarChartOption()
-				opt.Title.Show = False()
-				opt.XAxis.Show = False()
-				opt.YAxis.Show = False()
-				opt.Legend.Show = False()
+				opt.Title.Show = Ptr(false)
+				opt.XAxis.Show = Ptr(false)
+				opt.YAxis.Show = Ptr(false)
+				opt.Legend.Show = Ptr(false)
 				opt.BarHeight = 1000
 				return opt
 			},
@@ -175,7 +175,7 @@ func TestHorizontalBarChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() HorizontalBarChartOption {
 				opt := makeMinimalHorizontalBarChartOption()
-				opt.BarMargin = FloatPointer(0)
+				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 20 195\nL 98 195\nL 98 267\nL 20 267\nL 20 195\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 30\nL 232 30\nL 232 102\nL 20 102\nL 20 30\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 267\nL 232 267\nL 232 339\nL 20 339\nL 20 267\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 20 102\nL 501 102\nL 501 174\nL 20 174\nL 20 102\" style=\"stroke:none;fill:rgb(145,204,117)\"/></svg>",
@@ -185,7 +185,7 @@ func TestHorizontalBarChart(t *testing.T) {
 			defaultTheme: true,
 			makeOptions: func() HorizontalBarChartOption {
 				opt := makeMinimalHorizontalBarChartOption()
-				opt.BarMargin = FloatPointer(1000) // will be limited to fit graph
+				opt.BarMargin = Ptr(1000.0) // will be limited to fit graph
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 20 195\nL 98 195\nL 98 226\nL 20 226\nL 20 195\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 30\nL 232 30\nL 232 61\nL 20 61\nL 20 30\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 308\nL 232 308\nL 232 339\nL 20 339\nL 20 308\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 20 143\nL 501 143\nL 501 174\nL 20 174\nL 20 143\" style=\"stroke:none;fill:rgb(145,204,117)\"/></svg>",
@@ -196,7 +196,7 @@ func TestHorizontalBarChart(t *testing.T) {
 			makeOptions: func() HorizontalBarChartOption {
 				opt := makeMinimalHorizontalBarChartOption()
 				opt.BarHeight = 10
-				opt.BarMargin = FloatPointer(0)
+				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 20 257\nL 98 257\nL 98 267\nL 20 267\nL 20 257\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 92\nL 232 92\nL 232 102\nL 20 102\nL 20 92\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 267\nL 232 267\nL 232 277\nL 20 277\nL 20 267\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 20 102\nL 501 102\nL 501 112\nL 20 112\nL 20 102\" style=\"stroke:none;fill:rgb(145,204,117)\"/></svg>",
@@ -207,7 +207,7 @@ func TestHorizontalBarChart(t *testing.T) {
 			makeOptions: func() HorizontalBarChartOption {
 				opt := makeMinimalHorizontalBarChartOption()
 				opt.BarHeight = 10
-				opt.BarMargin = FloatPointer(1000) // will be limited for readability
+				opt.BarMargin = Ptr(1000.0) // will be limited for readability
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 20 221\nL 98 221\nL 98 231\nL 20 231\nL 20 221\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 56\nL 232 56\nL 232 66\nL 20 66\nL 20 56\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 20 303\nL 232 303\nL 232 313\nL 20 313\nL 20 303\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 20 138\nL 501 138\nL 501 148\nL 20 148\nL 20 138\" style=\"stroke:none;fill:rgb(145,204,117)\"/></svg>",

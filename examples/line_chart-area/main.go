@@ -39,13 +39,13 @@ func main() {
 			},
 		}),
 		charts.YAxisOptionFunc(charts.YAxisOption{
-			Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
+			Min: charts.Ptr(0.0), // ensure y-axis starts at 0
 		}),
 		// setup fill styling below
 		func(opt *charts.ChartOption) {
-			opt.FillArea = charts.True()           // shade the area under the line
-			opt.FillOpacity = 150                  // set the fill opacity a little lighter than default
-			opt.XAxis.BoundaryGap = charts.False() // BoundaryGap is less appealing when enabling FillArea
+			opt.FillArea = charts.Ptr(true)           // shade the area under the line
+			opt.FillOpacity = 150                     // set the fill opacity a little lighter than default
+			opt.XAxis.BoundaryGap = charts.Ptr(false) // BoundaryGap is less appealing when enabling FillArea
 		},
 	)
 	if err != nil {
