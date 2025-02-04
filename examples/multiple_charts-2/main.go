@@ -37,7 +37,7 @@ func main() {
 			SeriesNames: []string{
 				"Email", "Video Ads", "Direct",
 			},
-			OverlayChart: charts.False(),
+			OverlayChart: charts.Ptr(false),
 			Offset: charts.OffsetStr{
 				Top:  charts.PositionBottom,
 				Left: "20%",
@@ -46,10 +46,10 @@ func main() {
 		func(opt *charts.ChartOption) {
 			opt.YAxis = []charts.YAxisOption{
 				{
-					Max: charts.FloatPointer(2000),
+					Max: charts.Ptr(2000.0),
 				},
 			}
-			opt.SymbolShow = charts.True()
+			opt.SymbolShow = charts.Ptr(true)
 			opt.LineStrokeWidth = 1.2
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)

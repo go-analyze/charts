@@ -58,7 +58,7 @@ func (opt *XAxisOption) toAxisOption() axisOption {
 	if opt.isValueAxis {
 		axisOpt.SplitLineShow = true
 		axisOpt.StrokeWidth = -1
-		axisOpt.BoundaryGap = False()
+		axisOpt.BoundaryGap = Ptr(false)
 	}
 	return axisOpt
 }

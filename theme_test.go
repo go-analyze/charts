@@ -65,8 +65,8 @@ func renderTestLineChartWithTheme(t *testing.T, fullChart bool, theme ColorPalet
 	opt.YAxis[0].LabelCount = 5
 	opt.YAxis[0].LabelSkipCount = 1
 	if !fullChart {
-		opt.Title.Show = False()
-		opt.SymbolShow = False()
+		opt.Title.Show = Ptr(false)
+		opt.SymbolShow = Ptr(false)
 	}
 	opt.Theme = theme
 

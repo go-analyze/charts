@@ -141,7 +141,7 @@ func TestBarRender(t *testing.T) {
 		// custom option func
 		func(opt *ChartOption) {
 			opt.Legend.Offset = OffsetRight
-			opt.Legend.OverlayChart = True()
+			opt.Legend.OverlayChart = Ptr(true)
 			opt.SeriesList[1].MarkPoint = NewMarkPoint(
 				SeriesMarkDataTypeMax,
 				SeriesMarkDataTypeMin,
@@ -197,7 +197,7 @@ func TestPieRender(t *testing.T) {
 		}),
 		PaddingOptionFunc(NewBoxEqual(20)),
 		LegendOptionFunc(LegendOption{
-			Vertical:    True(),
+			Vertical:    Ptr(true),
 			SeriesNames: []string{"Search Engine", "Direct", "Email", "Union Ads", "Video Ads"},
 			Offset:      OffsetLeft,
 		}),

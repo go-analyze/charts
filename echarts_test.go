@@ -67,7 +67,7 @@ func TestEChartsXAxis(t *testing.T) {
 	assert.Equal(t, EChartsXAxis{
 		Data: []EChartsXAxisData{
 			{
-				BoundaryGap: True(),
+				BoundaryGap: Ptr(true),
 				SplitNumber: 5,
 				Data:        []string{"a", "b"},
 				Type:        "value",

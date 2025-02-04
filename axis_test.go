@@ -27,7 +27,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
 					Labels:      dayLabels,
-					BoundaryGap: True(),
+					BoundaryGap: Ptr(true),
 					FontStyle:   NewFontStyleWithSize(18),
 				}
 				return opt.toAxisOption()
@@ -40,7 +40,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
 					Labels:       dayLabels,
-					BoundaryGap:  True(),
+					BoundaryGap:  Ptr(true),
 					FontStyle:    NewFontStyleWithSize(18),
 					TextRotation: DegreesToRadians(45),
 				}
@@ -54,7 +54,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
 					Labels:       dayLabels,
-					BoundaryGap:  True(),
+					BoundaryGap:  Ptr(true),
 					FontStyle:    NewFontStyleWithSize(18),
 					TextRotation: DegreesToRadians(90),
 				}
@@ -68,7 +68,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
 					Labels:       dayLabels,
-					BoundaryGap:  True(),
+					BoundaryGap:  Ptr(true),
 					FontStyle:    NewFontStyleWithSize(18),
 					Position:     PositionTop,
 					TextRotation: DegreesToRadians(45),
@@ -83,7 +83,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
 					Labels:       dayLabels,
-					BoundaryGap:  True(),
+					BoundaryGap:  Ptr(true),
 					FontStyle:    NewFontStyleWithSize(18),
 					Position:     PositionTop,
 					TextRotation: DegreesToRadians(90),
@@ -107,7 +107,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				return axisOption{
 					Labels:      dayLabels,
-					BoundaryGap: False(),
+					BoundaryGap: Ptr(false),
 				}
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 375\nL 0 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 100 375\nL 100 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 200 375\nL 200 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 300 375\nL 300 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 400 375\nL 400 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 500 375\nL 500 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 600 375\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 0 370\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"-1\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Mon</text><text x=\"99\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Tue</text><text x=\"199\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Wed</text><text x=\"299\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Thu</text><text x=\"399\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Fri</text><text x=\"499\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sat</text><text x=\"573\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sun</text></svg>",
@@ -130,7 +130,7 @@ func TestAxis(t *testing.T) {
 				return axisOption{
 					Labels:        dayLabels,
 					Position:      PositionLeft,
-					BoundaryGap:   False(),
+					BoundaryGap:   Ptr(false),
 					SplitLineShow: true,
 				}
 			},
@@ -142,7 +142,7 @@ func TestAxis(t *testing.T) {
 				return axisOption{
 					Labels:        dayLabels,
 					Position:      PositionRight,
-					BoundaryGap:   False(),
+					BoundaryGap:   Ptr(false),
 					SplitLineShow: true,
 				}
 			},
@@ -199,7 +199,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				return axisOption{
 					Labels:      letterLabels,
-					BoundaryGap: False(),
+					BoundaryGap: Ptr(false),
 				}
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 375\nL 0 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 100 375\nL 100 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 200 375\nL 200 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 300 375\nL 300 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 400 375\nL 400 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 500 375\nL 500 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 600 375\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 0 370\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"-1\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><text x=\"99\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><text x=\"199\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><text x=\"299\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">D</text><text x=\"399\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">E</text><text x=\"499\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">F</text><text x=\"589\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">G</text></svg>",
@@ -209,7 +209,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				return axisOption{
 					Labels:      letterLabels,
-					BoundaryGap: True(),
+					BoundaryGap: Ptr(true),
 				}
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 375\nL 0 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 85 375\nL 85 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 171 375\nL 171 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 257 375\nL 257 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 342 375\nL 342 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 428 375\nL 428 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 514 375\nL 514 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 600 375\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 0 370\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"37\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><text x=\"123\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><text x=\"209\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><text x=\"294\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">D</text><text x=\"381\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">E</text><text x=\"467\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">F</text><text x=\"552\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">G</text></svg>",

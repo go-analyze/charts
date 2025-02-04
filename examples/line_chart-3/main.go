@@ -44,14 +44,14 @@ func main() {
 				"Critical", "High", "Medium", "Low",
 			},
 			// Legend Vertical, on the right, and with smaller font to give more space for data
-			Vertical:  charts.True(),
+			Vertical:  charts.Ptr(true),
 			Offset:    charts.OffsetRight,
 			Align:     charts.AlignRight,
 			FontStyle: charts.NewFontStyleWithSize(6.0),
 		}),
 		charts.PaddingOptionFunc(charts.NewBoxEqual(12)),
 		charts.YAxisOptionFunc(charts.YAxisOption{
-			Min:       charts.FloatPointer(0.0), // force min to be zero
+			Min:       charts.Ptr(0.0), // force min to be zero
 			FontStyle: axisFont,
 			// y-axis labels well spaced to keep a clean look
 			Unit:           10,
@@ -60,13 +60,13 @@ func main() {
 		charts.XAxisOptionFunc(charts.XAxisOption{
 			Labels:       xAxisLabels,
 			FontStyle:    axisFont,
-			BoundaryGap:  charts.True(),
+			BoundaryGap:  charts.Ptr(true),
 			LabelCount:   10,
 			TextRotation: charts.DegreesToRadians(45),
 		}),
 		func(opt *charts.ChartOption) {
 			// disable the symbols and reduce the stroke width to give more fidelity on the line
-			opt.SymbolShow = charts.False()
+			opt.SymbolShow = charts.Ptr(false)
 			opt.LineStrokeWidth = 1.6
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)

@@ -36,7 +36,7 @@ func main() {
 				"Rainfall", "Evaporation",
 			},
 			Offset:       charts.OffsetRight,
-			OverlayChart: charts.True(),
+			OverlayChart: charts.Ptr(true),
 		}),
 		charts.MarkLineOptionFunc(0, charts.SeriesMarkDataTypeAverage),
 		charts.MarkPointOptionFunc(0, charts.SeriesMarkDataTypeMax,
