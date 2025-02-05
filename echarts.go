@@ -187,6 +187,9 @@ type EChartsLegend struct {
 
 type EChartsMarkData struct {
 	Type string `json:"type"`
+	// TODO - support position values below
+	XAxis float64 `json:"xAxis,omitempty"`
+	YAxis float64 `json:"yAxis,omitempty"`
 }
 type _EChartsMarkData EChartsMarkData
 
