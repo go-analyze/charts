@@ -274,7 +274,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 					Type: item.Type,
 					Name: dataItem.Name,
 					Label: SeriesLabel{
-						Show: True(),
+						Show: Ptr(true),
 					},
 					Radius: item.Radius,
 					Data:   []float64{dataItem.Value.First()},
@@ -293,7 +293,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 						FontStyle: FontStyle{
 							FontColor: ParseColor(item.Label.Color),
 						},
-						Show:     BoolPointer(item.Label.Show),
+						Show:     Ptr(item.Label.Show),
 						Distance: item.Label.Distance,
 					},
 				})
@@ -312,7 +312,7 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 				FontStyle: FontStyle{
 					FontColor: ParseColor(item.Label.Color),
 				},
-				Show:     BoolPointer(item.Label.Show),
+				Show:     Ptr(item.Label.Show),
 				Distance: item.Label.Distance,
 			},
 			Name:      item.Name,
@@ -408,7 +408,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				Top:  string(eo.Legend.Top),
 			},
 			Align:    eo.Legend.Align,
-			Vertical: BoolPointer(strings.EqualFold(eo.Legend.Orient, "vertical")),
+			Vertical: Ptr(strings.EqualFold(eo.Legend.Orient, "vertical")),
 		},
 		RadarIndicators: eo.Radar.Indicator,
 		Width:           eo.Width,
@@ -442,7 +442,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		if o.XAxis.BoundaryGap == nil {
 			// Ensure default ECharts behavior of centering labels and sets a "BoundaryGap"
 			// https://echarts.apache.org/en/option.html#xAxis.boundaryGap
-			o.XAxis.BoundaryGap = True()
+			o.XAxis.BoundaryGap = Ptr(true)
 		}
 	}
 	yAxisOptions := make([]YAxisOption, len(eo.YAxis.Data))

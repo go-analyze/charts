@@ -108,9 +108,6 @@ func newSector(cx int, cy int, radius float64, labelRadius float64, value float6
 		if series.Label.ValueFormatter != nil {
 			s.label = series.Label.ValueFormatter(s.value)
 		} else {
-			if series.Label.FormatTemplate == "" {
-				series.Label.FormatTemplate = series.Label.Formatter
-			}
 			s.label = labelFormatPie([]string{label}, series.Label.FormatTemplate, 0, s.value, s.percent)
 		}
 	}
@@ -281,11 +278,11 @@ func (p *pieChart) Render() (Box, error) {
 		padding:    opt.Padding,
 		seriesList: opt.SeriesList,
 		xAxis: &XAxisOption{
-			Show: False(),
+			Show: Ptr(false),
 		},
 		yAxis: []YAxisOption{
 			{
-				Show: False(),
+				Show: Ptr(false),
 			},
 		},
 		title:              opt.Title,

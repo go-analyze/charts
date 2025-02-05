@@ -23,27 +23,13 @@ func writeFile(buf []byte) error {
 
 func main() {
 	values := [][]float64{
-		{
-			120,
-			132,
-			101,
-			134,
-			90,
-			230,
-			210,
-		},
+		{120, 132, 101, 134, 90, 230, 210},
 	}
 	p, err := charts.LineRender(
 		values,
 		charts.TitleTextOptionFunc("Line"),
 		charts.XAxisDataOptionFunc([]string{
-			"Mon",
-			"Tue",
-			"Wed",
-			"Thu",
-			"Fri",
-			"Sat",
-			"Sun",
+			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{"Email"},
@@ -53,13 +39,13 @@ func main() {
 			},
 		}),
 		charts.YAxisOptionFunc(charts.YAxisOption{
-			Min: charts.FloatPointer(0.0), // ensure y-axis starts at 0
+			Min: charts.Ptr(0.0), // ensure y-axis starts at 0
 		}),
 		// setup fill styling below
 		func(opt *charts.ChartOption) {
-			opt.FillArea = true                    // shade the area under the line
-			opt.FillOpacity = 150                  // set the fill opacity a little lighter than default
-			opt.XAxis.BoundaryGap = charts.False() // BoundaryGap is less appealing when enabling FillArea
+			opt.FillArea = charts.Ptr(true)           // shade the area under the line
+			opt.FillOpacity = 150                     // set the fill opacity a little lighter than default
+			opt.XAxis.BoundaryGap = charts.Ptr(false) // BoundaryGap is less appealing when enabling FillArea
 		},
 	)
 	if err != nil {

@@ -83,9 +83,6 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 			if item.Label.ValueFormatter != nil {
 				textList[index] = item.Label.ValueFormatter(value)
 			} else {
-				if item.Label.FormatTemplate == "" {
-					item.Label.FormatTemplate = item.Label.Formatter
-				}
 				textList[index] = labelFormatFunnel(seriesNames, item.Label.FormatTemplate, index, value, percent)
 			}
 		}
@@ -153,11 +150,11 @@ func (f *funnelChart) Render() (Box, error) {
 		padding:    opt.Padding,
 		seriesList: opt.SeriesList,
 		xAxis: &XAxisOption{
-			Show: False(),
+			Show: Ptr(false),
 		},
 		yAxis: []YAxisOption{
 			{
-				Show: False(),
+				Show: Ptr(false),
 			},
 		},
 		title:  opt.Title,

@@ -379,11 +379,6 @@ func (p *Painter) drawSmoothCurve(points []Point, tension float64, dotForSingleP
 	p.quadCurveTo(points[n-2].X, points[n-2].Y, points[n-1].X, points[n-1].Y)
 }
 
-// Deprecated: SetBackground is Deprecated, use FilledRect with zero for the stroke width.
-func (p *Painter) SetBackground(width, height int, color Color) {
-	p.FilledRect(0, 0, width, height, color, color, 0.0)
-}
-
 // drawBackground fills the entire painter area with the given color.
 func (p *Painter) drawBackground(color Color) {
 	p.FilledRect(0, 0, p.Width(), p.Height(), color, color, 0.0)

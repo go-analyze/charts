@@ -33,10 +33,8 @@ func main() {
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
-				"Email", "Video Ads", "Direct",
-			},
-			OverlayChart: charts.False(),
+			Data:         []string{"Email", "Video Ads", "Direct"},
+			OverlayChart: charts.Ptr(false),
 			Offset: charts.OffsetStr{
 				Top:  charts.PositionBottom,
 				Left: "20%",
@@ -45,10 +43,10 @@ func main() {
 		func(opt *charts.ChartOption) {
 			opt.YAxis = []charts.YAxisOption{
 				{
-					Max: charts.FloatPointer(2000),
+					Max: charts.Ptr(2000.0),
 				},
 			}
-			opt.SymbolShow = charts.True()
+			opt.SymbolShow = charts.Ptr(true)
 			opt.LineStrokeWidth = 1.2
 			opt.ValueFormatter = func(f float64) string {
 				return charts.FormatValueHumanize(f, 1, true)
@@ -62,15 +60,11 @@ func main() {
 						{80, 100, 120, 140},
 					}),
 					Legend: charts.LegendOption{
-						Data: []string{
-							"2011", "2012",
-						},
+						Data: []string{"2011", "2012"},
 					},
 					YAxis: []charts.YAxisOption{
 						{
-							Data: []string{
-								"USA", "India", "China", "World",
-							},
+							Data: []string{"USA", "India", "China", "World"},
 						},
 					},
 				},

@@ -35,7 +35,7 @@ func main() {
 	opt.Legend = charts.LegendOption{
 		Data:         []string{"Rainfall", "Evaporation"},
 		Offset:       charts.OffsetRight,
-		OverlayChart: charts.True(),
+		OverlayChart: charts.Ptr(true),
 	}
 	opt.SeriesList[0].MarkLine = charts.NewMarkLine(charts.SeriesMarkDataTypeAverage)
 	opt.SeriesList[0].MarkPoint = charts.NewMarkPoint(
