@@ -87,14 +87,7 @@ func BenchmarkFormatValueHumanizeTruncate(b *testing.B) {
 
 func TestAutoDivide(t *testing.T) {
 	assert.Equal(t, []int{
-		0,
-		85,
-		171,
-		257,
-		342,
-		428,
-		514,
-		600,
+		0, 85, 171, 257, 342, 428, 514, 600,
 	}, autoDivide(600, 7))
 }
 
@@ -109,9 +102,7 @@ func TestGetRadius(t *testing.T) {
 func TestReverseSlice(t *testing.T) {
 	t.Parallel()
 
-	arr := []string{
-		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
-	}
+	arr := []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
 	reverseStringSlice(arr)
 	assert.Equal(t, []string{
 		"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon",

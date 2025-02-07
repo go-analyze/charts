@@ -192,19 +192,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		axisRanges: make(map[int]axisRange),
 	}
 
-	axisIndexList := make([]int, 0)
-	for _, series := range opt.seriesList {
-		if containsInt(axisIndexList, series.YAxisIndex) {
-			continue
-		}
-		axisIndexList = append(axisIndexList, series.YAxisIndex)
+	axisIndexList := make([]int, opt.seriesList.getYAxisCount())
+	for i := range axisIndexList {
+		axisIndexList[i] = i
 	}
+	reverseIntSlice(axisIndexList)
 	// the height needs to be subtracted from the height of the x-axis
 	rangeHeight := p.Height() - defaultXAxisHeight
 	rangeWidthLeft := 0
 	rangeWidthRight := 0
-
-	reverseIntSlice(axisIndexList)
 
 	// calculate the axis range
 	for _, index := range axisIndexList {
@@ -430,6 +426,12 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	// horizontal bar chart
 	if len(horizontalBarSeriesList) != 0 {
+		if len(opt.YAxis) > 0 {
+			if len(opt.YAxis) > 1 {
+				return nil, errors.New("horizontal bar chart only accepts a single Y-Axis")
+			}
+			// TODO - handle v0.5 API change for selecting the yAxis here
+		}
 		handler.Add(func() error {
 			_, err := newHorizontalBarChart(p, HorizontalBarChartOption{
 				Theme:       opt.Theme,

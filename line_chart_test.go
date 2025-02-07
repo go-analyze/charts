@@ -69,9 +69,7 @@ func makeMinimalLineChartOption() LineChartOption {
 	return LineChartOption{
 		Padding: NewBoxEqual(10),
 		XAxis: XAxisOption{
-			Data: []string{
-				"1", "2", "3", "4", "5", "6", "7",
-			},
+			Data: []string{"1", "2", "3", "4", "5", "6", "7"},
 			Show: False(),
 		},
 		YAxis:      make([]YAxisOption, 1),
@@ -98,9 +96,7 @@ func makeFullLineChartStackedOption() LineChartOption {
 		SeriesList:  seriesList,
 		StackSeries: True(),
 		XAxis: XAxisOption{
-			Data: []string{
-				"1", "2", "3", "4", "5", "6", "7", "8",
-			},
+			Data:        []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 			BoundaryGap: True(),
 		},
 		Legend: LegendOption{

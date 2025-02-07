@@ -39,15 +39,6 @@ func flagIs(is bool, flag *bool) bool {
 	return *flag == is
 }
 
-func containsInt(values []int, value int) bool {
-	for _, v := range values {
-		if v == value {
-			return true
-		}
-	}
-	return false
-}
-
 func ceilFloatToInt(value float64) int {
 	if value >= float64(math.MaxInt) {
 		return math.MaxInt

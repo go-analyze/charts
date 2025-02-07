@@ -40,7 +40,9 @@ func main() {
 			Offset: charts.OffsetCenter,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{"Critical", "High", "Medium", "Low"},
+			Data: []string{
+				"Critical", "High", "Medium", "Low",
+			},
 			// Legend Vertical, on the right, and with smaller font to give more space for data
 			Vertical:  charts.True(),
 			Offset:    charts.OffsetRight,

@@ -33,7 +33,9 @@ func main() {
 	}
 	opt.XAxis.LabelCount = 12 // force label count due to the labels being very close
 	opt.Legend = charts.LegendOption{
-		Data:         []string{"Rainfall", "Evaporation"},
+		Data: []string{
+			"Rainfall", "Evaporation",
+		},
 		Offset:       charts.OffsetRight,
 		OverlayChart: charts.True(),
 	}

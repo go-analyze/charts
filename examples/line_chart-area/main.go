@@ -23,27 +23,13 @@ func writeFile(buf []byte) error {
 
 func main() {
 	values := [][]float64{
-		{
-			120,
-			132,
-			101,
-			134,
-			90,
-			230,
-			210,
-		},
+		{120, 132, 101, 134, 90, 230, 210},
 	}
 	p, err := charts.LineRender(
 		values,
 		charts.TitleTextOptionFunc("Line"),
 		charts.XAxisDataOptionFunc([]string{
-			"Mon",
-			"Tue",
-			"Wed",
-			"Thu",
-			"Fri",
-			"Sat",
-			"Sun",
+			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
 			Data: []string{"Email"},

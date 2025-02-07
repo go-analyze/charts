@@ -19,15 +19,11 @@ func makeBasicHorizontalBarChartOption() HorizontalBarChartOption {
 			Text: "World Population",
 		},
 		Legend: LegendOption{
-			Data: []string{
-				"2011", "2012",
-			},
+			Data: []string{"2011", "2012"},
 		},
 		YAxis: []YAxisOption{
 			{
-				Data: []string{
-					"Brazil", "Indonesia", "USA", "India", "China", "World",
-				},
+				Data: []string{"Brazil", "Indonesia", "USA", "India", "China", "World"},
 			},
 		},
 	}
@@ -41,9 +37,7 @@ func makeMinimalHorizontalBarChartOption() HorizontalBarChartOption {
 	opt.YAxis = []YAxisOption{
 		{
 			Show: False(),
-			Data: []string{
-				"A", "B",
-			},
+			Data: []string{"A", "B"},
 		},
 	}
 	opt.XAxis.Show = False()
@@ -73,9 +67,7 @@ func makeFullHorizontalBarChartStackedOption() HorizontalBarChartOption {
 		},
 		YAxis: []YAxisOption{
 			{
-				Data: []string{
-					"1", "2", "3", "4", "5", "6", "7", "8",
-				},
+				Data: []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 			},
 		},
 	}
