@@ -101,13 +101,13 @@ func TestSeriesSummary(t *testing.T) {
 	})
 
 	t.Run("empty_series", func(t *testing.T) {
-		assert.Equal(t, seriesSummary{
+		assert.Equal(t, populationSummary{
 			MaxIndex: -1,
 			MinIndex: -1,
 		}, (&Series{}).Summary())
 	})
 	t.Run("one_value", func(t *testing.T) {
-		assert.Equal(t, seriesSummary{
+		assert.Equal(t, populationSummary{
 			Max:               10,
 			MaxIndex:          0,
 			Min:               10,
@@ -120,7 +120,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[0].Summary())
 	})
 	t.Run("two_values", func(t *testing.T) {
-		assert.Equal(t, seriesSummary{
+		assert.Equal(t, populationSummary{
 			Max:               2,
 			MaxIndex:          1,
 			Min:               1,
@@ -133,7 +133,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[1].Summary())
 	})
 	t.Run("three_values", func(t *testing.T) {
-		assert.Equal(t, seriesSummary{
+		assert.Equal(t, populationSummary{
 			Max:               3,
 			MaxIndex:          2,
 			Min:               1,
@@ -146,7 +146,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[2].Summary())
 	})
 	t.Run("four_values", func(t *testing.T) {
-		assert.Equal(t, seriesSummary{
+		assert.Equal(t, populationSummary{
 			Max:               4,
 			MaxIndex:          3,
 			Min:               1,
@@ -159,7 +159,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[3].Summary())
 	})
 	t.Run("prime_values", func(t *testing.T) {
-		assert.Equal(t, seriesSummary{
+		assert.Equal(t, populationSummary{
 			Max:               13,
 			MaxIndex:          3,
 			Min:               3,

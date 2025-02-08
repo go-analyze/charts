@@ -230,45 +230,52 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			seriesPainter.Dots(points, dotFillColor, seriesColor, 1, 2)
 		}
 
+		// Formatter set on the MarkLine or MarkPoint is checked in the respective painter
+		markLineValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
+		markPointValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
 		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
 			markLinePainter.add(markLineRenderOption{
-				fillColor:      defaultGlobalMarkFillColor,
-				fontColor:      opt.Theme.GetTextColor(),
-				strokeColor:    defaultGlobalMarkFillColor,
-				font:           opt.Font,
-				series:         seriesList.makeSumSeries(ChartTypeLine),
-				axisRange:      yRange,
-				valueFormatter: opt.ValueFormatter,
+				fillColor:             defaultGlobalMarkFillColor,
+				fontColor:             opt.Theme.GetTextColor(),
+				strokeColor:           defaultGlobalMarkFillColor,
+				font:                  opt.Font,
+				markline:              series.MarkLine,
+				seriesData:            seriesList.makeSumSeries(ChartTypeLine).Data,
+				axisRange:             yRange,
+				valueFormatterDefault: markLineValueFormatter,
 			})
 		} else if !stackSeries || index == 0 {
 			// In stacked mode we only support the line painter for the first series
 			markLinePainter.add(markLineRenderOption{
-				fillColor:      seriesColor,
-				fontColor:      opt.Theme.GetTextColor(),
-				strokeColor:    seriesColor,
-				font:           opt.Font,
-				series:         series,
-				axisRange:      yRange,
-				valueFormatter: opt.ValueFormatter,
+				fillColor:             seriesColor,
+				fontColor:             opt.Theme.GetTextColor(),
+				strokeColor:           seriesColor,
+				font:                  opt.Font,
+				markline:              series.MarkLine,
+				seriesData:            series.Data,
+				axisRange:             yRange,
+				valueFormatterDefault: markLineValueFormatter,
 			})
 		}
 		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
 			markPointPainter.add(markPointRenderOption{
-				fillColor:          defaultGlobalMarkFillColor,
-				font:               opt.Font,
-				points:             points,
-				series:             seriesList.makeSumSeries(ChartTypeLine),
-				valueFormatter:     opt.ValueFormatter,
-				seriesLabelPainter: labelPainter,
+				fillColor:             defaultGlobalMarkFillColor,
+				font:                  opt.Font,
+				points:                points,
+				markpoint:             series.MarkPoint,
+				seriesData:            seriesList.makeSumSeries(ChartTypeLine).Data,
+				valueFormatterDefault: markPointValueFormatter,
+				seriesLabelPainter:    labelPainter,
 			})
 		} else {
 			markPointPainter.add(markPointRenderOption{
-				fillColor:          seriesColor,
-				font:               opt.Font,
-				points:             points,
-				series:             series,
-				valueFormatter:     opt.ValueFormatter,
-				seriesLabelPainter: labelPainter,
+				fillColor:             seriesColor,
+				font:                  opt.Font,
+				points:                points,
+				markpoint:             series.MarkPoint,
+				seriesData:            series.Data,
+				valueFormatterDefault: markPointValueFormatter,
+				seriesLabelPainter:    labelPainter,
 			})
 		}
 
@@ -311,6 +318,5 @@ func (l *lineChart) Render() (Box, error) {
 		return BoxZero, err
 	}
 	seriesList := opt.SeriesList.Filter(ChartTypeLine)
-
 	return l.render(renderResult, seriesList)
 }

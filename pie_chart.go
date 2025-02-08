@@ -67,18 +67,26 @@ type sector struct {
 	lineEndX    int
 	lineEndY    int
 	label       string
-	series      Series
+	seriesLabel SeriesLabel
 	color       Color
 }
 
-func newSector(cx int, cy int, radius float64, labelRadius float64, value float64, currentValue float64, totalValue float64, labelLineLength int, label string, series Series, color Color) sector {
-	s := sector{}
-	s.value = value
-	s.percent = value / totalValue
-	s.cx = cx
-	s.cy = cy
-	s.rx = radius
-	s.ry = radius
+func newSector(cx int, cy int, radius float64, labelRadius float64,
+	value float64, currentValue float64, totalValue float64,
+	labelLineLength int, label string, seriesLabel SeriesLabel, color Color) sector {
+	s := sector{
+		value:       value,
+		percent:     value / totalValue,
+		cx:          cx,
+		cy:          cy,
+		rx:          radius,
+		ry:          radius,
+		start:       chartdraw.PercentToRadians(currentValue/totalValue) - math.Pi/2,
+		delta:       chartdraw.PercentToRadians(value / totalValue),
+		offset:      labelLineLength,
+		seriesLabel: seriesLabel,
+		color:       color,
+	}
 	p := (currentValue + value/2) / totalValue
 	if p < 0.25 {
 		s.quadrant = 1
@@ -89,29 +97,24 @@ func newSector(cx int, cy int, radius float64, labelRadius float64, value float6
 	} else {
 		s.quadrant = 2
 	}
-	s.start = chartdraw.PercentToRadians(currentValue/totalValue) - math.Pi/2
-	s.delta = chartdraw.PercentToRadians(value / totalValue)
 	angle := s.start + s.delta/2
 	s.lineStartX = cx + int(radius*math.Cos(angle))
 	s.lineStartY = cy + int(radius*math.Sin(angle))
 	s.lineBranchX = cx + int(labelRadius*math.Cos(angle))
 	s.lineBranchY = cy + int(labelRadius*math.Sin(angle))
-	s.offset = labelLineLength
 	if s.lineBranchX <= cx {
 		s.offset *= -1
 	}
 	s.lineEndX = s.lineBranchX + s.offset
 	s.lineEndY = s.lineBranchY
-	s.series = series
-	s.color = color
-	if !flagIs(false, series.Label.Show) { // only set the label if it's being rendered
-		if series.Label.ValueFormatter != nil {
-			s.label = series.Label.ValueFormatter(s.value)
+	if !flagIs(false, seriesLabel.Show) { // only set the label if it's being rendered
+		if seriesLabel.ValueFormatter != nil {
+			s.label = seriesLabel.ValueFormatter(s.value)
 		} else {
-			if series.Label.FormatTemplate == "" {
-				series.Label.FormatTemplate = series.Label.Formatter
+			if seriesLabel.FormatTemplate == "" {
+				seriesLabel.FormatTemplate = seriesLabel.Formatter
 			}
-			s.label = labelFormatPie([]string{label}, series.Label.FormatTemplate, 0, s.value, s.percent)
+			s.label = labelFormatPie([]string{label}, seriesLabel.FormatTemplate, 0, s.value, s.percent)
 		}
 	}
 	return s
@@ -195,7 +198,8 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				color = theme.GetSeriesColor(1)
 			}
 		}
-		s := newSector(cx, cy, seriesRadius, labelRadius, v, currentValue, total, labelLineWidth, seriesNames[index], series, color)
+		s := newSector(cx, cy, seriesRadius, labelRadius, v, currentValue, total, labelLineWidth,
+			seriesNames[index], series.Label, color)
 		switch quadrant := s.quadrant; quadrant {
 		case 1:
 			quadrant1 = append([]sector{s}, quadrant1...)
@@ -261,8 +265,8 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			FontSize:  labelFontSize,
 			Font:      opt.Font,
 		}
-		if !s.series.Label.FontStyle.FontColor.IsZero() {
-			textStyle.FontColor = s.series.Label.FontStyle.FontColor
+		if !s.seriesLabel.FontStyle.FontColor.IsZero() {
+			textStyle.FontColor = s.seriesLabel.FontStyle.FontColor
 		}
 		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label, 0, textStyle))
 		seriesPainter.Text(s.label, x, y, 0, textStyle)

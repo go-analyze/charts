@@ -17,19 +17,16 @@ func TestMarkLine(t *testing.T) {
 		{
 			render: func(p *Painter) ([]byte, error) {
 				markLine := newMarkLinePainter(p)
-				series := Series{
-					Data: []float64{1, 2, 3},
-				}
-				series.MarkLine = NewMarkLine(
-					SeriesMarkDataTypeMax,
-					SeriesMarkDataTypeAverage,
-					SeriesMarkDataTypeMin,
-				)
 				markLine.add(markLineRenderOption{
 					fillColor:   ColorBlack,
 					fontColor:   ColorBlack,
 					strokeColor: ColorBlack,
-					series:      series,
+					seriesData:  []float64{1, 2, 3},
+					markline: NewMarkLine(
+						SeriesMarkDataTypeMax,
+						SeriesMarkDataTypeAverage,
+						SeriesMarkDataTypeMin,
+					),
 					axisRange: newRange(p, nil,
 						p.Height(), 6, 0.0, 5.0, 0.0, 0.0),
 				})

@@ -224,45 +224,52 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 		}
 
+		// Formatter set on the MarkLine or MarkPoint is checked in the respective painter
+		markLineValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
+		markPointValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
 		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
 			markLinePainter.add(markLineRenderOption{
-				fillColor:      defaultGlobalMarkFillColor,
-				fontColor:      opt.Theme.GetTextColor(),
-				strokeColor:    defaultGlobalMarkFillColor,
-				font:           opt.Font,
-				series:         seriesList.makeSumSeries(ChartTypeBar),
-				axisRange:      yRange,
-				valueFormatter: opt.ValueFormatter,
+				fillColor:             defaultGlobalMarkFillColor,
+				fontColor:             opt.Theme.GetTextColor(),
+				strokeColor:           defaultGlobalMarkFillColor,
+				font:                  opt.Font,
+				markline:              series.MarkLine,
+				seriesData:            seriesList.makeSumSeries(ChartTypeBar).Data,
+				axisRange:             yRange,
+				valueFormatterDefault: markLineValueFormatter,
 			})
 		} else if !stackSeries || index == 0 {
 			// in stacked mode we only support the line painter for the first series
 			markLinePainter.add(markLineRenderOption{
-				fillColor:      seriesColor,
-				fontColor:      opt.Theme.GetTextColor(),
-				strokeColor:    seriesColor,
-				font:           opt.Font,
-				series:         series,
-				axisRange:      yRange,
-				valueFormatter: opt.ValueFormatter,
+				fillColor:             seriesColor,
+				fontColor:             opt.Theme.GetTextColor(),
+				strokeColor:           seriesColor,
+				font:                  opt.Font,
+				markline:              series.MarkLine,
+				seriesData:            series.Data,
+				axisRange:             yRange,
+				valueFormatterDefault: markLineValueFormatter,
 			})
 		}
 		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
 			markPointPainter.add(markPointRenderOption{
-				fillColor:          defaultGlobalMarkFillColor,
-				font:               opt.Font,
-				series:             seriesList.makeSumSeries(ChartTypeBar),
-				points:             points,
-				valueFormatter:     opt.ValueFormatter,
-				seriesLabelPainter: labelPainter,
+				fillColor:             defaultGlobalMarkFillColor,
+				font:                  opt.Font,
+				markpoint:             series.MarkPoint,
+				seriesData:            seriesList.makeSumSeries(ChartTypeBar).Data,
+				points:                points,
+				valueFormatterDefault: markPointValueFormatter,
+				seriesLabelPainter:    labelPainter,
 			})
 		} else {
 			markPointPainter.add(markPointRenderOption{
-				fillColor:          seriesColor,
-				font:               opt.Font,
-				series:             series,
-				points:             points,
-				valueFormatter:     opt.ValueFormatter,
-				seriesLabelPainter: labelPainter,
+				fillColor:             seriesColor,
+				font:                  opt.Font,
+				markpoint:             series.MarkPoint,
+				seriesData:            series.Data,
+				points:                points,
+				valueFormatterDefault: markPointValueFormatter,
+				seriesLabelPainter:    labelPainter,
 			})
 		}
 	}

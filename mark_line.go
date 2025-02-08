@@ -23,7 +23,7 @@ type markLinePainter struct {
 }
 
 func (m *markLinePainter) add(opt markLineRenderOption) {
-	if len(opt.series.MarkLine.Data) > 0 {
+	if len(opt.markline.Data) > 0 {
 		m.options = append(m.options, opt)
 	}
 }
@@ -37,31 +37,30 @@ func newMarkLinePainter(p *Painter) *markLinePainter {
 }
 
 type markLineRenderOption struct {
-	fillColor      Color
-	fontColor      Color
-	strokeColor    Color
-	font           *truetype.Font
-	series         Series
-	axisRange      axisRange
-	valueFormatter ValueFormatter
+	fillColor             Color
+	fontColor             Color
+	strokeColor           Color
+	font                  *truetype.Font
+	seriesData            []float64
+	markline              SeriesMarkLine
+	axisRange             axisRange
+	valueFormatterDefault ValueFormatter
 }
 
 func (m *markLinePainter) Render() (Box, error) {
 	painter := m.p
 	for _, opt := range m.options {
-		s := opt.series
-		if len(s.MarkLine.Data) == 0 {
+		if len(opt.markline.Data) == 0 {
 			continue
 		}
-		summary := s.Summary()
+		summary := summarizePopulationData(opt.seriesData)
 		fontStyle := FontStyle{
 			Font:      getPreferredFont(opt.font),
 			FontColor: opt.fontColor,
 			FontSize:  labelFontSize,
 		}
-		valueFormatter := getPreferredValueFormatter(opt.series.MarkLine.ValueFormatter,
-			opt.series.Label.ValueFormatter, opt.valueFormatter)
-		for _, markLine := range s.MarkLine.Data {
+		valueFormatter := getPreferredValueFormatter(opt.markline.ValueFormatter, opt.valueFormatterDefault)
+		for _, markLine := range opt.markline.Data {
 			var value float64
 			switch markLine.Type {
 			case SeriesMarkDataTypeMax:

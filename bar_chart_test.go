@@ -20,15 +20,11 @@ func makeBasicBarChartOption() BarChartOption {
 		Padding:    NewBoxEqual(10),
 		SeriesList: seriesList,
 		XAxis: XAxisOption{
-			Data: []string{
-				"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-			},
+			Data: []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
 		},
 		YAxis: []YAxisOption{
 			{
-				Data: []string{
-					"Rainfall", "Evaporation",
-				},
+				Data: []string{"Rainfall", "Evaporation"},
 			},
 		},
 	}
@@ -41,9 +37,7 @@ func makeMinimalBarChartOption() BarChartOption {
 	})
 	opt.XAxis = XAxisOption{
 		Show: False(),
-		Data: []string{
-			"A", "B",
-		},
+		Data: []string{"A", "B"},
 	}
 	opt.YAxis[0].Show = False()
 	return opt

@@ -126,24 +126,14 @@ func TestParseFlexibleValue(t *testing.T) {
 		require.NoError(t, err)
 		assert.InDelta(t, 10.0, result, 0)
 	})
-}
-
-func TestConvertPercent(t *testing.T) {
-	t.Parallel()
-
-	verifyConvertPercent(t, -1.0, "1")
-	verifyConvertPercent(t, -1.0, "a%")
-	verifyConvertPercent(t, 0.1, "10%")
-}
-
-func verifyConvertPercent(t *testing.T, expected float64, input string) {
-	t.Helper()
-
-	v, err := convertPercent(input)
-	if expected == -1 {
+	t.Run("error_percent", func(t *testing.T) {
+		result, err := parseFlexibleValue("a%", 100)
 		require.Error(t, err)
-	} else {
-		require.NoError(t, err)
-	}
-	assert.InDelta(t, expected, v, 0)
+		assert.InDelta(t, 0.0, result, 0)
+	})
+	t.Run("error_val", func(t *testing.T) {
+		result, err := parseFlexibleValue("a", 100)
+		require.Error(t, err)
+		assert.InDelta(t, 0.0, result, 0)
+	})
 }

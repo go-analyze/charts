@@ -307,7 +307,7 @@ func NewSeriesListFunnel(values []float64, opts ...FunnelSeriesOption) SeriesLis
 	return seriesList
 }
 
-type seriesSummary struct {
+type populationSummary struct {
 	// Max is the maximum value in the series.
 	Max float64
 	// MaxIndex is the index of the maximum value in the series. If the series is empty this value will be -1.
@@ -335,10 +335,15 @@ type seriesSummary struct {
 }
 
 // Summary returns numeric summary of series values (population statistics).
-func (s *Series) Summary() seriesSummary {
-	n := float64(len(s.Data))
+func (s *Series) Summary() populationSummary {
+	return summarizePopulationData(s.Data)
+}
+
+// summarizePopulationData returns numeric summary of series values (population statistics).
+func summarizePopulationData(data []float64) populationSummary {
+	n := float64(len(data))
 	if n == 0 {
-		return seriesSummary{
+		return populationSummary{
 			MinIndex: -1,
 			MaxIndex: -1,
 		}
@@ -352,7 +357,7 @@ func (s *Series) Summary() seriesSummary {
 	var sum, sumSq, sumCu, sumQd float64
 
 	// Single pass to gather everything we need
-	for i, x := range s.Data {
+	for i, x := range data {
 		if x < minValue {
 			minValue = x
 			minIndex = i
@@ -374,8 +379,8 @@ func (s *Series) Summary() seriesSummary {
 	variance := sumSq/n - mean*mean
 	stdDev := math.Sqrt(variance)
 	// Compute median: copy the data and sort
-	sortedData := make([]float64, len(s.Data))
-	copy(sortedData, s.Data)
+	sortedData := make([]float64, len(data))
+	copy(sortedData, data)
 	sort.Float64s(sortedData)
 	var median float64
 	mid := len(sortedData) / 2
@@ -413,7 +418,7 @@ func (s *Series) Summary() seriesSummary {
 		kurtosis = fourthCentral / (n * variance * variance)
 	} // else, all points might be the same => kurtosis is undefined
 
-	return seriesSummary{
+	return populationSummary{
 		Max:               maxValue,
 		MaxIndex:          maxIndex,
 		Min:               minValue,
@@ -426,7 +431,8 @@ func (s *Series) Summary() seriesSummary {
 	}
 }
 
-// Names returns the names of series list.
+// Deprecated: Names is deprecated, this is expected to be used internally only, if you use this function please open
+// a GitHub issue to let us know it's useful to you.
 func (sl SeriesList) Names() []string {
 	names := make([]string, len(sl))
 	for index, s := range sl {

@@ -25,18 +25,19 @@ type markPointPainter struct {
 }
 
 func (m *markPointPainter) add(opt markPointRenderOption) {
-	if len(opt.series.MarkPoint.Data) > 0 {
+	if len(opt.markpoint.Data) > 0 {
 		m.options = append(m.options, opt)
 	}
 }
 
 type markPointRenderOption struct {
-	fillColor          Color
-	font               *truetype.Font
-	series             Series
-	seriesLabelPainter *seriesLabelPainter
-	points             []Point
-	valueFormatter     ValueFormatter
+	fillColor             Color
+	font                  *truetype.Font
+	seriesData            []float64
+	markpoint             SeriesMarkPoint
+	seriesLabelPainter    *seriesLabelPainter
+	points                []Point
+	valueFormatterDefault ValueFormatter
 }
 
 // newMarkPointPainter returns a mark point renderer
@@ -50,12 +51,12 @@ func newMarkPointPainter(p *Painter) *markPointPainter {
 func (m *markPointPainter) Render() (Box, error) {
 	painter := m.p
 	for _, opt := range m.options {
-		if len(opt.series.MarkPoint.Data) == 0 {
+		if len(opt.markpoint.Data) == 0 {
 			continue
 		}
 		points := opt.points
-		summary := opt.series.Summary()
-		symbolSize := opt.series.MarkPoint.SymbolSize
+		summary := summarizePopulationData(opt.seriesData)
+		symbolSize := opt.markpoint.SymbolSize
 		if symbolSize == 0 {
 			symbolSize = 28
 		}
@@ -71,9 +72,8 @@ func (m *markPointPainter) Render() (Box, error) {
 		} else {
 			textStyle.FontColor = defaultDarkFontColor
 		}
-		valueFormatter := getPreferredValueFormatter(opt.series.MarkPoint.ValueFormatter,
-			opt.series.Label.ValueFormatter, opt.valueFormatter)
-		for _, markPointData := range opt.series.MarkPoint.Data {
+		valueFormatter := getPreferredValueFormatter(opt.markpoint.ValueFormatter, opt.valueFormatterDefault)
+		for _, markPointData := range opt.markpoint.Data {
 			textStyle.FontSize = labelFontSize
 			index := summary.MinIndex
 			value := summary.Min

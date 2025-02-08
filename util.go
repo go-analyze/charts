@@ -1,7 +1,6 @@
 package charts
 
 import (
-	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -106,25 +105,14 @@ func reverseIntSlice(intList []int) {
 
 func parseFlexibleValue(value string, percentTotal float64) (float64, error) {
 	if strings.HasSuffix(value, "%") {
-		percent, err := convertPercent(value)
+		percent, err := strconv.ParseFloat(strings.TrimSuffix(value, "%"), 64)
 		if err != nil {
 			return 0, err
 		}
-		return percent * percentTotal, nil
+		return (percent / 100.0) * percentTotal, nil
 	} else {
 		return strconv.ParseFloat(value, 64)
 	}
-}
-
-func convertPercent(value string) (float64, error) {
-	if !strings.HasSuffix(value, "%") {
-		return -1, fmt.Errorf("not a percent input: %s", value)
-	}
-	v, err := strconv.ParseFloat(strings.TrimSuffix(value, "%"), 64)
-	if err != nil {
-		return -1, err
-	}
-	return v / 100.0, nil
 }
 
 const kValue = float64(1000)
@@ -186,12 +174,7 @@ const defaultRadiusPercent = 0.4
 func getRadius(diameter float64, radiusValue string) float64 {
 	var radius float64
 	if radiusValue != "" {
-		v, _ := convertPercent(radiusValue)
-		if v != -1 {
-			radius = diameter * v
-		} else {
-			radius, _ = strconv.ParseFloat(radiusValue, 64)
-		}
+		radius, _ = parseFlexibleValue(radiusValue, diameter)
 	}
 	if radius <= 0 {
 		radius = diameter * defaultRadiusPercent
