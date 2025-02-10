@@ -112,6 +112,8 @@ type Series struct {
 // These Series can be appended to each other if multiple chart types should be rendered to the same axis.
 type SeriesList []Series
 
+// Deprecated: Filter is deprecated, this function is not expected to be used outside the internal chart
+// implementation. If you make use of this function open a GitHub issue to mention its use.
 func (sl SeriesList) Filter(chartType string) SeriesList {
 	arr := make(SeriesList, 0, len(sl))
 	for index, item := range sl {
