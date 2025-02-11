@@ -227,14 +227,18 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		// Formatter set on the MarkLine or MarkPoint is checked in the respective painter
 		markLineValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
 		markPointValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
+		var globalSeriesData []float64 // lazily initialized
 		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
+			if globalSeriesData == nil {
+				globalSeriesData = seriesList.makeSumSeries(ChartTypeBar, series.YAxisIndex).Data
+			}
 			markLinePainter.add(markLineRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
 				fontColor:             opt.Theme.GetTextColor(),
 				strokeColor:           defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				markline:              series.MarkLine,
-				seriesData:            seriesList.makeSumSeries(ChartTypeBar).Data,
+				seriesData:            globalSeriesData,
 				axisRange:             yRange,
 				valueFormatterDefault: markLineValueFormatter,
 			})
@@ -252,11 +256,14 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			})
 		}
 		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
+			if globalSeriesData == nil {
+				globalSeriesData = seriesList.makeSumSeries(ChartTypeBar, series.YAxisIndex).Data
+			}
 			markPointPainter.add(markPointRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				markpoint:             series.MarkPoint,
-				seriesData:            seriesList.makeSumSeries(ChartTypeBar).Data,
+				seriesData:            globalSeriesData,
 				points:                points,
 				valueFormatterDefault: markPointValueFormatter,
 				seriesLabelPainter:    labelPainter,

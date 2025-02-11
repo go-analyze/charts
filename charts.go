@@ -29,7 +29,7 @@ func SetDefaultChartDimensions(width, height int) {
 	}
 }
 
-// GetNullValue gets the null value
+// GetNullValue gets the null value, allowing you to set a series point with "no" value.
 func GetNullValue() float64 {
 	return math.MaxFloat64
 }

@@ -178,6 +178,14 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		if (series.YAxisIndex == 0 && fillAreaY0) || fillAreaY1 {
 			areaPoints := make([]Point, len(points))
 			copy(areaPoints, points)
+			for i, p := range areaPoints {
+				if p.Y != math.MaxInt32 {
+					if i > 0 {
+						areaPoints = areaPoints[i:] // truncate null points from array
+					}
+					break
+				}
+			}
 			bottomY := yRange.getRestHeight(yRange.min)
 			if stackSeries && len(priorSeriesPoints) > 0 {
 				// Fill between current line (areaPoints) and priorSeriesPoints
@@ -233,14 +241,18 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		// Formatter set on the MarkLine or MarkPoint is checked in the respective painter
 		markLineValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
 		markPointValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
+		var globalSeriesData []float64 // lazily initialized
 		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
+			if globalSeriesData == nil {
+				globalSeriesData = seriesList.makeSumSeries(ChartTypeLine, series.YAxisIndex).Data
+			}
 			markLinePainter.add(markLineRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
 				fontColor:             opt.Theme.GetTextColor(),
 				strokeColor:           defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				markline:              series.MarkLine,
-				seriesData:            seriesList.makeSumSeries(ChartTypeLine).Data,
+				seriesData:            globalSeriesData,
 				axisRange:             yRange,
 				valueFormatterDefault: markLineValueFormatter,
 			})
@@ -258,12 +270,15 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			})
 		}
 		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
+			if globalSeriesData == nil {
+				globalSeriesData = seriesList.makeSumSeries(ChartTypeLine, series.YAxisIndex).Data
+			}
 			markPointPainter.add(markPointRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				points:                points,
 				markpoint:             series.MarkPoint,
-				seriesData:            seriesList.makeSumSeries(ChartTypeLine).Data,
+				seriesData:            globalSeriesData,
 				valueFormatterDefault: markPointValueFormatter,
 				seriesLabelPainter:    labelPainter,
 			})

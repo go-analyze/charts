@@ -446,10 +446,10 @@ func (sl SeriesList) Names() []string {
 // SumSeries will return a single Series which represents the sum of the entire SeriesList. This is useful for
 // providing global statistics through Series.Summary().
 func (sl SeriesList) SumSeries() Series {
-	return sl.makeSumSeries("")
+	return sl.makeSumSeries("", -1)
 }
 
-func (sl SeriesList) makeSumSeries(chartType string) Series {
+func (sl SeriesList) makeSumSeries(chartType string, yaxisIndex int) Series {
 	result := Series{
 		Type: chartType,
 	}
@@ -458,7 +458,7 @@ func (sl SeriesList) makeSumSeries(chartType string) Series {
 	case 0:
 		return result
 	case 1:
-		if chartTypeMatch(chartType, sl[0].Type) {
+		if chartTypeMatch(chartType, sl[0].Type) && (yaxisIndex < 0 || sl[0].YAxisIndex == yaxisIndex) {
 			return sl[0]
 		} else {
 			return result
@@ -467,10 +467,12 @@ func (sl SeriesList) makeSumSeries(chartType string) Series {
 
 	sumValues := make([]float64, sl.getMaxDataCount(chartType))
 	for _, s := range sl {
-		if chartTypeMatch(chartType, s.Type) {
+		if chartTypeMatch(chartType, s.Type) && (yaxisIndex < 0 || s.YAxisIndex == yaxisIndex) {
 			result = s // ensure other series values are set into the result
-			for i := range s.Data {
-				sumValues[i] += s.Data[i]
+			for i, f := range s.Data {
+				if f != GetNullValue() {
+					sumValues[i] += f
+				}
 			}
 		}
 	}
