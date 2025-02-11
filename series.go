@@ -520,12 +520,12 @@ func labelFormatValue(seriesNames []string, layout string, index int, value floa
 // newLabelFormatter returns a label formatter.
 func newLabelFormatter(seriesNames []string, layout string) func(index int, value float64, percent float64) string {
 	return func(index int, value, percent float64) string {
-		percentText := ""
+		var percentText string
 		if percent >= 0 {
 			percentText = humanize.FtoaWithDigits(percent*100, 2) + "%"
 		}
 		valueText := humanize.FtoaWithDigits(value, 2)
-		name := ""
+		var name string
 		if len(seriesNames) > index {
 			name = seriesNames[index]
 		}

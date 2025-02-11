@@ -31,8 +31,7 @@ func (m *markLinePainter) add(opt markLineRenderOption) {
 // newMarkLinePainter returns a mark line renderer
 func newMarkLinePainter(p *Painter) *markLinePainter {
 	return &markLinePainter{
-		p:       p,
-		options: make([]markLineRenderOption, 0),
+		p: p,
 	}
 }
 

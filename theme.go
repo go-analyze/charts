@@ -330,7 +330,7 @@ func (t *themeColorPalette) GetSeriesColor(index int) Color {
 		result := colors[index%colorCount]
 		// adjust the color shade automatically
 		rMax, gMax, bMax := 200, 200, 200
-		rMin, gMin, bMin := 0, 0, 0
+		var rMin, gMin, bMin int
 		// the adjustment amount and mod count must be balanced to ensure colors don't hit their limits quickly
 		adjustment := 40 * ((index / colorCount) % 3)
 		if t.IsDark() { // adjust the shade darker for dark themes

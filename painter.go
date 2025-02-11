@@ -254,8 +254,7 @@ func (p *Painter) measureTextMaxWidthHeight(textList []string, textRotation floa
 	if fontStyle.Font == nil {
 		fontStyle.Font = getPreferredFont(p.font)
 	}
-	maxWidth := 0
-	maxHeight := 0
+	var maxWidth, maxHeight int
 	for _, text := range textList {
 		box := p.MeasureText(text, textRotation, fontStyle)
 		if maxWidth < box.Width() {
@@ -652,7 +651,7 @@ func (p *Painter) TextFit(body string, x, y, width int, fontStyle FontStyle, tex
 	lines := chartdraw.Text.WrapFit(r, body, width, style)
 
 	var output Box
-	textAlign := ""
+	var textAlign string
 	if len(textAligns) != 0 {
 		textAlign = textAligns[0]
 	}

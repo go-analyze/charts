@@ -60,7 +60,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 
 	h := (height - gap*(count-1)) / count
 
-	y := 0
+	var y int
 	widthList := make([]int, len(seriesList))
 	textList := make([]string, len(seriesList))
 	seriesNames := seriesList.Names()
@@ -92,7 +92,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	}
 
 	for index, w := range widthList {
-		nextWidth := 0
+		var nextWidth int
 		if index+1 < len(widthList) {
 			nextWidth = widthList[index+1]
 		}

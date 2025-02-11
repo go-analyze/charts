@@ -79,7 +79,7 @@ func autoDivideSpans(max, size int, spans []int) []int {
 	if len(spans) != 0 {
 		newValues := make([]int, len(spans)+1)
 		newValues[0] = 0
-		end := 0
+		var end int
 		for index, v := range spans {
 			end += v
 			newValues[index+1] = values[end]

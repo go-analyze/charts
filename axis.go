@@ -119,16 +119,10 @@ func (a *axisPainter) Render() (Box, error) {
 
 	p := top.Child(PainterPaddingOption(padding))
 
-	x0 := 0
-	y0 := 0
-	x1 := 0
-	y1 := 0
-	ticksPaddingTop := 0
-	ticksPaddingLeft := 0
-	labelPaddingTop := 0
-	labelPaddingLeft := 0
-	labelPaddingRight := 0
-	textAlign := ""
+	var x0, y0, x1, y1 int
+	var ticksPaddingTop, ticksPaddingLeft int
+	var labelPaddingTop, labelPaddingLeft, labelPaddingRight int
+	var textAlign string
 
 	switch opt.Position {
 	case PositionTop:

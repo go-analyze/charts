@@ -52,11 +52,7 @@ type renderHandler struct {
 }
 
 func (rh *renderHandler) Add(fn func() error) {
-	list := rh.list
-	if len(list) == 0 {
-		list = make([]func() error, 0)
-	}
-	rh.list = append(list, fn)
+	rh.list = append(rh.list, fn)
 }
 
 func (rh *renderHandler) Do() error {
@@ -143,7 +139,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 
 	const legendTitlePadding = 15
-	legendTopSpacing := 0
+	var legendTopSpacing int
 	legendResult, err := newLegendPainter(p, *opt.legend).Render()
 	if err != nil {
 		return nil, err
@@ -199,8 +195,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	reverseIntSlice(axisIndexList)
 	// the height needs to be subtracted from the height of the x-axis
 	rangeHeight := p.Height() - defaultXAxisHeight
-	rangeWidthLeft := 0
-	rangeWidthRight := 0
+	var rangeWidthLeft, rangeWidthRight int
 
 	// calculate the axis range
 	for _, index := range axisIndexList {

@@ -40,7 +40,6 @@ func newSeriesLabelPainter(p *Painter, seriesNames []string, label SeriesLabel,
 		label:       &label,
 		theme:       theme,
 		font:        font,
-		values:      make([]labelRenderValue, 0),
 	}
 }
 

@@ -193,9 +193,6 @@ func SeriesShowLabel(show bool) OptionFunc {
 // ChildOptionFunc adds a Child chart on top of the current one. Use Padding and Box for positioning.
 func ChildOptionFunc(child ...ChartOption) OptionFunc {
 	return func(opt *ChartOption) {
-		if opt.Children == nil {
-			opt.Children = make([]ChartOption, 0)
-		}
 		opt.Children = append(opt.Children, child...)
 	}
 }

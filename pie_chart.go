@@ -216,10 +216,8 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	sectors = append(sectors, quadrant3...)
 	sectors = append(sectors, quadrant2...)
 
-	currentQuadrant := 0
-	prevY := 0
-	maxY := 0
-	minY := 0
+	var currentQuadrant int
+	var prevY, maxY, minY int
 	for _, s := range sectors {
 		seriesPainter.moveTo(s.cx, s.cy)
 		seriesPainter.arcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta)

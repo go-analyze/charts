@@ -31,7 +31,7 @@ type titleMeasureOption struct {
 
 func splitTitleText(text string) []string {
 	arr := strings.Split(text, "\n")
-	result := make([]string, 0)
+	result := make([]string, 0, len(arr))
 	for _, v := range arr {
 		v = strings.TrimSpace(v)
 		if v == "" {
@@ -60,17 +60,14 @@ func (t *titlePainter) Render() (Box, error) {
 	p := t.p
 	if flagIs(false, opt.Show) {
 		return BoxZero, nil
+	} else if opt.Text == "" && opt.Subtext == "" {
+		return BoxZero, nil
 	}
 
 	theme := opt.Theme
 	if theme == nil {
 		theme = getPreferredTheme(p.theme)
 	}
-	if opt.Text == "" && opt.Subtext == "" {
-		return BoxZero, nil
-	}
-
-	measureOptions := make([]titleMeasureOption, 0)
 
 	fontStyle := opt.FontStyle
 	if fontStyle.Font == nil {
@@ -93,23 +90,22 @@ func (t *titlePainter) Render() (Box, error) {
 		subtextFontStyle.FontSize = fontStyle.FontSize
 	}
 
-	// main title
-	for _, v := range splitTitleText(opt.Text) {
+	mainSplit := splitTitleText(opt.Text)
+	subSplit := splitTitleText(opt.Subtext)
+	measureOptions := make([]titleMeasureOption, 0, len(mainSplit)+len(subSplit))
+	for _, v := range mainSplit {
 		measureOptions = append(measureOptions, titleMeasureOption{
 			text:  v,
 			style: fontStyle,
 		})
 	}
-	// subtitle
-	for _, v := range splitTitleText(opt.Subtext) {
+	for _, v := range subSplit {
 		measureOptions = append(measureOptions, titleMeasureOption{
 			text:  v,
 			style: subtextFontStyle,
 		})
 	}
-	textMaxWidth := 0
-	textMaxHeight := 0
-	textTotalHeight := 0
+	var textMaxWidth, textMaxHeight, textTotalHeight int
 	for index, item := range measureOptions {
 		textBox := p.MeasureText(item.text, 0, item.style)
 
@@ -128,7 +124,7 @@ func (t *titlePainter) Render() (Box, error) {
 	width := textMaxWidth
 
 	offset := opt.Offset
-	titleX := 0
+	var titleX int
 	switch offset.Left {
 	case "", PositionLeft:
 		// no-op
@@ -143,7 +139,7 @@ func (t *titlePainter) Render() (Box, error) {
 			titleX = int(v)
 		}
 	}
-	titleY := 0
+	var titleY int
 	switch offset.Top {
 	case "", PositionTop:
 		// leave default of zero

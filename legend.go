@@ -94,14 +94,12 @@ func (l *legendPainter) Render() (Box, error) {
 
 	// calculate the width and height of the display
 	measureList := make([]Box, len(opt.Data))
-	width := 0
-	height := 0
+	var width, height int
 	const builtInSpacing = 20
 	const textOffset = 2
 	const legendWidth = 30
 	const legendHeight = 20
-	maxTextWidth := 0
-	itemMaxHeight := 0
+	var maxTextWidth, itemMaxHeight int
 	for index, text := range opt.Data {
 		b := p.MeasureText(text, 0, fontStyle)
 		if b.Width() > maxTextWidth {

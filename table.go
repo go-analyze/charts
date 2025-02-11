@@ -159,9 +159,7 @@ type renderInfo struct {
 }
 
 func (t *tableChart) render() (*renderInfo, error) {
-	info := renderInfo{
-		rowHeights: make([]int, 0),
-	}
+	info := renderInfo{}
 	p := t.p
 	if t.opt.Theme == nil {
 		t.opt.Theme = getPreferredTheme(p.theme)
@@ -207,7 +205,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 
 	sum := chartdraw.SumInt(spans...)
 	values := autoDivideSpans(p.Width(), sum, spans)
-	columnWidths := make([]int, 0)
+	columnWidths := make([]int, 0, len(values))
 	for index, v := range values {
 		if index == len(values)-1 {
 			break
@@ -216,7 +214,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 	}
 	info.columnWidths = columnWidths
 
-	height := 0
+	var height int
 	headerFontStyle := FontStyle{
 		FontSize:  fontStyle.FontSize,
 		FontColor: opt.HeaderFontColor,
@@ -240,7 +238,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 		currentHeight int,
 		cellPadding Box,
 	) ([]TableCell, int) {
-		cellMaxHeight := 0
+		var cellMaxHeight int
 		paddingHeight := cellPadding.Top + cellPadding.Bottom
 		paddingWidth := cellPadding.Left + cellPadding.Right
 		cells := make([]TableCell, len(textList))
@@ -338,12 +336,12 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 			opt.Header,
 		}
 		arr = append(arr, opt.Data...)
-		top := 0
+		var top int
 		heights := []int{info.headerHeight}
 		heights = append(heights, info.rowHeights...)
 		// loop through all table cells to generate background color
 		for i := range arr {
-			left := 0
+			var left int
 			for j, tc := range info.tableCells[i] {
 				if !tc.FillColor.IsZero() {
 					padding := opt.Padding
