@@ -152,7 +152,7 @@ func (s *sector) calculateTextXY(textBox Box) (x int, y int) {
 func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	opt := p.opt
 	values := make([]float64, len(seriesList))
-	total := float64(0)
+	var total float64
 	var radiusValue string
 	for index, series := range seriesList {
 		if series.Radius != "" {
@@ -183,8 +183,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	}
 	theme := opt.Theme
 
-	currentValue := float64(0)
-
+	var currentValue float64
 	var quadrant1, quadrant2, quadrant3, quadrant4 []sector
 	for index, v := range values {
 		series := seriesList[index]

@@ -9,6 +9,10 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
+var radarDefaultValueFormatter = func(v float64) string {
+	return humanize.FtoaWithDigits(v, 2)
+}
+
 type radarChart struct {
 	p   *Painter
 	opt *RadarChartOption
@@ -49,6 +53,8 @@ type RadarChartOption struct {
 	Legend LegendOption
 	// RadarIndicators provides the radar indicator list.
 	RadarIndicators []RadarIndicator
+	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
+	ValueFormatter ValueFormatter
 	// backgroundIsFilled is set to true if the background is filled.
 	backgroundIsFilled bool
 }
@@ -174,6 +180,8 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 	angles := getPolygonPointAngles(sides)
 	maxCount := len(indicators)
 	for index, series := range seriesList {
+		valueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter,
+			radarDefaultValueFormatter)
 		linePoints := make([]Point, 0, maxCount)
 		for j, item := range series.Data {
 			if j >= maxCount {
@@ -201,9 +209,9 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		for index, point := range linePoints {
 			seriesPainter.Circle(dotWith, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
 			if flagIs(true, series.Label.Show) && index < len(series.Data) {
-				value := humanize.FtoaWithDigits(series.Data[index], 2)
-				b := seriesPainter.MeasureText(value, 0, fontStyle)
-				seriesPainter.Text(value, point.X-b.Width()/2, point.Y, 0, fontStyle)
+				valueStr := valueFormatter(series.Data[index])
+				b := seriesPainter.MeasureText(valueStr, 0, fontStyle)
+				seriesPainter.Text(valueStr, point.X-b.Width()/2, point.Y, 0, fontStyle)
 			}
 		}
 	}

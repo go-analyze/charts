@@ -48,7 +48,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	opt := f.opt
 	seriesPainter := result.seriesPainter
 	max := seriesList[0].Data[0]
-	min := float64(0)
+	var min float64
 	theme := opt.Theme
 	gap := 2
 	height := seriesPainter.Height()

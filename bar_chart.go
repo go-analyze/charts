@@ -188,7 +188,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 
 			if labelPainter != nil {
 				labelY := top
-				radians := float64(0)
+				var radians float64
 				fontStyle := series.Label.FontStyle
 				labelBottom := (opt.SeriesLabelPosition == PositionBottom || series.Label.Position == PositionBottom) && !stackSeries
 				if labelBottom {
