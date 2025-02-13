@@ -119,17 +119,20 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 
 	// association between legend and series name
-	if len(opt.legend.Data) == 0 {
-		opt.legend.Data = opt.seriesList.Names()
+	if len(opt.legend.SeriesNames) == 0 {
+		opt.legend.SeriesNames = opt.legend.Data
+	}
+	if len(opt.legend.SeriesNames) == 0 {
+		opt.legend.SeriesNames = opt.seriesList.Names()
 	} else {
 		seriesCount := len(opt.seriesList)
-		for index, name := range opt.legend.Data {
+		for index, name := range opt.legend.SeriesNames {
 			if index < seriesCount && len(opt.seriesList[index].Name) == 0 {
 				opt.seriesList[index].Name = name
 			}
 		}
 		nameIndexDict := map[string]int{}
-		for index, name := range opt.legend.Data {
+		for index, name := range opt.legend.SeriesNames {
 			nameIndexDict[name] = index
 		}
 		// ensure order of series is consistent with legend
@@ -266,17 +269,20 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			yAxisOption.Theme = opt.theme
 		}
 		if !opt.axisReversed {
-			yAxisOption.Data = r.Values()
+			yAxisOption.Labels = r.Values()
 		} else {
 			yAxisOption.isCategoryAxis = true
 			// we need to update the range labels or the bars won't be aligned to the Y axis
 			r.divideCount = opt.seriesList.getMaxDataCount("")
 			result.axisRanges[index] = r
 			// since the x-axis is the value part, it's label is calculated and processed separately
-			opt.xAxis.Data = r.Values()
+			opt.xAxis.Labels = r.Values()
 			opt.xAxis.isValueAxis = true
 		}
-		reverseStringSlice(yAxisOption.Data)
+		if len(yAxisOption.Labels) == 0 {
+			yAxisOption.Labels = yAxisOption.Data
+		}
+		reverseStringSlice(yAxisOption.Labels)
 		child := p.Child(PainterPaddingOption(Box{
 			Left:  rangeWidthLeft,
 			Right: rangeWidthRight,

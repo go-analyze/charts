@@ -402,7 +402,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				FontSize:  legendTextStyle.FontSize,
 				FontColor: legendTextStyle.FontColor,
 			},
-			Data: eo.Legend.Data,
+			SeriesNames: eo.Legend.Data,
 			Offset: OffsetStr{
 				Left: string(eo.Legend.Left),
 				Top:  string(eo.Legend.Top),
@@ -436,7 +436,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		xAxisData := eo.XAxis.Data[0]
 		o.XAxis = XAxisOption{
 			BoundaryGap: xAxisData.BoundaryGap,
-			Data:        xAxisData.Data,
+			Labels:      xAxisData.Data,
 			LabelCount:  xAxisData.SplitNumber,
 		}
 		if o.XAxis.BoundaryGap == nil {
@@ -452,7 +452,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			Max:       item.Max,
 			Formatter: item.AxisLabel.Formatter,
 			AxisColor: ParseColor(item.AxisLine.LineStyle.Color),
-			Data:      item.Data,
+			Labels:    item.Data,
 		}
 	}
 	o.YAxis = yAxisOptions

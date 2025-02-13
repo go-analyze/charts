@@ -78,7 +78,7 @@ func outputFormatOptionFunc(t string) OptionFunc {
 	}
 }
 
-// FontOptionFunc set font of chart.
+// FontOptionFunc set the default font of the chart.
 func FontOptionFunc(font *truetype.Font) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Font = font
@@ -92,21 +92,21 @@ func ThemeNameOptionFunc(theme string) OptionFunc {
 	}
 }
 
-// ThemeOptionFunc set them of chart.
+// ThemeOptionFunc sets the theme of the chart.
 func ThemeOptionFunc(theme ColorPalette) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Theme = theme
 	}
 }
 
-// TitleOptionFunc set title of chart.
+// TitleOptionFunc sets the title of the chart.
 func TitleOptionFunc(title TitleOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Title = title
 	}
 }
 
-// TitleTextOptionFunc set title text of chart.
+// TitleTextOptionFunc sets the title text of chart.
 func TitleTextOptionFunc(text string, subtext ...string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Title.Text = text
@@ -116,51 +116,61 @@ func TitleTextOptionFunc(text string, subtext ...string) OptionFunc {
 	}
 }
 
-// LegendOptionFunc set legend of chart.
+// LegendOptionFunc sets the legend of the chart.
 func LegendOptionFunc(legend LegendOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Legend = legend
 	}
 }
 
-// LegendLabelsOptionFunc set legend labels of chart.
+// LegendLabelsOptionFunc sets the legend series name labels of the chart.
 func LegendLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Legend = LegendOption{
-			Data: labels,
+			SeriesNames: labels,
 		}
 	}
 }
 
-// XAxisOptionFunc set x-axis of chart.
+// XAxisOptionFunc sets the x-axis of the chart.
 func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.XAxis = xAxisOption
 	}
 }
 
-// XAxisDataOptionFunc set x-axis data of chart.
+// Deprecated: XAxisDataOptionFunc is deprecated, use XAxisLabelsOptionFunc instead.
 func XAxisDataOptionFunc(data []string) OptionFunc {
+	return XAxisLabelsOptionFunc(data)
+}
+
+// XAxisLabelsOptionFunc sets the x-axis labels of the chart.
+func XAxisLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.XAxis = XAxisOption{
-			Data: data,
+			Labels: labels,
 		}
 	}
 }
 
-// YAxisOptionFunc set y-axis of chart, supports up to two y-axis.
+// YAxisOptionFunc sets the y-axis of chart, supports up to two y-axis.
 func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxis = yAxisOption
 	}
 }
 
-// YAxisDataOptionFunc set y-axis data of chart.
+// Deprecated: YAxisDataOptionFunc is deprecated, use YAxisLabelsOptionFunc instead.
 func YAxisDataOptionFunc(data []string) OptionFunc {
+	return YAxisLabelsOptionFunc(data)
+}
+
+// YAxisLabelsOptionFunc sets the y-axis labels of the chart.
+func YAxisLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxis = []YAxisOption{
 			{
-				Data: data,
+				Labels: labels,
 			},
 		}
 	}
@@ -174,14 +184,14 @@ func DimensionsOptionFunc(width, height int) OptionFunc {
 	}
 }
 
-// PaddingOptionFunc set padding of chart.
+// PaddingOptionFunc sets the padding of the chart.
 func PaddingOptionFunc(padding Box) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Padding = padding
 	}
 }
 
-// SeriesShowLabel set the series show label state for all series.
+// SeriesShowLabel sets the series show label state for all series.
 func SeriesShowLabel(show bool) OptionFunc {
 	return func(opt *ChartOption) {
 		for index := range opt.SeriesList {
@@ -197,14 +207,14 @@ func ChildOptionFunc(child ...ChartOption) OptionFunc {
 	}
 }
 
-// RadarIndicatorOptionFunc set radar indicator of chart
+// RadarIndicatorOptionFunc sets the radar indicator of chart
 func RadarIndicatorOptionFunc(names []string, values []float64) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.RadarIndicators = NewRadarIndicators(names, values)
 	}
 }
 
-// MarkLineOptionFunc set mark line for series of chart.
+// MarkLineOptionFunc sets the mark line for series of the chart.
 func MarkLineOptionFunc(seriesIndex int, markLineTypes ...string) OptionFunc {
 	return func(opt *ChartOption) {
 		if len(opt.SeriesList) <= seriesIndex {
@@ -214,7 +224,7 @@ func MarkLineOptionFunc(seriesIndex int, markLineTypes ...string) OptionFunc {
 	}
 }
 
-// MarkPointOptionFunc set mark point for series of chart.
+// MarkPointOptionFunc sets the mark point for series of the chart.
 func MarkPointOptionFunc(seriesIndex int, markPointTypes ...string) OptionFunc {
 	return func(opt *ChartOption) {
 		if len(opt.SeriesList) <= seriesIndex {

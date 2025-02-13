@@ -26,7 +26,7 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:        dayLabels,
+					Labels:      dayLabels,
 					BoundaryGap: True(),
 					FontStyle:   NewFontStyleWithSize(18),
 				}
@@ -39,7 +39,7 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:         dayLabels,
+					Labels:       dayLabels,
 					BoundaryGap:  True(),
 					FontStyle:    NewFontStyleWithSize(18),
 					TextRotation: DegreesToRadians(45),
@@ -53,7 +53,7 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:         dayLabels,
+					Labels:       dayLabels,
 					BoundaryGap:  True(),
 					FontStyle:    NewFontStyleWithSize(18),
 					TextRotation: DegreesToRadians(90),
@@ -67,7 +67,7 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:         dayLabels,
+					Labels:       dayLabels,
 					BoundaryGap:  True(),
 					FontStyle:    NewFontStyleWithSize(18),
 					Position:     PositionTop,
@@ -82,7 +82,7 @@ func TestAxis(t *testing.T) {
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
-					Data:         dayLabels,
+					Labels:       dayLabels,
 					BoundaryGap:  True(),
 					FontStyle:    NewFontStyleWithSize(18),
 					Position:     PositionTop,
@@ -96,7 +96,7 @@ func TestAxis(t *testing.T) {
 			name: "x-axis_bottom_splitline",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:          dayLabels,
+					Labels:        dayLabels,
 					SplitLineShow: true,
 				}
 			},
@@ -106,7 +106,7 @@ func TestAxis(t *testing.T) {
 			name: "x-axis_bottom_left",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:        dayLabels,
+					Labels:      dayLabels,
 					BoundaryGap: False(),
 				}
 			},
@@ -116,7 +116,7 @@ func TestAxis(t *testing.T) {
 			name: "y-axis_left",
 			optionFactory: func() axisOption {
 				opt := YAxisOption{
-					Data:           dayLabels,
+					Labels:         dayLabels,
 					Position:       PositionLeft,
 					isCategoryAxis: true,
 				}
@@ -128,7 +128,7 @@ func TestAxis(t *testing.T) {
 			name: "y-axis_center",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:          dayLabels,
+					Labels:        dayLabels,
 					Position:      PositionLeft,
 					BoundaryGap:   False(),
 					SplitLineShow: true,
@@ -140,7 +140,7 @@ func TestAxis(t *testing.T) {
 			name: "y-axis_right",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:          dayLabels,
+					Labels:        dayLabels,
 					Position:      PositionRight,
 					BoundaryGap:   False(),
 					SplitLineShow: true,
@@ -152,7 +152,7 @@ func TestAxis(t *testing.T) {
 			name: "top",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:      dayLabels,
+					Labels:    dayLabels,
 					Formatter: "{value} --",
 					Position:  PositionTop,
 				}
@@ -163,7 +163,7 @@ func TestAxis(t *testing.T) {
 			name: "reduced_label_count",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:                 letterLabels,
+					Labels:               letterLabels,
 					SplitLineShow:        false,
 					LabelCountAdjustment: -1,
 				}
@@ -174,7 +174,7 @@ func TestAxis(t *testing.T) {
 			name: "custom_unit",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:          letterLabels,
+					Labels:        letterLabels,
 					SplitLineShow: false,
 					Unit:          10,
 				}
@@ -185,7 +185,7 @@ func TestAxis(t *testing.T) {
 			name: "custom_font",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data: letterLabels,
+					Labels: letterLabels,
 					FontStyle: FontStyle{
 						FontSize:  40.0,
 						FontColor: ColorBlue,
@@ -198,7 +198,7 @@ func TestAxis(t *testing.T) {
 			name: "boundary_gap_disable",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:        letterLabels,
+					Labels:      letterLabels,
 					BoundaryGap: False(),
 				}
 			},
@@ -208,7 +208,7 @@ func TestAxis(t *testing.T) {
 			name: "boundary_gap_enable",
 			optionFactory: func() axisOption {
 				return axisOption{
-					Data:        letterLabels,
+					Labels:      letterLabels,
 					BoundaryGap: True(),
 				}
 			},

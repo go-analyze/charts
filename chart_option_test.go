@@ -34,14 +34,14 @@ func TestChartOption(t *testing.T) {
 			Text: "title",
 		},
 		Legend: LegendOption{
-			Data: []string{"label"},
+			SeriesNames: []string{"label"},
 		},
 		XAxis: XAxisOption{
-			Data: []string{"xaxis"},
+			Labels: []string{"xaxis"},
 		},
 		YAxis: []YAxisOption{
 			{
-				Data: []string{"yaxis"},
+				Labels: []string{"yaxis"},
 			},
 		},
 		Width:   800,

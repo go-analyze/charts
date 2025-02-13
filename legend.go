@@ -17,8 +17,10 @@ type LegendOption struct {
 	Show *bool
 	// Theme specifies the colors used for the legend.
 	Theme ColorPalette
-	// Data provides text for the legend.
+	// Deprecated: Data is deprecated, use SeriesNames instead.
 	Data []string
+	// SeriesNames provides text labels for the legend.
+	SeriesNames []string
 	// FontStyle specifies the font, size, and style for rendering the legend.
 	FontStyle FontStyle
 	// Padding specifies space padding around the legend.
@@ -39,7 +41,10 @@ type LegendOption struct {
 
 // IsEmpty checks legend is empty
 func (opt *LegendOption) IsEmpty() bool {
-	for _, v := range opt.Data {
+	if len(opt.SeriesNames) == 0 {
+		opt.SeriesNames = opt.Data
+	}
+	for _, v := range opt.SeriesNames {
 		if v != "" {
 			return false
 		}
@@ -61,6 +66,9 @@ func (l *legendPainter) Render() (Box, error) {
 		return BoxZero, nil
 	}
 
+	if len(opt.SeriesNames) == 0 {
+		opt.SeriesNames = opt.Data
+	}
 	theme := opt.Theme
 	if theme == nil {
 		theme = getPreferredTheme(l.p.theme)
@@ -93,14 +101,14 @@ func (l *legendPainter) Render() (Box, error) {
 	p := l.p.Child(PainterPaddingOption(padding))
 
 	// calculate the width and height of the display
-	measureList := make([]Box, len(opt.Data))
+	measureList := make([]Box, len(opt.SeriesNames))
 	var width, height int
 	const builtInSpacing = 20
 	const textOffset = 2
 	const legendWidth = 30
 	const legendHeight = 20
 	var maxTextWidth, itemMaxHeight int
-	for index, text := range opt.Data {
+	for index, text := range opt.SeriesNames {
 		b := p.MeasureText(text, 0, fontStyle)
 		if b.Width() > maxTextWidth {
 			maxTextWidth = b.Width()
@@ -119,11 +127,11 @@ func (l *legendPainter) Render() (Box, error) {
 	// add padding
 	if vertical {
 		width = maxTextWidth + textOffset + legendWidth
-		height = builtInSpacing * len(opt.Data)
+		height = builtInSpacing * len(opt.SeriesNames)
 	} else {
 		height = legendHeight
-		offsetValue := (len(opt.Data) - 1) * (builtInSpacing + textOffset)
-		allLegendWidth := len(opt.Data) * legendWidth
+		offsetValue := (len(opt.SeriesNames) - 1) * (builtInSpacing + textOffset)
+		allLegendWidth := len(opt.SeriesNames) * legendWidth
 		width += offsetValue + allLegendWidth
 	}
 
@@ -184,8 +192,8 @@ func (l *legendPainter) Render() (Box, error) {
 		}
 	}
 
-	lastIndex := len(opt.Data) - 1
-	for index, text := range opt.Data {
+	lastIndex := len(opt.SeriesNames) - 1
+	for index, text := range opt.SeriesNames {
 		color := theme.GetSeriesColor(index)
 		if vertical {
 			if opt.Align == AlignRight {
@@ -203,11 +211,11 @@ func (l *legendPainter) Render() (Box, error) {
 				if opt.Align == AlignCenter {
 					// recalculate width and center based off remaining width
 					var remainingWidth int
-					for i2 := index; i2 < len(opt.Data); i2++ {
-						b := p.MeasureText(opt.Data[i2], 0, fontStyle)
+					for i2 := index; i2 < len(opt.SeriesNames); i2++ {
+						b := p.MeasureText(opt.SeriesNames[i2], 0, fontStyle)
 						remainingWidth += b.Width()
 					}
-					remainingCount := len(opt.Data) - index
+					remainingCount := len(opt.SeriesNames) - index
 					remainingWidth += remainingCount * legendWidth
 					remainingWidth += (remainingCount - 1) * (builtInSpacing + textOffset)
 

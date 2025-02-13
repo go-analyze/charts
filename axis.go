@@ -22,8 +22,8 @@ type axisOption struct {
 	Show *bool
 	// Theme specifies the colors used for the axis.
 	Theme ColorPalette
-	// Data provides labels for the axis.
-	Data []string
+	// Labels provides labels for each value on the axis.
+	Labels []string
 	// DataStartIndex specifies what index the Data values should start from.
 	DataStartIndex int
 	// Formatter for replacing axis text values.
@@ -84,8 +84,8 @@ func (a *axisPainter) Render() (Box, error) {
 
 	formatter := opt.Formatter
 	if formatter != "" {
-		for index, text := range opt.Data {
-			opt.Data[index] = strings.ReplaceAll(formatter, "{value}", text)
+		for index, text := range opt.Labels {
+			opt.Labels[index] = strings.ReplaceAll(formatter, "{value}", text)
 		}
 	}
 
@@ -95,7 +95,7 @@ func (a *axisPainter) Render() (Box, error) {
 	tickLength := getDefaultInt(opt.TickLength, 5)
 	labelMargin := getDefaultInt(opt.LabelMargin, 5)
 
-	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Data, opt.TextRotation, fontStyle)
+	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Labels, opt.TextRotation, fontStyle)
 
 	var width, height int
 	if isVertical {
@@ -127,7 +127,7 @@ func (a *axisPainter) Render() (Box, error) {
 	switch opt.Position {
 	case PositionTop:
 		if opt.TextRotation != 0 {
-			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Data, 0, fontStyle)
+			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Labels, 0, fontStyle)
 			labelPaddingTop = flatHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.TextRotation)
 		} else {
 			labelPaddingTop = 0
@@ -149,7 +149,7 @@ func (a *axisPainter) Render() (Box, error) {
 		labelPaddingLeft = width - textMaxWidth
 	default:
 		if opt.TextRotation != 0 {
-			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Data, 0, fontStyle)
+			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Labels, 0, fontStyle)
 			labelPaddingTop = tickLength<<1 + (textMaxHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.TextRotation))
 		} else {
 			labelPaddingTop = height
@@ -157,7 +157,7 @@ func (a *axisPainter) Render() (Box, error) {
 		x1 = p.Width()
 	}
 
-	dataCount := len(opt.Data)
+	dataCount := len(opt.Labels)
 	labelCount := opt.LabelCount
 	if labelCount <= 0 {
 		var maxLabelCount int
@@ -240,7 +240,7 @@ func (a *axisPainter) Render() (Box, error) {
 	})).multiText(multiTextOption{
 		firstIndex:     opt.DataStartIndex,
 		align:          textAlign,
-		textList:       opt.Data,
+		textList:       opt.Labels,
 		fontStyle:      fontStyle,
 		vertical:       isVertical,
 		labelCount:     labelCount,

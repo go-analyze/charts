@@ -29,7 +29,7 @@ func NewLineChartOptionWithData(data [][]float64) LineChartOption {
 		Theme:      GetDefaultTheme(),
 		Font:       GetDefaultFont(),
 		XAxis: XAxisOption{
-			Data: make([]string, sl.getMaxDataCount(ChartTypeLine)),
+			Labels: make([]string, sl.getMaxDataCount(ChartTypeLine)),
 		},
 		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
 		ValueFormatter: defaultValueFormatter,
@@ -90,6 +90,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 	seriesPainter := result.seriesPainter
 
+	if len(opt.XAxis.Labels) == 0 {
+		opt.XAxis.Labels = opt.XAxis.Data
+	}
 	stackedSeries := flagIs(true, opt.StackSeries)
 	fillAreaY0 := stackedSeries || opt.FillArea // fill area defaults to on if the series is stacked
 	fillAreaY1 := opt.FillArea
@@ -97,7 +100,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	if opt.XAxis.BoundaryGap != nil {
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
-	xDivideCount := len(opt.XAxis.Data)
+	xDivideCount := len(opt.XAxis.Labels)
 	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= boundaryGapDefaultThreshold {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment.
 		// Although label changes can be forced to center, this behavior is unconditional for the line
