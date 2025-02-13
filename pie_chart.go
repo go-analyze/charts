@@ -37,6 +37,8 @@ type PieChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
+	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
+	ValueFormatter ValueFormatter
 	// backgroundIsFilled is set to true if the background is filled.
 	backgroundIsFilled bool
 }
@@ -73,7 +75,7 @@ type sector struct {
 
 func newSector(cx int, cy int, radius float64, labelRadius float64,
 	value float64, currentValue float64, totalValue float64,
-	labelLineLength int, label string, seriesLabel SeriesLabel, color Color) sector {
+	labelLineLength int, label string, seriesLabel SeriesLabel, altFormatter ValueFormatter, color Color) sector {
 	s := sector{
 		value:       value,
 		percent:     value / totalValue,
@@ -108,8 +110,8 @@ func newSector(cx int, cy int, radius float64, labelRadius float64,
 	s.lineEndX = s.lineBranchX + s.offset
 	s.lineEndY = s.lineBranchY
 	if !flagIs(false, seriesLabel.Show) { // only set the label if it's being rendered
-		if seriesLabel.ValueFormatter != nil {
-			s.label = seriesLabel.ValueFormatter(s.value)
+		if seriesLabel.ValueFormatter != nil || altFormatter != nil {
+			s.label = getPreferredValueFormatter(seriesLabel.ValueFormatter, altFormatter)(s.value)
 		} else {
 			if seriesLabel.FormatTemplate == "" {
 				seriesLabel.FormatTemplate = seriesLabel.Formatter
@@ -198,7 +200,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			}
 		}
 		s := newSector(cx, cy, seriesRadius, labelRadius, v, currentValue, total, labelLineWidth,
-			seriesNames[index], series.Label, color)
+			seriesNames[index], series.Label, opt.ValueFormatter, color)
 		switch quadrant := s.quadrant; quadrant {
 		case 1:
 			quadrant1 = append([]sector{s}, quadrant1...)

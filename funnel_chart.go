@@ -42,6 +42,8 @@ type FunnelChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
+	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
+	ValueFormatter ValueFormatter
 }
 
 func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
@@ -80,8 +82,8 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 			percent = value / max
 		}
 		if !flagIs(false, item.Label.Show) {
-			if item.Label.ValueFormatter != nil {
-				textList[index] = item.Label.ValueFormatter(value)
+			if item.Label.ValueFormatter != nil || opt.ValueFormatter != nil {
+				textList[index] = getPreferredValueFormatter(item.Label.ValueFormatter, opt.ValueFormatter)(value)
 			} else {
 				if item.Label.FormatTemplate == "" {
 					item.Label.FormatTemplate = item.Label.Formatter
