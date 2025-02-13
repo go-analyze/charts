@@ -76,7 +76,7 @@ func TestNewHorizontalBarChartOptionWithData(t *testing.T) {
 	})
 
 	assert.Len(t, opt.SeriesList, 2)
-	assert.Equal(t, ChartTypeHorizontalBar, opt.SeriesList[0].Type)
+	assert.Equal(t, ChartTypeHorizontalBar, opt.SeriesList[0].getType())
 	assert.Equal(t, defaultPadding, opt.Padding)
 
 	p := NewPainter(PainterOptions{})

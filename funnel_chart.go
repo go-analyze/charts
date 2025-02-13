@@ -36,8 +36,8 @@ type FunnelChartOption struct {
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListFunnel.
+	SeriesList FunnelSeriesList
 	// Title are options for rendering the title.
 	Title TitleOption
 	// Legend are options for the data legend.
@@ -46,14 +46,14 @@ type FunnelChartOption struct {
 	ValueFormatter ValueFormatter
 }
 
-func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
+func (f *funnelChart) render(result *defaultRenderResult, seriesList FunnelSeriesList) (Box, error) {
 	opt := f.opt
 	count := len(seriesList)
 	if count == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
 	seriesPainter := result.seriesPainter
-	max := seriesList[0].Data[0]
+	max := seriesList[0].Value
 	var min float64
 	theme := opt.Theme
 	gap := 2
@@ -65,27 +65,26 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	var y int
 	widthList := make([]int, len(seriesList))
 	textList := make([]string, len(seriesList))
-	seriesNames := seriesList.Names()
+	seriesNames := seriesList.names()
 	offset := max - min
 	for index, item := range seriesList {
-		value := item.Data[0]
 		// if the maximum and minimum are consistent it's 100%
 		widthPercent := 100.0
 		if offset != 0 {
-			widthPercent = (value - min) / offset
+			widthPercent = (item.Value - min) / offset
 		}
 		w := int(widthPercent * float64(width))
 		widthList[index] = w
 		// if the maximum value is 0, the proportion is 100%
 		percent := 1.0
 		if max != 0 {
-			percent = value / max
+			percent = item.Value / max
 		}
 		if !flagIs(false, item.Label.Show) {
 			if item.Label.ValueFormatter != nil || opt.ValueFormatter != nil {
-				textList[index] = getPreferredValueFormatter(item.Label.ValueFormatter, opt.ValueFormatter)(value)
+				textList[index] = getPreferredValueFormatter(item.Label.ValueFormatter, opt.ValueFormatter)(item.Value)
 			} else {
-				textList[index] = labelFormatFunnel(seriesNames, item.Label.FormatTemplate, index, value, percent)
+				textList[index] = labelFormatFunnel(seriesNames, item.Label.FormatTemplate, index, item.Value, percent)
 			}
 		}
 	}
@@ -165,6 +164,5 @@ func (f *funnelChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	seriesList := opt.SeriesList.Filter(ChartTypeFunnel)
-	return f.render(renderResult, seriesList)
+	return f.render(renderResult, opt.SeriesList)
 }

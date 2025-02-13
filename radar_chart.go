@@ -45,8 +45,8 @@ type RadarChartOption struct {
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListRadar.
+	SeriesList RadarSeriesList
 	// Title are options for rendering the title.
 	Title TitleOption
 	// Legend are options for the data legend.
@@ -82,7 +82,7 @@ func newRadarChart(p *Painter, opt RadarChartOption) *radarChart {
 	}
 }
 
-func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
+func (r *radarChart) render(result *defaultRenderResult, seriesList RadarSeriesList) (Box, error) {
 	opt := r.opt
 	indicators := opt.RadarIndicators
 	sides := len(indicators)
@@ -93,7 +93,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 	}
 	maxValues := make([]float64, len(indicators))
 	for _, series := range seriesList {
-		for index, item := range series.Data {
+		for index, item := range series.Values {
 			if index < len(maxValues) && item > maxValues[index] {
 				maxValues[index] = item
 			}
@@ -105,23 +105,13 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		}
 	}
 
-	radiusValue := opt.Radius
-	if radiusValue == "" {
-		for _, series := range seriesList {
-			if series.Radius != "" {
-				radiusValue = series.Radius
-				break
-			}
-		}
-	}
-
 	seriesPainter := result.seriesPainter
 	theme := opt.Theme
 
 	cx := seriesPainter.Width() >> 1
 	cy := seriesPainter.Height() >> 1
 	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
-	radius := getRadius(float64(diameter), radiusValue)
+	radius := getRadius(float64(diameter), opt.Radius)
 
 	divideCount := 5
 	divideRadius := float64(int(radius / float64(divideCount)))
@@ -188,7 +178,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		valueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter,
 			radarDefaultValueFormatter)
 		linePoints := make([]Point, 0, maxCount)
-		for j, item := range series.Data {
+		for j, item := range series.Values {
 			if j >= maxCount {
 				continue
 			}
@@ -213,8 +203,8 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		dotWith := defaultDotWidth
 		for index, point := range linePoints {
 			seriesPainter.Circle(dotWith, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
-			if flagIs(true, series.Label.Show) && index < len(series.Data) {
-				valueStr := valueFormatter(series.Data[index])
+			if flagIs(true, series.Label.Show) && index < len(series.Values) {
+				valueStr := valueFormatter(series.Values[index])
 				b := seriesPainter.MeasureText(valueStr, 0, fontStyle)
 				seriesPainter.Text(valueStr, point.X-b.Width()/2, point.Y, 0, fontStyle)
 			}
@@ -249,6 +239,5 @@ func (r *radarChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	seriesList := opt.SeriesList.Filter(ChartTypeRadar)
-	return r.render(renderResult, seriesList)
+	return r.render(renderResult, opt.SeriesList)
 }

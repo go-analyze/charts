@@ -60,7 +60,7 @@ func main() {
 					SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
 						{70, 90, 110, 130},
 						{80, 100, 120, 140},
-					}),
+					}).ToGenericSeriesList(),
 					Legend: charts.LegendOption{
 						SeriesNames: []string{
 							"2011", "2012",
