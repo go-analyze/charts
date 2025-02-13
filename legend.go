@@ -258,20 +258,20 @@ func (l *legendPainter) Render() (Box, error) {
 	result := Box{
 		Top:    top - padding.Top,
 		Bottom: bottom,
-		Left:   left,
-		Right:  left + width,
+		Left:   left - padding.Left,
+		Right:  left + width + padding.Right,
 		IsSet:  true,
 	}
 
 	if opt.BorderWidth > 0 {
 		// TODO - if drawn over the chart this can look awkward, we should try to draw this first
-		padding := 10 // built in adjustment for possible measure vs render variations
+		boxPad := 10 // built in adjustment for possible measure vs render variations
 		boxPoints := []Point{
-			{X: left - padding, Y: result.Bottom + padding},
-			{X: left - padding, Y: result.Top - padding},
-			{X: left + result.Width() + padding, Y: result.Top - padding},
-			{X: left + result.Width() + padding, Y: result.Bottom + padding},
-			{X: left - padding, Y: result.Bottom + padding},
+			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
+			{X: result.Left - boxPad, Y: result.Top - boxPad},
+			{X: result.Left + result.Width() + boxPad, Y: result.Top - boxPad},
+			{X: result.Left + result.Width() + boxPad, Y: result.Bottom + boxPad},
+			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
 		}
 		// TODO - allow color to be configured via theme or configuration
 		p.LineStroke(boxPoints, ColorBlack, opt.BorderWidth)
