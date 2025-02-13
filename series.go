@@ -179,7 +179,13 @@ func (l LineSeriesList) names() []string {
 	return seriesNames(l)
 }
 
+// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
 func (l LineSeriesList) SumSeries() []float64 {
+	return sumSeries(l)
+}
+
+// SumSeriesValues returns a float64 slice with each series in the list totaled for the value index.
+func (l LineSeriesList) SumSeriesValues() []float64 {
 	return sumSeriesData(l, -1)
 }
 
@@ -275,7 +281,13 @@ func (b BarSeriesList) names() []string {
 	return seriesNames(b)
 }
 
+// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
 func (b BarSeriesList) SumSeries() []float64 {
+	return sumSeries(b)
+}
+
+// SumSeriesValues returns a float64 slice with each series in the list totaled for the value index.
+func (b BarSeriesList) SumSeriesValues() []float64 {
 	return sumSeriesData(b, -1)
 }
 
@@ -363,7 +375,13 @@ func (h HorizontalBarSeriesList) names() []string {
 	return seriesNames(h)
 }
 
+// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
 func (h HorizontalBarSeriesList) SumSeries() []float64 {
+	return sumSeries(h)
+}
+
+// SumSeriesValues returns a float64 slice with each series in the list totaled for the value index.
+func (h HorizontalBarSeriesList) SumSeriesValues() []float64 {
 	return sumSeriesData(h, -1)
 }
 
@@ -1186,6 +1204,21 @@ func seriesNames(sl seriesList) []string {
 		names[index] = sl.getSeriesName(index)
 	}
 	return names
+}
+
+func sumSeries(sl seriesList) []float64 {
+	seriesLen := sl.len()
+	sumValues := make([]float64, seriesLen)
+	for i := 0; i < seriesLen; i++ {
+		var total float64
+		for _, v := range sl.getSeriesValues(i) {
+			if v != GetNullValue() {
+				total += v
+			}
+		}
+		sumValues[i] = total
+	}
+	return sumValues
 }
 
 func sumSeriesData(sl seriesList, yaxisIndex int) []float64 {

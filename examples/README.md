@@ -22,6 +22,7 @@ Examples are our primary method for demonstrating the starting point our use and
 * [multiple_charts-1](./multiple_charts-1) - Example of manually building a painter so that you can render 4 charts on the same image.
 * [multiple_charts-2](./multiple_charts-2) - Combining two charts together by writting one chart over the other.
 * [multiple_charts-3](./multiple_charts-3) - An alternative API for overlaying two charts together in the same image.
+* [multiple_charts-4](./multiple_charts-4) - Shows how to use a single set of data and demonstrate it with multiple chart types.
 * [pie_chart-1](./pie_chart-1) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
 * [pie_chart-2](./pie_chart-2) - The above example pie chart re-demonstrated using the Painter API.
 * [radar_chart-1](./radar_chart-1) - Basic radar chart.
