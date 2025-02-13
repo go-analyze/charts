@@ -157,13 +157,13 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 				},
 			},
-			SeriesList: charts.NewSeriesListLine([][]float64{
+			SeriesList: charts.NewSeriesListGeneric([][]float64{
 				{120, 132, 101, 134, 90, 230, 210},
 				{220, 182, 191, 234, 290, 330, 310},
 				{150, 232, 201, 154, 190, 330, 410},
 				{320, 332, 301, 334, 390, 330, 320},
 				{820, 932, 901, 934, 1290, 1330, 1320},
-			}),
+			}, charts.ChartTypeLine),
 		},
 		// temperature line chart
 		{
@@ -187,9 +187,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 				BoundaryGap: charts.Ptr(false),
 			},
-			SeriesList: []charts.Series{
+			SeriesList: []charts.GenericSeries{
 				{
-					Data: []float64{
+					Values: []float64{
 						14, 11, 13, 11, 12, 12, 7,
 					},
 					Type:      charts.ChartTypeLine,
@@ -197,7 +197,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					MarkLine:  charts.NewMarkLine(charts.SeriesMarkDataTypeAverage),
 				},
 				{
-					Data: []float64{
+					Values: []float64{
 						1, -2, 2, 5, 3, 2, 0,
 					},
 					Type:     charts.ChartTypeLine,
@@ -221,9 +221,9 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			YAxis: []charts.YAxisOption{{
 				Min: charts.Ptr(0.0), // ensure y-axis starts at 0
 			}},
-			SeriesList: charts.NewSeriesListLine([][]float64{
+			SeriesList: charts.NewSeriesListGeneric([][]float64{
 				{120, 132, 101, 134, 90, 230, 210},
-			}),
+			}, charts.ChartTypeLine),
 			FillArea: charts.Ptr(true),
 		},
 		// histogram
@@ -243,15 +243,15 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 				Icon: charts.IconRect,
 			},
-			SeriesList: []charts.Series{
+			SeriesList: []charts.GenericSeries{
 				{
-					Data: []float64{
+					Values: []float64{
 						120, 200, 150, 80, 70, 110, 130,
 					},
 					Type: charts.ChartTypeBar,
 				},
 				{
-					Data: []float64{
+					Values: []float64{
 						100, 190, 230, 140, 100, 200, 180,
 					},
 					Type: charts.ChartTypeBar,
@@ -285,10 +285,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					},
 				},
 			},
-			SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
+			SeriesList: charts.NewSeriesListGeneric([][]float64{
 				{18203, 23489, 29034, 104970, 131744, 630230},
 				{19325, 23438, 31000, 121594, 134141, 681807},
-			}),
+			}, charts.ChartTypeHorizontalBar),
 		},
 		// histogram+marker
 		{
@@ -309,10 +309,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					"Rainfall", "Evaporation",
 				},
 			},
-			SeriesList: []charts.Series{
+			SeriesList: []charts.GenericSeries{
 				{
 					Type: charts.ChartTypeBar,
-					Data: []float64{
+					Values: []float64{
 						2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
 					},
 					MarkPoint: charts.NewMarkPoint(
@@ -325,7 +325,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 				{
 					Type: charts.ChartTypeBar,
-					Data: []float64{
+					Values: []float64{
 						2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3,
 					},
 					MarkPoint: charts.NewMarkPoint(
@@ -365,12 +365,12 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					AxisColor: charts.ColorRGB(250, 200, 88),
 				},
 			},
-			SeriesList: append(charts.NewSeriesListBar([][]float64{
+			SeriesList: append(charts.NewSeriesListGeneric([][]float64{
 				{2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3},
 				{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
-			}), charts.Series{
+			}, charts.ChartTypeBar), charts.GenericSeries{
 				Type: charts.ChartTypeLine,
-				Data: []float64{
+				Values: []float64{
 					2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2,
 				},
 				YAxisIndex: 1,
@@ -396,7 +396,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				1048, 735, 580, 484, 300,
 			}, charts.PieSeriesOption{
 				Radius: "35%",
-			}),
+			}).ToGenericSeriesList(),
 		},
 		// radar chart
 		{
@@ -436,10 +436,10 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					Max:  25000,
 				},
 			},
-			SeriesList: charts.NewSeriesListRadar([][]float64{
+			SeriesList: charts.NewSeriesListGeneric([][]float64{
 				{4200, 3000, 20000, 35000, 50000, 18000},
 				{5000, 14000, 28000, 26000, 42000, 21000},
-			}),
+			}, charts.ChartTypeRadar),
 		},
 		// funnel chart
 		{
@@ -451,31 +451,31 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 					"Show", "Click", "Visit", "Inquiry", "Order",
 				},
 			},
-			SeriesList: []charts.Series{
+			SeriesList: []charts.GenericSeries{
 				{
-					Type: charts.ChartTypeFunnel,
-					Name: "Show",
-					Data: []float64{100},
+					Type:   charts.ChartTypeFunnel,
+					Name:   "Show",
+					Values: []float64{100},
 				},
 				{
-					Type: charts.ChartTypeFunnel,
-					Name: "Click",
-					Data: []float64{80},
+					Type:   charts.ChartTypeFunnel,
+					Name:   "Click",
+					Values: []float64{80},
 				},
 				{
-					Type: charts.ChartTypeFunnel,
-					Name: "Visit",
-					Data: []float64{60},
+					Type:   charts.ChartTypeFunnel,
+					Name:   "Visit",
+					Values: []float64{60},
 				},
 				{
-					Type: charts.ChartTypeFunnel,
-					Name: "Inquiry",
-					Data: []float64{40},
+					Type:   charts.ChartTypeFunnel,
+					Name:   "Inquiry",
+					Values: []float64{40},
 				},
 				{
-					Type: charts.ChartTypeFunnel,
-					Name: "Order",
-					Data: []float64{20},
+					Type:   charts.ChartTypeFunnel,
+					Name:   "Order",
+					Values: []float64{20},
 				},
 			},
 		},
@@ -507,14 +507,14 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 				},
 			},
 			SeriesList: append(
-				charts.NewSeriesListLine([][]float64{
+				charts.NewSeriesListGeneric([][]float64{
 					{56.5, 82.1, 88.7, 70.1, 53.4, 85.1},
 					{51.1, 51.4, 55.1, 53.3, 73.8, 68.7},
-				}),
-				charts.NewSeriesListBar([][]float64{
+				}, charts.ChartTypeLine),
+				charts.NewSeriesListGeneric([][]float64{
 					{40.1, 62.2, 69.5, 36.4, 45.2, 32.5},
 					{25.2, 37.1, 41.2, 18, 33.9, 49.1},
-				})...),
+				}, charts.ChartTypeBar)...),
 			Children: []charts.ChartOption{
 				{
 					Legend: charts.LegendOption{
@@ -533,7 +533,7 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 						435.9, 354.3, 285.9, 204.5,
 					}, charts.PieSeriesOption{
 						Radius: "35%",
-					}),
+					}).ToGenericSeriesList(),
 				},
 			},
 		},

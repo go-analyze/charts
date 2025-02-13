@@ -18,9 +18,9 @@ func TestMarkPoint(t *testing.T) {
 			render: func(p *Painter) ([]byte, error) {
 				markPoint := newMarkPointPainter(p)
 				markPoint.add(markPointRenderOption{
-					fillColor:  ColorBlack,
-					seriesData: []float64{1, 2, 3},
-					markpoint:  NewMarkPoint(SeriesMarkDataTypeMax),
+					fillColor:    ColorBlack,
+					seriesValues: []float64{1, 2, 3},
+					markpoint:    NewMarkPoint(SeriesMarkDataTypeMax),
 					points: []Point{
 						{X: 10, Y: 10},
 						{X: 30, Y: 30},

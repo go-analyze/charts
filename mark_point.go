@@ -33,7 +33,7 @@ func (m *markPointPainter) add(opt markPointRenderOption) {
 type markPointRenderOption struct {
 	fillColor             Color
 	font                  *truetype.Font
-	seriesData            []float64
+	seriesValues          []float64
 	markpoint             SeriesMarkPoint
 	seriesLabelPainter    *seriesLabelPainter
 	points                []Point
@@ -54,7 +54,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			continue
 		}
 		points := opt.points
-		summary := summarizePopulationData(opt.seriesData)
+		summary := summarizePopulationData(opt.seriesValues)
 		symbolSize := opt.markpoint.SymbolSize
 		if symbolSize == 0 {
 			symbolSize = 28

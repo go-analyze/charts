@@ -6,28 +6,9 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-)
 
-// newSeriesListFromValues returns a series list for the given values and chart type.
-func newSeriesListFromValues(values [][]float64, chartType string, label SeriesLabel, names []string,
-	radius string, markPoint SeriesMarkPoint, markLine SeriesMarkLine) SeriesList {
-	seriesList := make(SeriesList, len(values))
-	for index, value := range values {
-		s := Series{
-			Data:      value,
-			Type:      chartType,
-			Label:     label,
-			Radius:    radius,
-			MarkPoint: markPoint,
-			MarkLine:  markLine,
-		}
-		if index < len(names) {
-			s.Name = names[index]
-		}
-		seriesList[index] = s
-	}
-	return seriesList
-}
+	"github.com/go-analyze/charts/chartdraw"
+)
 
 type SeriesLabel struct {
 	// FormatTemplate is a string template for formatting the data label.
@@ -80,12 +61,13 @@ type SeriesMarkLine struct {
 	Data []SeriesMarkData
 }
 
-// Series references a population of data.
-type Series struct {
+// GenericSeries references a population of data for any type of charts. The chart specific fields will only be active
+// for chart types which support them.
+type GenericSeries struct {
 	// Type is the type of series, it can be "line", "bar" or "pie". Default value is "line".
 	Type string
-	// Data provides the series data list.
-	Data []float64
+	// Values provides the series data values.
+	Values []float64
 	// YAxisIndex is the index for the axis, it must be 0 or 1.
 	YAxisIndex int
 	// Label provides the series labels.
@@ -102,53 +84,778 @@ type Series struct {
 	MarkLine SeriesMarkLine
 }
 
-// SeriesList is a list of series to be rendered on the chart, typically constructed using NewSeriesListLine,
-// NewSeriesListBar, NewSeriesListHorizontalBar, NewSeriesListPie, NewSeriesListRadar, or NewSeriesListFunnel.
-// These Series can be appended to each other if multiple chart types should be rendered to the same axis.
-type SeriesList []Series
+func (g *GenericSeries) getYAxisIndex() int {
+	return g.YAxisIndex
+}
 
-// Deprecated: Filter is deprecated, this function is not expected to be used outside the internal chart
-// implementation. If you make use of this function open a GitHub issue to mention its use.
-func (sl SeriesList) Filter(chartType string) SeriesList {
-	arr := make(SeriesList, 0, len(sl))
-	for index, item := range sl {
-		if chartTypeMatch(chartType, item.Type) {
-			arr = append(arr, sl[index])
+func (g *GenericSeries) getValues() []float64 {
+	return g.Values
+}
+
+func (g *GenericSeries) getType() string {
+	return g.Type
+}
+
+// GenericSeriesList provides the data populations for any chart type configured through ChartOption.
+type GenericSeriesList []GenericSeries
+
+func (g GenericSeriesList) names() []string {
+	return seriesNames(g)
+}
+
+func (g GenericSeriesList) len() int {
+	return len(g)
+}
+
+func (g GenericSeriesList) getSeries(index int) series {
+	return &g[index]
+}
+
+func (g GenericSeriesList) getSeriesName(index int) string {
+	return g[index].Name
+}
+
+func (g GenericSeriesList) getSeriesValues(index int) []float64 {
+	return g[index].Values
+}
+
+func (g GenericSeriesList) hasMarkPoint() bool {
+	for _, s := range g {
+		if len(s.MarkPoint.Data) > 0 {
+			return true
 		}
 	}
-	return arr
+	return false
+}
+
+func (g GenericSeriesList) setSeriesName(index int, name string) {
+	g[index].Name = name
+}
+
+func (g GenericSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(g, func(i, j int) bool {
+		return dict[g[i].Name] < dict[g[j].Name]
+	})
+}
+
+// LineSeries references a population of data for line charts.
+type LineSeries struct {
+	// Values provides the series data values.
+	Values []float64
+	// YAxisIndex is the index for the axis, it must be 0 or 1.
+	YAxisIndex int
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+	// MarkPoint provides a series for mark points. If Label is also enabled, the MarkPoint will replace the label
+	// where rendered.
+	MarkPoint SeriesMarkPoint
+	// MarkLine provides a series for mark lines. When using a MarkLine, you will want to configure padding to the
+	// chart on the right for the values.
+	MarkLine SeriesMarkLine
+}
+
+func (l *LineSeries) getYAxisIndex() int {
+	return l.YAxisIndex
+}
+
+func (l *LineSeries) getValues() []float64 {
+	return l.Values
+}
+
+func (l *LineSeries) getType() string {
+	return ChartTypeLine
+}
+
+func (l *LineSeries) Summary() populationSummary {
+	return summarizePopulationData(l.Values)
+}
+
+// LineSeriesList provides the data populations for line charts (LineChartOption).
+type LineSeriesList []LineSeries
+
+func (l LineSeriesList) names() []string {
+	return seriesNames(l)
+}
+
+func (l LineSeriesList) SumSeries() []float64 {
+	return sumSeriesData(l, -1)
+}
+
+func (l LineSeriesList) len() int {
+	return len(l)
+}
+
+func (l LineSeriesList) getSeries(index int) series {
+	return &l[index]
+}
+
+func (l LineSeriesList) getSeriesName(index int) string {
+	return l[index].Name
+}
+
+func (l LineSeriesList) getSeriesValues(index int) []float64 {
+	return l[index].Values
+}
+
+func (l LineSeriesList) hasMarkPoint() bool {
+	for _, s := range l {
+		if len(s.MarkPoint.Data) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (l LineSeriesList) setSeriesName(index int, name string) {
+	l[index].Name = name
+}
+
+func (l LineSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(l, func(i, j int) bool {
+		return dict[l[i].Name] < dict[l[j].Name]
+	})
+}
+
+func (l LineSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(l))
+	for i, s := range l {
+		result[i] = GenericSeries{
+			Values:     s.Values,
+			YAxisIndex: s.YAxisIndex,
+			Label:      s.Label,
+			Name:       s.Name,
+			Type:       ChartTypeLine,
+			MarkLine:   s.MarkLine,
+			MarkPoint:  s.MarkPoint,
+		}
+	}
+	return result
+}
+
+// BarSeries references a population of data for bar charts.
+type BarSeries struct {
+	// Values provides the series data values.
+	Values []float64
+	// YAxisIndex is the index for the axis, it must be 0 or 1.
+	YAxisIndex int
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+	// MarkPoint provides a series for mark points. If Label is also enabled, the MarkPoint will replace the label
+	// where rendered.
+	MarkPoint SeriesMarkPoint
+	// MarkLine provides a series for mark lines. When using a MarkLine, you will want to configure padding to the
+	// chart on the right for the values.
+	MarkLine SeriesMarkLine
+}
+
+func (b *BarSeries) getYAxisIndex() int {
+	return b.YAxisIndex
+}
+
+func (b *BarSeries) getValues() []float64 {
+	return b.Values
+}
+
+func (b *BarSeries) getType() string {
+	return ChartTypeBar
+}
+
+func (b *BarSeries) Summary() populationSummary {
+	return summarizePopulationData(b.Values)
+}
+
+// BarSeriesList provides the data populations for line charts (BarChartOption).
+type BarSeriesList []BarSeries
+
+func (b BarSeriesList) names() []string {
+	return seriesNames(b)
+}
+
+func (b BarSeriesList) SumSeries() []float64 {
+	return sumSeriesData(b, -1)
+}
+
+func (b BarSeriesList) len() int {
+	return len(b)
+}
+
+func (b BarSeriesList) getSeries(index int) series {
+	return &b[index]
+}
+
+func (b BarSeriesList) getSeriesName(index int) string {
+	return b[index].Name
+}
+
+func (b BarSeriesList) getSeriesValues(index int) []float64 {
+	return b[index].Values
+}
+
+func (b BarSeriesList) hasMarkPoint() bool {
+	for _, s := range b {
+		if len(s.MarkPoint.Data) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (b BarSeriesList) setSeriesName(index int, name string) {
+	b[index].Name = name
+}
+
+func (b BarSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(b, func(i, j int) bool {
+		return dict[b[i].Name] < dict[b[j].Name]
+	})
+}
+
+func (b BarSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(b))
+	for i, s := range b {
+		result[i] = GenericSeries{
+			Values:     s.Values,
+			YAxisIndex: s.YAxisIndex,
+			Label:      s.Label,
+			Name:       s.Name,
+			Type:       ChartTypeBar,
+			MarkLine:   s.MarkLine,
+			MarkPoint:  s.MarkPoint,
+		}
+	}
+	return result
+}
+
+// HorizontalBarSeries references a population of data for horizontal bar charts.
+type HorizontalBarSeries struct {
+	// Values provides the series data values.
+	Values []float64
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+}
+
+func (h *HorizontalBarSeries) getYAxisIndex() int {
+	return 0
+}
+
+func (h *HorizontalBarSeries) getValues() []float64 {
+	return h.Values
+}
+
+func (h *HorizontalBarSeries) getType() string {
+	return ChartTypeHorizontalBar
+}
+
+func (h *HorizontalBarSeries) Summary() populationSummary {
+	return summarizePopulationData(h.Values)
+}
+
+// HorizontalBarSeriesList provides the data populations for horizontal bar charts (HorizontalBarChartOption).
+type HorizontalBarSeriesList []HorizontalBarSeries
+
+func (h HorizontalBarSeriesList) names() []string {
+	return seriesNames(h)
+}
+
+func (h HorizontalBarSeriesList) SumSeries() []float64 {
+	return sumSeriesData(h, -1)
+}
+
+func (h HorizontalBarSeriesList) len() int {
+	return len(h)
+}
+
+func (h HorizontalBarSeriesList) getSeries(index int) series {
+	return &h[index]
+}
+
+func (h HorizontalBarSeriesList) getSeriesName(index int) string {
+	return h[index].Name
+}
+
+func (h HorizontalBarSeriesList) getSeriesValues(index int) []float64 {
+	return h[index].Values
+}
+
+func (h HorizontalBarSeriesList) hasMarkPoint() bool {
+	return false // not currently supported on this chart type
+}
+
+func (h HorizontalBarSeriesList) setSeriesName(index int, name string) {
+	h[index].Name = name
+}
+
+func (h HorizontalBarSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(h, func(i, j int) bool {
+		return dict[h[i].Name] < dict[h[j].Name]
+	})
+}
+
+func (h HorizontalBarSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(h))
+	for i, s := range h {
+		result[i] = GenericSeries{
+			Values: s.Values,
+			Label:  s.Label,
+			Name:   s.Name,
+			Type:   ChartTypeHorizontalBar,
+		}
+	}
+	return result
+}
+
+// FunnelSeries references a population of data for funnel charts.
+type FunnelSeries struct {
+	// Value provides the value for the funnel section.
+	Value float64
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+}
+
+func (f *FunnelSeries) getYAxisIndex() int {
+	return 0
+}
+
+func (f *FunnelSeries) getValues() []float64 {
+	return []float64{f.Value}
+}
+
+func (f *FunnelSeries) getType() string {
+	return ChartTypeFunnel
+}
+
+// FunnelSeriesList provides the data populations for funnel charts (FunnelChartOption).
+type FunnelSeriesList []FunnelSeries
+
+func (f FunnelSeriesList) names() []string {
+	return seriesNames(f)
+}
+
+func (f FunnelSeriesList) len() int {
+	return len(f)
+}
+
+func (f FunnelSeriesList) getSeries(index int) series {
+	return &f[index]
+}
+
+func (f FunnelSeriesList) getSeriesName(index int) string {
+	return f[index].Name
+}
+
+func (f FunnelSeriesList) getSeriesValues(index int) []float64 {
+	return []float64{f[index].Value}
+}
+
+func (f FunnelSeriesList) hasMarkPoint() bool {
+	return false // not supported on this chart type
+}
+
+func (f FunnelSeriesList) setSeriesName(index int, name string) {
+	f[index].Name = name
+}
+
+func (f FunnelSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(f, func(i, j int) bool {
+		return dict[f[i].Name] < dict[f[j].Name]
+	})
+}
+
+func (f FunnelSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(f))
+	for i, s := range f {
+		result[i] = GenericSeries{
+			Values: []float64{s.Value},
+			Label:  s.Label,
+			Name:   s.Name,
+			Type:   ChartTypeFunnel,
+		}
+	}
+	return result
+}
+
+// PieSeries references a population of data for pie charts.
+type PieSeries struct {
+	// Value provides the value for the pie section.
+	Value float64
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+	// Radius for Pie chart, e.g.: 40%, default is "40%"
+	Radius string
+}
+
+func (p *PieSeries) getYAxisIndex() int {
+	return 0
+}
+
+func (p *PieSeries) getValues() []float64 {
+	return []float64{p.Value}
+}
+
+func (p *PieSeries) getType() string {
+	return ChartTypePie
+}
+
+// PieSeriesList provides the data populations for pie charts (PieChartOption).
+type PieSeriesList []PieSeries
+
+func (p PieSeriesList) names() []string {
+	return seriesNames(p)
+}
+
+func (p PieSeriesList) len() int {
+	return len(p)
+}
+
+func (p PieSeriesList) getSeries(index int) series {
+	return &p[index]
+}
+
+func (p PieSeriesList) getSeriesName(index int) string {
+	return p[index].Name
+}
+
+func (p PieSeriesList) getSeriesValues(index int) []float64 {
+	return []float64{p[index].Value}
+}
+
+func (p PieSeriesList) hasMarkPoint() bool {
+	return false // not supported on this chart type
+}
+
+func (p PieSeriesList) setSeriesName(index int, name string) {
+	p[index].Name = name
+}
+
+func (p PieSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(p, func(i, j int) bool {
+		return dict[p[i].Name] < dict[p[j].Name]
+	})
+}
+
+func (p PieSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(p))
+	for i, s := range p {
+		result[i] = GenericSeries{
+			Values: []float64{s.Value},
+			Label:  s.Label,
+			Name:   s.Name,
+			Type:   ChartTypePie,
+			Radius: s.Radius,
+		}
+	}
+	return result
+}
+
+// RadarSeries references a population of data for radar charts.
+type RadarSeries struct {
+	// Values provides the series data list.
+	Values []float64
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+}
+
+func (r *RadarSeries) getYAxisIndex() int {
+	return 0
+}
+
+func (r *RadarSeries) getValues() []float64 {
+	return r.Values
+}
+
+func (r *RadarSeries) getType() string {
+	return ChartTypeRadar
+}
+
+// RadarSeriesList provides the data populations for line charts (RadarChartOption).
+type RadarSeriesList []RadarSeries
+
+func (r RadarSeriesList) names() []string {
+	return seriesNames(r)
+}
+
+func (r RadarSeriesList) len() int {
+	return len(r)
+}
+
+func (r RadarSeriesList) getSeries(index int) series {
+	return &r[index]
+}
+
+func (r RadarSeriesList) getSeriesName(index int) string {
+	return r[index].Name
+}
+
+func (r RadarSeriesList) getSeriesValues(index int) []float64 {
+	return r[index].Values
+}
+
+func (r RadarSeriesList) hasMarkPoint() bool {
+	return false // not supported on this chart type
+}
+
+func (r RadarSeriesList) setSeriesName(index int, name string) {
+	r[index].Name = name
+}
+
+func (r RadarSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(r, func(i, j int) bool {
+		return dict[r[i].Name] < dict[r[j].Name]
+	})
+}
+
+func (r RadarSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(r))
+	for i, s := range r {
+		result[i] = GenericSeries{
+			Values: s.Values,
+			Label:  s.Label,
+			Name:   s.Name,
+			Type:   ChartTypeRadar,
+		}
+	}
+	return result
+}
+
+// seriesList contains internal functions for operations that occur across chart types. Most of this interface usage
+// is within `series.go` and `charts.go`.
+type seriesList interface {
+	len() int
+	getSeries(index int) series
+	getSeriesName(index int) string
+	getSeriesValues(index int) []float64
+	names() []string
+	hasMarkPoint() bool
+	setSeriesName(index int, name string)
+	sortByNameIndex(dict map[string]int)
+}
+
+// series interface is used to provide the raw series struct to callers of seriesList, allowing direct type checks.
+type series interface {
+	getType() string
+	getYAxisIndex() int
+	getValues() []float64
+}
+
+func filterSeriesList[T any](sl seriesList, chartType string) T {
+	switch chartType {
+	case ChartTypeLine:
+		result := make(LineSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *LineSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, LineSeries{
+						Values:     v.Values,
+						YAxisIndex: v.YAxisIndex,
+						Label:      v.Label,
+						Name:       v.Name,
+						MarkLine:   v.MarkLine,
+						MarkPoint:  v.MarkPoint,
+					})
+				}
+			}
+		}
+		return any(result).(T)
+	case ChartTypeBar:
+		result := make(BarSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *BarSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, BarSeries{
+						Values:     v.Values,
+						YAxisIndex: v.YAxisIndex,
+						Label:      v.Label,
+						Name:       v.Name,
+						MarkLine:   v.MarkLine,
+						MarkPoint:  v.MarkPoint,
+					})
+				}
+			}
+		}
+		return any(result).(T)
+	case ChartTypeHorizontalBar:
+		result := make(HorizontalBarSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *HorizontalBarSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, HorizontalBarSeries{
+						Values: v.Values,
+						Label:  v.Label,
+						Name:   v.Name,
+					})
+				}
+			}
+		}
+		return any(result).(T)
+	case ChartTypePie:
+		result := make(PieSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *PieSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, PieSeries{
+						Value:  chartdraw.SumFloat64(v.Values...),
+						Label:  v.Label,
+						Name:   v.Name,
+						Radius: v.Radius,
+					})
+				}
+			}
+		}
+		return any(result).(T)
+	case ChartTypeRadar:
+		result := make(RadarSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *RadarSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, RadarSeries{
+						Values: v.Values,
+						Label:  v.Label,
+						Name:   v.Name,
+					})
+				}
+			}
+		}
+		return any(result).(T)
+	case ChartTypeFunnel:
+		result := make(FunnelSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *FunnelSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, FunnelSeries{
+						Value: chartdraw.SumFloat64(v.Values...),
+						Label: v.Label,
+						Name:  v.Name,
+					})
+				}
+			}
+		}
+		return any(result).(T)
+	default:
+		result := make(GenericSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *LineSeries:
+					result = append(result, GenericSeries{
+						Values:     v.Values,
+						YAxisIndex: v.YAxisIndex,
+						Label:      v.Label,
+						Name:       v.Name,
+						MarkLine:   v.MarkLine,
+						MarkPoint:  v.MarkPoint,
+					})
+				case *BarSeries:
+					result = append(result, GenericSeries{
+						Values:     v.Values,
+						YAxisIndex: v.YAxisIndex,
+						Label:      v.Label,
+						Name:       v.Name,
+						MarkLine:   v.MarkLine,
+						MarkPoint:  v.MarkPoint,
+					})
+				case *HorizontalBarSeries:
+					result = append(result, GenericSeries{
+						Values: v.Values,
+						Label:  v.Label,
+						Name:   v.Name,
+					})
+				case *PieSeries:
+					result = append(result, GenericSeries{
+						Values: []float64{v.Value},
+						Label:  v.Label,
+						Name:   v.Name,
+						Radius: v.Radius,
+					})
+				case *RadarSeries:
+					result = append(result, GenericSeries{
+						Values: v.Values,
+						Label:  v.Label,
+						Name:   v.Name,
+					})
+				case *FunnelSeries:
+					result = append(result, GenericSeries{
+						Values: []float64{v.Value},
+						Label:  v.Label,
+						Name:   v.Name,
+					})
+				case *GenericSeries:
+					result = append(result, *v)
+				}
+			}
+		}
+		return any(result).(T)
+	}
 }
 
 func chartTypeMatch(expected, actual string) bool {
 	return expected == "" || expected == actual || (expected == ChartTypeLine && actual == "")
 }
 
-func (sl SeriesList) getYAxisCount() int {
-	for _, series := range sl {
-		if series.YAxisIndex == 1 {
+func getSeriesYAxisCount(sl seriesList) int {
+	for i := 0; i < sl.len(); i++ {
+		axis := sl.getSeries(i).getYAxisIndex()
+		if axis == 1 {
 			return 2
-		} else if series.YAxisIndex != 0 {
+		} else if axis != 0 {
 			return -1
 		}
 	}
 	return 1
 }
 
-// getMinMaxSumMax returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1).
+// getSeriesMinMaxSumMax returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1).
 // This is a higher performance option for internal use. calcSum provides an optimization to
 // only calculate the sumMax if it will be used.
-func (sl SeriesList) getMinMaxSumMax(yaxisIndex int, calcSum bool) (float64, float64, float64) {
+func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64, float64, float64) {
 	min := math.MaxFloat64
 	max := -math.MaxFloat64
 	var sums []float64
 	if calcSum {
-		sums = make([]float64, sl.getMaxDataCount(""))
+		sums = make([]float64, getSeriesMaxDataCount(sl))
 	}
-	for _, series := range sl {
-		if series.YAxisIndex != yaxisIndex {
+	for i := 0; i < sl.len(); i++ {
+		series := sl.getSeries(i)
+		if series.getYAxisIndex() != yaxisIndex {
 			continue
 		}
-		for i, item := range series.Data {
+		for i, item := range series.getValues() {
 			if item == GetNullValue() {
 				continue
 			}
@@ -174,6 +881,18 @@ func (sl SeriesList) getMinMaxSumMax(yaxisIndex int, calcSum bool) (float64, flo
 	return min, max, maxSum
 }
 
+// NewSeriesListGeneric returns a Generic series list for the given values and chart type (used in ChartOption).
+func NewSeriesListGeneric(values [][]float64, chartType string) GenericSeriesList {
+	seriesList := make([]GenericSeries, len(values))
+	for index, v := range values {
+		seriesList[index] = GenericSeries{
+			Values: v,
+			Type:   chartType,
+		}
+	}
+	return seriesList
+}
+
 // LineSeriesOption provides series customization for NewSeriesListLine.
 type LineSeriesOption struct {
 	Label     SeriesLabel
@@ -184,13 +903,26 @@ type LineSeriesOption struct {
 
 // NewSeriesListLine builds a SeriesList for a line chart. The first dimension of the values indicates the population
 // of the data, while the second dimension provides the samples for the population.
-func NewSeriesListLine(values [][]float64, opts ...LineSeriesOption) SeriesList {
+func NewSeriesListLine(values [][]float64, opts ...LineSeriesOption) LineSeriesList {
 	var opt LineSeriesOption
 	if len(opts) != 0 {
 		opt = opts[0]
 	}
-	return newSeriesListFromValues(values, ChartTypeLine,
-		opt.Label, opt.Names, "", opt.MarkPoint, opt.MarkLine)
+
+	seriesList := make([]LineSeries, len(values))
+	for index, v := range values {
+		s := LineSeries{
+			Values:    v,
+			Label:     opt.Label,
+			MarkPoint: opt.MarkPoint,
+			MarkLine:  opt.MarkLine,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		seriesList[index] = s
+	}
+	return seriesList
 }
 
 // BarSeriesOption provides series customization for NewSeriesListBar or NewSeriesListHorizontalBar.
@@ -203,24 +935,48 @@ type BarSeriesOption struct {
 
 // NewSeriesListBar builds a SeriesList for a bar chart. The first dimension of the values indicates the population
 // of the data, while the second dimension provides the samples for the population (on the X-Axis).
-func NewSeriesListBar(values [][]float64, opts ...BarSeriesOption) SeriesList {
+func NewSeriesListBar(values [][]float64, opts ...BarSeriesOption) BarSeriesList {
 	var opt BarSeriesOption
 	if len(opts) != 0 {
 		opt = opts[0]
 	}
-	return newSeriesListFromValues(values, ChartTypeBar,
-		opt.Label, opt.Names, "", opt.MarkPoint, opt.MarkLine)
+
+	seriesList := make([]BarSeries, len(values))
+	for index, v := range values {
+		s := BarSeries{
+			Values:    v,
+			Label:     opt.Label,
+			MarkPoint: opt.MarkPoint,
+			MarkLine:  opt.MarkLine,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		seriesList[index] = s
+	}
+	return seriesList
 }
 
 // NewSeriesListHorizontalBar builds a SeriesList for a horizontal bar chart. Horizontal bar charts are unique in that
 // these Series can not be combined with any other chart type.
-func NewSeriesListHorizontalBar(values [][]float64, opts ...BarSeriesOption) SeriesList {
+func NewSeriesListHorizontalBar(values [][]float64, opts ...BarSeriesOption) HorizontalBarSeriesList {
 	var opt BarSeriesOption
 	if len(opts) != 0 {
 		opt = opts[0]
 	}
-	return newSeriesListFromValues(values, ChartTypeHorizontalBar,
-		opt.Label, opt.Names, "", opt.MarkPoint, opt.MarkLine)
+
+	seriesList := make([]HorizontalBarSeries, len(values))
+	for index, v := range values {
+		s := HorizontalBarSeries{
+			Values: v,
+			Label:  opt.Label,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		seriesList[index] = s
+	}
+	return seriesList
 }
 
 // PieSeriesOption provides series customization for NewSeriesListPie.
@@ -231,23 +987,21 @@ type PieSeriesOption struct {
 }
 
 // NewSeriesListPie builds a SeriesList for a pie chart.
-func NewSeriesListPie(values []float64, opts ...PieSeriesOption) SeriesList {
-	result := make([]Series, len(values))
+func NewSeriesListPie(values []float64, opts ...PieSeriesOption) PieSeriesList {
 	var opt PieSeriesOption
 	if len(opts) != 0 {
 		opt = opts[0]
 	}
+
+	result := make([]PieSeries, len(values))
 	for index, v := range values {
-		var name string
-		if index < len(opt.Names) {
-			name = opt.Names[index]
-		}
-		s := Series{
-			Type:   ChartTypePie,
-			Data:   []float64{v},
-			Radius: opt.Radius,
+		s := PieSeries{
+			Value:  v,
 			Label:  opt.Label,
-			Name:   name,
+			Radius: opt.Radius,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
 		}
 		result[index] = s
 	}
@@ -261,13 +1015,24 @@ type RadarSeriesOption struct {
 }
 
 // NewSeriesListRadar builds a SeriesList for a Radar chart.
-func NewSeriesListRadar(values [][]float64, opts ...RadarSeriesOption) SeriesList {
+func NewSeriesListRadar(values [][]float64, opts ...RadarSeriesOption) RadarSeriesList {
 	var opt RadarSeriesOption
 	if len(opts) != 0 {
 		opt = opts[0]
 	}
-	return newSeriesListFromValues(values, ChartTypeRadar,
-		opt.Label, opt.Names, "", SeriesMarkPoint{}, SeriesMarkLine{})
+
+	result := make([]RadarSeries, len(values))
+	for index, v := range values {
+		s := RadarSeries{
+			Values: v,
+			Label:  opt.Label,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		result[index] = s
+	}
+	return result
 }
 
 // FunnelSeriesOption provides series customization for NewSeriesListFunnel.
@@ -277,23 +1042,22 @@ type FunnelSeriesOption struct {
 }
 
 // NewSeriesListFunnel builds a series list for funnel charts.
-func NewSeriesListFunnel(values []float64, opts ...FunnelSeriesOption) SeriesList {
+func NewSeriesListFunnel(values []float64, opts ...FunnelSeriesOption) FunnelSeriesList {
 	var opt FunnelSeriesOption
 	if len(opts) != 0 {
 		opt = opts[0]
 	}
-	seriesList := make(SeriesList, len(values))
+
+	seriesList := make([]FunnelSeries, len(values))
 	for index, value := range values {
-		var name string
-		if index < len(opt.Names) {
-			name = opt.Names[index]
-		}
-		seriesList[index] = Series{
-			Data:  []float64{value},
-			Type:  ChartTypeFunnel,
+		s := FunnelSeries{
+			Value: value,
 			Label: opt.Label,
-			Name:  name,
 		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		seriesList[index] = s
 	}
 	return seriesList
 }
@@ -325,12 +1089,7 @@ type populationSummary struct {
 	Kurtosis float64
 }
 
-// Summary returns numeric summary of series values (population statistics).
-func (s *Series) Summary() populationSummary {
-	return summarizePopulationData(s.Data)
-}
-
-// summarizePopulationData returns numeric summary of series values (population statistics).
+// summarizePopulationData returns numeric summary of the values (population statistics).
 func summarizePopulationData(data []float64) populationSummary {
 	n := float64(len(data))
 	if n == 0 {
@@ -422,61 +1181,49 @@ func summarizePopulationData(data []float64) populationSummary {
 	}
 }
 
-// Deprecated: Names is deprecated, this is expected to be used internally only, if you use this function please open
-// a GitHub issue to let us know it's useful to you.
-func (sl SeriesList) Names() []string {
-	names := make([]string, len(sl))
-	for index, s := range sl {
-		names[index] = s.Name
+// seriesNames returns the names of series list.
+func seriesNames(sl seriesList) []string {
+	names := make([]string, sl.len())
+	for index := range names {
+		names[index] = sl.getSeriesName(index)
 	}
 	return names
 }
 
-// SumSeries will return a single Series which represents the sum of the entire SeriesList. This is useful for
-// providing global statistics through Series.Summary().
-func (sl SeriesList) SumSeries() Series {
-	return sl.makeSumSeries("", -1)
-}
-
-func (sl SeriesList) makeSumSeries(chartType string, yaxisIndex int) Series {
-	result := Series{
-		Type: chartType,
-	}
+func sumSeriesData(sl seriesList, yaxisIndex int) []float64 {
+	seriesLen := sl.len()
 	// check for fast path result
-	switch len(sl) {
+	switch seriesLen {
 	case 0:
-		return result
+		return make([]float64, 0)
 	case 1:
-		if chartTypeMatch(chartType, sl[0].Type) && (yaxisIndex < 0 || sl[0].YAxisIndex == yaxisIndex) {
-			return sl[0]
-		} else {
-			return result
+		s := sl.getSeries(0)
+		if yaxisIndex < 0 || s.getYAxisIndex() == yaxisIndex {
+			return s.getValues()
 		}
 	}
 
-	sumValues := make([]float64, sl.getMaxDataCount(chartType))
-	for _, s := range sl {
-		if chartTypeMatch(chartType, s.Type) && (yaxisIndex < 0 || s.YAxisIndex == yaxisIndex) {
-			result = s // ensure other series values are set into the result
-			for i, f := range s.Data {
-				if f != GetNullValue() {
-					sumValues[i] += f
-				}
+	sumValues := make([]float64, getSeriesMaxDataCount(sl))
+	for i1 := 0; i1 < seriesLen; i1++ {
+		s := sl.getSeries(i1)
+		if yaxisIndex > -1 && s.getYAxisIndex() != yaxisIndex {
+			continue
+		}
+		for i2, f := range s.getValues() {
+			if f != GetNullValue() {
+				sumValues[i2] += f
 			}
 		}
 	}
-	result.Data = sumValues
-	return result
+	return sumValues
 }
 
-func (sl SeriesList) getMaxDataCount(chartType string) int {
+func getSeriesMaxDataCount(sl seriesList) int {
 	result := 0
-	for _, s := range sl {
-		if chartTypeMatch(chartType, s.Type) {
-			count := len(s.Data)
-			if count > result {
-				result = count
-			}
+	for i := 0; i < sl.len(); i++ {
+		count := len(sl.getSeriesValues(i))
+		if count > result {
+			result = count
 		}
 	}
 	return result

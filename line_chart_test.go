@@ -120,7 +120,7 @@ func TestNewLineChartOptionWithData(t *testing.T) {
 	})
 
 	assert.Len(t, opt.SeriesList, 2)
-	assert.Equal(t, ChartTypeLine, opt.SeriesList[0].Type)
+	assert.Equal(t, ChartTypeLine, opt.SeriesList[0].getType())
 	assert.Len(t, opt.YAxis, 1)
 	assert.Equal(t, defaultPadding, opt.Padding)
 
@@ -502,7 +502,7 @@ func TestLineChart(t *testing.T) {
 			name: "line_gap",
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.SeriesList[0].Data[3] = GetNullValue()
+				opt.SeriesList[0].Values[3] = GetNullValue()
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.44k</text><text x=\"10\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.28k</text><text x=\"10\" y=\"94\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.12k</text><text x=\"22\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"22\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"22\" y=\"211\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"22\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"22\" y=\"289\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"22\" y=\"328\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 48\nL 590 48\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 87\nL 590 87\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 165\nL 590 165\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 204\nL 590 204\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 282\nL 590 282\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 321\nL 590 321\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 96 331\nL 172 328\nL 248 336\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 400 339\nL 476 305\nL 552 309\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 96 161\nL 172 134\nL 248 142\nL 324 133\nL 400 47\nL 476 37\nL 552 40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/></svg>",
@@ -511,8 +511,8 @@ func TestLineChart(t *testing.T) {
 			name: "line_gap_dot",
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.SeriesList[0].Data[3] = GetNullValue()
-				opt.SeriesList[0].Data[5] = GetNullValue()
+				opt.SeriesList[0].Values[3] = GetNullValue()
+				opt.SeriesList[0].Values[5] = GetNullValue()
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.44k</text><text x=\"10\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.28k</text><text x=\"10\" y=\"94\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.12k</text><text x=\"22\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"22\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"22\" y=\"211\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"22\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"22\" y=\"289\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"22\" y=\"328\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 48\nL 590 48\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 87\nL 590 87\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 165\nL 590 165\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 204\nL 590 204\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 282\nL 590 282\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 321\nL 590 321\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 96 331\nL 172 328\nL 248 336\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"400\" cy=\"339\" r=\"2\" style=\"stroke:none;fill:none\"/><circle cx=\"552\" cy=\"309\" r=\"2\" style=\"stroke:none;fill:none\"/><path  d=\"M 96 161\nL 172 134\nL 248 142\nL 324 133\nL 400 47\nL 476 37\nL 552 40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/></svg>",
@@ -521,7 +521,7 @@ func TestLineChart(t *testing.T) {
 			name: "line_gap_fill_area",
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.SeriesList[0].Data[3] = GetNullValue()
+				opt.SeriesList[0].Values[3] = GetNullValue()
 				opt.FillArea = Ptr(true)
 				return opt
 			},
@@ -531,9 +531,9 @@ func TestLineChart(t *testing.T) {
 			name: "line_gap_start_fill_area",
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.SeriesList[0].Data[0] = GetNullValue()
-				opt.SeriesList[0].Data[1] = GetNullValue()
-				opt.SeriesList[1].Data[0] = GetNullValue()
+				opt.SeriesList[0].Values[0] = GetNullValue()
+				opt.SeriesList[0].Values[1] = GetNullValue()
+				opt.SeriesList[1].Values[0] = GetNullValue()
 				opt.FillArea = Ptr(true)
 				return opt
 			},
@@ -544,7 +544,7 @@ func TestLineChart(t *testing.T) {
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
 				opt.StrokeSmoothingTension = 0.8
-				opt.SeriesList[0].Data[3] = GetNullValue()
+				opt.SeriesList[0].Values[3] = GetNullValue()
 				return opt
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.44k</text><text x=\"10\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.28k</text><text x=\"10\" y=\"94\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.12k</text><text x=\"22\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"22\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"22\" y=\"211\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"22\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"22\" y=\"289\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"22\" y=\"328\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 48\nL 590 48\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 87\nL 590 87\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 165\nL 590 165\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 204\nL 590 204\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 282\nL 590 282\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 321\nL 590 321\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 96 331\nQ172,328 202,331\nQ172,328 248,336\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 400 339\nQ476,305 506,306\nQ476,305 552,309\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 96 161\nQ172,134 202,137\nQ248,142 278,138\nQ324,133 354,98\nQ400,47 430,43\nQ476,37 506,38\nQ476,37 552,40\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/></svg>",
@@ -554,7 +554,7 @@ func TestLineChart(t *testing.T) {
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
 				opt.StrokeSmoothingTension = 0.8
-				opt.SeriesList[0].Data[3] = GetNullValue()
+				opt.SeriesList[0].Values[3] = GetNullValue()
 				opt.FillArea = Ptr(true)
 				return opt
 			},

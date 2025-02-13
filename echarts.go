@@ -253,20 +253,20 @@ type EChartsSeries struct {
 }
 type EChartsSeriesList []EChartsSeries
 
-func (esList EChartsSeriesList) ToSeriesList() SeriesList {
-	seriesList := make(SeriesList, 0, len(esList))
+func (esList EChartsSeriesList) ToSeriesList() GenericSeriesList {
+	seriesList := make([]GenericSeries, 0, len(esList))
 	for _, item := range esList {
 		// if pie, each sub-recommendation generates a series
 		if item.Type == ChartTypePie {
 			for _, dataItem := range item.Data {
-				seriesList = append(seriesList, Series{
+				seriesList = append(seriesList, GenericSeries{
 					Type: item.Type,
 					Name: dataItem.Name,
 					Label: SeriesLabel{
 						Show: Ptr(true),
 					},
 					Radius: item.Radius,
-					Data:   []float64{dataItem.Value.First()},
+					Values: []float64{dataItem.Value.First()},
 				})
 			}
 			continue
@@ -274,10 +274,10 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 		if item.Type == ChartTypeRadar ||
 			item.Type == ChartTypeFunnel {
 			for _, dataItem := range item.Data {
-				seriesList = append(seriesList, Series{
-					Name: dataItem.Name,
-					Type: item.Type,
-					Data: dataItem.Value.values,
+				seriesList = append(seriesList, GenericSeries{
+					Name:   dataItem.Name,
+					Type:   item.Type,
+					Values: dataItem.Value.values,
 					Label: SeriesLabel{
 						FontStyle: FontStyle{
 							FontColor: ParseColor(item.Label.Color),
@@ -289,9 +289,9 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 			}
 			continue
 		}
-		seriesList = append(seriesList, Series{
+		seriesList = append(seriesList, GenericSeries{
 			Type: item.Type,
-			Data: sliceConversion(item.Data, func(dataItem EChartsSeriesData) float64 {
+			Values: sliceConversion(item.Data, func(dataItem EChartsSeriesData) float64 {
 				return dataItem.Value.First()
 			}),
 			YAxisIndex: item.YAxisIndex,
