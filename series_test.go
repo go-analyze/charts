@@ -86,6 +86,88 @@ func TestSumSeries(t *testing.T) {
 		{
 			name:     "single",
 			values:   [][]float64{{1.5, 2.5}},
+			expected: []float64{4.0},
+		},
+		{
+			name: "multiple",
+			values: [][]float64{
+				{1, 2, 3},
+				{4, 5, 6},
+			},
+			expected: []float64{6, 15},
+		},
+		{
+			name: "unequal_data_length",
+			values: [][]float64{
+				{1, 2},
+				{3, 4, 5},
+			},
+			expected: []float64{3, 12},
+		},
+		{
+			name: "null_values",
+			values: [][]float64{
+				{GetNullValue(), 2, 3},
+				{4, GetNullValue(), 6},
+			},
+			expected: []float64{5, 10},
+		},
+	}
+
+	for _, typeCase := range testTypes {
+		for _, tc := range tests {
+			t.Run(typeCase.name+"-"+tc.name, func(t *testing.T) {
+				series := typeCase.seriesFact(tc.values)
+				result := series.SumSeries()
+
+				assert.Equal(t, tc.expected, result)
+			})
+		}
+	}
+}
+
+func TestSumSeriesValues(t *testing.T) {
+	t.Parallel()
+
+	type summableSeries interface {
+		SumSeriesValues() []float64
+	}
+	testTypes := []struct {
+		name       string
+		seriesFact func([][]float64) summableSeries
+	}{
+		{
+			name: "line",
+			seriesFact: func(values [][]float64) summableSeries {
+				return NewSeriesListLine(values)
+			},
+		},
+		{
+			name: "bar",
+			seriesFact: func(values [][]float64) summableSeries {
+				return NewSeriesListBar(values)
+			},
+		},
+		{
+			name: "horizontal_bar",
+			seriesFact: func(values [][]float64) summableSeries {
+				return NewSeriesListHorizontalBar(values)
+			},
+		},
+	}
+	tests := []struct {
+		name     string
+		values   [][]float64
+		expected []float64
+	}{
+		{
+			name:     "empty",
+			values:   [][]float64{},
+			expected: []float64{},
+		},
+		{
+			name:     "single",
+			values:   [][]float64{{1.5, 2.5}},
 			expected: []float64{1.5, 2.5},
 		},
 		{
@@ -118,7 +200,7 @@ func TestSumSeries(t *testing.T) {
 		for _, tc := range tests {
 			t.Run(typeCase.name+"-"+tc.name, func(t *testing.T) {
 				series := typeCase.seriesFact(tc.values)
-				result := series.SumSeries()
+				result := series.SumSeriesValues()
 
 				assert.Equal(t, tc.expected, result)
 			})
@@ -301,7 +383,7 @@ func BenchmarkSumSeries(b *testing.B) { // benchmark used to evaluate methods fo
 	}
 
 	for i := 0; i < b.N; i++ {
-		_ = seriesList.SumSeries()
+		_ = seriesList.SumSeriesValues()
 	}
 }
 
