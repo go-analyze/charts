@@ -270,7 +270,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		} else {
 			yAxisOption.isCategoryAxis = true
 			// we need to update the range labels or the bars won't be aligned to the Y axis
-			r.divideCount = len(opt.seriesList[0].Data)
+			r.divideCount = opt.seriesList.getMaxDataCount("")
 			result.axisRanges[index] = r
 			// since the x-axis is the value part, it's label is calculated and processed separately
 			opt.xAxis.Data = r.Values()

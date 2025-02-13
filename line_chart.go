@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"errors"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -28,7 +29,7 @@ func NewLineChartOptionWithData(data [][]float64) LineChartOption {
 		Theme:      GetDefaultTheme(),
 		Font:       GetDefaultFont(),
 		XAxis: XAxisOption{
-			Data: make([]string, len(data[0])),
+			Data: make([]string, sl.getMaxDataCount(ChartTypeLine)),
 		},
 		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
 		ValueFormatter: defaultValueFormatter,
@@ -83,6 +84,10 @@ const showSymbolDefaultThreshold = 100
 func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	p := l.p
 	opt := l.opt
+	seriesCount := len(seriesList)
+	if seriesCount == 0 {
+		return BoxZero, errors.New("empty series list")
+	}
 	seriesPainter := result.seriesPainter
 
 	stackedSeries := flagIs(true, opt.StackSeries)
@@ -133,7 +138,6 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []renderer{markPointPainter, markLinePainter}
 
-	seriesCount := len(seriesList)
 	seriesNames := seriesList.Names()
 	var priorSeriesPoints []Point
 	for index := range seriesList {

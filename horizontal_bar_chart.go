@@ -68,14 +68,14 @@ func newHorizontalBarChart(p *Painter, opt HorizontalBarChartOption) *horizontal
 func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	p := h.p
 	opt := h.opt
-	seriesPainter := result.seriesPainter
-	yRange := result.axisRanges[0]
-	y0, y1 := yRange.GetRange(0)
-	height := int(y1 - y0)
 	seriesCount := len(seriesList)
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
+	seriesPainter := result.seriesPainter
+	yRange := result.axisRanges[0]
+	y0, y1 := yRange.GetRange(0)
+	height := int(y1 - y0)
 	stackedSeries := flagIs(true, opt.StackSeries)
 	min, max, sumMax := seriesList.getMinMaxSumMax(0, stackedSeries)
 	// If stacking, keep track of accumulated widths for each data index (after the “reverse” logic).

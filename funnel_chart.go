@@ -48,6 +48,10 @@ type FunnelChartOption struct {
 
 func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	opt := f.opt
+	count := len(seriesList)
+	if count == 0 {
+		return BoxZero, errors.New("empty series list")
+	}
 	seriesPainter := result.seriesPainter
 	max := seriesList[0].Data[0]
 	var min float64
@@ -55,10 +59,6 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 	gap := 2
 	height := seriesPainter.Height()
 	width := seriesPainter.Width()
-	count := len(seriesList)
-	if count == 0 {
-		return BoxZero, errors.New("empty series list")
-	}
 
 	h := (height - gap*(count-1)) / count
 

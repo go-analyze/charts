@@ -123,3 +123,42 @@ func validateRadarChartRender(t *testing.T, p *Painter, opt RadarChartOption, ex
 	require.NoError(t, err)
 	assertEqualSVG(t, expectedResult, data)
 }
+
+func TestRadarChartError(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name             string
+		makeOptions      func() RadarChartOption
+		errorMsgContains string
+	}{
+		{
+			name: "empty_series",
+			makeOptions: func() RadarChartOption {
+				return NewRadarChartOptionWithData([][]float64{}, []string{"foo", "bar", "foobar"}, []float64{1, 2, 3})
+			},
+			errorMsgContains: "empty series list",
+		},
+		{
+			name: "too_few_indicators",
+			makeOptions: func() RadarChartOption {
+				return NewRadarChartOptionWithData([][]float64{{0.0}}, []string{"foo", "bar"}, []float64{1, 2})
+			},
+			errorMsgContains: "indicator count",
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+			p := NewPainter(PainterOptions{
+				OutputFormat: ChartOutputSVG,
+				Width:        600,
+				Height:       400,
+			})
+
+			err := p.RadarChart(tt.makeOptions())
+			require.Error(t, err)
+			require.ErrorContains(t, err, tt.errorMsgContains)
+		})
+	}
+}

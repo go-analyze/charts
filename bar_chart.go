@@ -104,16 +104,16 @@ func calculateBarMarginsAndSize(seriesCount, space int, configuredBarSize int, c
 func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	p := b.p
 	opt := b.opt
+	seriesCount := len(seriesList)
+	if seriesCount == 0 {
+		return BoxZero, errors.New("empty series list")
+	}
 	seriesPainter := result.seriesPainter
 
 	xRange := newRange(b.p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
 		seriesPainter.Width(), len(opt.XAxis.Data), 0.0, 0.0, 0.0, 0.0)
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
-	seriesCount := len(seriesList)
-	if seriesCount == 0 {
-		return BoxZero, errors.New("empty series list")
-	}
 	barMaxHeight := seriesPainter.Height() // total vertical space for bars
 	seriesNames := seriesList.Names()
 	divideValues := xRange.AutoDivide()

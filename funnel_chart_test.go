@@ -98,3 +98,35 @@ func validateFunnelChartRender(t *testing.T, p *Painter, opt FunnelChartOption, 
 	require.NoError(t, err)
 	assertEqualSVG(t, expectedResult, data)
 }
+
+func TestFunnelChartError(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name             string
+		makeOptions      func() FunnelChartOption
+		errorMsgContains string
+	}{
+		{
+			name: "empty_series",
+			makeOptions: func() FunnelChartOption {
+				return NewFunnelChartOptionWithData([]float64{})
+			},
+			errorMsgContains: "empty series list",
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+			p := NewPainter(PainterOptions{
+				OutputFormat: ChartOutputSVG,
+				Width:        600,
+				Height:       400,
+			})
+
+			err := p.FunnelChart(tt.makeOptions())
+			require.Error(t, err)
+			require.ErrorContains(t, err, tt.errorMsgContains)
+		})
+	}
+}

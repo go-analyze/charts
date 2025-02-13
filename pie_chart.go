@@ -2,6 +2,7 @@ package charts
 
 import (
 	"errors"
+	"fmt"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -153,7 +154,12 @@ func (s *sector) calculateTextXY(textBox Box) (x int, y int) {
 
 func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
 	opt := p.opt
-	values := make([]float64, len(seriesList))
+	seriesCount := len(seriesList)
+	if seriesCount == 0 {
+		return BoxZero, errors.New("empty series list")
+	}
+
+	values := make([]float64, seriesCount)
 	var total float64
 	var radiusValue string
 	for index, series := range seriesList {
@@ -163,6 +169,9 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		value := chartdraw.SumFloat64(series.Data...)
 		values[index] = value
 		total += value
+		if value < 0 {
+			return BoxZero, fmt.Errorf("unsupported negative value for series index %d", index)
+		}
 	}
 	if total <= 0 {
 		return BoxZero, errors.New("the sum value of pie chart should greater than 0")
