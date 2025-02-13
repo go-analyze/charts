@@ -188,7 +188,10 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		labelLineWidth = 10
 	}
 	labelRadius := radius + float64(labelLineWidth)
-	seriesNames := opt.Legend.Data
+	seriesNames := opt.Legend.SeriesNames
+	if len(seriesNames) == 0 {
+		seriesNames = opt.Legend.Data
+	}
 	if len(seriesNames) == 0 {
 		seriesNames = seriesList.Names()
 	}
