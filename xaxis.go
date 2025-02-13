@@ -19,8 +19,10 @@ type XAxisOption struct {
 	BoundaryGap *bool
 	// FontStyle specifies the font configuration for each label.
 	FontStyle FontStyle
-	// TextRotation are the radians for rotating the label.
+	// Deprecated: TextRotation is deprecated, use LabelRotation instead.
 	TextRotation float64
+	// LabelRotation are the radians for rotating the label. Convert from degrees using DegreesToRadians(float64).
+	LabelRotation float64
 	// LabelOffset is the offset of each label.
 	LabelOffset OffsetInt
 	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
@@ -46,6 +48,9 @@ func (opt *XAxisOption) toAxisOption() axisOption {
 	if len(opt.Labels) == 0 {
 		opt.Labels = opt.Data
 	}
+	if opt.LabelRotation == 0 {
+		opt.LabelRotation = opt.TextRotation
+	}
 	axisOpt := axisOption{
 		Theme:                opt.Theme,
 		Labels:               opt.Labels,
@@ -57,7 +62,7 @@ func (opt *XAxisOption) toAxisOption() axisOption {
 		Unit:                 opt.Unit,
 		LabelCount:           opt.LabelCount,
 		LabelCountAdjustment: opt.LabelCountAdjustment,
-		TextRotation:         opt.TextRotation,
+		LabelRotation:        opt.LabelRotation,
 		LabelOffset:          opt.LabelOffset,
 	}
 	if opt.isValueAxis {

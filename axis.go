@@ -44,8 +44,8 @@ type axisOption struct {
 	FontStyle FontStyle
 	// SplitLineShow, set this to true will show axis split line.
 	SplitLineShow bool
-	// TextRotation are the radians for rotating the label.
-	TextRotation float64
+	// LabelRotation are the radians for rotating the label.
+	LabelRotation float64
 	// LabelOffset is the offset of each label.
 	LabelOffset OffsetInt
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
@@ -95,7 +95,7 @@ func (a *axisPainter) Render() (Box, error) {
 	tickLength := getDefaultInt(opt.TickLength, 5)
 	labelMargin := getDefaultInt(opt.LabelMargin, 5)
 
-	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Labels, opt.TextRotation, fontStyle)
+	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Labels, opt.LabelRotation, fontStyle)
 
 	var width, height int
 	if isVertical {
@@ -126,9 +126,9 @@ func (a *axisPainter) Render() (Box, error) {
 
 	switch opt.Position {
 	case PositionTop:
-		if opt.TextRotation != 0 {
+		if opt.LabelRotation != 0 {
 			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Labels, 0, fontStyle)
-			labelPaddingTop = flatHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.TextRotation)
+			labelPaddingTop = flatHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.LabelRotation)
 		} else {
 			labelPaddingTop = 0
 		}
@@ -148,9 +148,9 @@ func (a *axisPainter) Render() (Box, error) {
 		y1 = p.Height()
 		labelPaddingLeft = width - textMaxWidth
 	default:
-		if opt.TextRotation != 0 {
+		if opt.LabelRotation != 0 {
 			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Labels, 0, fontStyle)
-			labelPaddingTop = tickLength<<1 + (textMaxHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.TextRotation))
+			labelPaddingTop = tickLength<<1 + (textMaxHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.LabelRotation))
 		} else {
 			labelPaddingTop = height
 		}
@@ -247,7 +247,7 @@ func (a *axisPainter) Render() (Box, error) {
 		tickCount:      tickCount,
 		labelSkipCount: opt.LabelSkipCount,
 		centerLabels:   centerLabels,
-		textRotation:   opt.TextRotation,
+		textRotation:   opt.LabelRotation,
 		offset:         opt.LabelOffset,
 	})
 
