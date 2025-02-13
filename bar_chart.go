@@ -28,7 +28,7 @@ func NewBarChartOptionWithData(data [][]float64) BarChartOption {
 		Padding:        defaultPadding,
 		Theme:          GetDefaultTheme(),
 		Font:           GetDefaultFont(),
-		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
+		YAxis:          make([]YAxisOption, getSeriesYAxisCount(sl)),
 		ValueFormatter: defaultValueFormatter,
 	}
 }
@@ -40,8 +40,8 @@ type BarChartOption struct {
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListBar.
+	SeriesList BarSeriesList
 	// StackSeries if set to *true a single bar with the colored series stacked together will be rendered.
 	// This feature will result in some options being ignored, including BarMargin and SeriesLabelPosition.
 	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
@@ -101,7 +101,7 @@ func calculateBarMarginsAndSize(seriesCount, space int, configuredBarSize int, c
 	return margin, barMargin, barSize
 }
 
-func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
+func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList) (Box, error) {
 	p := b.p
 	opt := b.opt
 	seriesCount := len(seriesList)
@@ -115,13 +115,13 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	x0, x1 := xRange.GetRange(0)
 	width := int(x1 - x0)
 	barMaxHeight := seriesPainter.Height() // total vertical space for bars
-	seriesNames := seriesList.Names()
+	seriesNames := seriesList.names()
 	divideValues := xRange.AutoDivide()
 	stackedSeries := flagIs(true, opt.StackSeries)
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
 	if stackedSeries {
-		barCount := seriesList.getYAxisCount() // only two bars if two y-axis
+		barCount := getSeriesYAxisCount(seriesList) // only two bars if two y-axis
 		configuredMargin := opt.BarMargin
 		if barCount == 1 {
 			configuredMargin = nil // no margin needed with a single bar
@@ -148,8 +148,8 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			rendererList = append(rendererList, labelPainter)
 		}
 
-		points := make([]Point, len(series.Data)) // used for mark points
-		for j, item := range series.Data {
+		points := make([]Point, len(series.Values)) // used for mark points
+		for j, item := range series.Values {
 			if j >= xRange.divideCount {
 				continue
 			}
@@ -230,7 +230,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		var globalSeriesData []float64 // lazily initialized
 		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
 			if globalSeriesData == nil {
-				globalSeriesData = seriesList.makeSumSeries(ChartTypeBar, series.YAxisIndex).Data
+				globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
 			}
 			markLinePainter.add(markLineRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
@@ -238,7 +238,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				strokeColor:           defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				markline:              series.MarkLine,
-				seriesData:            globalSeriesData,
+				seriesValues:          globalSeriesData,
 				axisRange:             yRange,
 				valueFormatterDefault: markLineValueFormatter,
 			})
@@ -250,20 +250,20 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				strokeColor:           seriesColor,
 				font:                  opt.Font,
 				markline:              series.MarkLine,
-				seriesData:            series.Data,
+				seriesValues:          series.Values,
 				axisRange:             yRange,
 				valueFormatterDefault: markLineValueFormatter,
 			})
 		}
 		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
 			if globalSeriesData == nil {
-				globalSeriesData = seriesList.makeSumSeries(ChartTypeBar, series.YAxisIndex).Data
+				globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
 			}
 			markPointPainter.add(markPointRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				markpoint:             series.MarkPoint,
-				seriesData:            globalSeriesData,
+				seriesValues:          globalSeriesData,
 				points:                points,
 				valueFormatterDefault: markPointValueFormatter,
 				seriesLabelPainter:    labelPainter,
@@ -273,7 +273,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				fillColor:             seriesColor,
 				font:                  opt.Font,
 				markpoint:             series.MarkPoint,
-				seriesData:            series.Data,
+				seriesValues:          series.Values,
 				points:                points,
 				valueFormatterDefault: markPointValueFormatter,
 				seriesLabelPainter:    labelPainter,
@@ -307,6 +307,5 @@ func (b *barChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	seriesList := opt.SeriesList.Filter(ChartTypeBar)
-	return b.render(renderResult, seriesList)
+	return b.render(renderResult, opt.SeriesList)
 }

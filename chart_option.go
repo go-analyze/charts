@@ -30,8 +30,8 @@ type ChartOption struct {
 	Font *truetype.Font
 	// Box specifies the canvas box for the chart.
 	Box Box
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the population data for the charts, constructed through NewSeriesListGeneric.
+	SeriesList GenericSeriesList
 	// StackSeries if set to *true the lines will be layered or stacked. This option significantly changes the chart
 	// visualization, please see the specific chart docs for full details.
 	StackSeries *bool
@@ -231,7 +231,7 @@ func (o *ChartOption) fillDefault() error {
 	o.Width = getDefaultInt(o.Width, defaultChartWidth)
 	o.Height = getDefaultInt(o.Height, defaultChartHeight)
 
-	yaxisCount := o.SeriesList.getYAxisCount()
+	yaxisCount := getSeriesYAxisCount(o.SeriesList)
 	if yaxisCount < 0 {
 		return errors.New("series specified invalid y-axis index")
 	}
@@ -270,41 +270,41 @@ func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *Le
 // LineRender line chart render.
 func LineRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListLine(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeLine),
 	}, opts...)
 }
 
 // BarRender bar chart render.
 func BarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListBar(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeBar),
 	}, opts...)
 }
 
 // HorizontalBarRender horizontal bar chart render.
 func HorizontalBarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListHorizontalBar(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeHorizontalBar),
 	}, opts...)
 }
 
 // PieRender pie chart render.
 func PieRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListPie(values),
+		SeriesList: NewSeriesListPie(values).ToGenericSeriesList(),
 	}, opts...)
 }
 
 // RadarRender radar chart render.
 func RadarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListRadar(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeRadar),
 	}, opts...)
 }
 
 // FunnelRender funnel chart render.
 func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListFunnel(values),
+		SeriesList: NewSeriesListFunnel(values).ToGenericSeriesList(),
 	}, opts...)
 }

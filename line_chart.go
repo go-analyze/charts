@@ -29,9 +29,9 @@ func NewLineChartOptionWithData(data [][]float64) LineChartOption {
 		Theme:      GetDefaultTheme(),
 		Font:       GetDefaultFont(),
 		XAxis: XAxisOption{
-			Labels: make([]string, sl.getMaxDataCount(ChartTypeLine)),
+			Labels: make([]string, getSeriesMaxDataCount(sl)),
 		},
-		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
+		YAxis:          make([]YAxisOption, getSeriesYAxisCount(sl)),
 		ValueFormatter: defaultValueFormatter,
 	}
 }
@@ -43,8 +43,8 @@ type LineChartOption struct {
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListLine.
+	SeriesList LineSeriesList
 	// StackSeries if set to *true the lines will be layered over each other, with the last series value representing
 	// the sum of all the values. Enabling this will also enable FillArea (which until v0.5 can't be disabled).
 	// Some options will be ignored when StackedSeries is enabled, this includes StrokeSmoothingTension.
@@ -79,7 +79,7 @@ type LineChartOption struct {
 
 const showSymbolDefaultThreshold = 100
 
-func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
+func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesList) (Box, error) {
 	p := l.p
 	opt := l.opt
 	seriesCount := len(seriesList)
@@ -110,7 +110,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	}
 	xDivideValues := autoDivide(seriesPainter.Width(), xDivideCount)
 	xValues := make([]int, len(xDivideValues)-1)
-	dataCount := seriesList.getMaxDataCount(ChartTypeLine)
+	dataCount := getSeriesMaxDataCount(seriesList)
 	// accumulatedValues is used for stacking: it holds the summed data values at each X index
 	var accumulatedValues []float64
 	if stackedSeries {
@@ -145,21 +145,21 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []renderer{markPointPainter, markLinePainter}
 
-	seriesNames := seriesList.Names()
+	seriesNames := seriesList.names()
 	var priorSeriesPoints []Point
 	for index := range seriesList {
 		series := seriesList[index]
 		stackSeries := stackedSeries && series.YAxisIndex == 0
 		seriesColor := opt.Theme.GetSeriesColor(index)
 		yRange := result.axisRanges[series.YAxisIndex]
-		points := make([]Point, len(series.Data))
+		points := make([]Point, len(series.Values))
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
 			rendererList = append(rendererList, labelPainter)
 		}
 
-		for i, item := range series.Data {
+		for i, item := range series.Values {
 			if item == GetNullValue() {
 				points[i] = Point{X: xValues[i], Y: math.MaxInt32}
 			} else if stackSeries {
@@ -270,7 +270,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 		var globalSeriesData []float64 // lazily initialized
 		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
 			if globalSeriesData == nil {
-				globalSeriesData = seriesList.makeSumSeries(ChartTypeLine, series.YAxisIndex).Data
+				globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
 			}
 			markLinePainter.add(markLineRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
@@ -278,7 +278,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				strokeColor:           defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				markline:              series.MarkLine,
-				seriesData:            globalSeriesData,
+				seriesValues:          globalSeriesData,
 				axisRange:             yRange,
 				valueFormatterDefault: markLineValueFormatter,
 			})
@@ -290,21 +290,21 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				strokeColor:           seriesColor,
 				font:                  opt.Font,
 				markline:              series.MarkLine,
-				seriesData:            series.Data,
+				seriesValues:          series.Values,
 				axisRange:             yRange,
 				valueFormatterDefault: markLineValueFormatter,
 			})
 		}
 		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
 			if globalSeriesData == nil {
-				globalSeriesData = seriesList.makeSumSeries(ChartTypeLine, series.YAxisIndex).Data
+				globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
 			}
 			markPointPainter.add(markPointRenderOption{
 				fillColor:             defaultGlobalMarkFillColor,
 				font:                  opt.Font,
 				points:                points,
 				markpoint:             series.MarkPoint,
-				seriesData:            globalSeriesData,
+				seriesValues:          globalSeriesData,
 				valueFormatterDefault: markPointValueFormatter,
 				seriesLabelPainter:    labelPainter,
 			})
@@ -314,7 +314,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 				font:                  opt.Font,
 				points:                points,
 				markpoint:             series.MarkPoint,
-				seriesData:            series.Data,
+				seriesValues:          series.Values,
 				valueFormatterDefault: markPointValueFormatter,
 				seriesLabelPainter:    labelPainter,
 			})
@@ -360,6 +360,5 @@ func (l *lineChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	seriesList := opt.SeriesList.Filter(ChartTypeLine)
-	return l.render(renderResult, seriesList)
+	return l.render(renderResult, opt.SeriesList)
 }

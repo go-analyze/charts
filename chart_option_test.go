@@ -54,7 +54,7 @@ func TestChartOptionSeriesShowLabel(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewSeriesListPie([]float64{1, 2}),
+		SeriesList: NewSeriesListPie([]float64{1, 2}).ToGenericSeriesList(),
 	}
 	SeriesShowLabel(true)(&opt)
 	assert.True(t, flagIs(true, opt.SeriesList[0].Label.Show))
@@ -63,9 +63,8 @@ func TestChartOptionSeriesShowLabel(t *testing.T) {
 	assert.True(t, flagIs(false, opt.SeriesList[0].Label.Show))
 }
 
-func newNoTypeSeriesListFromValues(values [][]float64) SeriesList {
-	return newSeriesListFromValues(values, "",
-		SeriesLabel{}, nil, "", SeriesMarkPoint{}, SeriesMarkLine{})
+func newNoTypeSeriesListFromValues(values [][]float64) GenericSeriesList {
+	return NewSeriesListGeneric(values, "")
 }
 
 func TestChartOptionMarkLine(t *testing.T) {
@@ -268,7 +267,7 @@ func TestChildRender(t *testing.T) {
 			SeriesList: NewSeriesListHorizontalBar([][]float64{
 				{70, 90, 110, 130},
 				{80, 100, 120, 140},
-			}),
+			}).ToGenericSeriesList(),
 			Legend: LegendOption{
 				SeriesNames: []string{"2011", "2012"},
 			},
