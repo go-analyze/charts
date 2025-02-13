@@ -40,7 +40,7 @@ type markLineRenderOption struct {
 	fontColor             Color
 	strokeColor           Color
 	font                  *truetype.Font
-	seriesData            []float64
+	seriesValues          []float64
 	markline              SeriesMarkLine
 	axisRange             axisRange
 	valueFormatterDefault ValueFormatter
@@ -52,7 +52,7 @@ func (m *markLinePainter) Render() (Box, error) {
 		if len(opt.markline.Data) == 0 {
 			continue
 		}
-		summary := summarizePopulationData(opt.seriesData)
+		summary := summarizePopulationData(opt.seriesValues)
 		fontStyle := FontStyle{
 			Font:      getPreferredFont(opt.font),
 			FontColor: opt.fontColor,

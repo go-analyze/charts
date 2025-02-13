@@ -34,7 +34,7 @@ func TestNewPieChartOptionWithData(t *testing.T) {
 	opt := NewPieChartOptionWithData([]float64{12, 24, 48})
 
 	assert.Len(t, opt.SeriesList, 3)
-	assert.Equal(t, ChartTypePie, opt.SeriesList[0].Type)
+	assert.Equal(t, ChartTypePie, opt.SeriesList[0].getType())
 	assert.Equal(t, defaultPadding, opt.Padding)
 
 	p := NewPainter(PainterOptions{})

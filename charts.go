@@ -3,7 +3,6 @@ package charts
 import (
 	"errors"
 	"math"
-	"sort"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -70,7 +69,7 @@ type defaultRenderOption struct {
 	// padding specifies the padding of chart.
 	padding Box
 	// seriesList provides the data series.
-	seriesList SeriesList
+	seriesList seriesList
 	// stackSeries can be set to true if the series data will be stacked (summed).
 	stackSeries bool
 	// xAxis are options for the x-axis.
@@ -99,15 +98,12 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis)
 
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
-	for _, sl := range opt.seriesList {
-		if len(sl.MarkPoint.Data) > 0 { // if graph has markpoint
-			// adjust padding scale to give space for mark point (if not specified by user)
-			for i := range opt.yAxis {
-				if opt.yAxis[i].RangeValuePaddingScale == nil {
-					opt.yAxis[i].RangeValuePaddingScale = Ptr(2.5)
-				}
+	if opt.seriesList.hasMarkPoint() {
+		// adjust padding scale to give space for mark point (if not specified by user)
+		for i := range opt.yAxis {
+			if opt.yAxis[i].RangeValuePaddingScale == nil {
+				opt.yAxis[i].RangeValuePaddingScale = Ptr(2.5)
 			}
-			break
 		}
 	}
 
@@ -120,12 +116,14 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	// association between legend and series name
 	if len(opt.legend.SeriesNames) == 0 {
-		opt.legend.SeriesNames = opt.seriesList.Names()
+		opt.legend.SeriesNames = opt.seriesList.names()
 	} else {
-		seriesCount := len(opt.seriesList)
+		seriesCount := opt.seriesList.len()
 		for index, name := range opt.legend.SeriesNames {
-			if index < seriesCount && len(opt.seriesList[index].Name) == 0 {
-				opt.seriesList[index].Name = name
+			if index >= seriesCount {
+				break
+			} else if opt.seriesList.getSeriesName(index) == "" {
+				opt.seriesList.setSeriesName(index, name)
 			}
 		}
 		nameIndexDict := map[string]int{}
@@ -133,9 +131,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			nameIndexDict[name] = index
 		}
 		// ensure order of series is consistent with legend
-		sort.Slice(opt.seriesList, func(i, j int) bool {
-			return nameIndexDict[opt.seriesList[i].Name] < nameIndexDict[opt.seriesList[j].Name]
-		})
+		opt.seriesList.sortByNameIndex(nameIndexDict)
 	}
 
 	const legendTitlePadding = 15
@@ -188,7 +184,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		axisRanges: make(map[int]axisRange),
 	}
 
-	axisIndexList := make([]int, opt.seriesList.getYAxisCount())
+	axisIndexList := make([]int, getSeriesYAxisCount(opt.seriesList))
 	for i := range axisIndexList {
 		axisIndexList[i] = i
 	}
@@ -208,7 +204,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			minPadRange = *yAxisOption.RangeValuePaddingScale
 			maxPadRange = *yAxisOption.RangeValuePaddingScale
 		}
-		min, max, sumMax := opt.seriesList.getMinMaxSumMax(index, opt.stackSeries)
+		min, max, sumMax := getSeriesMinMaxSumMax(opt.seriesList, index, opt.stackSeries)
 		decimalData := min != math.Floor(min) || (max-min) != math.Floor(max-min)
 		if yAxisOption.Min != nil && *yAxisOption.Min < min {
 			min = *yAxisOption.Min
@@ -270,7 +266,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		} else {
 			yAxisOption.isCategoryAxis = true
 			// we need to update the range labels or the bars won't be aligned to the Y axis
-			r.divideCount = opt.seriesList.getMaxDataCount("")
+			r.divideCount = getSeriesMaxDataCount(opt.seriesList)
 			result.axisRanges[index] = r
 			// since the x-axis is the value part, it's label is calculated and processed separately
 			opt.xAxis.Labels = r.Values()
@@ -350,12 +346,12 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	}
 
 	seriesList := opt.SeriesList
-	lineSeriesList := seriesList.Filter(ChartTypeLine)
-	barSeriesList := seriesList.Filter(ChartTypeBar)
-	horizontalBarSeriesList := seriesList.Filter(ChartTypeHorizontalBar)
-	pieSeriesList := seriesList.Filter(ChartTypePie)
-	radarSeriesList := seriesList.Filter(ChartTypeRadar)
-	funnelSeriesList := seriesList.Filter(ChartTypeFunnel)
+	lineSeriesList := filterSeriesList[LineSeriesList](opt.SeriesList, ChartTypeLine)
+	barSeriesList := filterSeriesList[BarSeriesList](opt.SeriesList, ChartTypeBar)
+	horizontalBarSeriesList := filterSeriesList[HorizontalBarSeriesList](opt.SeriesList, ChartTypeHorizontalBar)
+	pieSeriesList := filterSeriesList[PieSeriesList](opt.SeriesList, ChartTypePie)
+	radarSeriesList := filterSeriesList[RadarSeriesList](opt.SeriesList, ChartTypeRadar)
+	funnelSeriesList := filterSeriesList[FunnelSeriesList](opt.SeriesList, ChartTypeFunnel)
 
 	seriesCount := len(seriesList)
 	if len(horizontalBarSeriesList) != 0 && len(horizontalBarSeriesList) != seriesCount {

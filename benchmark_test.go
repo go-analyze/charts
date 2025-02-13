@@ -20,7 +20,6 @@ func makeDefaultMultiChartOptions() ChartOption {
 		},
 		YAxis: []YAxisOption{
 			{
-
 				Min: Ptr(0.0),
 				Max: Ptr(90.0),
 			},
@@ -29,11 +28,11 @@ func makeDefaultMultiChartOptions() ChartOption {
 			NewSeriesListLine([][]float64{
 				{56.5, 82.1, 88.7, 70.1, 53.4, 85.1},
 				{51.1, 51.4, 55.1, 53.3, 73.8, 68.7},
-			}),
+			}).ToGenericSeriesList(),
 			NewSeriesListBar([][]float64{
 				{40.1, 62.2, 69.5, 36.4, 45.2, 32.5},
 				{25.2, 37.1, 41.2, 18, 33.9, 49.1},
-			})...),
+			}).ToGenericSeriesList()...),
 		Children: []ChartOption{
 			{
 				Legend: LegendOption{
@@ -50,7 +49,7 @@ func makeDefaultMultiChartOptions() ChartOption {
 					435.9, 354.3, 285.9, 204.5,
 				}, PieSeriesOption{
 					Radius: "35%",
-				}),
+				}).ToGenericSeriesList(),
 			},
 		},
 	}
