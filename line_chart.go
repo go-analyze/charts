@@ -255,7 +255,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			if strokeWidth > 0 {
 				radius = strokeWidth * 1.5
 			}
-			seriesPainter.Dots(points, seriesColor, seriesColor, 0, radius)
+			seriesPainter.Dots(points, seriesColor, seriesColor, 1, radius)
 		case SymbolSquare:
 			size := 2
 			if strokeWidth > 1 {
@@ -267,7 +267,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			if strokeWidth > 1 {
 				size = ceilFloatToInt(strokeWidth * 4.0)
 			}
-			seriesPainter.diamonds(points, seriesColor, seriesColor, 0.5, size)
+			seriesPainter.diamonds(points, seriesColor, seriesColor, 1, size)
 		}
 
 		// Formatter set on the MarkLine or MarkPoint is checked in the respective painter
