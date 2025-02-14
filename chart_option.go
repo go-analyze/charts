@@ -40,8 +40,8 @@ type ChartOption struct {
 	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
 	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
 	Symbol Symbol
-	// LineStrokeWidth is the stroke width for line charts.
-	LineStrokeWidth float64
+	// LineStrokeWidth is the stroke width for line charts, set using Ptr(float64).
+	LineStrokeWidth *float64
 	// FillArea set to *true to fill the area under the line in line charts
 	FillArea *bool
 	// FillOpacity is the opacity (alpha) of the area fill in line charts.

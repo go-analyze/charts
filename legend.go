@@ -10,7 +10,7 @@ type legendPainter struct {
 }
 
 type LegendOption struct {
-	// Show specifies if the legend should be rendered, set this to *false (through False()) to hide the legend.
+	// Show specifies if the legend should be rendered, set this to *false (through Ptr(false)) to hide the legend.
 	Show *bool
 	// Theme specifies the colors used for the legend.
 	Theme ColorPalette

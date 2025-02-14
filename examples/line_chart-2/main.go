@@ -43,7 +43,7 @@ func main() {
 		Left: 100,
 	}
 	opt.Symbol = charts.SymbolCircle
-	opt.LineStrokeWidth = 1.2
+	opt.LineStrokeWidth = charts.Ptr(1.2)
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
@@ -52,9 +52,7 @@ func main() {
 	})
 	if err := p.LineChart(opt); err != nil {
 		panic(err)
-	}
-
-	if buf, err := p.Bytes(); err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf); err != nil {
 		panic(err)

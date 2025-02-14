@@ -1,7 +1,7 @@
 package charts
 
 type YAxisOption struct {
-	// Show specifies if the y-axis should be rendered, set this to *false (through False()) to hide the axis.
+	// Show specifies if the y-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette

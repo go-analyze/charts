@@ -18,7 +18,7 @@ func newAxisPainter(p *Painter, opt axisOption) *axisPainter {
 }
 
 type axisOption struct {
-	// Show specifies if the axis should be rendered, set this to *false (through False()) to hide the axis.
+	// Show specifies if the axis should be rendered, set this to *false to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the axis.
 	Theme ColorPalette
@@ -32,7 +32,7 @@ type axisOption struct {
 	Position string
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
-	// graph. Specify a *bool (through charts.False() or charts.True()) to enforce a spacing.
+	// graph. Specify a *bool to enforce a spacing.
 	BoundaryGap *bool
 	// StrokeWidth is the axis line width.
 	StrokeWidth float64

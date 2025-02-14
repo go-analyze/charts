@@ -6,13 +6,13 @@ import (
 )
 
 type TitleOption struct {
-	// Show specifies if the title should be rendered, set this to *false (through False()) to hide the title.
+	// Show specifies if the title should be rendered, set this to *false (through Ptr(false)) to hide the title.
 	Show *bool
 	// Theme specifies the colors used for the title.
 	Theme ColorPalette
-	// Text specifies the title text, supporting \n for new lines.
+	// Text specifies the title text, supporting '\n' for new lines.
 	Text string
-	// Subtext to the title, supporting \n for new lines.
+	// Subtext to the title, supporting '\n' for new lines.
 	Subtext string
 	// Offset allows you to specify the position of the title component relative to the left and top side.
 	Offset OffsetStr

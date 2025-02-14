@@ -67,7 +67,7 @@ func main() {
 		func(opt *charts.ChartOption) {
 			// disable the symbols and reduce the stroke width to give more fidelity on the line
 			opt.Symbol = charts.SymbolNone
-			opt.LineStrokeWidth = 1.6
+			opt.LineStrokeWidth = charts.Ptr(1.6)
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)
 			}

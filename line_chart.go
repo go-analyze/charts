@@ -63,8 +63,8 @@ type LineChartOption struct {
 	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
 	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
 	Symbol Symbol
-	// LineStrokeWidth is the width of the rendered line.
-	LineStrokeWidth float64
+	// LineStrokeWidth is the width of the rendered line, set using Ptr(float64).
+	LineStrokeWidth *float64
 	// StrokeSmoothingTension should be between 0 and 1. At 0 perfectly straight lines will be used with 1 providing
 	// smoother lines. Because the tension smooths out the line, the line will no longer hit the data points exactly.
 	// The more variable the points, and the higher the tension, the more the line will be moved from the points.
@@ -125,20 +125,20 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 	} else {
 		xValues = xDivideValues
 	}
-	strokeWidth := opt.LineStrokeWidth
-	if strokeWidth == 0 {
-		strokeWidth = defaultStrokeWidth
+	strokeWidth := defaultStrokeWidth
+	if opt.LineStrokeWidth != nil {
+		strokeWidth = *opt.LineStrokeWidth
 	}
 	symbol := opt.Symbol
 	if symbol == "" {
-		showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
-		if opt.StrokeSmoothingTension > 0 {
-			showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
-		}
-		if showSymbol {
-			symbol = SymbolCircle
+		if strokeWidth == 0 {
+			symbol = SymbolDot
+		} else if opt.StrokeSmoothingTension > 0 {
+			symbol = SymbolNone // default disable symbols on curved lines since the dots won't hit the line exactly
+		} else if dataCount > showSymbolDefaultThreshold {
+			symbol = SymbolNone // default disable when data count is very high
 		} else {
-			symbol = SymbolNone
+			symbol = SymbolCircle
 		}
 	}
 
