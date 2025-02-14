@@ -10,24 +10,9 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// True returns a pointer to a true bool, useful for configuration.
-func True() *bool {
-	return BoolPointer(true)
-}
-
-// False returns a pointer to a false bool, useful for configuration.
-func False() *bool {
-	return BoolPointer(false)
-}
-
-// BoolPointer returns a pointer to the given bool value, useful for configuration.
-func BoolPointer(b bool) *bool {
-	return &b
-}
-
-// FloatPointer returns a pointer to the given float64 value, useful for configuration.
-func FloatPointer(f float64) *float64 {
-	return &f
+// Ptr is a helper function to help build config options which reference pointers.
+func Ptr[T any](val T) *T {
+	return &val
 }
 
 // flagIs returns true if the flag is not-nil and matches the comparison argument.
@@ -89,18 +74,28 @@ func autoDivideSpans(max, size int, spans []int) []int {
 	return values
 }
 
-// TODO - replace when we support a newer version of go
-func reverseStringSlice(stringList []string) {
-	for i, j := 0, len(stringList)-1; i < j; i, j = i+1, j-1 {
-		stringList[i], stringList[j] = stringList[j], stringList[i]
+func reverseSlice[T any](s []T) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
 	}
 }
 
-// TODO - replace when we support a newer version of go
-func reverseIntSlice(intList []int) {
-	for i, j := 0, len(intList)-1; i < j; i, j = i+1, j-1 {
-		intList[i], intList[j] = intList[j], intList[i]
+// SliceToFloat64 converts a slice of arbitrary types to float64 to be used as chart values.
+func SliceToFloat64[T any](slice []T, conversion func(T) float64) []float64 {
+	return sliceConversion(slice, conversion)
+}
+
+// IntSliceToFloat64 converts an int slice to a float64 slice so that it can be used for chart values.
+func IntSliceToFloat64(slice []int) []float64 {
+	return sliceConversion(slice, func(i int) float64 { return float64(i) })
+}
+
+func sliceConversion[I any, R any](input []I, conversion func(I) R) []R {
+	result := make([]R, len(input))
+	for i, v := range input {
+		result[i] = conversion(v)
 	}
+	return result
 }
 
 func parseFlexibleValue(value string, percentTotal float64) (float64, error) {

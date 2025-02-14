@@ -57,25 +57,25 @@ func main() {
 	opt.Title.Offset = charts.OffsetCenter
 	opt.Title.FontStyle.FontSize = 16
 
-	opt.XAxis.Data = xAxisLabels
+	opt.XAxis.Labels = xAxisLabels
 	opt.XAxis.Unit = 40
 	opt.XAxis.LabelCount = 10
-	opt.XAxis.TextRotation = charts.DegreesToRadians(45)
-	opt.XAxis.BoundaryGap = charts.True()
+	opt.XAxis.LabelRotation = charts.DegreesToRadians(45)
+	opt.XAxis.BoundaryGap = charts.Ptr(true)
 	opt.XAxis.FontStyle = charts.NewFontStyleWithSize(6.0)
 	opt.YAxis = []charts.YAxisOption{
 		{
-			Show:          charts.False(), // disabling in favor of manually printed y-values
-			Min:           charts.FloatPointer(1.4),
-			Max:           charts.FloatPointer(8.0),
+			Show:          charts.Ptr(false), // disabling in favor of manually printed y-values
+			Min:           charts.Ptr(1.4),
+			Max:           charts.Ptr(8.0),
 			LabelCount:    4,
-			SpineLineShow: charts.True(),
+			SpineLineShow: charts.Ptr(true),
 			FontStyle:     charts.NewFontStyleWithSize(8.0),
 		},
 	}
-	opt.Legend.Show = charts.False()
-	opt.SymbolShow = charts.False()
-	opt.LineStrokeWidth = 1.5
+	opt.Legend.Show = charts.Ptr(false)
+	opt.Symbol = charts.SymbolNone
+	opt.LineStrokeWidth = charts.Ptr(1.5)
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,

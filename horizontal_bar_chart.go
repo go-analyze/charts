@@ -19,7 +19,6 @@ func NewHorizontalBarChartOptionWithData(data [][]float64) HorizontalBarChartOpt
 		Padding:        defaultPadding,
 		Theme:          GetDefaultTheme(),
 		Font:           GetDefaultFont(),
-		YAxis:          make([]YAxisOption, sl.getYAxisCount()),
 		ValueFormatter: defaultValueFormatter,
 	}
 }
@@ -31,8 +30,8 @@ type HorizontalBarChartOption struct {
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListHorizontalBar.
+	SeriesList HorizontalBarSeriesList
 	// StackSeries if set to *true a single bar with the colored series stacked together will be rendered.
 	// This feature will result in some options being ignored, including BarMargin and SeriesLabelPosition.
 	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
@@ -43,8 +42,8 @@ type HorizontalBarChartOption struct {
 	SeriesLabelPosition string
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
-	// YAxis are options for the y-axis (at most two).
-	YAxis []YAxisOption
+	// YAxis are options for the y-axis.
+	YAxis YAxisOption
 	// Title are options for rendering the title.
 	Title TitleOption
 	// Legend are options for the data legend.
@@ -65,7 +64,7 @@ func newHorizontalBarChart(p *Painter, opt HorizontalBarChartOption) *horizontal
 	}
 }
 
-func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
+func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList HorizontalBarSeriesList) (Box, error) {
 	p := h.p
 	opt := h.opt
 	seriesCount := len(seriesList)
@@ -77,7 +76,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 	y0, y1 := yRange.GetRange(0)
 	height := int(y1 - y0)
 	stackedSeries := flagIs(true, opt.StackSeries)
-	min, max, sumMax := seriesList.getMinMaxSumMax(0, stackedSeries)
+	min, max, sumMax := getSeriesMinMaxSumMax(seriesList, 0, stackedSeries)
 	// If stacking, keep track of accumulated widths for each data index (after the “reverse” logic).
 	var accumulatedWidths []int
 	var margin, barMargin, barHeight int
@@ -90,10 +89,10 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 		margin, barMargin, barHeight = calculateBarMarginsAndSize(seriesCount, height, opt.BarHeight, opt.BarMargin)
 	}
 
-	seriesNames := seriesList.Names()
+	seriesNames := seriesList.names()
 	// xRange is used to convert data values into horizontal bar widths
 	xRange := newRange(p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
-		seriesPainter.Width(), len(seriesList[0].Data), min, max, 1.0, 1.0)
+		seriesPainter.Width(), len(seriesList[0].Values), min, max, 1.0, 1.0)
 	divideValues := yRange.AutoDivide()
 
 	var rendererList []renderer
@@ -107,7 +106,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			rendererList = append(rendererList, labelPainter)
 		}
 
-		for j, item := range series.Data {
+		for j, item := range series.Values {
 			if j >= yRange.divideCount {
 				continue
 			}
@@ -141,7 +140,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 				fontStyle := series.Label.FontStyle
 				labelX := right
 				labelY := y + (barHeight >> 1)
-				labelLeft := (opt.SeriesLabelPosition == PositionLeft || series.Label.Position == PositionLeft) && !stackedSeries
+				labelLeft := opt.SeriesLabelPosition == PositionLeft && !stackedSeries
 				if labelLeft {
 					labelX = 0
 				}
@@ -193,7 +192,7 @@ func (h *horizontalBarChart) Render() (Box, error) {
 		seriesList:     opt.SeriesList,
 		stackSeries:    flagIs(true, opt.StackSeries),
 		xAxis:          &h.opt.XAxis,
-		yAxis:          opt.YAxis,
+		yAxis:          []YAxisOption{opt.YAxis},
 		title:          opt.Title,
 		legend:         &h.opt.Legend,
 		valueFormatter: opt.ValueFormatter,
@@ -202,6 +201,5 @@ func (h *horizontalBarChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	seriesList := opt.SeriesList.Filter(ChartTypeHorizontalBar)
-	return h.render(renderResult, seriesList)
+	return h.render(renderResult, opt.SeriesList)
 }

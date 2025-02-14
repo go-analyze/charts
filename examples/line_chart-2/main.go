@@ -33,17 +33,17 @@ func main() {
 	opt := charts.NewLineChartOptionWithData(values)
 	opt.Title.Text = "Line"
 	opt.Title.FontStyle.FontSize = 16
-	opt.XAxis.Data = []string{
+	opt.XAxis.Labels = []string{
 		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 	}
-	opt.Legend.Data = []string{
+	opt.Legend.SeriesNames = []string{
 		"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 	}
 	opt.Legend.Padding = charts.Box{
 		Left: 100,
 	}
-	opt.SymbolShow = charts.True()
-	opt.LineStrokeWidth = 1.2
+	opt.Symbol = charts.SymbolCircle
+	opt.LineStrokeWidth = charts.Ptr(1.2)
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
@@ -52,9 +52,7 @@ func main() {
 	})
 	if err := p.LineChart(opt); err != nil {
 		panic(err)
-	}
-
-	if buf, err := p.Bytes(); err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf); err != nil {
 		panic(err)

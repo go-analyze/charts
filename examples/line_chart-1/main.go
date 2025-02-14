@@ -33,7 +33,7 @@ func main() {
 	p, err := charts.LineRender(
 		values,
 		charts.TitleTextOptionFunc("Line"),
-		charts.XAxisDataOptionFunc([]string{
+		charts.XAxisLabelsOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendLabelsOptionFunc([]string{
@@ -44,8 +44,8 @@ func main() {
 			opt.Legend.Padding = charts.Box{
 				Left: 100,
 			}
-			opt.SymbolShow = charts.True()
-			opt.LineStrokeWidth = 1.2
+			opt.Symbol = charts.SymbolCircle
+			opt.LineStrokeWidth = charts.Ptr(1.2)
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)
 			}
@@ -53,9 +53,7 @@ func main() {
 	)
 	if err != nil {
 		panic(err)
-	}
-
-	if buf, err := p.Bytes(); err != nil {
+	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)
 	} else if err = writeFile(buf); err != nil {
 		panic(err)

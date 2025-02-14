@@ -40,34 +40,34 @@ func main() {
 			Offset: charts.OffsetCenter,
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Critical", "High", "Medium", "Low",
 			},
 			// Legend Vertical, on the right, and with smaller font to give more space for data
-			Vertical:  charts.True(),
+			Vertical:  charts.Ptr(true),
 			Offset:    charts.OffsetRight,
 			Align:     charts.AlignRight,
 			FontStyle: charts.NewFontStyleWithSize(6.0),
 		}),
 		charts.PaddingOptionFunc(charts.NewBoxEqual(12)),
 		charts.YAxisOptionFunc(charts.YAxisOption{
-			Min:       charts.FloatPointer(0.0), // force min to be zero
+			Min:       charts.Ptr(0.0), // force min to be zero
 			FontStyle: axisFont,
 			// y-axis labels well spaced to keep a clean look
 			Unit:           10,
 			LabelSkipCount: 1,
 		}),
 		charts.XAxisOptionFunc(charts.XAxisOption{
-			Data:         xAxisLabels,
-			FontStyle:    axisFont,
-			BoundaryGap:  charts.True(),
-			LabelCount:   10,
-			TextRotation: charts.DegreesToRadians(45),
+			Labels:        xAxisLabels,
+			FontStyle:     axisFont,
+			BoundaryGap:   charts.Ptr(true),
+			LabelCount:    10,
+			LabelRotation: charts.DegreesToRadians(45),
 		}),
 		func(opt *charts.ChartOption) {
 			// disable the symbols and reduce the stroke width to give more fidelity on the line
-			opt.SymbolShow = charts.False()
-			opt.LineStrokeWidth = 1.6
+			opt.Symbol = charts.SymbolNone
+			opt.LineStrokeWidth = charts.Ptr(1.6)
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)
 			}

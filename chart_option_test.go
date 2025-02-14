@@ -17,8 +17,8 @@ func TestChartOption(t *testing.T) {
 		ThemeNameOptionFunc(ThemeVividDark),
 		TitleTextOptionFunc("title"),
 		LegendLabelsOptionFunc([]string{"label"}),
-		XAxisDataOptionFunc([]string{"xaxis"}),
-		YAxisDataOptionFunc([]string{"yaxis"}),
+		XAxisLabelsOptionFunc([]string{"xaxis"}),
+		YAxisLabelsOptionFunc([]string{"yaxis"}),
 		DimensionsOptionFunc(800, 600),
 		PaddingOptionFunc(NewBoxEqual(10)),
 	}
@@ -54,7 +54,7 @@ func TestChartOptionSeriesShowLabel(t *testing.T) {
 	t.Parallel()
 
 	opt := ChartOption{
-		SeriesList: NewSeriesListPie([]float64{1, 2}),
+		SeriesList: NewSeriesListPie([]float64{1, 2}).ToGenericSeriesList(),
 	}
 	SeriesShowLabel(true)(&opt)
 	assert.True(t, flagIs(true, opt.SeriesList[0].Label.Show))
@@ -63,9 +63,8 @@ func TestChartOptionSeriesShowLabel(t *testing.T) {
 	assert.True(t, flagIs(false, opt.SeriesList[0].Label.Show))
 }
 
-func newNoTypeSeriesListFromValues(values [][]float64) SeriesList {
-	return newSeriesListFromValues(values, "",
-		SeriesLabel{}, nil, "", SeriesMarkPoint{}, SeriesMarkLine{})
+func newNoTypeSeriesListFromValues(values [][]float64) GenericSeriesList {
+	return NewSeriesListGeneric(values, "")
 }
 
 func TestChartOptionMarkLine(t *testing.T) {
@@ -102,7 +101,7 @@ func TestLineRender(t *testing.T) {
 		values,
 		SVGOutputOptionFunc(),
 		TitleTextOptionFunc("Line"),
-		XAxisDataOptionFunc([]string{
+		XAxisLabelsOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		LegendLabelsOptionFunc([]string{
@@ -130,7 +129,7 @@ func TestBarRender(t *testing.T) {
 	p, err := BarRender(
 		values,
 		SVGOutputOptionFunc(),
-		XAxisDataOptionFunc([]string{
+		XAxisLabelsOptionFunc([]string{
 			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 		}),
 		LegendLabelsOptionFunc([]string{
@@ -141,7 +140,7 @@ func TestBarRender(t *testing.T) {
 		// custom option func
 		func(opt *ChartOption) {
 			opt.Legend.Offset = OffsetRight
-			opt.Legend.OverlayChart = True()
+			opt.Legend.OverlayChart = Ptr(true)
 			opt.SeriesList[1].MarkPoint = NewMarkPoint(
 				SeriesMarkDataTypeMax,
 				SeriesMarkDataTypeMin,
@@ -174,12 +173,8 @@ func TestHorizontalBarRender(t *testing.T) {
 			Bottom: 20,
 			Left:   20,
 		}),
-		LegendLabelsOptionFunc([]string{
-			"2011", "2012",
-		}),
-		YAxisDataOptionFunc([]string{
-			"Brazil", "Indonesia", "USA", "India", "China", "World",
-		}),
+		LegendLabelsOptionFunc([]string{"2011", "2012"}),
+		YAxisLabelsOptionFunc([]string{"Brazil", "Indonesia", "USA", "India", "China", "World"}),
 	)
 	require.NoError(t, err)
 	data, err := p.Bytes()
@@ -201,11 +196,9 @@ func TestPieRender(t *testing.T) {
 		}),
 		PaddingOptionFunc(NewBoxEqual(20)),
 		LegendOptionFunc(LegendOption{
-			Vertical: True(),
-			Data: []string{
-				"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
-			},
-			Offset: OffsetLeft,
+			Vertical:    Ptr(true),
+			SeriesNames: []string{"Search Engine", "Direct", "Email", "Union Ads", "Video Ads"},
+			Offset:      OffsetLeft,
 		}),
 	)
 	require.NoError(t, err)
@@ -273,25 +266,19 @@ func TestChildRender(t *testing.T) {
 			{320, 332, 301, 334, 390, 330, 320},
 		},
 		SVGOutputOptionFunc(),
-		XAxisDataOptionFunc([]string{
-			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
-		}),
+		XAxisLabelsOptionFunc([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}),
 		ChildOptionFunc(ChartOption{
 			Box: NewBox(10, 200, 200, 500),
 			SeriesList: NewSeriesListHorizontalBar([][]float64{
 				{70, 90, 110, 130},
 				{80, 100, 120, 140},
-			}),
+			}).ToGenericSeriesList(),
 			Legend: LegendOption{
-				Data: []string{
-					"2011", "2012",
-				},
+				SeriesNames: []string{"2011", "2012"},
 			},
 			YAxis: []YAxisOption{
 				{
-					Data: []string{
-						"USA", "India", "China", "World",
-					},
+					Labels: []string{"USA", "India", "China", "World"},
 				},
 			},
 		}),

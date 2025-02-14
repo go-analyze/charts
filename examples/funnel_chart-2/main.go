@@ -26,7 +26,7 @@ func main() {
 
 	opt := charts.NewFunnelChartOptionWithData(values)
 	opt.Title.Text = "Funnel"
-	opt.Legend.Data = []string{
+	opt.Legend.SeriesNames = []string{
 		"Show", "Click", "Visit", "Inquiry", "Order", "Pay", "Cancel",
 	}
 	opt.Legend.Padding = charts.Box{Left: 100}

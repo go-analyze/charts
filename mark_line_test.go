@@ -18,10 +18,10 @@ func TestMarkLine(t *testing.T) {
 			render: func(p *Painter) ([]byte, error) {
 				markLine := newMarkLinePainter(p)
 				markLine.add(markLineRenderOption{
-					fillColor:   ColorBlack,
-					fontColor:   ColorBlack,
-					strokeColor: ColorBlack,
-					seriesData:  []float64{1, 2, 3},
+					fillColor:    ColorBlack,
+					fontColor:    ColorBlack,
+					strokeColor:  ColorBlack,
+					seriesValues: []float64{1, 2, 3},
 					markline: NewMarkLine(
 						SeriesMarkDataTypeMax,
 						SeriesMarkDataTypeAverage,
