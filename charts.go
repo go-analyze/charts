@@ -466,6 +466,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				XAxis:           opt.XAxis,
 				StackSeries:     opt.StackSeries,
 				SymbolShow:      opt.SymbolShow,
+				Symbol:          opt.Symbol,
 				LineStrokeWidth: opt.LineStrokeWidth,
 				FillArea:        opt.FillArea,
 				FillOpacity:     opt.FillOpacity,

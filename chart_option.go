@@ -37,8 +37,11 @@ type ChartOption struct {
 	StackSeries *bool
 	// RadarIndicators are radar indicator list for radar charts.
 	RadarIndicators []RadarIndicator
-	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
+	// Deprecated: SymbolShow is deprecated, set Symbol to `none` or `circle` to match prior behavior.
 	SymbolShow *bool
+	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
+	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
+	Symbol Symbol
 	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
 	// FillArea set to true to fill the area under the line in line charts
