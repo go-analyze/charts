@@ -390,12 +390,37 @@ func (p *Painter) drawBackground(color Color) {
 
 // FilledRect will draw a filled box with the given coordinates.
 func (p *Painter) FilledRect(x1, y1, x2, y2 int, fillColor, strokeColor Color, strokeWidth float64) {
+	p.rectMoveLine(x1, y1, x2, y2)
+	p.fillStroke(fillColor, strokeColor, strokeWidth)
+}
+
+func (p *Painter) rectMoveLine(x1, y1, x2, y2 int) {
 	p.moveTo(x1, y1)
 	p.lineTo(x2, y1)
 	p.lineTo(x2, y2)
 	p.lineTo(x1, y2)
 	p.lineTo(x1, y1)
+}
+
+// FilledDiamond will draw a filled diamond centered at (cx, cy) with the given width and height.
+func (p *Painter) FilledDiamond(cx, cy, width, height int, fillColor, strokeColor Color, strokeWidth float64) {
+	p.diamondMoveLine(cx, cy, width, height)
 	p.fillStroke(fillColor, strokeColor, strokeWidth)
+}
+
+func (p *Painter) diamondMoveLine(cx, cy, width, height int) {
+	// Calculate the four corners of the diamond
+	hw, hh := width/2, height/2 // Half width and height
+	p1x, p1y := cx, cy-hh       // Top
+	p2x, p2y := cx+hw, cy       // Right
+	p3x, p3y := cx, cy+hh       // Bottom
+	p4x, p4y := cx-hw, cy       // Left
+
+	p.moveTo(p1x, p1y)
+	p.lineTo(p2x, p2y)
+	p.lineTo(p3x, p3y)
+	p.lineTo(p4x, p4y)
+	p.lineTo(p1x, p1y)
 }
 
 // MarkLine draws a horizontal line with a small circle and arrow at the right.
@@ -873,6 +898,33 @@ func (p *Painter) Dots(points []Point, fillColor, strokeColor Color, strokeWidth
 	p.render.SetStrokeWidth(strokeWidth)
 	for _, item := range points {
 		p.render.Circle(dotRadius, item.X+p.box.Left, item.Y+p.box.Top)
+	}
+	p.render.FillStroke()
+}
+
+// squares prints filled squares for the given points.
+func (p *Painter) squares(points []Point, fillColor, strokeColor Color, strokeWidth float64, size int) {
+	defer p.render.ResetStyle()
+	p.render.SetFillColor(fillColor)
+	p.render.SetStrokeColor(strokeColor)
+	p.render.SetStrokeWidth(strokeWidth)
+	halfSize := int(math.Round(float64(size) / 2.0))
+	for _, item := range points {
+		x1 := item.X - halfSize
+		y1 := item.Y - halfSize
+		p.rectMoveLine(x1, y1, x1+size, y1+size)
+	}
+	p.render.FillStroke()
+}
+
+// diamonds prints filled diamonds for the given points.
+func (p *Painter) diamonds(points []Point, fillColor, strokeColor Color, strokeWidth float64, size int) {
+	defer p.render.ResetStyle()
+	p.render.SetFillColor(fillColor)
+	p.render.SetStrokeColor(strokeColor)
+	p.render.SetStrokeWidth(strokeWidth)
+	for _, item := range points {
+		p.diamondMoveLine(item.X, item.Y, size, size)
 	}
 	p.render.FillStroke()
 }

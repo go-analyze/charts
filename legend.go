@@ -9,7 +9,10 @@ type legendPainter struct {
 	opt *LegendOption
 }
 
+// Deprecated: IconRect is deprecated, use SymbolSquare instead.
 const IconRect = "rect"
+
+// Deprecated: IconDot is deprecated, use SymbolDot instead.
 const IconDot = "dot"
 
 type LegendOption struct {
@@ -31,8 +34,10 @@ type LegendOption struct {
 	Align string
 	// Vertical can be set to *true to set the legend orientation to be vertical.
 	Vertical *bool
-	// Icon to show next to the labels.	Can be 'rect' or 'dot'.
+	// Deprecated: Icon is deprecated, use Symbol.
 	Icon string
+	// Symbol defines the icon shape next to the label. Can be 'square', 'dot', or 'diamond'.
+	Symbol Symbol
 	// OverlayChart can be set to *true to render the legend over the chart. Ignored if Vertical is set to true (always overlapped).
 	OverlayChart *bool
 	// BorderWidth can be set to a non-zero value to render a box around the legend.
@@ -173,13 +178,30 @@ func (l *legendPainter) Render() (Box, error) {
 	x0 := left
 	y0 := y
 
+	if opt.Symbol == "" {
+		if opt.Icon == IconRect {
+			opt.Symbol = SymbolSquare
+		} else {
+			opt.Symbol = SymbolDot
+		}
+	}
 	var drawIcon func(top, left int, color Color) int
-	if opt.Icon == IconRect {
+	switch opt.Symbol {
+	case SymbolSquare:
 		drawIcon = func(top, left int, color Color) int {
 			p.FilledRect(left, top-legendHeight+8, left+legendWidth, top+1, color, color, 0)
 			return left + legendWidth
 		}
-	} else {
+	case SymbolDiamond:
+		drawIcon = func(top, left int, color Color) int {
+			p.FilledDiamond(left+5, top-5, 15, 20, color, color, 0)
+			return left + legendHeight
+		}
+	case SymbolNone:
+		drawIcon = func(top, left int, color Color) int {
+			return left
+		}
+	default:
 		drawIcon = func(top, left int, color Color) int {
 			p.legendLineDot(Box{
 				Top:    top + 1,

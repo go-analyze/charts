@@ -131,3 +131,13 @@ const (
 	AlignRight  = "right"
 	AlignCenter = "center"
 )
+
+type Symbol string
+
+const (
+	SymbolNone    = "none"
+	SymbolCircle  = "circle"
+	SymbolDot     = "dot"
+	SymbolSquare  = "square"
+	SymbolDiamond = "diamond"
+)

@@ -60,8 +60,11 @@ type LineChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// SymbolShow set this to *false or *true (using False() or True()) to force if the symbols should be shown or hidden.
+	// Deprecated: SymbolShow is deprecated, use Symbol to specify 'none' or a specific symbol option.
 	SymbolShow *bool
+	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
+	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
+	Symbol Symbol
 	// LineStrokeWidth is the width of the rendered line.
 	LineStrokeWidth float64
 	// StrokeSmoothingTension should be between 0 and 1. At 0 perfectly straight lines will be used with 1 providing
@@ -128,12 +131,19 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 	if strokeWidth == 0 {
 		strokeWidth = defaultStrokeWidth
 	}
-	showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
-	if opt.StrokeSmoothingTension > 0 {
-		showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
-	}
-	if opt.SymbolShow != nil {
-		showSymbol = *opt.SymbolShow
+	symbol := opt.Symbol
+	if symbol == "" {
+		showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
+		if opt.SymbolShow != nil {
+			showSymbol = *opt.SymbolShow
+		} else if opt.StrokeSmoothingTension > 0 {
+			showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
+		}
+		if showSymbol {
+			symbol = "circle"
+		} else {
+			symbol = "none"
+		}
 	}
 
 	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
@@ -236,13 +246,28 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList SeriesList) (
 			seriesPainter.LineStroke(points, seriesColor, strokeWidth)
 		}
 
-		// Draw dots if enabled
-		if showSymbol {
-			dotFillColor := ColorWhite
-			if opt.Theme.IsDark() {
-				dotFillColor = seriesColor
+		// Draw symbols if enabled
+		switch symbol {
+		case SymbolCircle:
+			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1, strokeWidth)
+		case SymbolDot:
+			radius := 1.0
+			if strokeWidth > 0 {
+				radius = strokeWidth * 1.5
 			}
-			seriesPainter.Dots(points, dotFillColor, seriesColor, 1, 2)
+			seriesPainter.Dots(points, seriesColor, seriesColor, 0, radius)
+		case SymbolSquare:
+			size := 2
+			if strokeWidth > 1 {
+				size = ceilFloatToInt(strokeWidth * 2.0)
+			}
+			seriesPainter.squares(points, seriesColor, seriesColor, 1, size)
+		case SymbolDiamond:
+			size := 4
+			if strokeWidth > 1 {
+				size = ceilFloatToInt(strokeWidth * 4.0)
+			}
+			seriesPainter.diamonds(points, seriesColor, seriesColor, 0.5, size)
 		}
 
 		// Formatter set on the MarkLine or MarkPoint is checked in the respective painter
