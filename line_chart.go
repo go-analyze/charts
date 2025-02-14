@@ -243,7 +243,11 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 		}
 
 		// Draw symbols if enabled
-		switch symbol {
+		seriesSymbol := symbol
+		if series.Symbol != "" {
+			seriesSymbol = series.Symbol
+		}
+		switch seriesSymbol {
 		case SymbolCircle:
 			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1, strokeWidth)
 		case SymbolDot:
@@ -347,6 +351,10 @@ func (l *lineChart) Render() (Box, error) {
 		boundaryGap := !fillArea // boundary gap default enabled unless fill area is set
 		l.opt.XAxis.BoundaryGap = &boundaryGap
 	}
+
+	l.opt.Legend.seriesSymbols = sliceConversion(opt.SeriesList, func(s LineSeries) Symbol {
+		return s.Symbol
+	})
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		theme:              opt.Theme,
