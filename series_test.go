@@ -98,6 +98,9 @@ func TestSeriesSummary(t *testing.T) {
 		{1, 2, 3},
 		{1, 2, 3, 4},
 		{3, 7, 11, 13},
+		{GetNullValue()},
+		{10, GetNullValue()},
+		{1, GetNullValue(), 2},
 	})
 
 	t.Run("empty_series", func(t *testing.T) {
@@ -170,6 +173,38 @@ func TestSeriesSummary(t *testing.T) {
 			Skewness:          -0.2780305556539629,
 			Kurtosis:          1.5733984487216317,
 		}, seriesList[4].Summary())
+	})
+	t.Run("null_only", func(t *testing.T) {
+		assert.Equal(t, populationSummary{
+			MaxIndex: -1,
+			MinIndex: -1,
+		}, seriesList[5].Summary())
+	})
+	t.Run("value_null", func(t *testing.T) {
+		assert.Equal(t, populationSummary{
+			Max:               10,
+			MaxIndex:          0,
+			Min:               10,
+			MinIndex:          0,
+			Average:           10,
+			Median:            10,
+			StandardDeviation: 0.0,
+			Skewness:          0.0,
+			Kurtosis:          0.0,
+		}, seriesList[6].Summary())
+	})
+	t.Run("value_null_value", func(t *testing.T) {
+		assert.Equal(t, populationSummary{
+			Max:               2,
+			MaxIndex:          2,
+			Min:               1,
+			MinIndex:          0,
+			Average:           1.5,
+			Median:            1.5,
+			StandardDeviation: 0.5,
+			Skewness:          0.0,
+			Kurtosis:          1.0,
+		}, seriesList[7].Summary())
 	})
 }
 

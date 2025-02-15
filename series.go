@@ -343,23 +343,17 @@ func (s *Series) Summary() populationSummary {
 
 // summarizePopulationData returns numeric summary of series values (population statistics).
 func summarizePopulationData(data []float64) populationSummary {
-	n := float64(len(data))
-	if n == 0 {
-		return populationSummary{
-			MinIndex: -1,
-			MaxIndex: -1,
-		}
-	}
-
-	// Initialize tracking variables
 	var minIndex, maxIndex int
 	minValue := math.MaxFloat64
 	maxValue := -math.MaxFloat64
-	// For sums of powers:
 	var sum, sumSq, sumCu, sumQd float64
-
-	// Single pass to gather everything we need
+	sortedData := make([]float64, 0, len(data))
 	for i, x := range data {
+		if x == GetNullValue() {
+			continue
+		}
+		sortedData = append(sortedData, x)
+
 		if x < minValue {
 			minValue = x
 			minIndex = i
@@ -374,31 +368,37 @@ func summarizePopulationData(data []float64) populationSummary {
 		sumCu += x * x * x
 		sumQd += x * x * x * x
 	}
+	sort.Float64s(sortedData) // sort non-null values for median and other computations
+	ni := len(sortedData)
+	if ni == 0 {
+		return populationSummary{
+			MinIndex: -1,
+			MaxIndex: -1,
+		}
+	}
+	nf := float64(ni)
 
 	// Compute average (mean)
-	mean := sum / n
-	// Compute population variance = E[X^2] - (E[X])^2
-	variance := sumSq/n - mean*mean
-	stdDev := math.Sqrt(variance)
+	mean := sum / nf
 	// Compute median: copy the data and sort
-	sortedData := make([]float64, len(data))
-	copy(sortedData, data)
-	sort.Float64s(sortedData)
 	var median float64
-	mid := len(sortedData) / 2
-	if len(sortedData)%2 == 0 {
+	mid := ni / 2
+	if ni%2 == 0 {
 		median = (sortedData[mid-1] + sortedData[mid]) / 2.0
 	} else {
 		median = sortedData[mid]
 	}
 
+	// Compute population variance = E[X^2] - (E[X])^2
+	variance := sumSq/nf - mean*mean
+	stdDev := math.Sqrt(variance)
 	// Compute population skewness:
 	// thirdCentral = Σ x^3 - 3μΣ x^2 + 3μ^2Σ x - nμ^3
 	// skewness = thirdCentral / (n * σ^3)
 	var skewness float64
 	if stdDev != 0 { // zero stdDev will result in a divide by zero
-		thirdCentral := sumCu - 3*mean*sumSq + 3*mean*mean*sum - n*mean*mean*mean
-		skewness = thirdCentral / (n * stdDev * stdDev * stdDev)
+		thirdCentral := sumCu - 3*mean*sumSq + 3*mean*mean*sum - nf*mean*mean*mean
+		skewness = thirdCentral / (nf * stdDev * stdDev * stdDev)
 	}
 
 	// Compute population excess kurtosis:
@@ -415,9 +415,9 @@ func summarizePopulationData(data []float64) populationSummary {
 			4*mean*sumCu +
 			6*mean*mean*sumSq -
 			4*mean*mean*mean*sum +
-			n*mean*mean*mean*mean
+			nf*mean*mean*mean*mean
 
-		kurtosis = fourthCentral / (n * variance * variance)
+		kurtosis = fourthCentral / (nf * variance * variance)
 	} // else, all points might be the same => kurtosis is undefined
 
 	return populationSummary{
