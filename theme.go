@@ -30,6 +30,7 @@ type ColorPalette interface {
 	GetYAxisStrokeColor() Color
 	GetAxisSplitLineColor() Color
 	GetSeriesColor(int) Color
+	GetSeriesTrendColor(int) Color
 	GetBackgroundColor() Color
 	GetTextColor() Color
 	// WithXAxisColor will provide a new ColorPalette that uses the specified color for X axis. To adjust the text
@@ -43,8 +44,12 @@ type ColorPalette interface {
 	// WithTextColor will provide a new ColorPalette that uses the specified color for text.
 	// This is generally recommended over using the FontColor config values.
 	WithTextColor(Color) ColorPalette
-	// WithSeriesColors will provide a new ColorPalette that uses the specified series colors.
+	// WithSeriesColors will provide a new ColorPalette that uses the specified series colors. This will default the
+	// trend line colors to be related to the series colors provided. If you want to customize them further use
+	// WithSeriesTrendColors.
 	WithSeriesColors([]Color) ColorPalette
+	// WithSeriesTrendColors will provide a new ColorPalette that uses the specified series trend line colors.
+	WithSeriesTrendColors([]Color) ColorPalette
 	// WithBackgroundColor will provide a new ColorPalette that uses the specified color for the background.
 	WithBackgroundColor(Color) ColorPalette
 }
@@ -58,6 +63,7 @@ type themeColorPalette struct {
 	backgroundColor    Color
 	textColor          Color
 	seriesColors       []Color
+	seriesTrendColors  []Color
 }
 
 type ThemeOption struct {
@@ -69,6 +75,7 @@ type ThemeOption struct {
 	BackgroundColor    Color
 	TextColor          Color
 	SeriesColors       []Color
+	SeriesTrendColors  []Color
 }
 
 var palettes = sync.Map{}
@@ -293,6 +300,9 @@ func makeColorPalette(opt ThemeOption) *themeColorPalette {
 	if opt.YAxisStrokeColor.IsZero() {
 		opt.YAxisStrokeColor = opt.AxisStrokeColor
 	}
+	for i := len(opt.SeriesTrendColors); i < len(opt.SeriesColors); i++ {
+		opt.SeriesTrendColors = append(opt.SeriesTrendColors, autoSeriesTrendColor(opt.SeriesColors[i]))
+	}
 	return &themeColorPalette{
 		isDarkMode:         opt.IsDarkMode,
 		xaxisStrokeColor:   opt.XAxisStrokeColor,
@@ -301,7 +311,38 @@ func makeColorPalette(opt ThemeOption) *themeColorPalette {
 		backgroundColor:    opt.BackgroundColor,
 		textColor:          opt.TextColor,
 		seriesColors:       opt.SeriesColors,
+		seriesTrendColors:  opt.SeriesTrendColors,
 	}
+}
+
+func autoSeriesTrendColor(color Color) Color {
+	if color.IsTransparent() {
+		return color
+	}
+	var brightenR, brightenG, brightenB bool
+	if color.R > color.G && color.R > color.B {
+		brightenR = true
+		color.R += (255 - color.R) / 2
+	} else if color.G > color.R && color.G > color.B {
+		brightenG = true
+		color.G += (255 - color.G) / 2
+	} else if color.B > color.G && color.B > color.R {
+		brightenB = true
+		color.B += (255 - color.B) / 2
+	}
+	if !brightenR {
+		color.R -= color.R / 2
+	}
+	if !brightenG {
+		color.G -= color.G / 2
+	}
+	if !brightenB {
+		color.B -= color.B / 2
+	}
+	if color.A < 255 {
+		color.A += (255 - color.A) / 2
+	}
+	return color
 }
 
 // GetTheme returns an installed theme by name, or the default if the theme is not installed.
@@ -335,7 +376,14 @@ func (t *themeColorPalette) GetAxisSplitLineColor() Color {
 }
 
 func (t *themeColorPalette) GetSeriesColor(index int) Color {
-	colors := t.seriesColors
+	return getSeriesColor(t.seriesColors, t.isDarkMode, index)
+}
+
+func (t *themeColorPalette) GetSeriesTrendColor(index int) Color {
+	return getSeriesColor(t.seriesTrendColors, t.isDarkMode, index)
+}
+
+func getSeriesColor(colors []Color, darkTheme bool, index int) Color {
 	colorCount := len(colors)
 	if index < colorCount {
 		return colors[index]
@@ -346,7 +394,7 @@ func (t *themeColorPalette) GetSeriesColor(index int) Color {
 		var rMin, gMin, bMin int
 		// the adjustment amount and mod count must be balanced to ensure colors don't hit their limits quickly
 		adjustment := 40 * ((index / colorCount) % 3)
-		if t.IsDark() { // adjust the shade darker for dark themes
+		if darkTheme { // adjust the shade darker for dark themes
 			adjustment *= -1
 			rMax, gMax, bMax = 255, 255, 255
 			rMin, gMin, bMin = 40, 40, 40
@@ -422,6 +470,25 @@ func (t *themeColorPalette) WithSeriesColors(colors []Color) ColorPalette {
 	}
 	copy.name += "-series_mod"
 	copy.seriesColors = colors
+	for i, c := range colors {
+		trendColor := autoSeriesTrendColor(c)
+		if i < len(copy.seriesTrendColors) {
+			copy.seriesTrendColors[i] = trendColor
+		} else {
+			copy.seriesTrendColors = append(copy.seriesTrendColors, trendColor)
+		}
+	}
+	return &copy
+}
+
+func (t *themeColorPalette) WithSeriesTrendColors(colors []Color) ColorPalette {
+	copy := *t
+	if len(colors) == 0 { // ignore invalid input rather than panic later
+		copy.name += "-ignored_invalid_series_mod"
+		return &copy
+	}
+	copy.name += "-trend_mod"
+	copy.seriesTrendColors = colors
 	return &copy
 }
 

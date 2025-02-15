@@ -5,6 +5,8 @@ import (
 	"math"
 
 	"github.com/golang/freetype/truetype"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 type lineChart struct {
@@ -61,7 +63,8 @@ type LineChartOption struct {
 	// Legend are options for the data legend.
 	Legend LegendOption
 	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
-	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
+	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'. This can
+	// also be set on each series specifically.
 	Symbol Symbol
 	// LineStrokeWidth is the width of the rendered line.
 	LineStrokeWidth float64
@@ -78,6 +81,23 @@ type LineChartOption struct {
 }
 
 const showSymbolDefaultThreshold = 100
+
+func boundaryGapAxisPositions(painterWidth int, boundaryGap bool, xDivideCount int) []int {
+	if !boundaryGap {
+		xDivideCount--
+	}
+	xDivideValues := autoDivide(painterWidth, xDivideCount)
+	var xValues []int
+	if boundaryGap {
+		xValues = make([]int, len(xDivideValues)-1)
+		for i := 0; i < len(xDivideValues)-1; i++ {
+			xValues[i] = (xDivideValues[i] + xDivideValues[i+1]) >> 1
+		}
+	} else {
+		xValues = xDivideValues
+	}
+	return xValues
+}
 
 func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesList) (Box, error) {
 	p := l.p
@@ -99,29 +119,18 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 	if opt.XAxis.BoundaryGap != nil {
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
-	xDivideCount := len(opt.XAxis.Labels)
+	xDivideCount := chartdraw.MaxInt(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels))
 	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= boundaryGapDefaultThreshold {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment.
 		// Although label changes can be forced to center, this behavior is unconditional for the line
 		boundaryGap = false
 	}
-	if !boundaryGap {
-		xDivideCount--
-	}
-	xDivideValues := autoDivide(seriesPainter.Width(), xDivideCount)
-	xValues := make([]int, len(xDivideValues)-1)
+	xValues := boundaryGapAxisPositions(seriesPainter.Width(), boundaryGap, xDivideCount)
 	dataCount := getSeriesMaxDataCount(seriesList)
 	// accumulatedValues is used for stacking: it holds the summed data values at each X index
 	var accumulatedValues []float64
 	if stackedSeries {
 		accumulatedValues = make([]float64, dataCount)
-	}
-	if boundaryGap {
-		for i := 0; i < len(xDivideValues)-1; i++ {
-			xValues[i] = (xDivideValues[i] + xDivideValues[i+1]) >> 1
-		}
-	} else {
-		xValues = xDivideValues
 	}
 	strokeWidth := opt.LineStrokeWidth
 	if strokeWidth == 0 {
@@ -147,8 +156,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 
 	seriesNames := seriesList.names()
 	var priorSeriesPoints []Point
-	for index := range seriesList {
-		series := seriesList[index]
+	for index, series := range seriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
 		seriesColor := opt.Theme.GetSeriesColor(index)
 		yRange := result.axisRanges[series.YAxisIndex]
