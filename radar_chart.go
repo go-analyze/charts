@@ -55,8 +55,6 @@ type RadarChartOption struct {
 	RadarIndicators []RadarIndicator
 	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
-	// backgroundIsFilled is set to true if the background is filled.
-	backgroundIsFilled bool
 }
 
 // NewRadarIndicators returns a radar indicator list
@@ -240,9 +238,8 @@ func (r *radarChart) Render() (Box, error) {
 				Show: False(),
 			},
 		},
-		title:              opt.Title,
-		legend:             &r.opt.Legend,
-		backgroundIsFilled: opt.backgroundIsFilled,
+		title:  opt.Title,
+		legend: &r.opt.Legend,
 	})
 	if err != nil {
 		return BoxZero, err

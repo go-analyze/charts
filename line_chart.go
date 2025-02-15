@@ -78,8 +78,6 @@ type LineChartOption struct {
 	FillOpacity uint8
 	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
-	// backgroundIsFilled is set to true if the background is filled.
-	backgroundIsFilled bool
 }
 
 const showSymbolDefaultThreshold = 100
@@ -350,16 +348,15 @@ func (l *lineChart) Render() (Box, error) {
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		theme:              opt.Theme,
-		padding:            opt.Padding,
-		seriesList:         opt.SeriesList,
-		stackSeries:        flagIs(true, opt.StackSeries),
-		xAxis:              &l.opt.XAxis,
-		yAxis:              opt.YAxis,
-		title:              opt.Title,
-		legend:             &l.opt.Legend,
-		valueFormatter:     opt.ValueFormatter,
-		backgroundIsFilled: opt.backgroundIsFilled,
+		theme:          opt.Theme,
+		padding:        opt.Padding,
+		seriesList:     opt.SeriesList,
+		stackSeries:    flagIs(true, opt.StackSeries),
+		xAxis:          &l.opt.XAxis,
+		yAxis:          opt.YAxis,
+		title:          opt.Title,
+		legend:         &l.opt.Legend,
+		valueFormatter: opt.ValueFormatter,
 	})
 	if err != nil {
 		return BoxZero, err

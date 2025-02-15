@@ -40,8 +40,6 @@ type PieChartOption struct {
 	Legend LegendOption
 	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
-	// backgroundIsFilled is set to true if the background is filled.
-	backgroundIsFilled bool
 }
 
 // newPieChart returns a pie chart renderer.
@@ -303,9 +301,8 @@ func (p *pieChart) Render() (Box, error) {
 				Show: False(),
 			},
 		},
-		title:              opt.Title,
-		legend:             &p.opt.Legend,
-		backgroundIsFilled: opt.backgroundIsFilled,
+		title:  opt.Title,
+		legend: &p.opt.Legend,
 	})
 	if err != nil {
 		return BoxZero, err
