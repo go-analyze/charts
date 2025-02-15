@@ -32,6 +32,8 @@ type LegendOption struct {
 	OverlayChart *bool
 	// BorderWidth can be set to a non-zero value to render a box around the legend.
 	BorderWidth float64
+	// seriesSymbols provides custom symbols for each series.
+	seriesSymbols []Symbol
 }
 
 // IsEmpty checks legend is empty
@@ -162,37 +164,41 @@ func (l *legendPainter) Render() (Box, error) {
 	x0 := left
 	y0 := y
 
-	var drawIcon func(top, left int, color Color) int
-	switch opt.Symbol {
-	case SymbolSquare:
-		drawIcon = func(top, left int, color Color) int {
-			p.FilledRect(left, top-legendHeight+8, left+legendWidth, top+1, color, color, 0)
-			return left + legendWidth
-		}
-	case SymbolDiamond:
-		drawIcon = func(top, left int, color Color) int {
-			p.FilledDiamond(left+5, top-5, 15, 20, color, color, 0)
-			return left + legendHeight
-		}
-	case SymbolNone:
-		drawIcon = func(top, left int, color Color) int {
-			return left
-		}
-	default:
-		drawIcon = func(top, left int, color Color) int {
-			p.legendLineDot(Box{
-				Top:    top + 1,
-				Left:   left,
-				Right:  left + legendWidth,
-				Bottom: top + legendHeight + 1,
-				IsSet:  true,
-			}, color, 3, color)
-			return left + legendWidth
-		}
-	}
-
 	lastIndex := len(opt.SeriesNames) - 1
 	for index, text := range opt.SeriesNames {
+		seriesSymbol := opt.Symbol
+		if index < len(opt.seriesSymbols) && opt.seriesSymbols[index] != "" {
+			seriesSymbol = opt.seriesSymbols[index]
+		}
+		var drawIcon func(top, left int, color Color) int
+		switch seriesSymbol {
+		case SymbolSquare:
+			drawIcon = func(top, left int, color Color) int {
+				p.FilledRect(left, top-legendHeight+8, left+legendWidth, top+1, color, color, 0)
+				return left + legendWidth
+			}
+		case SymbolDiamond:
+			drawIcon = func(top, left int, color Color) int {
+				p.FilledDiamond(left+5, top-5, 15, 20, color, color, 0)
+				return left + legendHeight
+			}
+		case SymbolNone:
+			drawIcon = func(top, left int, color Color) int {
+				return left
+			}
+		default:
+			drawIcon = func(top, left int, color Color) int {
+				p.legendLineDot(Box{
+					Top:    top + 1,
+					Left:   left,
+					Right:  left + legendWidth,
+					Bottom: top + legendHeight + 1,
+					IsSet:  true,
+				}, color, 3, color)
+				return left + legendWidth
+			}
+		}
+
 		color := theme.GetSeriesColor(index)
 		if vertical {
 			if opt.Align == AlignRight {

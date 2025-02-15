@@ -145,6 +145,9 @@ func (f *funnelChart) Render() (Box, error) {
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.theme)
 	}
+	if opt.Legend.Symbol == "" {
+		opt.Legend.Symbol = SymbolSquare
+	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		theme:      opt.Theme,

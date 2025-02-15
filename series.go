@@ -185,6 +185,10 @@ func (g GenericSeriesList) getSeriesValues(index int) []float64 {
 	return g[index].Values
 }
 
+func (g GenericSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (g GenericSeriesList) hasMarkPoint() bool {
 	for _, s := range g {
 		if len(s.MarkPoint.Points) > 0 {
@@ -220,6 +224,8 @@ type LineSeries struct {
 	// MarkLine provides a series for mark lines. When using a MarkLine, you will want to configure padding to the
 	// chart on the right for the values.
 	MarkLine SeriesMarkLine
+	// Symbol specifies a custom symbol for the series.
+	Symbol Symbol
 }
 
 func (l *LineSeries) getYAxisIndex() int {
@@ -269,6 +275,10 @@ func (l LineSeriesList) getSeriesName(index int) string {
 
 func (l LineSeriesList) getSeriesValues(index int) []float64 {
 	return l[index].Values
+}
+
+func (l LineSeriesList) getSeriesSymbol(index int) Symbol {
+	return l[index].Symbol
 }
 
 func (l LineSeriesList) hasMarkPoint() bool {
@@ -373,6 +383,10 @@ func (b BarSeriesList) getSeriesValues(index int) []float64 {
 	return b[index].Values
 }
 
+func (b BarSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (b BarSeriesList) hasMarkPoint() bool {
 	for _, s := range b {
 		if len(s.MarkPoint.Points) > 0 {
@@ -467,6 +481,10 @@ func (h HorizontalBarSeriesList) getSeriesValues(index int) []float64 {
 	return h[index].Values
 }
 
+func (h HorizontalBarSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (h HorizontalBarSeriesList) hasMarkPoint() bool {
 	return false // not currently supported on this chart type
 }
@@ -537,6 +555,10 @@ func (f FunnelSeriesList) getSeriesName(index int) string {
 
 func (f FunnelSeriesList) getSeriesValues(index int) []float64 {
 	return []float64{f[index].Value}
+}
+
+func (f FunnelSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
 }
 
 func (f FunnelSeriesList) hasMarkPoint() bool {
@@ -613,6 +635,10 @@ func (p PieSeriesList) getSeriesValues(index int) []float64 {
 	return []float64{p[index].Value}
 }
 
+func (p PieSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (p PieSeriesList) hasMarkPoint() bool {
 	return false // not supported on this chart type
 }
@@ -686,6 +712,10 @@ func (r RadarSeriesList) getSeriesValues(index int) []float64 {
 	return r[index].Values
 }
 
+func (r RadarSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (r RadarSeriesList) hasMarkPoint() bool {
 	return false // not supported on this chart type
 }
@@ -724,6 +754,7 @@ type seriesList interface {
 	hasMarkPoint() bool
 	setSeriesName(index int, name string)
 	sortByNameIndex(dict map[string]int)
+	getSeriesSymbol(index int) Symbol
 }
 
 // series interface is used to provide the raw series struct to callers of seriesList, allowing direct type checks.
