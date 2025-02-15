@@ -77,7 +77,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			index := summary.MinIndex
 			value := summary.Min
 			switch markPointData.Type {
-			case SeriesMarkDataTypeMax:
+			case SeriesMarkTypeMax:
 				index = summary.MaxIndex
 				value = summary.Max
 			}

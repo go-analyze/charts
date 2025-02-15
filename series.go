@@ -53,9 +53,15 @@ type SeriesLabel struct {
 }
 
 const (
-	SeriesMarkDataTypeMax     = "max"
-	SeriesMarkDataTypeMin     = "min"
-	SeriesMarkDataTypeAverage = "average"
+	// Deprecated: SeriesMarkDataTypeMax is deprecated, use SeriesMarkTypeMax.
+	SeriesMarkDataTypeMax = SeriesMarkTypeMax
+	// Deprecated: SeriesMarkDataTypeMin is deprecated, use SeriesMarkTypeMin.
+	SeriesMarkDataTypeMin = SeriesMarkTypeMin
+	// Deprecated: SeriesMarkDataTypeAverage is deprecated, use SeriesMarkTypeAverage.
+	SeriesMarkDataTypeAverage = SeriesMarkTypeAverage
+	SeriesMarkTypeMax         = "max"
+	SeriesMarkTypeMin         = "min"
+	SeriesMarkTypeAverage     = "average"
 )
 
 type SeriesMarkData struct {

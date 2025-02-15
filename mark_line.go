@@ -62,9 +62,9 @@ func (m *markLinePainter) Render() (Box, error) {
 		for _, markLine := range opt.markline.Data {
 			var value float64
 			switch markLine.Type {
-			case SeriesMarkDataTypeMax:
+			case SeriesMarkTypeMax:
 				value = summary.Max
-			case SeriesMarkDataTypeMin:
+			case SeriesMarkTypeMin:
 				value = summary.Min
 			default:
 				value = summary.Average
