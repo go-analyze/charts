@@ -105,6 +105,7 @@ func (o OffsetStr) WithLeftI(val int) OffsetStr {
 
 const (
 	ChartTypeLine          = "line"
+	ChartTypeScatter       = "scatter"
 	ChartTypeBar           = "bar"
 	ChartTypePie           = "pie"
 	ChartTypeRadar         = "radar"

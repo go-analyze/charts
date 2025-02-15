@@ -96,8 +96,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 	divideValues := yRange.AutoDivide()
 
 	var rendererList []renderer
-	for index := range seriesList {
-		series := seriesList[index]
+	for index, series := range seriesList {
 		seriesColor := opt.Theme.GetSeriesColor(index)
 
 		var labelPainter *seriesLabelPainter

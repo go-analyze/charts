@@ -27,6 +27,9 @@ Examples are our primary method for demonstrating the starting point our use and
 * [pie_chart-2](./pie_chart-2) - The above example pie chart re-demonstrated using the Painter API.
 * [radar_chart-1](./radar_chart-1) - Basic radar chart.
 * [radar_chart-2](./radar_chart-2) - The above example radar chart re-demonstrated using the Painter API.
+* [scatter_chart-1](./scatter_chart-1) - Basic scatter chart with some simple styling changes and a demonstration of `null` values.
+* [scatter_chart-2](./scatter_chart-2) - The above example scatter chart re-demonstrated using the Painter API.
+* [scatter_chart-3](./scatter_chart-3) - Scatter chart with dense data and more custom styling configured.
 * [table-1](./table-1) - Table with a variety of table specific configuration and styling demonstrated.
 * [web-1](./web-1) - Hosts an example http server which will render the charts to the web page.
 

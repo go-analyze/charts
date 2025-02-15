@@ -267,42 +267,49 @@ func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *Le
 	}
 }
 
-// LineRender line chart render.
+// LineRender renders a line chart.
 func LineRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListGeneric(values, ChartTypeLine),
 	}, opts...)
 }
 
-// BarRender bar chart render.
+// ScatterRender renders a scatter chart.
+func ScatterRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
+	return Render(ChartOption{
+		SeriesList: NewSeriesListGeneric(values, ChartTypeScatter),
+	}, opts...)
+}
+
+// BarRender renders a bar chart.
 func BarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListGeneric(values, ChartTypeBar),
 	}, opts...)
 }
 
-// HorizontalBarRender horizontal bar chart render.
+// HorizontalBarRender renders a horizontal bar chart.
 func HorizontalBarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListGeneric(values, ChartTypeHorizontalBar),
 	}, opts...)
 }
 
-// PieRender pie chart render.
+// PieRender renders a pie chart.
 func PieRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListPie(values).ToGenericSeriesList(),
 	}, opts...)
 }
 
-// RadarRender radar chart render.
+// RadarRender renders a radar chart.
 func RadarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListGeneric(values, ChartTypeRadar),
 	}, opts...)
 }
 
-// FunnelRender funnel chart render.
+// FunnelRender renders a funnel chart.
 func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListFunnel(values).ToGenericSeriesList(),

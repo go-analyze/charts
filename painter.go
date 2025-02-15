@@ -1047,6 +1047,12 @@ func (p *Painter) LineChart(opt LineChartOption) error {
 	return err
 }
 
+// ScatterChart renders a scatter chart with the provided configuration to the painter.
+func (p *Painter) ScatterChart(opt ScatterChartOption) error {
+	_, err := newScatterChart(p, opt).Render()
+	return err
+}
+
 // PieChart renders a pie chart with the provided configuration to the painter.
 func (p *Painter) PieChart(opt PieChartOption) error {
 	_, err := newPieChart(p, opt).Render()
