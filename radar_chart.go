@@ -220,6 +220,10 @@ func (r *radarChart) Render() (Box, error) {
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.theme)
 	}
+	if opt.Legend.Symbol == "" {
+		// default to square symbol for this chart type
+		opt.Legend.Symbol = SymbolSquare
+	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		theme:      opt.Theme,

@@ -133,6 +133,10 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		// ensure order of series is consistent with legend
 		opt.seriesList.sortByNameIndex(nameIndexDict)
 	}
+	opt.legend.seriesSymbols = make([]Symbol, opt.seriesList.len())
+	for index := range opt.legend.seriesSymbols {
+		opt.legend.seriesSymbols[index] = opt.seriesList.getSeriesSymbol(index)
+	}
 
 	const legendTitlePadding = 15
 	var legendTopSpacing int
