@@ -569,6 +569,7 @@ func TestMultipleChartsOnPainter(t *testing.T) {
 
 	pieOpt := makeBasicPieChartOption()
 	pieOpt.Legend.Show = Ptr(false)
+	pieOpt.Legend.Symbol = ""
 	err := bottomLeftPainter.PieChart(pieOpt)
 	require.NoError(t, err)
 	err = bottomRightPainter.BarChart(makeBasicBarChartOption())

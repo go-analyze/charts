@@ -241,7 +241,11 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 		}
 
 		// Draw symbols if enabled
-		switch symbol {
+		seriesSymbol := symbol
+		if series.Symbol != "" {
+			seriesSymbol = series.Symbol
+		}
+		switch seriesSymbol {
 		case SymbolCircle:
 			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1, strokeWidth)
 		case SymbolDot:

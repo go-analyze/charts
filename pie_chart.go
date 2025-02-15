@@ -282,6 +282,10 @@ func (p *pieChart) Render() (Box, error) {
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.p.theme)
 	}
+	if opt.Legend.Symbol == "" {
+		// default to square symbol for this chart type
+		opt.Legend.Symbol = SymbolSquare
+	}
 
 	renderResult, err := defaultRender(p.p, defaultRenderOption{
 		theme:      opt.Theme,
