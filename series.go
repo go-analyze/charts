@@ -236,6 +236,7 @@ func NewSeriesListHorizontalBar(values [][]float64, opts ...BarSeriesOption) Ser
 
 // PieSeriesOption provides series customization for NewSeriesListPie.
 type PieSeriesOption struct {
+	// Deprecated: Radius is deprecated, instead set the Radius in PieChartOption.
 	Radius string
 	Label  SeriesLabel
 	Names  []string

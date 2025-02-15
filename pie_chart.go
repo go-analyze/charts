@@ -38,6 +38,8 @@ type PieChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
+	// Radius default radius for pie e.g.: 40%, default is "40%"
+	Radius string
 	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
 }
@@ -157,12 +159,19 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		return BoxZero, errors.New("empty series list")
 	}
 
+	seriesPainter := result.seriesPainter
+	cx := seriesPainter.Width() >> 1
+	cy := seriesPainter.Height() >> 1
+	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
+	radius := getRadius(float64(diameter), opt.Radius)
 	values := make([]float64, seriesCount)
 	var total float64
-	var radiusValue string
 	for index, series := range seriesList {
-		if series.Radius != "" {
-			radiusValue = series.Radius
+		if opt.Radius == "" && series.Radius != "" {
+			seriesRadius := getRadius(float64(diameter), series.Radius)
+			if index == 0 || seriesRadius > radius {
+				radius = seriesRadius
+			}
 		}
 		value := chartdraw.SumFloat64(series.Data...)
 		values[index] = value
@@ -174,12 +183,6 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	if total <= 0 {
 		return BoxZero, errors.New("the sum value of pie chart should greater than 0")
 	}
-	seriesPainter := result.seriesPainter
-	cx := seriesPainter.Width() >> 1
-	cy := seriesPainter.Height() >> 1
-
-	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
-	radius := getRadius(float64(diameter), radiusValue)
 
 	labelLineWidth := 15
 	if radius < 50 {

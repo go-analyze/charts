@@ -53,6 +53,8 @@ type RadarChartOption struct {
 	Legend LegendOption
 	// RadarIndicators provides the radar indicator list.
 	RadarIndicators []RadarIndicator
+	// Radius for radar e.g.: 40%, default is "40%"
+	Radius string
 	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
 }
@@ -103,10 +105,13 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList SeriesList) 
 		}
 	}
 
-	var radiusValue string
-	for _, series := range seriesList {
-		if series.Radius != "" {
-			radiusValue = series.Radius
+	radiusValue := opt.Radius
+	if radiusValue == "" {
+		for _, series := range seriesList {
+			if series.Radius != "" {
+				radiusValue = series.Radius
+				break
+			}
 		}
 	}
 
