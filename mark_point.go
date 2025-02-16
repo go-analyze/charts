@@ -6,16 +6,10 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// NewMarkPoint returns a series mark point
+// NewMarkPoint returns a mark point for the provided types, this is set on a specific instance within a Series.
 func NewMarkPoint(markPointTypes ...string) SeriesMarkPoint {
-	data := make([]SeriesMarkData, len(markPointTypes))
-	for index, t := range markPointTypes {
-		data[index] = SeriesMarkData{
-			Type: t,
-		}
-	}
 	return SeriesMarkPoint{
-		Data: data,
+		Points: NewSeriesMarkList(markPointTypes...),
 	}
 }
 
@@ -25,19 +19,24 @@ type markPointPainter struct {
 }
 
 func (m *markPointPainter) add(opt markPointRenderOption) {
-	if len(opt.markpoint.Data) > 0 {
-		m.options = append(m.options, opt)
+	if opt.valueFormatter == nil {
+		opt.valueFormatter = defaultValueFormatter
 	}
+	if opt.symbolSize == 0 {
+		opt.symbolSize = 28
+	}
+	m.options = append(m.options, opt)
 }
 
 type markPointRenderOption struct {
-	fillColor             Color
-	font                  *truetype.Font
-	seriesValues          []float64
-	markpoint             SeriesMarkPoint
-	seriesLabelPainter    *seriesLabelPainter
-	points                []Point
-	valueFormatterDefault ValueFormatter
+	fillColor          Color
+	font               *truetype.Font
+	symbolSize         int
+	seriesValues       []float64
+	markpoints         []SeriesMark
+	seriesLabelPainter *seriesLabelPainter
+	points             []Point
+	valueFormatter     ValueFormatter
 }
 
 // newMarkPointPainter returns a mark point renderer
@@ -50,15 +49,10 @@ func newMarkPointPainter(p *Painter) *markPointPainter {
 func (m *markPointPainter) Render() (Box, error) {
 	painter := m.p
 	for _, opt := range m.options {
-		if len(opt.markpoint.Data) == 0 {
+		if len(opt.markpoints) == 0 {
 			continue
 		}
-		points := opt.points
 		summary := summarizePopulationData(opt.seriesValues)
-		symbolSize := opt.markpoint.SymbolSize
-		if symbolSize == 0 {
-			symbolSize = 28
-		}
 		textStyle := chartdraw.Style{
 			FontStyle: FontStyle{
 				FontSize: labelFontSize,
@@ -71,8 +65,7 @@ func (m *markPointPainter) Render() (Box, error) {
 		} else {
 			textStyle.FontColor = defaultDarkFontColor
 		}
-		valueFormatter := getPreferredValueFormatter(opt.markpoint.ValueFormatter, opt.valueFormatterDefault)
-		for _, markPointData := range opt.markpoint.Data {
+		for _, markPointData := range opt.markpoints {
 			textStyle.FontSize = labelFontSize
 			index := summary.MinIndex
 			value := summary.Min
@@ -81,21 +74,21 @@ func (m *markPointPainter) Render() (Box, error) {
 				index = summary.MaxIndex
 				value = summary.Max
 			}
-			p := points[index]
+			p := opt.points[index]
 			if opt.seriesLabelPainter != nil {
 				// the series label has been replaced by our MarkPoint
 				// This is why MarkPoints must be rendered BEFORE series labels
 				opt.seriesLabelPainter.values[index].Text = ""
 			}
 
-			painter.Pin(p.X, p.Y-symbolSize>>1, symbolSize, opt.fillColor, opt.fillColor, 0.0)
-			text := valueFormatter(value)
+			painter.Pin(p.X, p.Y-opt.symbolSize>>1, opt.symbolSize, opt.fillColor, opt.fillColor, 0.0)
+			text := opt.valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, textStyle.FontStyle)
-			if textStyle.FontSize > smallLabelFontSize && textBox.Width() > symbolSize {
+			if textStyle.FontSize > smallLabelFontSize && textBox.Width() > opt.symbolSize {
 				textStyle.FontSize = smallLabelFontSize
 				textBox = painter.MeasureText(text, 0, textStyle.FontStyle)
 			}
-			painter.Text(text, p.X-textBox.Width()>>1, p.Y-symbolSize>>1-2, 0, textStyle.FontStyle)
+			painter.Text(text, p.X-textBox.Width()>>1, p.Y-opt.symbolSize>>1-2, 0, textStyle.FontStyle)
 		}
 	}
 	return BoxZero, nil

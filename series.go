@@ -34,9 +34,50 @@ const (
 	SeriesMarkTypeAverage = "average"
 )
 
-type SeriesMarkData struct {
+type SeriesMark struct {
 	// Type is the mark data type, it can be "max", "min", "average". "average" is only for mark line.
 	Type string
+	// Global specifies the mark reference the sum of all series. This option is only
+	// used when the Series is "Stacked" and the mark is on the LAST Series of the SeriesList.
+	Global bool
+}
+
+// NewSeriesMarkList returns a slice of SeriesMarkData initialized for the given types.
+func NewSeriesMarkList(markTypes ...string) SeriesMarkList {
+	return appendMarks(nil, false, markTypes)
+}
+
+// NewSeriesMarkGlobalList returns a slice of SeriesMark initialized for the given types with the global flag set.
+// Global marks reference the sum of all series. This option is only used when the Series is "Stacked" and the mark is
+// on the LAST Series of the SeriesList.
+func NewSeriesMarkGlobalList(markTypes ...string) SeriesMarkList {
+	return appendMarks(nil, true, markTypes)
+}
+
+func appendMarks(m SeriesMarkList, global bool, markTypes []string) SeriesMarkList {
+	for _, mt := range markTypes {
+		if !hasMarkType(m, global, mt) {
+			m = append(m, SeriesMark{
+				Type:   mt,
+				Global: global,
+			})
+		}
+	}
+	return m
+}
+
+type SeriesMarkList []SeriesMark
+
+func (m SeriesMarkList) splitGlobal() (SeriesMarkList, SeriesMarkList) {
+	return sliceSplit(m, func(v SeriesMark) bool {
+		return !v.Global
+	})
+}
+
+func (m SeriesMarkList) filterGlobal(global bool) SeriesMarkList {
+	return sliceFilter(m, func(v SeriesMark) bool {
+		return v.Global == global
+	})
 }
 
 type SeriesMarkPoint struct {
@@ -44,21 +85,46 @@ type SeriesMarkPoint struct {
 	SymbolSize int
 	// ValueFormatter is used to produce the label for the Mark Point.
 	ValueFormatter ValueFormatter
-	// GlobalPoint specifies optionally that the point should reference the sum of series. This option is only
-	// used when the Series is "Stacked" and the point is on the LAST Series of the SeriesList.
-	GlobalPoint bool
-	// Data is the mark data for the series mark point.
-	Data []SeriesMarkData
+	// Points are the mark points for the series.
+	Points SeriesMarkList
+}
+
+func hasMarkType(seriesMarks []SeriesMark, global bool, typeStr string) bool {
+	for _, sm := range seriesMarks {
+		if sm.Global == global && sm.Type == typeStr {
+			return true
+		}
+	}
+	return false
+}
+
+// AddPoints will add mark points for the series.
+func (m *SeriesMarkPoint) AddPoints(markTypes ...string) {
+	m.Points = appendMarks(m.Points, false, markTypes)
+}
+
+// AddGlobalPoints will add "global" mark points, which will be referenced to the sum of all the series. These marks
+// are only rendered when the Series is "Stacked" and the mark point is on the LAST Series of the SeriesList.
+func (m *SeriesMarkPoint) AddGlobalPoints(markTypes ...string) {
+	m.Points = appendMarks(m.Points, true, markTypes)
 }
 
 type SeriesMarkLine struct {
 	// ValueFormatter is used to produce the label for the Mark Line.
 	ValueFormatter ValueFormatter
-	// GlobalLine specifies optionally that the line should reference the sum of series. This option is only
-	// used when the Series is "Stacked" and the line is on the LAST Series of the SeriesList.
-	GlobalLine bool
-	// Data is the mark data for the series mark line.
-	Data []SeriesMarkData
+	// Lines are the mark lines for the series.
+	Lines SeriesMarkList
+}
+
+// AddLines will add mark lines for the series.
+func (m *SeriesMarkLine) AddLines(markTypes ...string) {
+	m.Lines = appendMarks(m.Lines, false, markTypes)
+}
+
+// AddGlobalLines will add "global" mark lines, which will be referenced to the sum of all the series. These marks
+// are only rendered when the Series is "Stacked" and the mark line is on the LAST Series of the SeriesList.
+func (m *SeriesMarkLine) AddGlobalLines(markTypes ...string) {
+	m.Lines = appendMarks(m.Lines, true, markTypes)
 }
 
 // GenericSeries references a population of data for any type of charts. The chart specific fields will only be active
@@ -121,7 +187,7 @@ func (g GenericSeriesList) getSeriesValues(index int) []float64 {
 
 func (g GenericSeriesList) hasMarkPoint() bool {
 	for _, s := range g {
-		if len(s.MarkPoint.Data) > 0 {
+		if len(s.MarkPoint.Points) > 0 {
 			return true
 		}
 	}
@@ -207,7 +273,7 @@ func (l LineSeriesList) getSeriesValues(index int) []float64 {
 
 func (l LineSeriesList) hasMarkPoint() bool {
 	for _, s := range l {
-		if len(s.MarkPoint.Data) > 0 {
+		if len(s.MarkPoint.Points) > 0 {
 			return true
 		}
 	}
@@ -309,7 +375,7 @@ func (b BarSeriesList) getSeriesValues(index int) []float64 {
 
 func (b BarSeriesList) hasMarkPoint() bool {
 	for _, s := range b {
-		if len(s.MarkPoint.Data) > 0 {
+		if len(s.MarkPoint.Points) > 0 {
 			return true
 		}
 	}

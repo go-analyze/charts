@@ -219,8 +219,8 @@ type EChartsMarkPoint struct {
 func (emp *EChartsMarkPoint) ToSeriesMarkPoint() SeriesMarkPoint {
 	return SeriesMarkPoint{
 		SymbolSize: emp.SymbolSize,
-		Data: sliceConversion(emp.Data, func(i EChartsMarkData) SeriesMarkData {
-			return SeriesMarkData{Type: i.Type}
+		Points: sliceConversion(emp.Data, func(i EChartsMarkData) SeriesMark {
+			return SeriesMark{Type: i.Type}
 		}),
 	}
 }
@@ -231,8 +231,8 @@ type EChartsMarkLine struct {
 
 func (eml *EChartsMarkLine) ToSeriesMarkLine() SeriesMarkLine {
 	return SeriesMarkLine{
-		Data: sliceConversion(eml.Data, func(i EChartsMarkData) SeriesMarkData {
-			return SeriesMarkData{Type: i.Type}
+		Lines: sliceConversion(eml.Data, func(i EChartsMarkData) SeriesMark {
+			return SeriesMark{Type: i.Type}
 		}),
 	}
 }

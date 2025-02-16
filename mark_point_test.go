@@ -20,7 +20,7 @@ func TestMarkPoint(t *testing.T) {
 				markPoint.add(markPointRenderOption{
 					fillColor:    ColorBlack,
 					seriesValues: []float64{1, 2, 3},
-					markpoint:    NewMarkPoint(SeriesMarkTypeMax),
+					markpoints:   NewSeriesMarkList(SeriesMarkTypeMax),
 					points: []Point{
 						{X: 10, Y: 10},
 						{X: 30, Y: 30},

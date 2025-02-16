@@ -414,3 +414,25 @@ func BenchmarkGetSeriesMaxDataCount(b *testing.B) { // benchmark used to evaluat
 		_ = getSeriesMaxDataCount(seriesList)
 	}
 }
+
+func BenchmarkSeriesMarkListSplitGlobal(b *testing.B) {
+	pure := NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeMin, SeriesMarkTypeAverage)
+	mixed := NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeMin, SeriesMarkTypeAverage)
+	mixed[1].Global = true
+
+	for i := 0; i < b.N; i++ {
+		_, _ = pure.splitGlobal()
+		_, _ = mixed.splitGlobal()
+	}
+}
+
+func BenchmarkSeriesMarkListFilterGlobal(b *testing.B) {
+	pure := NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeMin, SeriesMarkTypeAverage)
+	mixed := NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeMin, SeriesMarkTypeAverage)
+	mixed[1].Global = true
+
+	for i := 0; i < b.N; i++ {
+		_ = pure.filterGlobal(false)
+		_ = mixed.filterGlobal(false)
+	}
+}
