@@ -185,6 +185,14 @@ func (g GenericSeriesList) getSeriesValues(index int) []float64 {
 	return g[index].Values
 }
 
+func (g GenericSeriesList) getSeriesLen(index int) int {
+	return len(g[index].Values)
+}
+
+func (g GenericSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (g GenericSeriesList) hasMarkPoint() bool {
 	for _, s := range g {
 		if len(s.MarkPoint.Points) > 0 {
@@ -220,6 +228,8 @@ type LineSeries struct {
 	// MarkLine provides a series for mark lines. When using a MarkLine, you will want to configure padding to the
 	// chart on the right for the values.
 	MarkLine SeriesMarkLine
+	// Symbol specifies a custom symbol for the series.
+	Symbol Symbol
 }
 
 func (l *LineSeries) getYAxisIndex() int {
@@ -271,6 +281,14 @@ func (l LineSeriesList) getSeriesValues(index int) []float64 {
 	return l[index].Values
 }
 
+func (l LineSeriesList) getSeriesLen(index int) int {
+	return len(l[index].Values)
+}
+
+func (l LineSeriesList) getSeriesSymbol(index int) Symbol {
+	return l[index].Symbol
+}
+
 func (l LineSeriesList) hasMarkPoint() bool {
 	for _, s := range l {
 		if len(s.MarkPoint.Points) > 0 {
@@ -304,6 +322,93 @@ func (l LineSeriesList) ToGenericSeriesList() GenericSeriesList {
 		}
 	}
 	return result
+}
+
+// ScatterSeries references a population of data for scatter charts.
+type ScatterSeries struct {
+	// Values provides the series data values.
+	Values [][]float64
+	// YAxisIndex is the index for the axis, it must be 0 or 1.
+	YAxisIndex int
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+	// MarkLine provides a series for mark lines. When using a MarkLine, you will want to configure padding to the
+	// chart on the right for the values.
+	MarkLine SeriesMarkLine
+	// Symbol specifies a custom symbol for the series.
+	Symbol Symbol
+}
+
+func (s *ScatterSeries) getYAxisIndex() int {
+	return s.YAxisIndex
+}
+
+func (s *ScatterSeries) getValues() []float64 {
+	result := make([]float64, 0, len(s.Values))
+	for _, v := range s.Values {
+		result = append(result, v...)
+	}
+	return result
+}
+
+func (s *ScatterSeries) getType() string {
+	return ChartTypeScatter
+}
+
+func (s *ScatterSeries) Summary() populationSummary {
+	return summarizePopulationData(s.getValues())
+}
+
+// ScatterSeriesList provides the data populations for scatter charts (ScatterChartOption).
+type ScatterSeriesList []ScatterSeries
+
+func (s ScatterSeriesList) names() []string {
+	return seriesNames(s)
+}
+
+// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
+func (s ScatterSeriesList) SumSeries() []float64 {
+	return sumSeries(s)
+}
+
+func (s ScatterSeriesList) len() int {
+	return len(s)
+}
+
+func (s ScatterSeriesList) getSeries(index int) series {
+	return &s[index]
+}
+
+func (s ScatterSeriesList) getSeriesName(index int) string {
+	return s[index].Name
+}
+
+func (s ScatterSeriesList) getSeriesValues(index int) []float64 {
+	return s[index].getValues()
+}
+
+func (s ScatterSeriesList) getSeriesLen(index int) int {
+	return len(s[index].Values)
+}
+
+func (s ScatterSeriesList) getSeriesSymbol(index int) Symbol {
+	return s[index].Symbol
+}
+
+func (s ScatterSeriesList) hasMarkPoint() bool {
+	return false
+}
+
+func (s ScatterSeriesList) setSeriesName(index int, name string) {
+	s[index].Name = name
+}
+
+func (s ScatterSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(s, func(i, j int) bool {
+		return dict[s[i].Name] < dict[s[j].Name]
+	})
 }
 
 // BarSeries references a population of data for bar charts.
@@ -371,6 +476,14 @@ func (b BarSeriesList) getSeriesName(index int) string {
 
 func (b BarSeriesList) getSeriesValues(index int) []float64 {
 	return b[index].Values
+}
+
+func (b BarSeriesList) getSeriesLen(index int) int {
+	return len(b[index].Values)
+}
+
+func (b BarSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
 }
 
 func (b BarSeriesList) hasMarkPoint() bool {
@@ -467,6 +580,14 @@ func (h HorizontalBarSeriesList) getSeriesValues(index int) []float64 {
 	return h[index].Values
 }
 
+func (h HorizontalBarSeriesList) getSeriesLen(index int) int {
+	return len(h[index].Values)
+}
+
+func (h HorizontalBarSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (h HorizontalBarSeriesList) hasMarkPoint() bool {
 	return false // not currently supported on this chart type
 }
@@ -537,6 +658,14 @@ func (f FunnelSeriesList) getSeriesName(index int) string {
 
 func (f FunnelSeriesList) getSeriesValues(index int) []float64 {
 	return []float64{f[index].Value}
+}
+
+func (f FunnelSeriesList) getSeriesLen(_ int) int {
+	return 1
+}
+
+func (f FunnelSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
 }
 
 func (f FunnelSeriesList) hasMarkPoint() bool {
@@ -613,6 +742,14 @@ func (p PieSeriesList) getSeriesValues(index int) []float64 {
 	return []float64{p[index].Value}
 }
 
+func (p PieSeriesList) getSeriesLen(_ int) int {
+	return 1
+}
+
+func (p PieSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (p PieSeriesList) hasMarkPoint() bool {
 	return false // not supported on this chart type
 }
@@ -686,6 +823,14 @@ func (r RadarSeriesList) getSeriesValues(index int) []float64 {
 	return r[index].Values
 }
 
+func (r RadarSeriesList) getSeriesLen(index int) int {
+	return len(r[index].Values)
+}
+
+func (r RadarSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
 func (r RadarSeriesList) hasMarkPoint() bool {
 	return false // not supported on this chart type
 }
@@ -720,10 +865,12 @@ type seriesList interface {
 	getSeries(index int) series
 	getSeriesName(index int) string
 	getSeriesValues(index int) []float64
+	getSeriesLen(i int) int
 	names() []string
 	hasMarkPoint() bool
 	setSeriesName(index int, name string)
 	sortByNameIndex(dict map[string]int)
+	getSeriesSymbol(index int) Symbol
 }
 
 // series interface is used to provide the raw series struct to callers of seriesList, allowing direct type checks.
@@ -731,6 +878,14 @@ type series interface {
 	getType() string
 	getYAxisIndex() int
 	getValues() []float64
+}
+
+func expandSingleValueScatterSeries(vals []float64) [][]float64 {
+	result := make([][]float64, len(vals))
+	for i, v := range vals {
+		result[i] = []float64{v}
+	}
+	return result
 }
 
 func filterSeriesList[T any](sl seriesList, chartType string) T {
@@ -751,6 +906,26 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 						Name:       v.Name,
 						MarkLine:   v.MarkLine,
 						MarkPoint:  v.MarkPoint,
+					})
+				}
+			}
+		}
+		return any(result).(T)
+	case ChartTypeScatter:
+		result := make(ScatterSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *ScatterSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, ScatterSeries{
+						Values:     expandSingleValueScatterSeries(v.Values),
+						YAxisIndex: v.YAxisIndex,
+						Label:      v.Label,
+						Name:       v.Name,
+						MarkLine:   v.MarkLine,
 					})
 				}
 			}
@@ -864,6 +1039,18 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 						Name:       v.Name,
 						MarkLine:   v.MarkLine,
 						MarkPoint:  v.MarkPoint,
+					})
+				case *ScatterSeries:
+					values := make([]float64, len(v.Values))
+					for i, v := range v.Values {
+						values[i] = chartdraw.MeanFloat64(v...)
+					}
+					result = append(result, GenericSeries{
+						Values:     values,
+						YAxisIndex: v.YAxisIndex,
+						Label:      v.Label,
+						Name:       v.Name,
+						MarkLine:   v.MarkLine,
 					})
 				case *BarSeries:
 					result = append(result, GenericSeries{
@@ -1000,6 +1187,60 @@ func NewSeriesListLine(values [][]float64, opts ...LineSeriesOption) LineSeriesL
 			Label:     opt.Label,
 			MarkPoint: opt.MarkPoint,
 			MarkLine:  opt.MarkLine,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		seriesList[index] = s
+	}
+	return seriesList
+}
+
+// ScatterSeriesOption provides series customization for NewSeriesListScatter and NewSeriesListScatterMultiValue.
+type ScatterSeriesOption struct {
+	Label    SeriesLabel
+	Names    []string
+	MarkLine SeriesMarkLine
+}
+
+// NewSeriesListScatter builds a SeriesList for a line chart. The first dimension of the values indicates the population
+// of the data, while the second dimension provides the samples for the population.
+func NewSeriesListScatter(values [][]float64, opts ...ScatterSeriesOption) ScatterSeriesList {
+	var opt ScatterSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+
+	seriesList := make([]ScatterSeries, len(values))
+	for index, v := range values {
+		s := ScatterSeries{
+			Values:   expandSingleValueScatterSeries(v),
+			Label:    opt.Label,
+			MarkLine: opt.MarkLine,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		seriesList[index] = s
+	}
+	return seriesList
+}
+
+// NewSeriesListScatterMultiValue builds a SeriesList for a scatter charts. The first dimension of the values indicates
+// the population of the data, while the second dimension provides the samples for the population. Multiple values for
+// a single sample can be provided using the last dimension.
+func NewSeriesListScatterMultiValue(values [][][]float64, opts ...ScatterSeriesOption) ScatterSeriesList {
+	var opt ScatterSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+
+	seriesList := make([]ScatterSeries, len(values))
+	for index, v := range values {
+		s := ScatterSeries{
+			Values:   v,
+			Label:    opt.Label,
+			MarkLine: opt.MarkLine,
 		}
 		if index < len(opt.Names) {
 			s.Name = opt.Names[index]
@@ -1318,7 +1559,7 @@ func sumSeriesData(sl seriesList, yaxisIndex int) []float64 {
 func getSeriesMaxDataCount(sl seriesList) int {
 	result := 0
 	for i := 0; i < sl.len(); i++ {
-		count := len(sl.getSeriesValues(i))
+		count := sl.getSeriesLen(i)
 		if count > result {
 			result = count
 		}
