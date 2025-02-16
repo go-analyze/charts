@@ -125,7 +125,7 @@ func TestEChartsMarkPoint(t *testing.T) {
 	}
 	assert.Equal(t, SeriesMarkPoint{
 		SymbolSize: 30,
-		Data: []SeriesMarkData{
+		Points: []SeriesMark{
 			{
 				Type: "test",
 			},
@@ -147,7 +147,7 @@ func TestEChartsMarkLine(t *testing.T) {
 		},
 	}
 	assert.Equal(t, SeriesMarkLine{
-		Data: []SeriesMarkData{
+		Lines: []SeriesMark{
 			{
 				Type: "min",
 			},

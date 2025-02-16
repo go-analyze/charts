@@ -264,60 +264,81 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 			seriesPainter.diamonds(points, seriesColor, seriesColor, 1, size)
 		}
 
-		// Formatter set on the MarkLine or MarkPoint is checked in the respective painter
-		markLineValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
-		markPointValueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter)
 		var globalSeriesData []float64 // lazily initialized
-		if series.MarkLine.GlobalLine && stackSeries && index == seriesCount-1 {
-			if globalSeriesData == nil {
-				globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+		if len(series.MarkLine.Lines) > 0 {
+			markLineValueFormatter := getPreferredValueFormatter(series.MarkLine.ValueFormatter,
+				series.Label.ValueFormatter, opt.ValueFormatter)
+			var seriesMarks, globalMarks SeriesMarkList
+			if stackSeries && index == seriesCount-1 { // global is only allowed when stacked and on the last series
+				seriesMarks, globalMarks = series.MarkLine.Lines.splitGlobal()
+			} else {
+				seriesMarks = series.MarkLine.Lines.filterGlobal(false)
 			}
-			markLinePainter.add(markLineRenderOption{
-				fillColor:             defaultGlobalMarkFillColor,
-				fontColor:             opt.Theme.GetTextColor(),
-				strokeColor:           defaultGlobalMarkFillColor,
-				font:                  opt.Font,
-				markline:              series.MarkLine,
-				seriesValues:          globalSeriesData,
-				axisRange:             yRange,
-				valueFormatterDefault: markLineValueFormatter,
-			})
-		} else if !stackSeries || index == 0 {
-			// In stacked mode we only support the line painter for the first series
-			markLinePainter.add(markLineRenderOption{
-				fillColor:             seriesColor,
-				fontColor:             opt.Theme.GetTextColor(),
-				strokeColor:           seriesColor,
-				font:                  opt.Font,
-				markline:              series.MarkLine,
-				seriesValues:          series.Values,
-				axisRange:             yRange,
-				valueFormatterDefault: markLineValueFormatter,
-			})
+			if len(seriesMarks) > 0 && (!stackSeries || index == 0) {
+				// In stacked mode we only support the line painter for the first series
+				markLinePainter.add(markLineRenderOption{
+					fillColor:      seriesColor,
+					fontColor:      opt.Theme.GetTextColor(),
+					strokeColor:    seriesColor,
+					font:           opt.Font,
+					marklines:      seriesMarks,
+					seriesValues:   series.Values,
+					axisRange:      yRange,
+					valueFormatter: markLineValueFormatter,
+				})
+			}
+			if len(globalMarks) > 0 {
+				if globalSeriesData == nil {
+					globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+				}
+				markLinePainter.add(markLineRenderOption{
+					fillColor:      defaultGlobalMarkFillColor,
+					fontColor:      opt.Theme.GetTextColor(),
+					strokeColor:    defaultGlobalMarkFillColor,
+					font:           opt.Font,
+					marklines:      globalMarks,
+					seriesValues:   globalSeriesData,
+					axisRange:      yRange,
+					valueFormatter: markLineValueFormatter,
+				})
+			}
 		}
-		if series.MarkPoint.GlobalPoint && stackSeries && index == seriesCount-1 {
-			if globalSeriesData == nil {
-				globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+		if len(series.MarkPoint.Points) > 0 {
+			markPointValueFormatter := getPreferredValueFormatter(series.MarkPoint.ValueFormatter,
+				series.Label.ValueFormatter, opt.ValueFormatter)
+			var seriesMarks, globalMarks SeriesMarkList
+			if stackSeries && index == seriesCount-1 { // global is only allowed when stacked and on the last series
+				seriesMarks, globalMarks = series.MarkPoint.Points.splitGlobal()
+			} else {
+				seriesMarks = series.MarkPoint.Points.filterGlobal(false)
 			}
-			markPointPainter.add(markPointRenderOption{
-				fillColor:             defaultGlobalMarkFillColor,
-				font:                  opt.Font,
-				points:                points,
-				markpoint:             series.MarkPoint,
-				seriesValues:          globalSeriesData,
-				valueFormatterDefault: markPointValueFormatter,
-				seriesLabelPainter:    labelPainter,
-			})
-		} else {
-			markPointPainter.add(markPointRenderOption{
-				fillColor:             seriesColor,
-				font:                  opt.Font,
-				points:                points,
-				markpoint:             series.MarkPoint,
-				seriesValues:          series.Values,
-				valueFormatterDefault: markPointValueFormatter,
-				seriesLabelPainter:    labelPainter,
-			})
+			if len(seriesMarks) > 0 {
+				markPointPainter.add(markPointRenderOption{
+					fillColor:          seriesColor,
+					font:               opt.Font,
+					symbolSize:         series.MarkPoint.SymbolSize,
+					points:             points,
+					markpoints:         seriesMarks,
+					seriesValues:       series.Values,
+					valueFormatter:     markPointValueFormatter,
+					seriesLabelPainter: labelPainter,
+				})
+			}
+			if len(globalMarks) > 0 {
+				if globalSeriesData == nil {
+					globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+				}
+				markPointPainter.add(markPointRenderOption{
+					fillColor:          defaultGlobalMarkFillColor,
+					font:               opt.Font,
+					symbolSize:         series.MarkPoint.SymbolSize,
+					points:             points,
+					markpoints:         globalMarks,
+					seriesValues:       globalSeriesData,
+					valueFormatter:     markPointValueFormatter,
+					seriesLabelPainter: labelPainter,
+				})
+			}
 		}
 
 		// Save these points as "priorSeriesPoints" for the next series to stack onto (if needed)

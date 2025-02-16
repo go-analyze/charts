@@ -6,7 +6,7 @@ import (
 )
 
 func makeDefaultMultiChartOptions() ChartOption {
-	return ChartOption{
+	opt := ChartOption{
 		OutputFormat: ChartOutputPNG,
 		Legend: LegendOption{
 			Offset: OffsetStr{
@@ -52,6 +52,13 @@ func makeDefaultMultiChartOptions() ChartOption {
 			},
 		},
 	}
+	pointMarks := NewSeriesMarkList(SeriesMarkTypeMin, SeriesMarkTypeMax)
+	lineMarks := NewSeriesMarkList(SeriesMarkTypeAverage)
+	opt.SeriesList[0].MarkPoint.Points = pointMarks
+	opt.SeriesList[0].MarkLine.Lines = lineMarks
+	opt.SeriesList[2].MarkPoint.Points = pointMarks
+	opt.SeriesList[2].MarkLine.Lines = lineMarks
+	return opt
 }
 
 func BenchmarkChartOptionMultiChartPNGRender(b *testing.B) {
@@ -145,6 +152,12 @@ func renderPainterLine(painter *Painter) {
 		{56.5, 82.1, 88.7, 70.1, 53.4, 85.1},
 		{51.1, 51.4, 55.1, 53.3, 73.8, 68.7},
 	})
+	pointMarks := NewSeriesMarkList(SeriesMarkTypeMin, SeriesMarkTypeMax)
+	lineMarks := NewSeriesMarkList(SeriesMarkTypeAverage)
+	lineOpt.SeriesList[0].MarkPoint.Points = pointMarks
+	lineOpt.SeriesList[0].MarkLine.Lines = lineMarks
+	lineOpt.SeriesList[1].MarkPoint.Points = pointMarks
+	lineOpt.SeriesList[1].MarkLine.Lines = lineMarks
 	lineOpt.Legend = LegendOption{
 		Offset: OffsetStr{
 			Top: "-90",
@@ -196,6 +209,12 @@ func renderPainterBar(painter *Painter) {
 		{2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3},
 		{2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3},
 	})
+	pointMarks := NewSeriesMarkList(SeriesMarkTypeMin, SeriesMarkTypeMax)
+	lineMarks := NewSeriesMarkList(SeriesMarkTypeAverage)
+	barOpt.SeriesList[0].MarkPoint.Points = pointMarks
+	barOpt.SeriesList[0].MarkLine.Lines = lineMarks
+	barOpt.SeriesList[1].MarkPoint.Points = pointMarks
+	barOpt.SeriesList[1].MarkLine.Lines = lineMarks
 	barOpt.XAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}
@@ -205,10 +224,6 @@ func renderPainterBar(painter *Painter) {
 		Offset:       OffsetRight,
 		OverlayChart: Ptr(true),
 	}
-	barOpt.SeriesList[0].MarkLine = NewMarkLine(SeriesMarkTypeAverage)
-	barOpt.SeriesList[0].MarkPoint = NewMarkPoint(SeriesMarkTypeMax, SeriesMarkTypeMin)
-	barOpt.SeriesList[1].MarkLine = NewMarkLine(SeriesMarkTypeAverage)
-	barOpt.SeriesList[1].MarkPoint = NewMarkPoint(SeriesMarkTypeMax, SeriesMarkTypeMin)
 	if err := painter.BarChart(barOpt); err != nil {
 		panic(err)
 	} else if buf, err := painter.Bytes(); err != nil {

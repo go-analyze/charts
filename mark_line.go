@@ -4,16 +4,10 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
-// NewMarkLine returns a series mark line
+// NewMarkLine returns a mark line for the provided types, this is set on a specific instance within a Series.
 func NewMarkLine(markLineTypes ...string) SeriesMarkLine {
-	data := make([]SeriesMarkData, len(markLineTypes))
-	for index, t := range markLineTypes {
-		data[index] = SeriesMarkData{
-			Type: t,
-		}
-	}
 	return SeriesMarkLine{
-		Data: data,
+		Lines: NewSeriesMarkList(markLineTypes...),
 	}
 }
 
@@ -23,9 +17,10 @@ type markLinePainter struct {
 }
 
 func (m *markLinePainter) add(opt markLineRenderOption) {
-	if len(opt.markline.Data) > 0 {
-		m.options = append(m.options, opt)
+	if opt.valueFormatter == nil {
+		opt.valueFormatter = defaultValueFormatter
 	}
+	m.options = append(m.options, opt)
 }
 
 // newMarkLinePainter returns a mark line renderer
@@ -36,20 +31,20 @@ func newMarkLinePainter(p *Painter) *markLinePainter {
 }
 
 type markLineRenderOption struct {
-	fillColor             Color
-	fontColor             Color
-	strokeColor           Color
-	font                  *truetype.Font
-	seriesValues          []float64
-	markline              SeriesMarkLine
-	axisRange             axisRange
-	valueFormatterDefault ValueFormatter
+	fillColor      Color
+	fontColor      Color
+	strokeColor    Color
+	font           *truetype.Font
+	seriesValues   []float64
+	marklines      []SeriesMark
+	axisRange      axisRange
+	valueFormatter ValueFormatter
 }
 
 func (m *markLinePainter) Render() (Box, error) {
 	painter := m.p
 	for _, opt := range m.options {
-		if len(opt.markline.Data) == 0 {
+		if len(opt.marklines) == 0 {
 			continue
 		}
 		summary := summarizePopulationData(opt.seriesValues)
@@ -58,8 +53,7 @@ func (m *markLinePainter) Render() (Box, error) {
 			FontColor: opt.fontColor,
 			FontSize:  labelFontSize,
 		}
-		valueFormatter := getPreferredValueFormatter(opt.markline.ValueFormatter, opt.valueFormatterDefault)
-		for _, markLine := range opt.markline.Data {
+		for _, markLine := range opt.marklines {
 			var value float64
 			switch markLine.Type {
 			case SeriesMarkTypeMax:
@@ -70,7 +64,7 @@ func (m *markLinePainter) Render() (Box, error) {
 				value = summary.Average
 			}
 			y := opt.axisRange.getRestHeight(value)
-			text := valueFormatter(value)
+			text := opt.valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, fontStyle)
 			width := painter.Width()
 			painter.HorizontalMarkLine(0, y, width-2, opt.fillColor, opt.strokeColor, 1, []float64{4, 2})

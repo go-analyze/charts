@@ -22,11 +22,7 @@ func TestMarkLine(t *testing.T) {
 					fontColor:    ColorBlack,
 					strokeColor:  ColorBlack,
 					seriesValues: []float64{1, 2, 3},
-					markline: NewMarkLine(
-						SeriesMarkTypeMax,
-						SeriesMarkTypeAverage,
-						SeriesMarkTypeMin,
-					),
+					marklines:    NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeAverage, SeriesMarkTypeMin),
 					axisRange: newRange(p, nil,
 						p.Height(), 6, 0.0, 5.0, 0.0, 0.0),
 				})
