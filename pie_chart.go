@@ -32,8 +32,8 @@ type PieChartOption struct {
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListPie.
+	SeriesList PieSeriesList
 	// Title are options for rendering the title.
 	Title TitleOption
 	// Legend are options for the data legend.
@@ -114,9 +114,6 @@ func newSector(cx int, cy int, radius float64, labelRadius float64,
 		if seriesLabel.ValueFormatter != nil || altFormatter != nil {
 			s.label = getPreferredValueFormatter(seriesLabel.ValueFormatter, altFormatter)(s.value)
 		} else {
-			if seriesLabel.FormatTemplate == "" {
-				seriesLabel.FormatTemplate = seriesLabel.Formatter
-			}
 			s.label = labelFormatPie([]string{label}, seriesLabel.FormatTemplate, 0, s.value, s.percent)
 		}
 	}
@@ -152,7 +149,7 @@ func (s *sector) calculateTextXY(textBox Box) (x int, y int) {
 	return
 }
 
-func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (Box, error) {
+func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList) (Box, error) {
 	opt := p.opt
 	seriesCount := len(seriesList)
 	if seriesCount == 0 {
@@ -164,7 +161,6 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	cy := seriesPainter.Height() >> 1
 	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
 	radius := getRadius(float64(diameter), opt.Radius)
-	values := make([]float64, seriesCount)
 	var total float64
 	for index, series := range seriesList {
 		if opt.Radius == "" && series.Radius != "" {
@@ -173,12 +169,10 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 				radius = seriesRadius
 			}
 		}
-		value := chartdraw.SumFloat64(series.Data...)
-		values[index] = value
-		total += value
-		if value < 0 {
+		if series.Value < 0 {
 			return BoxZero, fmt.Errorf("unsupported negative value for series index %d", index)
 		}
+		total += series.Value
 	}
 	if total <= 0 {
 		return BoxZero, errors.New("the sum value of pie chart should greater than 0")
@@ -191,28 +185,25 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 	labelRadius := radius + float64(labelLineWidth)
 	seriesNames := opt.Legend.SeriesNames
 	if len(seriesNames) == 0 {
-		seriesNames = opt.Legend.Data
-	}
-	if len(seriesNames) == 0 {
-		seriesNames = seriesList.Names()
+		seriesNames = seriesList.names()
 	}
 	theme := opt.Theme
 
 	var currentValue float64
 	var quadrant1, quadrant2, quadrant3, quadrant4 []sector
-	for index, v := range values {
-		series := seriesList[index]
+	seriesLen := len(seriesList)
+	for index, series := range seriesList {
 		seriesRadius := radius
 		if series.Radius != "" {
 			seriesRadius = getRadius(float64(diameter), series.Radius)
 		}
 		color := theme.GetSeriesColor(index)
-		if index == len(values)-1 {
+		if index == seriesLen-1 {
 			if color == theme.GetSeriesColor(0) {
 				color = theme.GetSeriesColor(1)
 			}
 		}
-		s := newSector(cx, cy, seriesRadius, labelRadius, v, currentValue, total, labelLineWidth,
+		s := newSector(cx, cy, seriesRadius, labelRadius, series.Value, currentValue, total, labelLineWidth,
 			seriesNames[index], series.Label, opt.ValueFormatter, color)
 		switch quadrant := s.quadrant; quadrant {
 		case 1:
@@ -224,7 +215,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 		case 4:
 			quadrant4 = append(quadrant4, s)
 		}
-		currentValue += v
+		currentValue += series.Value
 	}
 	sectors := append(quadrant1, quadrant4...)
 	sectors = append(sectors, quadrant3...)
@@ -297,11 +288,11 @@ func (p *pieChart) Render() (Box, error) {
 		padding:    opt.Padding,
 		seriesList: opt.SeriesList,
 		xAxis: &XAxisOption{
-			Show: False(),
+			Show: Ptr(false),
 		},
 		yAxis: []YAxisOption{
 			{
-				Show: False(),
+				Show: Ptr(false),
 			},
 		},
 		title:  opt.Title,
@@ -310,6 +301,5 @@ func (p *pieChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	seriesList := opt.SeriesList.Filter(ChartTypePie)
-	return p.render(renderResult, seriesList)
+	return p.render(renderResult, opt.SeriesList)
 }

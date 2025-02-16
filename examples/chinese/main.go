@@ -42,7 +42,7 @@ func main() {
 	p, err := charts.LineRender(
 		values,
 		charts.TitleTextOptionFunc("测试"),
-		charts.XAxisDataOptionFunc([]string{
+		charts.XAxisLabelsOptionFunc([]string{
 			"星期一",
 			"星期二",
 			"星期三",

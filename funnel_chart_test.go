@@ -14,9 +14,7 @@ func makeBasicFunnelChartOption() FunnelChartOption {
 			100, 80, 60, 40, 20,
 		}),
 		Legend: LegendOption{
-			Data: []string{
-				"Show", "Click", "Visit", "Inquiry", "Order",
-			},
+			SeriesNames: []string{"Show", "Click", "Visit", "Inquiry", "Order"},
 		},
 		Title: TitleOption{
 			Text: "Funnel",
@@ -30,7 +28,7 @@ func TestNewFunnelChartOptionWithData(t *testing.T) {
 	opt := NewFunnelChartOptionWithData([]float64{12, 24, 48})
 
 	assert.Len(t, opt.SeriesList, 3)
-	assert.Equal(t, ChartTypeFunnel, opt.SeriesList[0].Type)
+	assert.Equal(t, ChartTypeFunnel, opt.SeriesList[0].getType())
 	assert.Equal(t, defaultPadding, opt.Padding)
 
 	p := NewPainter(PainterOptions{})

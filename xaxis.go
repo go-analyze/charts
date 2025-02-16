@@ -1,12 +1,10 @@
 package charts
 
 type XAxisOption struct {
-	// Show specifies if the x-axis should be rendered, set this to *false (through False()) to hide the axis.
+	// Show specifies if the x-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
-	// Deprecated: Data is deprecated, use Labels instead.
-	Data []string
 	// Labels provides labels for each value on the x-axis (index matching to the series index).
 	Labels []string
 	// DataStartIndex specifies what index the Data values should start from.
@@ -15,12 +13,10 @@ type XAxisOption struct {
 	Position string
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
-	// graph. Specify a *bool (through charts.False() or charts.True()) to enforce a spacing.
+	// graph. Specify a *bool (through charts.Ptr(false) or charts.Ptr(true)) to enforce a spacing.
 	BoundaryGap *bool
 	// FontStyle specifies the font configuration for each label.
 	FontStyle FontStyle
-	// Deprecated: TextRotation is deprecated, use LabelRotation instead.
-	TextRotation float64
 	// LabelRotation are the radians for rotating the label. Convert from degrees using DegreesToRadians(float64).
 	LabelRotation float64
 	// LabelOffset is the offset of each label.
@@ -45,12 +41,6 @@ func (opt *XAxisOption) toAxisOption() axisOption {
 	if opt.Position == PositionTop {
 		position = PositionTop
 	}
-	if len(opt.Labels) == 0 {
-		opt.Labels = opt.Data
-	}
-	if opt.LabelRotation == 0 {
-		opt.LabelRotation = opt.TextRotation
-	}
 	axisOpt := axisOption{
 		Theme:                opt.Theme,
 		Labels:               opt.Labels,
@@ -68,7 +58,7 @@ func (opt *XAxisOption) toAxisOption() axisOption {
 	if opt.isValueAxis {
 		axisOpt.SplitLineShow = true
 		axisOpt.StrokeWidth = -1
-		axisOpt.BoundaryGap = False()
+		axisOpt.BoundaryGap = Ptr(false)
 	}
 	return axisOpt
 }

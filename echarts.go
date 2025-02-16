@@ -217,18 +217,12 @@ type EChartsMarkPoint struct {
 }
 
 func (emp *EChartsMarkPoint) ToSeriesMarkPoint() SeriesMarkPoint {
-	sp := SeriesMarkPoint{
+	return SeriesMarkPoint{
 		SymbolSize: emp.SymbolSize,
+		Points: sliceConversion(emp.Data, func(i EChartsMarkData) SeriesMark {
+			return SeriesMark{Type: i.Type}
+		}),
 	}
-	if len(emp.Data) == 0 {
-		return sp
-	}
-	data := make([]SeriesMarkData, len(emp.Data))
-	for index, item := range emp.Data {
-		data[index].Type = item.Type
-	}
-	sp.Data = data
-	return sp
 }
 
 type EChartsMarkLine struct {
@@ -236,16 +230,11 @@ type EChartsMarkLine struct {
 }
 
 func (eml *EChartsMarkLine) ToSeriesMarkLine() SeriesMarkLine {
-	sl := SeriesMarkLine{}
-	if len(eml.Data) == 0 {
-		return sl
+	return SeriesMarkLine{
+		Lines: sliceConversion(eml.Data, func(i EChartsMarkData) SeriesMark {
+			return SeriesMark{Type: i.Type}
+		}),
 	}
-	data := make([]SeriesMarkData, len(eml.Data))
-	for index, item := range eml.Data {
-		data[index].Type = item.Type
-	}
-	sl.Data = data
-	return sl
 }
 
 type EChartsSeries struct {
@@ -264,20 +253,20 @@ type EChartsSeries struct {
 }
 type EChartsSeriesList []EChartsSeries
 
-func (esList EChartsSeriesList) ToSeriesList() SeriesList {
-	seriesList := make(SeriesList, 0, len(esList))
+func (esList EChartsSeriesList) ToSeriesList() GenericSeriesList {
+	seriesList := make([]GenericSeries, 0, len(esList))
 	for _, item := range esList {
 		// if pie, each sub-recommendation generates a series
 		if item.Type == ChartTypePie {
 			for _, dataItem := range item.Data {
-				seriesList = append(seriesList, Series{
+				seriesList = append(seriesList, GenericSeries{
 					Type: item.Type,
 					Name: dataItem.Name,
 					Label: SeriesLabel{
-						Show: True(),
+						Show: Ptr(true),
 					},
 					Radius: item.Radius,
-					Data:   []float64{dataItem.Value.First()},
+					Values: []float64{dataItem.Value.First()},
 				})
 			}
 			continue
@@ -285,34 +274,32 @@ func (esList EChartsSeriesList) ToSeriesList() SeriesList {
 		if item.Type == ChartTypeRadar ||
 			item.Type == ChartTypeFunnel {
 			for _, dataItem := range item.Data {
-				seriesList = append(seriesList, Series{
-					Name: dataItem.Name,
-					Type: item.Type,
-					Data: dataItem.Value.values,
+				seriesList = append(seriesList, GenericSeries{
+					Name:   dataItem.Name,
+					Type:   item.Type,
+					Values: dataItem.Value.values,
 					Label: SeriesLabel{
 						FontStyle: FontStyle{
 							FontColor: ParseColor(item.Label.Color),
 						},
-						Show:     BoolPointer(item.Label.Show),
+						Show:     Ptr(item.Label.Show),
 						Distance: item.Label.Distance,
 					},
 				})
 			}
 			continue
 		}
-		data := make([]float64, len(item.Data))
-		for j, dataItem := range item.Data {
-			data[j] = dataItem.Value.First()
-		}
-		seriesList = append(seriesList, Series{
-			Type:       item.Type,
-			Data:       data,
+		seriesList = append(seriesList, GenericSeries{
+			Type: item.Type,
+			Values: sliceConversion(item.Data, func(dataItem EChartsSeriesData) float64 {
+				return dataItem.Value.First()
+			}),
 			YAxisIndex: item.YAxisIndex,
 			Label: SeriesLabel{
 				FontStyle: FontStyle{
 					FontColor: ParseColor(item.Label.Color),
 				},
-				Show:     BoolPointer(item.Label.Show),
+				Show:     Ptr(item.Label.Show),
 				Distance: item.Label.Distance,
 			},
 			Name:      item.Name,
@@ -408,7 +395,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				Top:  string(eo.Legend.Top),
 			},
 			Align:    eo.Legend.Align,
-			Vertical: BoolPointer(strings.EqualFold(eo.Legend.Orient, "vertical")),
+			Vertical: Ptr(strings.EqualFold(eo.Legend.Orient, "vertical")),
 		},
 		RadarIndicators: eo.Radar.Indicator,
 		Width:           eo.Width,
@@ -421,6 +408,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	for _, item := range eo.XAxis.Data {
 		if item.Type == "value" {
 			isHorizontalChart = true
+			break
 		}
 	}
 	if isHorizontalChart {
@@ -442,7 +430,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		if o.XAxis.BoundaryGap == nil {
 			// Ensure default ECharts behavior of centering labels and sets a "BoundaryGap"
 			// https://echarts.apache.org/en/option.html#xAxis.boundaryGap
-			o.XAxis.BoundaryGap = True()
+			o.XAxis.BoundaryGap = Ptr(true)
 		}
 	}
 	yAxisOptions := make([]YAxisOption, len(eo.YAxis.Data))
@@ -456,13 +444,9 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		}
 	}
 	o.YAxis = yAxisOptions
-
-	if len(eo.Children) != 0 {
-		o.Children = make([]ChartOption, len(eo.Children))
-		for index, item := range eo.Children {
-			o.Children[index] = item.ToOption()
-		}
-	}
+	o.Children = sliceConversion(eo.Children, func(child EChartsOption) ChartOption {
+		return child.ToOption()
+	})
 	return o
 }
 

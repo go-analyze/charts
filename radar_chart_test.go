@@ -19,9 +19,7 @@ func makeBasicRadarChartOption() RadarChartOption {
 			Text: "Basic Radar Chart",
 		},
 		Legend: LegendOption{
-			Data: []string{
-				"Allocated Budget", "Actual Spending",
-			},
+			SeriesNames: []string{"Allocated Budget", "Actual Spending"},
 		},
 		RadarIndicators: NewRadarIndicators([]string{
 			"Sales",
@@ -54,7 +52,7 @@ func TestNewRadarChartOptionWithData(t *testing.T) {
 	})
 
 	assert.Len(t, opt.SeriesList, 2)
-	assert.Equal(t, ChartTypeRadar, opt.SeriesList[0].Type)
+	assert.Equal(t, ChartTypeRadar, opt.SeriesList[0].getType())
 	assert.Equal(t, defaultPadding, opt.Padding)
 
 	p := NewPainter(PainterOptions{})

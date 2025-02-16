@@ -30,14 +30,14 @@ func main() {
 	}
 	p, err := charts.LineRender(
 		values,
-		charts.XAxisDataOptionFunc([]string{
+		charts.XAxisLabelsOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
 		charts.LegendOptionFunc(charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"Email", "Video Ads", "Direct",
 			},
-			OverlayChart: charts.False(),
+			OverlayChart: charts.Ptr(false),
 			Offset: charts.OffsetStr{
 				Top:  charts.PositionBottom,
 				Left: "20%",
@@ -46,10 +46,10 @@ func main() {
 		func(opt *charts.ChartOption) {
 			opt.YAxis = []charts.YAxisOption{
 				{
-					Max: charts.FloatPointer(2000),
+					Max: charts.Ptr(2000.0),
 				},
 			}
-			opt.SymbolShow = charts.True()
+			opt.Symbol = charts.SymbolCircle
 			opt.LineStrokeWidth = 1.2
 			opt.ValueFormatter = func(f float64) string {
 				return fmt.Sprintf("%.0f", f)
@@ -65,15 +65,13 @@ func main() {
 		// set a transparent background theme to not overwrite the chart below
 		Theme: charts.GetDefaultTheme().WithBackgroundColor(charts.ColorTransparent),
 		Legend: charts.LegendOption{
-			Data: []string{
+			SeriesNames: []string{
 				"2011", "2012",
 			},
 		},
-		YAxis: []charts.YAxisOption{
-			{
-				Data: []string{
-					"USA", "India", "China", "World",
-				},
+		YAxis: charts.YAxisOption{
+			Labels: []string{
+				"USA", "India", "China", "World",
 			},
 		},
 		SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
