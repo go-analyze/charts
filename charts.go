@@ -95,7 +95,7 @@ type defaultRenderResult struct {
 }
 
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
-	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis)
+	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis, opt.yAxis)
 
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
 	if opt.seriesList.hasMarkPoint() {

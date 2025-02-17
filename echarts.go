@@ -7,8 +7,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 func convertToArray(data []byte) []byte {
@@ -36,7 +34,8 @@ func (p *EChartsPosition) UnmarshalJSON(data []byte) error {
 }
 
 type EChartStyle struct {
-	Color string `json:"color"`
+	Color   string   `json:"color"`
+	Opacity *float64 `json:"opacity,omitempty"`
 }
 
 type EChartsSeriesDataValue struct {
@@ -58,7 +57,7 @@ func (value *EChartsSeriesDataValue) First() float64 {
 type EChartsSeriesData struct {
 	Value     EChartsSeriesDataValue `json:"value"`
 	Name      string                 `json:"name"`
-	ItemStyle EChartStyle            `json:"itemStyle"`
+	ItemStyle EChartStyle            `json:"itemStyle,omitempty"` // TODO - add support
 }
 type _EChartsSeriesData EChartsSeriesData
 
@@ -92,11 +91,23 @@ func (es *EChartsSeriesData) UnmarshalJSON(data []byte) error {
 }
 
 type EChartsXAxisData struct {
-	BoundaryGap *bool    `json:"boundaryGap"`
-	SplitNumber int      `json:"splitNumber"`
-	Data        []string `json:"data"`
-	Type        string   `json:"type"`
+	BoundaryGap *bool            `json:"boundaryGap,omitempty"`
+	SplitNumber int              `json:"splitNumber,omitempty"`
+	AxisLabel   EChartsAxisLabel `json:"axisLabel,omitempty"`
+	AxisLine    EChartsAxisLine  `json:"axisLine,omitempty"`
+	Data        []string         `json:"data"`
+	Type        string           `json:"type"`
 }
+
+type EChartsAxisLine struct {
+	Show      *bool `json:"show,omitempty"`
+	LineStyle struct {
+		Color   string   `json:"color,omitempty"`
+		Opacity *float64 `json:"opacity,omitempty"`
+		Width   *int     `json:"width,omitempty"` // TODO - add support
+	} `json:"lineStyle,omitempty"`
+}
+
 type EChartsXAxis struct {
 	Data []EChartsXAxisData
 }
@@ -110,19 +121,33 @@ func (ex *EChartsXAxis) UnmarshalJSON(data []byte) error {
 }
 
 type EChartsAxisLabel struct {
-	Formatter string `json:"formatter"`
+	Formatter string `json:"formatter,omitempty"`
+	Show      *bool  `json:"show,omitempty"`
+	Color     string `json:"color,omitempty"`
+	FontSize  *int   `json:"fontSize,omitempty"`
 }
+
+func (al EChartsAxisLabel) makeFontStyle() FontStyle {
+	var axisFont FontStyle
+	if al.FontSize != nil {
+		axisFont.FontSize = float64(*al.FontSize)
+	}
+	if flagIs(false, al.Show) {
+		axisFont.FontColor = ColorTransparent
+	} else if axisTextColor := ParseColor(al.Color); !axisTextColor.IsZero() {
+		axisFont.FontColor = axisTextColor
+	}
+	return axisFont
+}
+
 type EChartsYAxisData struct {
-	Min       *float64         `json:"min"`
-	Max       *float64         `json:"max"`
-	AxisLabel EChartsAxisLabel `json:"axisLabel"`
-	AxisLine  struct {
-		LineStyle struct {
-			Color string `json:"color"`
-		} `json:"lineStyle"`
-	} `json:"axisLine"`
-	Data []string `json:"data"`
+	Min       *float64         `json:"min,omitempty"`
+	Max       *float64         `json:"max,omitempty"`
+	AxisLabel EChartsAxisLabel `json:"axisLabel,omitempty"`
+	AxisLine  EChartsAxisLine  `json:"axisLine,omitempty"`
+	Data      []string         `json:"data"`
 }
+
 type EChartsYAxis struct {
 	Data []EChartsYAxisData `json:"data"`
 }
@@ -175,14 +200,16 @@ type EChartsLabelOption struct {
 }
 
 type EChartsLegend struct {
-	Show      *bool            `json:"show"`
-	Data      []string         `json:"data"`
-	Align     string           `json:"align"`
-	Orient    string           `json:"orient"`
-	Padding   EChartsPadding   `json:"padding"`
-	Left      EChartsPosition  `json:"left"`
-	Top       EChartsPosition  `json:"top"`
-	TextStyle EChartsTextStyle `json:"textStyle"`
+	Show            *bool            `json:"show"`
+	Data            []string         `json:"data"`
+	Align           string           `json:"align"`
+	Orient          string           `json:"orient"`
+	Padding         EChartsPadding   `json:"padding,omitempty"`
+	Left            EChartsPosition  `json:"left"`
+	Top             EChartsPosition  `json:"top"`
+	TextStyle       EChartsTextStyle `json:"textStyle"`
+	BackgroundColor string           `json:"backgroundColor,omitempty"` // TODO - add support
+	BorderColor     string           `json:"borderColor,omitempty"`
 }
 
 type EChartsMarkData struct {
@@ -243,13 +270,13 @@ type EChartsSeries struct {
 	Type       string              `json:"type"`
 	Radius     string              `json:"radius"`
 	YAxisIndex int                 `json:"yAxisIndex"`
-	ItemStyle  EChartStyle         `json:"itemStyle"`
+	ItemStyle  EChartStyle         `json:"itemStyle,omitempty"` // TODO - add support
 	// label configuration
 	Label     EChartsLabelOption `json:"label"`
 	MarkPoint EChartsMarkPoint   `json:"markPoint"`
 	MarkLine  EChartsMarkLine    `json:"markLine"`
-	Max       *float64           `json:"max"`
-	Min       *float64           `json:"min"`
+	Max       *float64           `json:"max"` // TODO - add support
+	Min       *float64           `json:"min"` // TODO - add support
 }
 type EChartsSeriesList []EChartsSeries
 
@@ -316,12 +343,10 @@ type EChartsTextStyle struct {
 	FontSize   float64 `json:"fontSize"`
 }
 
-func (et *EChartsTextStyle) ToStyle() chartdraw.Style {
-	s := chartdraw.Style{
-		FontStyle: FontStyle{
-			FontSize:  et.FontSize,
-			FontColor: ParseColor(et.Color),
-		},
+func (et *EChartsTextStyle) ToFontStyle() FontStyle {
+	s := FontStyle{
+		FontSize:  et.FontSize,
+		FontColor: ParseColor(et.Color),
 	}
 	if et.FontFamily != "" {
 		s.Font = GetFont(et.FontFamily)
@@ -338,12 +363,15 @@ type EChartsOption struct {
 	Width      int            `json:"width"`
 	Height     int            `json:"height"`
 	Title      struct {
-		Text         string           `json:"text"`
-		Subtext      string           `json:"subtext"`
-		Left         EChartsPosition  `json:"left"`
-		Top          EChartsPosition  `json:"top"`
-		TextStyle    EChartsTextStyle `json:"textStyle"`
-		SubtextStyle EChartsTextStyle `json:"subtextStyle"`
+		Show            *bool            `json:"show,omitempty"`
+		Text            string           `json:"text"`
+		Subtext         string           `json:"subtext"`
+		Left            EChartsPosition  `json:"left"`
+		Top             EChartsPosition  `json:"top"`
+		TextStyle       EChartsTextStyle `json:"textStyle"`
+		SubtextStyle    EChartsTextStyle `json:"subtextStyle"`
+		BackgroundColor string           `json:"backgroundColor,omitempty"` // TODO - add support
+		BorderColor     string           `json:"borderColor,omitempty"`     // TODO - add support
 	} `json:"title"`
 	XAxis  EChartsXAxis  `json:"xAxis"`
 	YAxis  EChartsYAxis  `json:"yAxis"`
@@ -351,8 +379,9 @@ type EChartsOption struct {
 	Radar  struct {
 		Indicator []RadarIndicator `json:"indicator"`
 	} `json:"radar"`
-	Series   EChartsSeriesList `json:"series"`
-	Children []EChartsOption   `json:"children"`
+	Series          EChartsSeriesList `json:"series"`
+	BackgroundColor string            `json:"backgroundColor,omitempty"`
+	Children        []EChartsOption   `json:"children"`
 }
 
 func (eo *EChartsOption) ToOption() ChartOption {
@@ -361,42 +390,46 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		fontFamily = eo.Title.TextStyle.FontFamily
 	}
 	theme := GetTheme(eo.Theme)
-	titleTextStyle := eo.Title.TextStyle.ToStyle()
-	titleSubtextStyle := eo.Title.SubtextStyle.ToStyle()
-	legendTextStyle := eo.Legend.TextStyle.ToStyle()
+	backgroundColor := ParseColor(eo.BackgroundColor)
+	if !backgroundColor.IsZero() {
+		theme = theme.WithBackgroundColor(backgroundColor)
+	}
+	legendBorderColor := ParseColor(eo.Legend.BorderColor)
+	legendBorderWidth := 0.0
+	if !legendBorderColor.IsZero() {
+		theme = theme.WithLegendBorderColor(legendBorderColor)
+		legendBorderWidth = defaultStrokeWidth
+	}
+	titleTextStyle := eo.Title.TextStyle.ToFontStyle()
+	titleSubtextStyle := eo.Title.SubtextStyle.ToFontStyle()
+	legendTextStyle := eo.Legend.TextStyle.ToFontStyle()
 	o := ChartOption{
 		OutputFormat: eo.Type,
 		Font:         GetFont(fontFamily),
 		Theme:        theme,
 		Title: TitleOption{
-			Text:    eo.Title.Text,
-			Subtext: eo.Title.Subtext,
-			FontStyle: FontStyle{
-				FontColor: titleTextStyle.FontColor,
-				FontSize:  titleTextStyle.FontSize,
-			},
-			SubtextFontStyle: FontStyle{
-				FontSize:  titleSubtextStyle.FontSize,
-				FontColor: titleSubtextStyle.FontColor,
-			},
+			Show:             eo.Title.Show,
+			Text:             eo.Title.Text,
+			Subtext:          eo.Title.Subtext,
+			FontStyle:        titleTextStyle,
+			SubtextFontStyle: titleSubtextStyle,
 			Offset: OffsetStr{
 				Left: string(eo.Title.Left),
 				Top:  string(eo.Title.Top),
 			},
 		},
 		Legend: LegendOption{
-			Show: eo.Legend.Show,
-			FontStyle: FontStyle{
-				FontSize:  legendTextStyle.FontSize,
-				FontColor: legendTextStyle.FontColor,
-			},
+			Show:        eo.Legend.Show,
+			FontStyle:   legendTextStyle,
 			SeriesNames: eo.Legend.Data,
 			Offset: OffsetStr{
 				Left: string(eo.Legend.Left),
 				Top:  string(eo.Legend.Top),
 			},
-			Align:    eo.Legend.Align,
-			Vertical: Ptr(strings.EqualFold(eo.Legend.Orient, "vertical")),
+			Align:       eo.Legend.Align,
+			Vertical:    Ptr(strings.EqualFold(eo.Legend.Orient, "vertical")),
+			Padding:     eo.Legend.Padding.Box,
+			BorderWidth: legendBorderWidth,
 		},
 		RadarIndicators: eo.Radar.Indicator,
 		Width:           eo.Width,
@@ -423,10 +456,20 @@ func (eo *EChartsOption) ToOption() ChartOption {
 
 	if len(eo.XAxis.Data) != 0 {
 		xAxisData := eo.XAxis.Data[0]
+		axisTheme := o.Theme
+		axisLineColor := ParseColor(xAxisData.AxisLine.LineStyle.Color)
+		if !axisLineColor.IsZero() {
+			if xAxisData.AxisLine.LineStyle.Opacity != nil {
+				axisLineColor = axisLineColor.WithAlpha(uint8(255 * *xAxisData.AxisLine.LineStyle.Opacity))
+			}
+			axisTheme = o.Theme.WithXAxisColor(axisLineColor)
+		}
 		o.XAxis = XAxisOption{
+			Theme:       axisTheme,
 			BoundaryGap: xAxisData.BoundaryGap,
 			Labels:      xAxisData.Data,
 			LabelCount:  xAxisData.SplitNumber,
+			FontStyle:   xAxisData.AxisLabel.makeFontStyle(),
 		}
 		if o.XAxis.BoundaryGap == nil {
 			// Ensure default ECharts behavior of centering labels and sets a "BoundaryGap"
@@ -436,17 +479,21 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	}
 	yAxisOptions := make([]YAxisOption, len(eo.YAxis.Data))
 	for index, item := range eo.YAxis.Data {
-		axisColor := ParseColor(item.AxisLine.LineStyle.Color)
-		axisTheme := theme
-		if !axisColor.IsZero() {
-			axisTheme = theme.WithYAxisColor(axisColor)
+		axisTheme := o.Theme
+		if axisLineColor := ParseColor(item.AxisLine.LineStyle.Color); !axisLineColor.IsZero() {
+			if item.AxisLine.LineStyle.Opacity != nil {
+				axisLineColor = axisLineColor.WithAlpha(uint8(255 * *item.AxisLine.LineStyle.Opacity))
+			}
+			axisTheme = axisTheme.WithYAxisColor(axisLineColor).WithYAxisTextColor(axisLineColor)
 		}
 		yAxisOptions[index] = YAxisOption{
-			Min:       item.Min,
-			Max:       item.Max,
-			Formatter: item.AxisLabel.Formatter,
-			Theme:     axisTheme,
-			Labels:    item.Data,
+			Min:           item.Min,
+			Max:           item.Max,
+			Formatter:     item.AxisLabel.Formatter,
+			Theme:         axisTheme,
+			Labels:        item.Data,
+			FontStyle:     item.AxisLabel.makeFontStyle(),
+			SpineLineShow: item.AxisLine.Show,
 		}
 	}
 	o.YAxis = yAxisOptions
