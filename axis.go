@@ -61,7 +61,11 @@ func (a *axisPainter) Render() (Box, error) {
 		strokeWidth = 1
 	}
 	if opt.axisColor.IsZero() {
-		opt.axisColor = defaultTheme.GetAxisStrokeColor()
+		if isVertical {
+			opt.axisColor = defaultTheme.GetYAxisStrokeColor()
+		} else {
+			opt.axisColor = defaultTheme.GetXAxisStrokeColor()
+		}
 	}
 	if opt.axisSplitLineColor.IsZero() {
 		opt.axisSplitLineColor = defaultTheme.GetAxisSplitLineColor()

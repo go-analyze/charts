@@ -360,13 +360,14 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	if len(fontFamily) == 0 {
 		fontFamily = eo.Title.TextStyle.FontFamily
 	}
+	theme := GetTheme(eo.Theme)
 	titleTextStyle := eo.Title.TextStyle.ToStyle()
 	titleSubtextStyle := eo.Title.SubtextStyle.ToStyle()
 	legendTextStyle := eo.Legend.TextStyle.ToStyle()
 	o := ChartOption{
 		OutputFormat: eo.Type,
 		Font:         GetFont(fontFamily),
-		Theme:        GetTheme(eo.Theme),
+		Theme:        theme,
 		Title: TitleOption{
 			Text:    eo.Title.Text,
 			Subtext: eo.Title.Subtext,
@@ -435,11 +436,16 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	}
 	yAxisOptions := make([]YAxisOption, len(eo.YAxis.Data))
 	for index, item := range eo.YAxis.Data {
+		axisColor := ParseColor(item.AxisLine.LineStyle.Color)
+		axisTheme := theme
+		if !axisColor.IsZero() {
+			axisTheme = theme.WithYAxisColor(axisColor)
+		}
 		yAxisOptions[index] = YAxisOption{
 			Min:       item.Min,
 			Max:       item.Max,
 			Formatter: item.AxisLabel.Formatter,
-			AxisColor: ParseColor(item.AxisLine.LineStyle.Color),
+			Theme:     axisTheme,
 			Labels:    item.Data,
 		}
 	}

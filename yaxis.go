@@ -5,8 +5,6 @@ type YAxisOption struct {
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
-	// Deprecated: AxisColor is deprecated, instead use a Theme with the axis color changed.
-	AxisColor Color
 	// Min, if set this will force the minimum value of y-axis.
 	Min *float64
 	// Max, if set this will force the maximum value of y-axis.
@@ -56,7 +54,7 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		position:             position,
 		fontStyle:            opt.FontStyle,
 		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
-		axisColor:            theme.GetAxisStrokeColor(),
+		axisColor:            theme.GetYAxisStrokeColor(),
 		strokeWidth:          -1,
 		boundaryGap:          Ptr(false),
 		unit:                 opt.Unit,
@@ -64,10 +62,6 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		labelCountAdjustment: opt.LabelCountAdjustment,
 		labelSkipCount:       opt.LabelSkipCount,
 		splitLineShow:        true,
-	}
-	if !opt.AxisColor.IsZero() {
-		axisOpt.fontStyle.FontColor = opt.AxisColor
-		axisOpt.axisColor = opt.AxisColor
 	}
 	if opt.isCategoryAxis {
 		axisOpt.boundaryGap = Ptr(true)

@@ -26,14 +26,20 @@ const (
 
 type ColorPalette interface {
 	IsDark() bool
-	GetAxisStrokeColor() Color
+	GetXAxisStrokeColor() Color
+	GetYAxisStrokeColor() Color
 	GetAxisSplitLineColor() Color
 	GetSeriesColor(int) Color
 	GetBackgroundColor() Color
 	GetTextColor() Color
-	// WithAxisColor will provide a new ColorPalette that uses the specified color for axis values.
-	// This includes the Axis Stroke, Split Line, and Text Color.
-	WithAxisColor(Color) ColorPalette
+	// WithXAxisColor will provide a new ColorPalette that uses the specified color for X axis. To adjust the text
+	// color invoke WithTextColor following this.
+	WithXAxisColor(Color) ColorPalette
+	// WithYAxisColor will provide a new ColorPalette that uses the specified color for Y axis. To adjust the text
+	// color invoke WithTextColor following this.
+	WithYAxisColor(Color) ColorPalette
+	// WithYAxisSeriesColor will provide a new ColorPalette that uses the specified series index color for Y axis and values.
+	WithYAxisSeriesColor(int) ColorPalette
 	// WithTextColor will provide a new ColorPalette that uses the specified color for text.
 	// This is generally recommended over using the FontColor config values.
 	WithTextColor(Color) ColorPalette
@@ -46,7 +52,8 @@ type ColorPalette interface {
 type themeColorPalette struct {
 	name               string
 	isDarkMode         bool
-	axisStrokeColor    Color
+	xaxisStrokeColor   Color
+	yaxisStrokeColor   Color
 	axisSplitLineColor Color
 	backgroundColor    Color
 	textColor          Color
@@ -56,6 +63,8 @@ type themeColorPalette struct {
 type ThemeOption struct {
 	IsDarkMode         bool
 	AxisStrokeColor    Color
+	XAxisStrokeColor   Color
+	YAxisStrokeColor   Color
 	AxisSplitLineColor Color
 	BackgroundColor    Color
 	TextColor          Color
@@ -265,30 +274,34 @@ func GetDefaultTheme() ColorPalette {
 
 // MakeTheme constructs a one-off theme without installing it into the catalog.
 func MakeTheme(opt ThemeOption) ColorPalette {
-	optId := crc32.ChecksumIEEE([]byte(fmt.Sprintf("%v", opt)))
-	return &themeColorPalette{
-		name:               fmt.Sprintf("custom-%x", optId),
-		isDarkMode:         opt.IsDarkMode,
-		axisStrokeColor:    opt.AxisStrokeColor,
-		axisSplitLineColor: opt.AxisSplitLineColor,
-		backgroundColor:    opt.BackgroundColor,
-		textColor:          opt.TextColor,
-		seriesColors:       opt.SeriesColors,
-	}
+	cp := makeColorPalette(opt)
+	cp.name = fmt.Sprintf("custom-%x", crc32.ChecksumIEEE([]byte(fmt.Sprintf("%v", opt))))
+	return cp
 }
 
 // InstallTheme adds a theme to the catalog which can later be retrieved using GetTheme.
 func InstallTheme(name string, opt ThemeOption) {
-	cp := &themeColorPalette{
-		name:               name,
+	cp := makeColorPalette(opt)
+	cp.name = name
+	palettes.Store(name, cp)
+}
+
+func makeColorPalette(opt ThemeOption) *themeColorPalette {
+	if opt.XAxisStrokeColor.IsZero() {
+		opt.XAxisStrokeColor = opt.AxisStrokeColor
+	}
+	if opt.YAxisStrokeColor.IsZero() {
+		opt.YAxisStrokeColor = opt.AxisStrokeColor
+	}
+	return &themeColorPalette{
 		isDarkMode:         opt.IsDarkMode,
-		axisStrokeColor:    opt.AxisStrokeColor,
+		xaxisStrokeColor:   opt.XAxisStrokeColor,
+		yaxisStrokeColor:   opt.YAxisStrokeColor,
 		axisSplitLineColor: opt.AxisSplitLineColor,
 		backgroundColor:    opt.BackgroundColor,
 		textColor:          opt.TextColor,
 		seriesColors:       opt.SeriesColors,
 	}
-	palettes.Store(name, cp)
 }
 
 // GetTheme returns an installed theme by name, or the default if the theme is not installed.
@@ -309,8 +322,12 @@ func (t *themeColorPalette) IsDark() bool {
 	return t.isDarkMode
 }
 
-func (t *themeColorPalette) GetAxisStrokeColor() Color {
-	return t.axisStrokeColor
+func (t *themeColorPalette) GetXAxisStrokeColor() Color {
+	return t.xaxisStrokeColor
+}
+
+func (t *themeColorPalette) GetYAxisStrokeColor() Color {
+	return t.yaxisStrokeColor
 }
 
 func (t *themeColorPalette) GetAxisSplitLineColor() Color {
@@ -367,11 +384,26 @@ func (t *themeColorPalette) GetTextColor() Color {
 	return t.textColor
 }
 
-func (t *themeColorPalette) WithAxisColor(c Color) ColorPalette {
+func (t *themeColorPalette) WithXAxisColor(c Color) ColorPalette {
 	copy := *t
-	copy.name += "-axis_mod"
-	copy.axisStrokeColor = c
-	copy.textColor = c
+	copy.name += "-xaxis_mod"
+	copy.xaxisStrokeColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithYAxisColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-yaxis_mod"
+	copy.yaxisStrokeColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithYAxisSeriesColor(series int) ColorPalette {
+	copy := *t
+	copy.name += "-yaxis_mod"
+	seriesColor := t.GetSeriesColor(series)
+	copy.yaxisStrokeColor = seriesColor
+	copy.textColor = seriesColor
 	return &copy
 }
 

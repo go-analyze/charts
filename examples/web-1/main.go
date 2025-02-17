@@ -70,13 +70,13 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 		return
 	}
 	query := req.URL.Query()
-	theme := query.Get("theme")
+	theme := charts.GetTheme(query.Get("theme"))
 	width, _ := strconv.Atoi(query.Get("width"))
 	height, _ := strconv.Atoi(query.Get("height"))
 	charts.SetDefaultChartDimensions(width, height)
 	bytesList := make([][]byte, 0)
 	for _, opt := range chartOptions {
-		opt.Theme = charts.GetTheme(theme)
+		opt.Theme = theme
 		opt.OutputFormat = charts.ChartOutputSVG
 		d, err := charts.Render(opt)
 		if err != nil {
@@ -358,11 +358,11 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			YAxis: []charts.YAxisOption{
 				{
 					Formatter: "{value}ml",
-					AxisColor: charts.ColorRGB(84, 112, 198),
+					Theme:     charts.GetDefaultTheme().WithYAxisColor(charts.ColorRGB(84, 112, 198)),
 				},
 				{
 					Formatter: "{value}°C",
-					AxisColor: charts.ColorRGB(250, 200, 88),
+					Theme:     charts.GetDefaultTheme().WithYAxisColor(charts.ColorRGB(250, 200, 88)),
 				},
 			},
 			SeriesList: append(charts.NewSeriesListGeneric([][]float64{

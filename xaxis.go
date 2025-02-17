@@ -53,7 +53,7 @@ func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		position:             position,
 		fontStyle:            opt.FontStyle,
 		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
-		axisColor:            theme.GetAxisStrokeColor(),
+		axisColor:            theme.GetXAxisStrokeColor(),
 		unit:                 opt.Unit,
 		labelCount:           opt.LabelCount,
 		labelCountAdjustment: opt.LabelCountAdjustment,
