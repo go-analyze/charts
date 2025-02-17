@@ -274,3 +274,23 @@ func TestWithBackgroundColor(t *testing.T) {
 
 	require.False(t, yellowCP.IsDark())
 }
+
+func TestWithLegendBorderColor(t *testing.T) {
+	t.Parallel()
+
+	whiteCP := &themeColorPalette{
+		name:               t.Name(),
+		isDarkMode:         false,
+		axisSplitLineColor: ColorWhite,
+		xaxisStrokeColor:   ColorWhite,
+		yaxisStrokeColor:   ColorWhite,
+		backgroundColor:    ColorWhite,
+		legendBorderColor:  ColorWhite,
+		textColor:          ColorWhite,
+		seriesColors:       []Color{ColorWhite},
+	}
+
+	blackCP := whiteCP.WithLegendBorderColor(ColorBlack)
+	assert.Equal(t, ColorBlack, blackCP.GetLegendBorderColor())
+	assert.Equal(t, ColorWhite, whiteCP.GetLegendBorderColor())
+}
