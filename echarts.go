@@ -371,7 +371,7 @@ type EChartsOption struct {
 		TextStyle       EChartsTextStyle `json:"textStyle"`
 		SubtextStyle    EChartsTextStyle `json:"subtextStyle"`
 		BackgroundColor string           `json:"backgroundColor,omitempty"` // TODO - add support
-		BorderColor     string           `json:"borderColor,omitempty"`     // TODO - add support
+		BorderColor     string           `json:"borderColor,omitempty"`
 	} `json:"title"`
 	XAxis  EChartsXAxis  `json:"xAxis"`
 	YAxis  EChartsYAxis  `json:"yAxis"`
@@ -393,6 +393,12 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	backgroundColor := ParseColor(eo.BackgroundColor)
 	if !backgroundColor.IsZero() {
 		theme = theme.WithBackgroundColor(backgroundColor)
+	}
+	titleBorderColor := ParseColor(eo.Title.BorderColor)
+	titleBorderWidth := 0.0
+	if !titleBorderColor.IsZero() {
+		theme = theme.WithTitleBorderColor(titleBorderColor)
+		titleBorderWidth = defaultStrokeWidth
 	}
 	legendBorderColor := ParseColor(eo.Legend.BorderColor)
 	legendBorderWidth := 0.0
@@ -417,6 +423,7 @@ func (eo *EChartsOption) ToOption() ChartOption {
 				Left: string(eo.Title.Left),
 				Top:  string(eo.Title.Top),
 			},
+			BorderWidth: titleBorderWidth,
 		},
 		Legend: LegendOption{
 			Show:        eo.Legend.Show,

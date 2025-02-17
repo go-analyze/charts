@@ -38,6 +38,7 @@ type ColorPalette interface {
 	GetLegendTextColor() Color
 	GetXAxisTextColor() Color
 	GetYAxisTextColor() Color
+	GetTitleBorderColor() Color
 	GetLegendBorderColor() Color
 	// WithXAxisColor will provide a new ColorPalette that uses the specified color for X axis. To adjust the text
 	// color invoke WithXAxisTextColor following this.
@@ -67,6 +68,8 @@ type ColorPalette interface {
 	WithSeriesTrendColors([]Color) ColorPalette
 	// WithBackgroundColor will provide a new ColorPalette that uses the specified color for the background.
 	WithBackgroundColor(Color) ColorPalette
+	// WithTitleBorderColor will provide a new ColorPalette that uses the specified color for the title border.
+	WithTitleBorderColor(Color) ColorPalette
 	// WithLegendBorderColor will provide a new ColorPalette that uses the specified color for the legend border.
 	WithLegendBorderColor(Color) ColorPalette
 }
@@ -84,6 +87,7 @@ type themeColorPalette struct {
 	legendTextColor    Color
 	xaxisTextColor     Color
 	yaxisTextColor     Color
+	titleBorderColor   Color
 	legendBorderColor  Color
 	seriesColors       []Color
 	seriesTrendColors  []Color
@@ -127,6 +131,7 @@ type ThemeOption struct {
 	TextColorLegend    Color
 	TextColorXAxis     Color
 	TextColorYAxis     Color
+	TitleBorderColor   Color
 	LegendBorderColor  Color
 	SeriesColors       []Color
 	SeriesTrendColors  []Color
@@ -378,6 +383,9 @@ func makeColorPalette(o ThemeOption) *themeColorPalette {
 	if o.LegendBorderColor.IsZero() {
 		o.LegendBorderColor = ColorBlack
 	}
+	if o.TitleBorderColor.IsZero() {
+		o.TitleBorderColor = ColorBlack
+	}
 	for i := len(o.SeriesTrendColors); i < len(o.SeriesColors); i++ {
 		o.SeriesTrendColors = append(o.SeriesTrendColors, autoSeriesTrendColor(o.SeriesColors[i]))
 	}
@@ -387,6 +395,7 @@ func makeColorPalette(o ThemeOption) *themeColorPalette {
 		yaxisStrokeColor:   o.YAxisStrokeColor,
 		axisSplitLineColor: o.AxisSplitLineColor,
 		backgroundColor:    o.BackgroundColor,
+		titleBorderColor:   o.TitleBorderColor,
 		legendBorderColor:  o.LegendBorderColor,
 		titleTextColor:     o.TextColorTitle,
 		markTextColor:      o.TextColorMark,
@@ -510,6 +519,10 @@ func getSeriesColor(colors []Color, darkTheme bool, index int) Color {
 
 func (t *themeColorPalette) GetBackgroundColor() Color {
 	return t.backgroundColor
+}
+
+func (t *themeColorPalette) GetTitleBorderColor() Color {
+	return t.titleBorderColor
 }
 
 func (t *themeColorPalette) GetLegendBorderColor() Color {
@@ -636,6 +649,13 @@ func (t *themeColorPalette) WithBackgroundColor(color Color) ColorPalette {
 			copy.name += "_light"
 		}
 	}
+	return &copy
+}
+
+func (t *themeColorPalette) WithTitleBorderColor(color Color) ColorPalette {
+	copy := *t
+	copy.name += "-title_border_mod"
+	copy.titleBorderColor = color
 	return &copy
 }
 
