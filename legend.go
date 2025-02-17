@@ -278,8 +278,7 @@ func (l *legendPainter) Render() (Box, error) {
 			{X: result.Left + result.Width() + boxPad, Y: result.Bottom + boxPad},
 			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
 		}
-		// TODO - allow color to be configured via theme or configuration
-		p.LineStroke(boxPoints, ColorBlack, opt.BorderWidth)
+		p.LineStroke(boxPoints, theme.GetLegendBorderColor(), opt.BorderWidth)
 	}
 
 	return result, nil
