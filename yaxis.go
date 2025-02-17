@@ -45,7 +45,7 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 	}
 	theme := getPreferredTheme(opt.Theme, fallbackTheme)
 	if opt.FontStyle.FontColor.IsZero() {
-		opt.FontStyle.FontColor = theme.GetTextColor()
+		opt.FontStyle.FontColor = theme.GetYAxisTextColor()
 	}
 	axisOpt := axisOption{
 		show:                 opt.Show,
