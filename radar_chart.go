@@ -128,7 +128,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList RadarSeriesL
 		seriesPainter.stroke(theme.GetAxisSplitLineColor(), 1)
 	}
 	fontStyle := FontStyle{
-		FontColor: theme.GetTextColor(),
+		FontColor: theme.GetLabelTextColor(),
 		FontSize:  labelFontSize,
 		Font:      opt.Font,
 	}

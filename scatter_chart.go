@@ -149,7 +149,7 @@ func (s *scatterChart) render(result *defaultRenderResult, seriesList ScatterSer
 		if len(series.MarkLine.Lines) > 0 {
 			markLinePainter.add(markLineRenderOption{
 				fillColor:    seriesColor,
-				fontColor:    opt.Theme.GetTextColor(),
+				fontColor:    opt.Theme.GetMarkTextColor(),
 				strokeColor:  seriesColor,
 				font:         opt.Font,
 				marklines:    series.MarkLine.Lines.filterGlobal(false),

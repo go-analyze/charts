@@ -290,7 +290,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 				// In stacked mode we only support the line painter for the first series
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      seriesColor,
-					fontColor:      opt.Theme.GetTextColor(),
+					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
 					font:           opt.Font,
 					marklines:      seriesMarks,
@@ -305,7 +305,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 				}
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      defaultGlobalMarkFillColor,
-					fontColor:      opt.Theme.GetTextColor(),
+					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
 					font:           opt.Font,
 					marklines:      globalMarks,

@@ -238,7 +238,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 				// in stacked mode we only support the line painter for the first series
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      seriesColor,
-					fontColor:      opt.Theme.GetTextColor(),
+					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
 					font:           opt.Font,
 					marklines:      seriesMarks,
@@ -253,7 +253,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 				}
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      defaultGlobalMarkFillColor,
-					fontColor:      opt.Theme.GetTextColor(),
+					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
 					font:           opt.Font,
 					marklines:      globalMarks,

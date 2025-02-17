@@ -264,7 +264,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 		seriesPainter.lineTo(s.lineEndX, s.lineEndY)
 		seriesPainter.stroke(s.color, 1)
 		textStyle := FontStyle{
-			FontColor: theme.GetTextColor(),
+			FontColor: theme.GetLabelTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,
 		}

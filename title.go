@@ -74,7 +74,7 @@ func (t *titlePainter) Render() (Box, error) {
 		fontStyle.Font = GetDefaultFont()
 	}
 	if fontStyle.FontColor.IsZero() {
-		fontStyle.FontColor = theme.GetTextColor()
+		fontStyle.FontColor = theme.GetTitleTextColor()
 	}
 	if fontStyle.FontSize == 0 {
 		fontStyle.FontSize = defaultFontSize
