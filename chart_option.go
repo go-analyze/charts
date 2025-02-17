@@ -247,7 +247,7 @@ func (o *ChartOption) fillDefault() error {
 	if o.Theme == nil {
 		o.Theme = GetDefaultTheme()
 	}
-	fillThemeDefaults(o.Theme, &o.Title, &o.Legend, &o.XAxis)
+	fillThemeDefaults(o.Theme, &o.Title, &o.Legend, &o.XAxis, o.YAxis)
 
 	if o.Padding.IsZero() {
 		o.Padding = defaultPadding
@@ -255,7 +255,8 @@ func (o *ChartOption) fillDefault() error {
 	return nil
 }
 
-func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *LegendOption, xaxis *XAxisOption) {
+func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *LegendOption,
+	xaxis *XAxisOption, yaxisOptions []YAxisOption) {
 	if title.Theme == nil {
 		title.Theme = defaultTheme
 	}
@@ -264,6 +265,11 @@ func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *Le
 	}
 	if xaxis.Theme == nil {
 		xaxis.Theme = defaultTheme
+	}
+	for i := range yaxisOptions {
+		if yaxisOptions[i].Theme == nil {
+			yaxisOptions[i].Theme = defaultTheme
+		}
 	}
 }
 
