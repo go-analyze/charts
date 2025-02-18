@@ -120,7 +120,7 @@ func linearTrend(y []float64) ([]float64, error) {
 	}
 
 	denom := n*sumXX - sumX*sumX
-	if math.Abs(denom) < 1e-9 {
+	if math.Abs(denom) < math.SmallestNonzeroFloat64 {
 		return nil, errors.New("degenerate x values for linear regression")
 	}
 	slope := (n*sumXY - sumX*sumY) / denom
@@ -230,7 +230,7 @@ func solveLinearSystem(mat [][]float64) ([]float64, error) {
 			}
 		}
 		mat[i], mat[maxRow] = mat[maxRow], mat[i]
-		if math.Abs(mat[i][i]) < 1e-9 {
+		if math.Abs(mat[i][i]) < math.SmallestNonzeroFloat64 {
 			return nil, errors.New("singular matrix in cubic regression")
 		}
 		// Eliminate below

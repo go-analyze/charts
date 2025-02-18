@@ -136,7 +136,7 @@ func TestLightThemeSeriesRepeat(t *testing.T) {
 				{R: 200, G: 50, B: 50, A: 255},
 			},
 		})
-	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 21 19\nL 51 19\" style=\"stroke-width:3;stroke:rgb(50,50,50);fill:none\"/><circle cx=\"36\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(50,50,50);fill:rgb(50,50,50)\"/><text x=\"53\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Email</text><path  d=\"M 112 19\nL 142 19\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:none\"/><circle cx=\"127\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:rgb(200,50,50)\"/><text x=\"144\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Union Ads</text><path  d=\"M 235 19\nL 265 19\" style=\"stroke-width:3;stroke:rgb(90,90,90);fill:none\"/><circle cx=\"250\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(90,90,90);fill:rgb(90,90,90)\"/><text x=\"267\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Video Ads</text><path  d=\"M 358 19\nL 388 19\" style=\"stroke-width:3;stroke:rgb(200,90,90);fill:none\"/><circle cx=\"373\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(200,90,90);fill:rgb(200,90,90)\"/><text x=\"390\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Direct</text><path  d=\"M 451 19\nL 481 19\" style=\"stroke-width:3;stroke:rgb(130,130,130);fill:none\"/><circle cx=\"466\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(130,130,130);fill:rgb(130,130,130)\"/><text x=\"483\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Search Engine</text><text x=\"19\" y=\"52\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.4k</text><text x=\"22\" y=\"209\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">700</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 45\nL 590 45\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 123\nL 590 123\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 202\nL 590 202\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 281\nL 590 281\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 365\nL 59 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 134 365\nL 134 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 210 365\nL 210 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 286 365\nL 286 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 362 365\nL 362 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 438 365\nL 438 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 514 365\nL 514 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 590 365\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 59 360\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"81\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Mon</text><text x=\"159\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Tue</text><text x=\"233\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Wed</text><text x=\"311\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Thu</text><text x=\"391\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Fri</text><text x=\"465\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sat</text><text x=\"539\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sun</text><path  d=\"M 96 333\nL 172 331\nL 248 338\nL 324 330\nL 400 340\nL 476 309\nL 552 313\" style=\"stroke-width:2;stroke:rgb(50,50,50);fill:none\"/><path  d=\"M 96 311\nL 172 320\nL 248 318\nL 324 308\nL 400 295\nL 476 286\nL 552 291\" style=\"stroke-width:2;stroke:rgb(200,50,50);fill:none\"/><path  d=\"M 96 327\nL 172 308\nL 248 315\nL 324 326\nL 400 318\nL 476 286\nL 552 268\" style=\"stroke-width:2;stroke:rgb(90,90,90);fill:none\"/><path  d=\"M 96 288\nL 172 286\nL 248 293\nL 324 285\nL 400 273\nL 476 286\nL 552 288\" style=\"stroke-width:2;stroke:rgb(200,90,90);fill:none\"/><path  d=\"M 96 176\nL 172 151\nL 248 158\nL 324 150\nL 400 70\nL 476 61\nL 552 63\" style=\"stroke-width:2;stroke:rgb(130,130,130);fill:none\"/></svg>", svg)
+	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 21 19\nL 51 19\" style=\"stroke-width:3;stroke:rgb(50,50,50);fill:none\"/><circle cx=\"36\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(50,50,50);fill:rgb(50,50,50)\"/><text x=\"53\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Email</text><path  d=\"M 112 19\nL 142 19\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:none\"/><circle cx=\"127\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:rgb(200,50,50)\"/><text x=\"144\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Union Ads</text><path  d=\"M 235 19\nL 265 19\" style=\"stroke-width:3;stroke:rgb(95,95,95);fill:none\"/><circle cx=\"250\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(95,95,95);fill:rgb(95,95,95)\"/><text x=\"267\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Video Ads</text><path  d=\"M 358 19\nL 388 19\" style=\"stroke-width:3;stroke:rgb(200,90,90);fill:none\"/><circle cx=\"373\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(200,90,90);fill:rgb(200,90,90)\"/><text x=\"390\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Direct</text><path  d=\"M 451 19\nL 481 19\" style=\"stroke-width:3;stroke:rgb(141,141,141);fill:none\"/><circle cx=\"466\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(141,141,141);fill:rgb(141,141,141)\"/><text x=\"483\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Search Engine</text><text x=\"19\" y=\"52\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.4k</text><text x=\"22\" y=\"209\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">700</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 45\nL 590 45\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 123\nL 590 123\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 202\nL 590 202\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 281\nL 590 281\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 59 365\nL 59 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 134 365\nL 134 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 210 365\nL 210 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 286 365\nL 286 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 362 365\nL 362 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 438 365\nL 438 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 514 365\nL 514 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 590 365\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 59 360\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"81\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Mon</text><text x=\"159\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Tue</text><text x=\"233\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Wed</text><text x=\"311\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Thu</text><text x=\"391\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Fri</text><text x=\"465\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sat</text><text x=\"539\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sun</text><path  d=\"M 96 333\nL 172 331\nL 248 338\nL 324 330\nL 400 340\nL 476 309\nL 552 313\" style=\"stroke-width:2;stroke:rgb(50,50,50);fill:none\"/><path  d=\"M 96 311\nL 172 320\nL 248 318\nL 324 308\nL 400 295\nL 476 286\nL 552 291\" style=\"stroke-width:2;stroke:rgb(200,50,50);fill:none\"/><path  d=\"M 96 327\nL 172 308\nL 248 315\nL 324 326\nL 400 318\nL 476 286\nL 552 268\" style=\"stroke-width:2;stroke:rgb(95,95,95);fill:none\"/><path  d=\"M 96 288\nL 172 286\nL 248 293\nL 324 285\nL 400 273\nL 476 286\nL 552 288\" style=\"stroke-width:2;stroke:rgb(200,90,90);fill:none\"/><path  d=\"M 96 176\nL 172 151\nL 248 158\nL 324 150\nL 400 70\nL 476 61\nL 552 63\" style=\"stroke-width:2;stroke:rgb(141,141,141);fill:none\"/></svg>", svg)
 }
 
 func TestDarkThemeSeriesRepeat(t *testing.T) {
@@ -156,7 +156,7 @@ func TestDarkThemeSeriesRepeat(t *testing.T) {
 				{R: 200, G: 50, B: 50, A: 255},
 			},
 		})
-	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:rgb(40,40,60)\"/><path  d=\"M 21 19\nL 51 19\" style=\"stroke-width:3;stroke:rgb(250,250,250);fill:none\"/><circle cx=\"36\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,250,250);fill:rgb(250,250,250)\"/><text x=\"53\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Email</text><path  d=\"M 112 19\nL 142 19\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:none\"/><circle cx=\"127\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:rgb(200,50,50)\"/><text x=\"144\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Union Ads</text><path  d=\"M 235 19\nL 265 19\" style=\"stroke-width:3;stroke:rgb(210,210,210);fill:none\"/><circle cx=\"250\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(210,210,210);fill:rgb(210,210,210)\"/><text x=\"267\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Video Ads</text><path  d=\"M 358 19\nL 388 19\" style=\"stroke-width:3;stroke:rgb(160,40,40);fill:none\"/><circle cx=\"373\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(160,40,40);fill:rgb(160,40,40)\"/><text x=\"390\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Direct</text><path  d=\"M 451 19\nL 481 19\" style=\"stroke-width:3;stroke:rgb(170,170,170);fill:none\"/><circle cx=\"466\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(170,170,170);fill:rgb(170,170,170)\"/><text x=\"483\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Search Engine</text><text x=\"19\" y=\"52\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.4k</text><text x=\"22\" y=\"209\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">700</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 45\nL 590 45\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 123\nL 590 123\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 202\nL 590 202\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 281\nL 590 281\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 365\nL 59 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 134 365\nL 134 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 210 365\nL 210 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 286 365\nL 286 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 362 365\nL 362 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 438 365\nL 438 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 514 365\nL 514 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 590 365\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 59 360\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"81\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Mon</text><text x=\"159\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Tue</text><text x=\"233\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Wed</text><text x=\"311\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Thu</text><text x=\"391\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Fri</text><text x=\"465\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sat</text><text x=\"539\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sun</text><path  d=\"M 96 333\nL 172 331\nL 248 338\nL 324 330\nL 400 340\nL 476 309\nL 552 313\" style=\"stroke-width:2;stroke:rgb(250,250,250);fill:none\"/><path  d=\"M 96 311\nL 172 320\nL 248 318\nL 324 308\nL 400 295\nL 476 286\nL 552 291\" style=\"stroke-width:2;stroke:rgb(200,50,50);fill:none\"/><path  d=\"M 96 327\nL 172 308\nL 248 315\nL 324 326\nL 400 318\nL 476 286\nL 552 268\" style=\"stroke-width:2;stroke:rgb(210,210,210);fill:none\"/><path  d=\"M 96 288\nL 172 286\nL 248 293\nL 324 285\nL 400 273\nL 476 286\nL 552 288\" style=\"stroke-width:2;stroke:rgb(160,40,40);fill:none\"/><path  d=\"M 96 176\nL 172 151\nL 248 158\nL 324 150\nL 400 70\nL 476 61\nL 552 63\" style=\"stroke-width:2;stroke:rgb(170,170,170);fill:none\"/></svg>", svg)
+	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:rgb(40,40,60)\"/><path  d=\"M 21 19\nL 51 19\" style=\"stroke-width:3;stroke:rgb(250,250,250);fill:none\"/><circle cx=\"36\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,250,250);fill:rgb(250,250,250)\"/><text x=\"53\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Email</text><path  d=\"M 112 19\nL 142 19\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:none\"/><circle cx=\"127\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(200,50,50);fill:rgb(200,50,50)\"/><text x=\"144\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Union Ads</text><path  d=\"M 235 19\nL 265 19\" style=\"stroke-width:3;stroke:rgb(204,204,204);fill:none\"/><circle cx=\"250\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(204,204,204);fill:rgb(204,204,204)\"/><text x=\"267\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Video Ads</text><path  d=\"M 358 19\nL 388 19\" style=\"stroke-width:3;stroke:rgb(156,52,52);fill:none\"/><circle cx=\"373\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(156,52,52);fill:rgb(156,52,52)\"/><text x=\"390\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Direct</text><path  d=\"M 451 19\nL 481 19\" style=\"stroke-width:3;stroke:rgb(158,158,158);fill:none\"/><circle cx=\"466\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(158,158,158);fill:rgb(158,158,158)\"/><text x=\"483\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Search Engine</text><text x=\"19\" y=\"52\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.4k</text><text x=\"22\" y=\"209\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">700</text><text x=\"40\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 59 45\nL 590 45\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 123\nL 590 123\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 202\nL 590 202\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 281\nL 590 281\" style=\"stroke-width:1;stroke:rgb(40,40,60);fill:none\"/><path  d=\"M 59 365\nL 59 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 134 365\nL 134 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 210 365\nL 210 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 286 365\nL 286 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 362 365\nL 362 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 438 365\nL 438 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 514 365\nL 514 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 590 365\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 59 360\nL 590 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"81\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Mon</text><text x=\"159\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Tue</text><text x=\"233\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Wed</text><text x=\"311\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Thu</text><text x=\"391\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Fri</text><text x=\"465\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sat</text><text x=\"539\" y=\"385\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sun</text><path  d=\"M 96 333\nL 172 331\nL 248 338\nL 324 330\nL 400 340\nL 476 309\nL 552 313\" style=\"stroke-width:2;stroke:rgb(250,250,250);fill:none\"/><path  d=\"M 96 311\nL 172 320\nL 248 318\nL 324 308\nL 400 295\nL 476 286\nL 552 291\" style=\"stroke-width:2;stroke:rgb(200,50,50);fill:none\"/><path  d=\"M 96 327\nL 172 308\nL 248 315\nL 324 326\nL 400 318\nL 476 286\nL 552 268\" style=\"stroke-width:2;stroke:rgb(204,204,204);fill:none\"/><path  d=\"M 96 288\nL 172 286\nL 248 293\nL 324 285\nL 400 273\nL 476 286\nL 552 288\" style=\"stroke-width:2;stroke:rgb(156,52,52);fill:none\"/><path  d=\"M 96 176\nL 172 151\nL 248 158\nL 324 150\nL 400 70\nL 476 61\nL 552 63\" style=\"stroke-width:2;stroke:rgb(158,158,158);fill:none\"/></svg>", svg)
 }
 
 func TestWithAxisColor(t *testing.T) {
@@ -312,4 +312,154 @@ func TestWithLegendBorderColor(t *testing.T) {
 	blackCP := whiteCP.WithLegendBorderColor(ColorBlack)
 	assert.Equal(t, ColorBlack, blackCP.GetLegendBorderColor())
 	assert.Equal(t, ColorWhite, whiteCP.GetLegendBorderColor())
+}
+
+func getThemeSeriesColors(name string) []Color {
+	if value, ok := palettes.Load(name); ok {
+		if cp, ok := value.(*themeColorPalette); ok {
+			return cp.seriesColors
+		}
+	}
+	return nil
+}
+
+const makeSeriesLoopColorSamples = false
+
+func TestThemeLightSeriesLoopColors(t *testing.T) {
+	if !makeSeriesLoopColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, func(c Color) Color {
+		return adjustSeriesColor(c, 1, false)
+	}, getThemeSeriesColors(ThemeLight)...)
+}
+
+func TestThemeDarkSeriesLoopColors(t *testing.T) {
+	if !makeSeriesLoopColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, func(c Color) Color {
+		return adjustSeriesColor(c, 1, true)
+	}, getThemeSeriesColors(ThemeDark)...)
+}
+
+func TestThemeVividLightSeriesLoopColors(t *testing.T) {
+	if !makeSeriesLoopColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, func(c Color) Color {
+		return adjustSeriesColor(c, 1, false)
+	}, getThemeSeriesColors(ThemeVividLight)...)
+}
+
+func TestThemeVividDarkSeriesLoopColors(t *testing.T) {
+	if !makeSeriesLoopColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, func(c Color) Color {
+		return adjustSeriesColor(c, 1, true)
+	}, getThemeSeriesColors(ThemeVividDark)...)
+}
+
+func TestThemeAntSeriesLoopColors(t *testing.T) {
+	if !makeSeriesLoopColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, func(c Color) Color {
+		return adjustSeriesColor(c, 1, false)
+	}, getThemeSeriesColors(ThemeAnt)...)
+}
+
+func TestThemeGrafanaSeriesLoopColors(t *testing.T) {
+	if !makeSeriesLoopColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, func(c Color) Color {
+		return adjustSeriesColor(c, 1, true)
+	}, getThemeSeriesColors(ThemeGrafana)...)
+}
+
+const makeTrendColorSamples = false
+
+func TestThemeLightTrendColors(t *testing.T) {
+	if !makeTrendColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, autoSeriesTrendColor, getThemeSeriesColors(ThemeLight)...)
+}
+
+func TestThemeDarkTrendColors(t *testing.T) {
+	if !makeTrendColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, autoSeriesTrendColor, getThemeSeriesColors(ThemeDark)...)
+}
+
+func TestThemeVividLightTrendColors(t *testing.T) {
+	if !makeTrendColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, autoSeriesTrendColor, getThemeSeriesColors(ThemeVividLight)...)
+}
+
+func TestThemeVividDarkTrendColors(t *testing.T) {
+	if !makeTrendColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, autoSeriesTrendColor, getThemeSeriesColors(ThemeVividDark)...)
+}
+
+func TestThemeAntTrendColors(t *testing.T) {
+	if !makeTrendColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, autoSeriesTrendColor, getThemeSeriesColors(ThemeAnt)...)
+}
+
+func TestThemeGrafanaTrendColors(t *testing.T) {
+	if !makeTrendColorSamples {
+		return // color samples are generated through a test failure
+	}
+
+	testColorShadeVariation(t, autoSeriesTrendColor, getThemeSeriesColors(ThemeGrafana)...)
+}
+
+func testColorShadeVariation(t *testing.T, mutateFunc func(Color) Color, colors ...Color) {
+	t.Helper()
+
+	p := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputSVG,
+		Width:        600,
+		Height:       400,
+	})
+
+	sampleWidth := p.Width() / len(colors)
+	for i, c := range colors {
+		startX := i * sampleWidth
+		endX := (i + 1) * sampleWidth
+		if i == len(colors)-1 {
+			endX = p.Width() // ensure edge is painted
+		}
+		p.FilledRect(startX, 0, endX, p.Height(),
+			c, ColorTransparent, 0.0)
+		margin := (endX - startX) / 4
+		c2 := mutateFunc(c)
+		p.FilledRect(startX+margin, 0, endX-margin, p.Height(),
+			c2, ColorTransparent, 0.0)
+	}
+
+	data, err := p.Bytes()
+	require.NoError(t, err)
+	assertEqualSVG(t, "", data)
 }
