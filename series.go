@@ -556,6 +556,8 @@ type HorizontalBarSeries struct {
 	Label SeriesLabel
 	// Name specifies a name for the series.
 	Name string
+	// MarkLine provides a configuration for mark lines for this series.
+	MarkLine SeriesMarkLine
 }
 
 func (h *HorizontalBarSeries) getYAxisIndex() int {
