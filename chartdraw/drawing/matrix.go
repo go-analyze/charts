@@ -212,5 +212,5 @@ func (tr *Matrix) IsTranslation() bool {
 
 // fequals compares two floats. return true if the distance between the two floats is less than epsilon, false otherwise.
 func fequals(float1, float2 float64) bool {
-	return math.Abs(float1-float2) <= 1e-6
+	return math.Abs(float1-float2) <= math.SmallestNonzeroFloat64
 }

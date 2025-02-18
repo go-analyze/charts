@@ -412,30 +412,11 @@ func autoSeriesTrendColor(color Color) Color {
 	if color.IsTransparent() {
 		return color
 	}
-	var brightenR, brightenG, brightenB bool
-	if color.R > color.G && color.R > color.B {
-		brightenR = true
-		color.R += (255 - color.R) / 2
-	} else if color.G > color.R && color.G > color.B {
-		brightenG = true
-		color.G += (255 - color.G) / 2
-	} else if color.B > color.G && color.B > color.R {
-		brightenB = true
-		color.B += (255 - color.B) / 2
+	c := color.WithAdjustHSL(0.0, 0.1, -0.1)
+	if c.A < 255 {
+		c.A += (255 - c.A) / 2
 	}
-	if !brightenR {
-		color.R -= color.R / 2
-	}
-	if !brightenG {
-		color.G -= color.G / 2
-	}
-	if !brightenB {
-		color.B -= color.B / 2
-	}
-	if color.A < 255 {
-		color.A += (255 - color.A) / 2
-	}
-	return color
+	return c
 }
 
 // GetTheme returns an installed theme by name, or the default if the theme is not installed.
@@ -481,40 +462,22 @@ func getSeriesColor(colors []Color, darkTheme bool, index int) Color {
 	if index < colorCount {
 		return colors[index]
 	} else {
-		result := colors[index%colorCount]
-		// adjust the color shade automatically
-		rMax, gMax, bMax := 200, 200, 200
-		var rMin, gMin, bMin int
-		// the adjustment amount and mod count must be balanced to ensure colors don't hit their limits quickly
-		adjustment := 40 * ((index / colorCount) % 3)
-		if darkTheme { // adjust the shade darker for dark themes
-			adjustment *= -1
-			rMax, gMax, bMax = 255, 255, 255
-			rMin, gMin, bMin = 40, 40, 40
-		}
-		if result.R != result.G || result.R != result.B {
-			// try to ensure the brightest channel maintains emphasis
-			if result.R >= result.G && result.R >= result.B {
-				rMin += 80
-				gMax -= 20
-				bMax -= 20
-			} else if result.G >= result.R && result.G >= result.B {
-				gMin += 80
-				rMax -= 20
-				bMax -= 20
-			} else {
-				bMin += 80
-				rMax -= 20
-				gMax -= 20
-			}
-		}
-
-		result.R = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.R)+adjustment, rMax), rMin))
-		result.G = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.G)+adjustment, gMax), gMin))
-		result.B = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.B)+adjustment, bMax), bMin))
-
-		return result
+		return adjustSeriesColor(colors[index%colorCount], index/colorCount, darkTheme)
 	}
+}
+
+func adjustSeriesColor(c Color, loopCount int, darkTheme bool) Color {
+	impact := ((loopCount - 1) % 3) + 1
+	satAdj := float64(impact) * -0.1
+	ltAdj := 0.08
+	if chartdraw.AbsInt(int(c.R)-int(c.G)) < 20 && chartdraw.AbsInt(int(c.R)-int(c.B)) < 20 {
+		ltAdj += 0.1 // more adjustment if close to gray
+	}
+	ltAdj *= float64(impact)
+	if darkTheme {
+		ltAdj *= -1
+	}
+	return c.WithAdjustHSL(0.0, satAdj, ltAdj)
 }
 
 func (t *themeColorPalette) GetBackgroundColor() Color {

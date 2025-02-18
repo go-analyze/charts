@@ -881,7 +881,7 @@ func textRotationHeightAdjustment(textWidth, textHeight int, radians float64) in
 
 	switch {
 	// Very close to 0 radians: no vertical adjustment needed
-	case r < 1e-9:
+	case r < math.SmallestNonzeroFloat64:
 		return 0
 	// 0 to π (0 to 180 degrees)
 	case r < math.Pi:

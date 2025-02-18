@@ -2,6 +2,7 @@ package drawing
 
 import (
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -249,7 +250,7 @@ func ColorFromAlphaMixedRGBA(r, g, b, a uint32) Color {
 
 // ColorChannelFromFloat returns a normalized byte from a given float value.
 func ColorChannelFromFloat(v float64) uint8 {
-	return uint8(v * 255)
+	return uint8(clamp(v, 0, 1) * 255)
 }
 
 // Color is our internal color type because color.Color is bullshit.
@@ -289,6 +290,103 @@ func (c Color) WithAlpha(a uint8) Color {
 		B: c.B,
 		A: a,
 	}
+}
+
+// WithAdjustHSL adjusts the hue, saturation, and lightness of a color by given deltas.
+// hueDelta is in degrees; satDelta and lightDelta are in the range [-1, 1].
+func (c Color) WithAdjustHSL(hueDelta, satDelta, lightDelta float64) Color {
+	h, s, l := c.HSL()
+	// Adjust hue (wrap around 360°)
+	h = math.Mod(h+hueDelta, 360)
+	if h < 0 {
+		h += 360
+	}
+	s = clamp(s+satDelta, 0, 1)
+	l = clamp(l+lightDelta, 0, 1)
+	r, g, b := hslToRGB(h, s, l)
+	return Color{R: r, G: g, B: b, A: c.A}
+}
+
+// HSL converts outputs the color HSL (hue, saturation, lightness). H in degrees, S and L in [0,1].
+func (c Color) HSL() (h, s, l float64) {
+	return rgbToHSL(c.R, c.G, c.B)
+}
+
+// rgbToHSL converts an RGB color (with components 0–255) to HSL (H in degrees, S and L in [0,1]).
+func rgbToHSL(ri, gi, bi uint8) (h, s, l float64) {
+	// Normalize RGB values to [0,1]
+	r := float64(ri) / 255.0
+	g := float64(gi) / 255.0
+	b := float64(bi) / 255.0
+
+	max := math.Max(r, math.Max(g, b))
+	min := math.Min(r, math.Min(g, b))
+	l = (max + min) / 2
+
+	if max != min {
+		d := max - min
+		s = d / (1 - math.Abs(2*l-1))
+		switch max {
+		case r:
+			h = (g - b) / d
+			if g < b {
+				h += 6
+			}
+		case g:
+			h = (b-r)/d + 2
+		case b:
+			h = (r-g)/d + 4
+		}
+		h *= 60
+	} // else, achromatic (gray), s and h should be 0
+	return
+}
+
+// hslToRGB converts an HSL color (H in degrees, S and L in [0,1]) back to RGB (0–255).
+func hslToRGB(h, s, l float64) (r, g, b uint8) {
+	var rf, gf, bf float64
+	if s < math.SmallestNonzeroFloat64 { // Achromatic (gray)
+		rf, gf, bf = l, l, l
+	} else {
+		var q float64
+		if l < 0.5 {
+			q = l * (1 + s)
+		} else {
+			q = l + s - l*s
+		}
+		p := 2*l - q
+		hk := h / 360
+		rf = hue2rgb(p, q, hk+1.0/3.0)
+		gf = hue2rgb(p, q, hk)
+		bf = hue2rgb(p, q, hk-1.0/3.0)
+	}
+	return ColorChannelFromFloat(rf), ColorChannelFromFloat(gf), ColorChannelFromFloat(bf)
+}
+
+func hue2rgb(p, q, t float64) float64 {
+	if t < 0 {
+		t += 1
+	} else if t > 1 {
+		t -= 1
+	}
+	if t < 1.0/6.0 {
+		return p + (q-p)*6*t
+	} else if t < 1.0/2.0 {
+		return q
+	} else if t < 2.0/3.0 {
+		return p + (q-p)*(2.0/3.0-t)*6
+	}
+	return p
+}
+
+// clamp confines a value to the given range.
+func clamp(x, min, max float64) float64 {
+	if x < min {
+		return min
+	} else if x > max {
+		return max
+	}
+	return x
 }
 
 // Equals returns true if the color equals another.
@@ -343,7 +441,7 @@ func (c Color) String() string {
 	case ColorAqua:
 		return "aqua"
 	default:
-		if c.A == 255 {
+		if c.A == 255.0 {
 			return c.StringRGB()
 		} else {
 			return c.StringRGBA()
@@ -360,6 +458,5 @@ func (c Color) StringRGB() string {
 
 // StringRGBA returns a css RGBA string representation of the color.
 func (c Color) StringRGBA() string {
-	fa := float64(c.A) / float64(255)
-	return fmt.Sprintf("rgba(%v,%v,%v,%.1f)", c.R, c.G, c.B, fa)
+	return fmt.Sprintf("rgba(%v,%v,%v,%.1f)", c.R, c.G, c.B, float64(c.A)/255.0)
 }
