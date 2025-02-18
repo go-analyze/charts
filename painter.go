@@ -467,7 +467,7 @@ func (p *Painter) VerticalMarkLine(x, y, height int, fillColor, strokeColor Colo
 	p.lineTo(x, endY)
 	p.render.Stroke() // apply stroke with the dash array
 
-	p.ArrowDown(x, y, arrowWidth, arrowHeight, fillColor, strokeColor, strokeWidth)
+	p.ArrowUp(x, y+arrowHeight, arrowWidth, arrowHeight, fillColor, strokeColor, strokeWidth)
 }
 
 // Polygon draws a polygon with the specified center, radius, and number of sides.

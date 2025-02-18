@@ -95,7 +95,9 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 		seriesPainter.Width(), len(seriesList[0].Values), min, max, 1.0, 1.0)
 	divideValues := yRange.AutoDivide()
 
-	var rendererList []renderer
+	markLinePainter := newMarkLinePainter(seriesPainter)
+	rendererList := []renderer{markLinePainter}
+
 	for index, series := range seriesList {
 		seriesColor := opt.Theme.GetSeriesColor(index)
 
@@ -167,6 +169,48 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 					y:         labelY,
 					offset:    series.Label.Offset,
 					fontStyle: fontStyle,
+				})
+			}
+		}
+
+		var globalSeriesData []float64 // lazily initialized
+		if len(series.MarkLine.Lines) > 0 {
+			markLineValueFormatter := getPreferredValueFormatter(series.MarkLine.ValueFormatter,
+				series.Label.ValueFormatter, opt.ValueFormatter)
+			var seriesMarks, globalMarks SeriesMarkList
+			if stackedSeries && index == seriesCount-1 { // global is only allowed when stacked and on the last series
+				seriesMarks, globalMarks = series.MarkLine.Lines.splitGlobal()
+			} else {
+				seriesMarks = series.MarkLine.Lines.filterGlobal(false)
+			}
+			if len(seriesMarks) > 0 && (!stackedSeries || index == 0) {
+				// in stacked mode we only support the line painter for the first series
+				markLinePainter.add(markLineRenderOption{
+					verticalLine:   true,
+					fillColor:      seriesColor,
+					fontColor:      opt.Theme.GetMarkTextColor(),
+					strokeColor:    seriesColor,
+					font:           opt.Font,
+					marklines:      seriesMarks,
+					seriesValues:   series.Values,
+					axisRange:      xRange,
+					valueFormatter: markLineValueFormatter,
+				})
+			}
+			if len(globalMarks) > 0 {
+				if globalSeriesData == nil {
+					globalSeriesData = sumSeriesData(seriesList, 0)
+				}
+				markLinePainter.add(markLineRenderOption{
+					verticalLine:   true,
+					fillColor:      defaultGlobalMarkFillColor,
+					fontColor:      opt.Theme.GetMarkTextColor(),
+					strokeColor:    defaultGlobalMarkFillColor,
+					font:           opt.Font,
+					marklines:      globalMarks,
+					seriesValues:   globalSeriesData,
+					axisRange:      xRange,
+					valueFormatter: markLineValueFormatter,
 				})
 			}
 		}

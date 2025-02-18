@@ -37,8 +37,9 @@ type markLineRenderOption struct {
 	font           *truetype.Font
 	seriesValues   []float64
 	marklines      []SeriesMark
-	axisRange      axisRange
+	axisRange      axisRange // For vertical bar charts this is y-axis range; for horizontal bar charts this is the x-axis range
 	valueFormatter ValueFormatter
+	verticalLine   bool
 }
 
 func (m *markLinePainter) Render() (Box, error) {
@@ -63,12 +64,19 @@ func (m *markLinePainter) Render() (Box, error) {
 			default:
 				value = summary.Average
 			}
-			y := opt.axisRange.getRestHeight(value)
 			text := opt.valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, fontStyle)
-			width := painter.Width()
-			painter.HorizontalMarkLine(0, y, width-2, opt.fillColor, opt.strokeColor, 1, []float64{4, 2})
-			painter.Text(text, width, y+textBox.Height()>>1-2, 0, fontStyle)
+			if opt.verticalLine {
+				x := opt.axisRange.getHeight(value) // x coordinate for the mark line
+				height := painter.Height()
+				painter.VerticalMarkLine(x, 2, height-2, opt.fillColor, opt.strokeColor, 1, []float64{4, 2})
+				painter.Text(text, x-(textBox.Width()>>1)-1, 0, 0, fontStyle)
+			} else { // horizontal mark line
+				y := opt.axisRange.getRestHeight(value) // y coordinate for the mark line.
+				width := painter.Width()
+				painter.HorizontalMarkLine(0, y, width-2, opt.fillColor, opt.strokeColor, 1, []float64{4, 2})
+				painter.Text(text, width, y+(textBox.Height()>>1)-2, 0, fontStyle)
+			}
 		}
 	}
 	return BoxZero, nil
