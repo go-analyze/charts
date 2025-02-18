@@ -228,12 +228,20 @@ func TestPainterExternal(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path  d=\"M 30 24\nL 35 40\nL 40 24\nL 35 30\nL 30 24\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/></svg>",
 		},
 		{
-			name: "mark_line",
+			name: "horizontal_mark_line",
 			fn: func(p *Painter) {
 				c := Color{R: 84, G: 112, B: 198, A: 255}
-				p.MarkLine(0, 20, 300, c, c, 1, []float64{4, 2})
+				p.HorizontalMarkLine(0, 20, 300, c, c, 1, []float64{4, 2})
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><circle cx=\"8\" cy=\"30\" r=\"3\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 14 30\nL 289 30\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 289 25\nL 305 30\nL 289 35\nL 294 30\nL 289 25\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/></svg>",
+		},
+		{
+			name: "vertical_mark_line",
+			fn: func(p *Painter) {
+				c := Color{R: 84, G: 112, B: 198, A: 255}
+				p.VerticalMarkLine(200, 100, 100, c, c, 1, []float64{4, 2})
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><circle cx=\"205\" cy=\"207\" r=\"3\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 205 110\nL 205 210\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><path stroke-dasharray=\"4.0, 2.0\" d=\"M 200 94\nL 205 110\nL 210 94\nL 205 100\nL 200 94\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/></svg>",
 		},
 		{
 			name: "polygon",

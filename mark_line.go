@@ -73,7 +73,7 @@ func (m *markLinePainter) Render() (Box, error) {
 			text := valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, fontStyle)
 			width := painter.Width()
-			painter.MarkLine(0, y, width-2, opt.fillColor, opt.strokeColor, 1, []float64{4, 2})
+			painter.HorizontalMarkLine(0, y, width-2, opt.fillColor, opt.strokeColor, 1, []float64{4, 2})
 			painter.Text(text, width, y+textBox.Height()>>1-2, 0, fontStyle)
 		}
 	}

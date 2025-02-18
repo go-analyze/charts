@@ -423,10 +423,15 @@ func (p *Painter) diamondMoveLine(cx, cy, width, height int) {
 	p.lineTo(p1x, p1y)
 }
 
-// MarkLine draws a horizontal line with a small circle and arrow at the right.
+// Deprecated: MarkLine is deprecated, use HorizontalMarkLine as a direct replacement.
 func (p *Painter) MarkLine(x, y, width int, fillColor, strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
-	arrowWidth := 16
-	arrowHeight := 10
+	p.HorizontalMarkLine(x, y, width, fillColor, strokeColor, strokeWidth, strokeDashArray)
+}
+
+// HorizontalMarkLine draws a horizontal line with a small circle and arrow at the right.
+func (p *Painter) HorizontalMarkLine(x, y, width int, fillColor, strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
+	const arrowWidth = 16
+	const arrowHeight = 10
 	endX := x + width
 	radius := 3
 
@@ -447,6 +452,32 @@ func (p *Painter) MarkLine(x, y, width int, fillColor, strokeColor Color, stroke
 	p.render.Stroke() // apply stroke with the dash array
 
 	p.ArrowRight(endX, y, arrowWidth, arrowHeight, fillColor, strokeColor, strokeWidth)
+}
+
+// VerticalMarkLine draws a vertical line with a small dot at the bottom and an arrow at the top.
+func (p *Painter) VerticalMarkLine(x, y, height int, fillColor, strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
+	const arrowHeight = 16
+	const arrowWidth = 10
+	endY := y + height
+	radius := 3
+
+	// Set up stroke style before drawing
+	defer p.render.ResetStyle()
+	p.render.SetStrokeColor(strokeColor)
+	p.render.SetStrokeWidth(strokeWidth)
+	p.render.SetStrokeDashArray(strokeDashArray)
+	p.render.SetFillColor(fillColor)
+
+	// Draw the dot at the bottom of the line
+	p.render.Circle(float64(radius), x+p.box.Left, endY-radius+p.box.Top)
+	p.render.Fill() // fill the circle
+
+	// Draw the vertical line
+	p.moveTo(x, y)
+	p.lineTo(x, endY)
+	p.render.Stroke() // apply stroke with the dash array
+
+	p.ArrowDown(x, y, arrowWidth, arrowHeight, fillColor, strokeColor, strokeWidth)
 }
 
 // Polygon draws a polygon with the specified center, radius, and number of sides.
