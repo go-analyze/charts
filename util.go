@@ -10,24 +10,9 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// True returns a pointer to a true bool, useful for configuration.
-func True() *bool {
-	return BoolPointer(true)
-}
-
-// False returns a pointer to a false bool, useful for configuration.
-func False() *bool {
-	return BoolPointer(false)
-}
-
-// BoolPointer returns a pointer to the given bool value, useful for configuration.
-func BoolPointer(b bool) *bool {
-	return &b
-}
-
-// FloatPointer returns a pointer to the given float64 value, useful for configuration.
-func FloatPointer(f float64) *float64 {
-	return &f
+// Ptr is a helper function to help build config options which reference pointers.
+func Ptr[T any](val T) *T {
+	return &val
 }
 
 // flagIs returns true if the flag is not-nil and matches the comparison argument.
@@ -89,18 +74,117 @@ func autoDivideSpans(max, size int, spans []int) []int {
 	return values
 }
 
-// TODO - replace when we support a newer version of go
-func reverseStringSlice(stringList []string) {
-	for i, j := 0, len(stringList)-1; i < j; i, j = i+1, j-1 {
-		stringList[i], stringList[j] = stringList[j], stringList[i]
+func reverseSlice[T any](s []T) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
 	}
 }
 
-// TODO - replace when we support a newer version of go
-func reverseIntSlice(intList []int) {
-	for i, j := 0, len(intList)-1; i < j; i, j = i+1, j-1 {
-		intList[i], intList[j] = intList[j], intList[i]
+// SliceToFloat64 converts a slice of arbitrary types to float64 to be used as chart values.
+func SliceToFloat64[T any](slice []T, conversion func(T) float64) []float64 {
+	return sliceConversion(slice, conversion)
+}
+
+// IntSliceToFloat64 converts an int slice to a float64 slice so that it can be used for chart values.
+func IntSliceToFloat64(slice []int) []float64 {
+	return sliceConversion(slice, func(i int) float64 { return float64(i) })
+}
+
+func sliceConversion[I any, R any](input []I, conversion func(I) R) []R {
+	result := make([]R, len(input))
+	for i, v := range input {
+		result[i] = conversion(v)
 	}
+	return result
+}
+
+// sliceSplit will split a slice in half based on a conditional function passed in. The right result are true values,
+// second result being values that tested false.
+func sliceSplit[T any](slice []T, test func(v T) bool) ([]T, []T) {
+	if len(slice) == 0 {
+		return nil, nil
+	}
+
+	var splitIndex int
+	first := test(slice[0])
+	for splitIndex = 1; splitIndex < len(slice); splitIndex++ {
+		if first != test(slice[splitIndex]) {
+			break
+		}
+	}
+
+	// If all are the same, return early
+	if splitIndex == len(slice) {
+		if first {
+			return slice, nil
+		} else {
+			return nil, slice
+		}
+	}
+
+	// Allocate slices and copy first segment
+	remainingBuff := len(slice) - splitIndex
+	if remainingBuff > 2048 {
+		remainingBuff /= 2
+	}
+	var trueList, falseList []T
+	if first {
+		trueList = append(make([]T, 0, splitIndex+remainingBuff-1), slice[:splitIndex]...)
+		falseList = append(make([]T, 0, remainingBuff), slice[splitIndex])
+	} else {
+		falseList = append(make([]T, 0, splitIndex+remainingBuff-1), slice[:splitIndex]...)
+		trueList = append(make([]T, 0, remainingBuff), slice[splitIndex])
+	}
+	// Finish iterating appending remaining elements
+	for i := splitIndex + 1; i < len(slice); i++ {
+		if test(slice[i]) {
+			trueList = append(trueList, slice[i])
+		} else {
+			falseList = append(falseList, slice[i])
+		}
+	}
+
+	return trueList, falseList
+}
+
+// sliceFilter iterates over the slice, testing each element with the provided function. The returned slice are items
+// which had a true result.
+func sliceFilter[T any](slice []T, test func(v T) bool) []T {
+	for falseIndex, v := range slice {
+		if !test(v) {
+			if falseIndex == 0 {
+				// iterate until a true result is found, then start appending at that point
+				var result []T
+				for i := falseIndex + 1; i < len(slice); i++ {
+					if test(slice[i]) {
+						if result == nil {
+							remainingBuff := len(slice) - i
+							if remainingBuff > 2048 {
+								remainingBuff /= 2
+							}
+							result = make([]T, 0, remainingBuff)
+						}
+						result = append(result, slice[i])
+					}
+				}
+				return result
+			} else {
+				// copy all records that already passed, and then finish iteration to produce result
+				remainingBuff := len(slice) - falseIndex - 1
+				if remainingBuff > 2048 {
+					remainingBuff /= 2
+				}
+				result := append(make([]T, 0, falseIndex+remainingBuff), slice[:falseIndex]...)
+				for i := falseIndex + 1; i < len(slice); i++ {
+					if test(slice[i]) {
+						result = append(result, slice[i])
+					}
+				}
+				return result
+			}
+		}
+	}
+	return slice // all records tested to true
 }
 
 func parseFlexibleValue(value string, percentTotal float64) (float64, error) {

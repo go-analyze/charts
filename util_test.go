@@ -2,6 +2,7 @@ package charts
 
 import (
 	"math"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -103,14 +104,205 @@ func TestReverseSlice(t *testing.T) {
 	t.Parallel()
 
 	arr := []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
-	reverseStringSlice(arr)
+	reverseSlice(arr)
 	assert.Equal(t, []string{
 		"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon",
 	}, arr)
 
 	numbers := []int{1, 3, 5, 7, 9}
-	reverseIntSlice(numbers)
+	reverseSlice(numbers)
 	assert.Equal(t, []int{9, 7, 5, 3, 1}, numbers)
+}
+
+func TestSliceToFloat64(t *testing.T) {
+	t.Parallel()
+
+	t.Run("int", func(t *testing.T) {
+		input := []int{1, 2, 3, 4}
+		expected := []float64{1.0, 2.0, 3.0, 4.0}
+		result := SliceToFloat64(input, func(i int) float64 { return float64(i) })
+		assert.Equal(t, expected, result)
+	})
+	t.Run("string", func(t *testing.T) {
+		input := []string{"1.5", "2.5", "3.5"}
+		expected := []float64{1.5, 2.5, 3.5}
+		result := SliceToFloat64(input, func(s string) float64 {
+			if f, err := strconv.ParseFloat(s, 64); err == nil {
+				return f
+			}
+			return 0
+		})
+		assert.Equal(t, expected, result)
+	})
+	t.Run("empty", func(t *testing.T) {
+		input := []string{}
+		expected := []float64{}
+		result := SliceToFloat64(input, func(s string) float64 { return 0 })
+		assert.Equal(t, expected, result)
+	})
+	t.Run("nil", func(t *testing.T) {
+		var input []int
+		expected := []float64{}
+		result := SliceToFloat64(input, func(i int) float64 { return float64(i) })
+		assert.Equal(t, expected, result)
+	})
+}
+
+func TestIntSliceToFloat64(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		input []int
+		want  []float64
+	}{
+		{
+			name:  "positive",
+			input: []int{1, 2, 3},
+			want:  []float64{1.0, 2.0, 3.0},
+		},
+		{
+			name:  "negative",
+			input: []int{0, -1, -2},
+			want:  []float64{0.0, -1.0, -2.0},
+		},
+		{
+			name:  "empty",
+			input: []int{},
+			want:  []float64{},
+		},
+		{
+			name:  "nil",
+			input: nil,
+			want:  []float64{},
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, IntSliceToFloat64(tt.input))
+		})
+	}
+}
+
+var sliceSplitTestCases = []struct {
+	name        string
+	input       []int
+	testFunc    func(v int) bool
+	expectTrue  []int
+	expectFalse []int
+}{
+	{
+		name:        "all_true",
+		input:       []int{2, 4, 6},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  []int{2, 4, 6},
+		expectFalse: nil,
+	},
+	{
+		name:        "all_false",
+		input:       []int{1, 3, 5},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  nil,
+		expectFalse: []int{1, 3, 5},
+	},
+	{
+		name:        "single_true",
+		input:       []int{2},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  []int{2},
+		expectFalse: nil,
+	},
+	{
+		name:        "single_false",
+		input:       []int{1},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  nil,
+		expectFalse: []int{1},
+	},
+	{
+		name:        "one_true",
+		input:       []int{1, 2, 3, 4, 6, 8},
+		testFunc:    func(v int) bool { return v == 1 },
+		expectTrue:  []int{1},
+		expectFalse: []int{2, 3, 4, 6, 8},
+	},
+	{
+		name:        "true_end",
+		input:       []int{2, 3, 4, 6, 8, 1, 1},
+		testFunc:    func(v int) bool { return v == 1 },
+		expectTrue:  []int{1, 1},
+		expectFalse: []int{2, 3, 4, 6, 8},
+	},
+	{
+		name:        "mixed_split_first",
+		input:       []int{1, 2, 1, 4, 6, 8},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  []int{2, 4, 6, 8},
+		expectFalse: []int{1, 1},
+	},
+	{
+		name:        "mixed_split_second",
+		input:       []int{2, 1, 4, 6, 8},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  []int{2, 4, 6, 8},
+		expectFalse: []int{1},
+	},
+	{
+		name:        "mixed_split_middle",
+		input:       []int{2, 4, 6, 1, 3, 5, 8},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  []int{2, 4, 6, 8},
+		expectFalse: []int{1, 3, 5},
+	},
+	{
+		name:        "mixed_split_last",
+		input:       []int{2, 4, 6, 1},
+		testFunc:    func(v int) bool { return v%2 == 0 },
+		expectTrue:  []int{2, 4, 6},
+		expectFalse: []int{1},
+	},
+	{
+		name:        "empty",
+		input:       []int{},
+		testFunc:    func(v int) bool { return v > 0 },
+		expectTrue:  nil,
+		expectFalse: nil,
+	},
+	{
+		name:        "nil",
+		input:       nil,
+		testFunc:    func(v int) bool { return v > 0 },
+		expectTrue:  nil,
+		expectFalse: nil,
+	},
+}
+
+func TestSliceSplit(t *testing.T) {
+	t.Parallel()
+
+	for i, tt := range sliceSplitTestCases {
+		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+			trueSlice, falseSlice := sliceSplit(tt.input, tt.testFunc)
+			assert.Equal(t, tt.expectTrue, trueSlice)
+			assert.Equal(t, tt.expectFalse, falseSlice)
+		})
+	}
+}
+
+func TestSliceFilter(t *testing.T) {
+	t.Parallel()
+
+	for i, tt := range sliceSplitTestCases {
+		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+			slice := sliceFilter(tt.input, tt.testFunc)
+			if len(tt.expectTrue) == 0 {
+				assert.Empty(t, slice)
+			} else {
+				assert.Equal(t, tt.expectTrue, slice)
+			}
+		})
+	}
 }
 
 func TestParseFlexibleValue(t *testing.T) {
@@ -136,4 +328,20 @@ func TestParseFlexibleValue(t *testing.T) {
 		require.Error(t, err)
 		assert.InDelta(t, 0.0, result, 0)
 	})
+}
+
+func BenchmarkSliceSplit(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for _, tc := range sliceSplitTestCases {
+			_, _ = sliceSplit(tc.input, tc.testFunc)
+		}
+	}
+}
+
+func BenchmarkSliceFilter(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for _, tc := range sliceSplitTestCases {
+			_ = sliceFilter(tc.input, tc.testFunc)
+		}
+	}
 }

@@ -38,7 +38,7 @@ func main() {
 		charts.LegendLabelsOptionFunc([]string{
 			"2011", "2012",
 		}),
-		charts.YAxisDataOptionFunc([]string{
+		charts.YAxisLabelsOptionFunc([]string{
 			"UN", "Brazil", "Indonesia", "USA", "India", "China", "World",
 		}),
 	)

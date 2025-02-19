@@ -30,22 +30,20 @@ type ChartOption struct {
 	Font *truetype.Font
 	// Box specifies the canvas box for the chart.
 	Box Box
-	// SeriesList provides the data series.
-	SeriesList SeriesList
+	// SeriesList provides the population data for the charts, constructed through NewSeriesListGeneric.
+	SeriesList GenericSeriesList
 	// StackSeries if set to *true the lines will be layered or stacked. This option significantly changes the chart
 	// visualization, please see the specific chart docs for full details.
 	StackSeries *bool
 	// RadarIndicators are radar indicator list for radar charts.
 	RadarIndicators []RadarIndicator
-	// Deprecated: SymbolShow is deprecated, set Symbol to `none` or `circle` to match prior behavior.
-	SymbolShow *bool
 	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
 	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
 	Symbol Symbol
 	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
-	// FillArea set to true to fill the area under the line in line charts
-	FillArea bool
+	// FillArea set to *true to fill the area under the line in line charts
+	FillArea *bool
 	// FillOpacity is the opacity (alpha) of the area fill in line charts.
 	FillOpacity uint8
 	// BarWidth is the width of the bars for bar charts.
@@ -54,6 +52,8 @@ type ChartOption struct {
 	BarHeight int
 	// BarMargin specifies the margin between bars grouped together. BarWidth or BarHeight takes priority over the margin.
 	BarMargin *float64
+	// Radius default radius for pie and radar charts e.g.: 40%, default is "40%"
+	Radius string
 	// Children are Child charts to render together.
 	Children []ChartOption
 	parent   *Painter
@@ -142,11 +142,6 @@ func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 	}
 }
 
-// Deprecated: XAxisDataOptionFunc is deprecated, use XAxisLabelsOptionFunc instead.
-func XAxisDataOptionFunc(data []string) OptionFunc {
-	return XAxisLabelsOptionFunc(data)
-}
-
 // XAxisLabelsOptionFunc sets the x-axis labels of the chart.
 func XAxisLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
@@ -161,11 +156,6 @@ func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.YAxis = yAxisOption
 	}
-}
-
-// Deprecated: YAxisDataOptionFunc is deprecated, use YAxisLabelsOptionFunc instead.
-func YAxisDataOptionFunc(data []string) OptionFunc {
-	return YAxisLabelsOptionFunc(data)
 }
 
 // YAxisLabelsOptionFunc sets the y-axis labels of the chart.
@@ -198,7 +188,7 @@ func PaddingOptionFunc(padding Box) OptionFunc {
 func SeriesShowLabel(show bool) OptionFunc {
 	return func(opt *ChartOption) {
 		for index := range opt.SeriesList {
-			opt.SeriesList[index].Label.Show = BoolPointer(show)
+			opt.SeriesList[index].Label.Show = Ptr(show)
 		}
 	}
 }
@@ -241,7 +231,7 @@ func (o *ChartOption) fillDefault() error {
 	o.Width = getDefaultInt(o.Width, defaultChartWidth)
 	o.Height = getDefaultInt(o.Height, defaultChartHeight)
 
-	yaxisCount := o.SeriesList.getYAxisCount()
+	yaxisCount := getSeriesYAxisCount(o.SeriesList)
 	if yaxisCount < 0 {
 		return errors.New("series specified invalid y-axis index")
 	}
@@ -280,41 +270,41 @@ func fillThemeDefaults(defaultTheme ColorPalette, title *TitleOption, legend *Le
 // LineRender line chart render.
 func LineRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListLine(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeLine),
 	}, opts...)
 }
 
 // BarRender bar chart render.
 func BarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListBar(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeBar),
 	}, opts...)
 }
 
 // HorizontalBarRender horizontal bar chart render.
 func HorizontalBarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListHorizontalBar(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeHorizontalBar),
 	}, opts...)
 }
 
 // PieRender pie chart render.
 func PieRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListPie(values),
+		SeriesList: NewSeriesListPie(values).ToGenericSeriesList(),
 	}, opts...)
 }
 
 // RadarRender radar chart render.
 func RadarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListRadar(values),
+		SeriesList: NewSeriesListGeneric(values, ChartTypeRadar),
 	}, opts...)
 }
 
 // FunnelRender funnel chart render.
 func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
-		SeriesList: NewSeriesListFunnel(values),
+		SeriesList: NewSeriesListFunnel(values).ToGenericSeriesList(),
 	}, opts...)
 }

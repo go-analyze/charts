@@ -378,11 +378,6 @@ func (p *Painter) drawSmoothCurve(points []Point, tension float64, dotForSingleP
 	p.quadCurveTo(points[n-2].X, points[n-2].Y, points[n-1].X, points[n-1].Y)
 }
 
-// Deprecated: SetBackground is Deprecated, use FilledRect with zero for the stroke width.
-func (p *Painter) SetBackground(width, height int, color Color) {
-	p.FilledRect(0, 0, width, height, color, color, 0.0)
-}
-
 // drawBackground fills the entire painter area with the given color.
 func (p *Painter) drawBackground(color Color) {
 	p.FilledRect(0, 0, p.Width(), p.Height(), color, color, 0.0)
@@ -421,11 +416,6 @@ func (p *Painter) diamondMoveLine(cx, cy, width, height int) {
 	p.lineTo(p3x, p3y)
 	p.lineTo(p4x, p4y)
 	p.lineTo(p1x, p1y)
-}
-
-// Deprecated: MarkLine is deprecated, use HorizontalMarkLine as a direct replacement.
-func (p *Painter) MarkLine(x, y, width int, fillColor, strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
-	p.HorizontalMarkLine(x, y, width, fillColor, strokeColor, strokeWidth, strokeDashArray)
 }
 
 // HorizontalMarkLine draws a horizontal line with a small circle and arrow at the right.

@@ -1,20 +1,16 @@
 package charts
 
 type YAxisOption struct {
-	// Show specifies if the y-axis should be rendered, set this to *false (through False()) to hide the axis.
+	// Show specifies if the y-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
-	// Deprecated: AxisColor is deprecated, instead use a Theme with the axis color changed.
-	AxisColor Color
 	// Min, if set this will force the minimum value of y-axis.
 	Min *float64
 	// Max, if set this will force the maximum value of y-axis.
 	Max *float64
 	// RangeValuePaddingScale suggest a scale of padding added to the max and min values.
 	RangeValuePaddingScale *float64
-	// Deprecated: Data is deprecated, use Labels instead.
-	Data []string
 	// Labels provides labels for each value on the y-axis.
 	Labels []string
 	// Position describes the position of y-axis, it can be 'left' or 'right'.
@@ -47,9 +43,6 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 	if opt.Position == PositionRight {
 		position = PositionRight
 	}
-	if len(opt.Labels) == 0 {
-		opt.Labels = opt.Data
-	}
 	theme := getPreferredTheme(opt.Theme, fallbackTheme)
 	if opt.FontStyle.FontColor.IsZero() {
 		opt.FontStyle.FontColor = theme.GetTextColor()
@@ -61,21 +54,17 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		position:             position,
 		fontStyle:            opt.FontStyle,
 		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
-		axisColor:            theme.GetAxisStrokeColor(),
+		axisColor:            theme.GetYAxisStrokeColor(),
 		strokeWidth:          -1,
-		boundaryGap:          False(),
+		boundaryGap:          Ptr(false),
 		unit:                 opt.Unit,
 		labelCount:           opt.LabelCount,
 		labelCountAdjustment: opt.LabelCountAdjustment,
 		labelSkipCount:       opt.LabelSkipCount,
 		splitLineShow:        true,
 	}
-	if !opt.AxisColor.IsZero() {
-		axisOpt.fontStyle.FontColor = opt.AxisColor
-		axisOpt.axisColor = opt.AxisColor
-	}
 	if opt.isCategoryAxis {
-		axisOpt.boundaryGap = True()
+		axisOpt.boundaryGap = Ptr(true)
 		axisOpt.strokeWidth = 1
 		axisOpt.splitLineShow = false
 	}
