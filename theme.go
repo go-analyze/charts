@@ -8,24 +8,21 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// ThemeLight is the default theme used, with series colors from echarts.
-const ThemeLight = "light"
-
-// ThemeDark is a dark alternative to the default theme 'light, with series colors from echarts'.
-const ThemeDark = "dark"
-
-// ThemeVividLight is an alternative light theme that has red, yellow, and other bright colors initially in the series.
-// It can be a good option when you want the first few series items to grab the most attention.
-const ThemeVividLight = "vivid-light"
-
-// ThemeVividDark is a dark alternative to 'ThemeVividLight', with the same bright initial series colors.
-const ThemeVividDark = "vivid-dark"
-
-// ThemeGrafana is a grafana styled theme.
-const ThemeGrafana = "grafana"
-
-// ThemeAnt is an ant styled theme.
-const ThemeAnt = "ant"
+const (
+	// ThemeLight is the default theme used, with series colors from echarts.
+	ThemeLight = "light"
+	// ThemeDark is a dark alternative to the default theme 'light, with series colors from echarts'.
+	ThemeDark = "dark"
+	// ThemeVividLight is an alternative light theme that has red, yellow, and other bright colors initially in the series.
+	// It can be a good option when you want the first few series items to grab the most attention.
+	ThemeVividLight = "vivid-light"
+	// ThemeVividDark is a dark alternative to 'ThemeVividLight', with the same bright initial series colors.
+	ThemeVividDark = "vivid-dark"
+	// ThemeGrafana is a grafana styled theme.
+	ThemeGrafana = "grafana"
+	// ThemeAnt is an ant styled theme.
+	ThemeAnt = "ant"
+)
 
 type ColorPalette interface {
 	IsDark() bool

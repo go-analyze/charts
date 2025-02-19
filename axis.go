@@ -18,84 +18,75 @@ func newAxisPainter(p *Painter, opt axisOption) *axisPainter {
 }
 
 type axisOption struct {
-	// Show specifies if the axis should be rendered, set this to *false (through False()) to hide the axis.
-	Show *bool
-	// Theme specifies the colors used for the axis.
-	Theme ColorPalette
-	// Labels provides labels for each value on the axis.
-	Labels []string
-	// DataStartIndex specifies what index the Data values should start from.
-	DataStartIndex int
-	// Formatter for replacing axis text values.
-	Formatter string
-	// Position describes the position of axis, it can be 'left', 'top', 'right' or 'bottom'.
-	Position string
-	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
+	show *bool
+	// labels provides string values for each value on the axis.
+	labels []string
+	// dataStartIndex specifies what index the label values should start from.
+	dataStartIndex int
+	// formatter for replacing axis text values.
+	formatter string
+	// position describes the position of axis, it can be 'left', 'top', 'right' or 'bottom'.
+	position string
+	// boundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
-	// graph. Specify a *bool (through charts.False() or charts.True()) to enforce a spacing.
-	BoundaryGap *bool
-	// StrokeWidth is the axis line width.
-	StrokeWidth float64
-	// TickLength is the length of each axis tick.
-	TickLength int
-	// LabelMargin specifies the margin value of each label.
-	LabelMargin int
-	// FontStyle specifies the font configuration for each label.
-	FontStyle FontStyle
-	// SplitLineShow, set this to true will show axis split line.
-	SplitLineShow bool
-	// LabelRotation are the radians for rotating the label.
-	LabelRotation float64
-	// LabelOffset is the offset of each label.
-	LabelOffset OffsetInt
-	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
-	Unit float64
-	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions. This value takes priority over Unit.
-	LabelCount int
-	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
-	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.
-	LabelCountAdjustment int
-	// LabelSkipCount specifies a number of lines between labels where there will be no label,
-	// but a horizontal line will still be drawn.
-	LabelSkipCount int
+	// graph. Specify a *bool to enforce a spacing.
+	boundaryGap        *bool
+	strokeWidth        float64
+	tickLength         int
+	labelMargin        int
+	fontStyle          FontStyle
+	axisSplitLineColor Color
+	axisColor          Color
+	splitLineShow      bool
+	// labelRotation are the radians for rotating the label.
+	labelRotation        float64
+	labelOffset          OffsetInt
+	unit                 float64
+	labelCount           int
+	labelCountAdjustment int
+	labelSkipCount       int
 }
 
 func (a *axisPainter) Render() (Box, error) {
 	opt := a.opt
-	if flagIs(false, opt.Show) {
+	if flagIs(false, opt.show) {
 		return BoxZero, nil
 	}
 	top := a.p
-	theme := getPreferredTheme(opt.Theme, top.theme)
+	defaultTheme := getPreferredTheme(top.theme)
+	isVertical := opt.position == PositionLeft || opt.position == PositionRight
 
-	strokeWidth := opt.StrokeWidth
+	strokeWidth := opt.strokeWidth
 	if strokeWidth == 0 {
 		strokeWidth = 1
 	}
-
-	fontStyle := opt.FontStyle
+	if opt.axisColor.IsZero() {
+		opt.axisColor = defaultTheme.GetAxisStrokeColor()
+	}
+	if opt.axisSplitLineColor.IsZero() {
+		opt.axisSplitLineColor = defaultTheme.GetAxisSplitLineColor()
+	}
+	fontStyle := opt.fontStyle
 	fontStyle.Font = getPreferredFont(fontStyle.Font, a.p.font)
 	if fontStyle.FontColor.IsZero() {
-		fontStyle.FontColor = theme.GetTextColor()
+		fontStyle.FontColor = defaultTheme.GetTextColor()
 	}
 	if fontStyle.FontSize == 0 {
 		fontStyle.FontSize = defaultFontSize
 	}
 
-	formatter := opt.Formatter
+	formatter := opt.formatter
 	if formatter != "" {
-		for index, text := range opt.Labels {
-			opt.Labels[index] = strings.ReplaceAll(formatter, "{value}", text)
+		for index, text := range opt.labels {
+			opt.labels[index] = strings.ReplaceAll(formatter, "{value}", text)
 		}
 	}
 
-	isVertical := opt.Position == PositionLeft || opt.Position == PositionRight
-
 	// if less than zero, it means not processing
-	tickLength := getDefaultInt(opt.TickLength, 5)
-	labelMargin := getDefaultInt(opt.LabelMargin, 5)
+	tickLength := getDefaultInt(opt.tickLength, 5)
+	labelMargin := getDefaultInt(opt.labelMargin, 5)
 
-	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.Labels, opt.LabelRotation, fontStyle)
+	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.labels, opt.labelRotation, fontStyle)
 
 	var width, height int
 	if isVertical {
@@ -106,7 +97,7 @@ func (a *axisPainter) Render() (Box, error) {
 		height = tickLength<<1 + textMaxHeight
 	}
 	padding := Box{IsSet: true}
-	switch opt.Position {
+	switch opt.position {
 	case PositionTop:
 		padding.Top = top.Height() - height
 	case PositionLeft:
@@ -124,11 +115,11 @@ func (a *axisPainter) Render() (Box, error) {
 	var labelPaddingTop, labelPaddingLeft, labelPaddingRight int
 	var textAlign string
 
-	switch opt.Position {
+	switch opt.position {
 	case PositionTop:
-		if opt.LabelRotation != 0 {
-			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Labels, 0, fontStyle)
-			labelPaddingTop = flatHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.LabelRotation)
+		if opt.labelRotation != 0 {
+			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.labels, 0, fontStyle)
+			labelPaddingTop = flatHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.labelRotation)
 		} else {
 			labelPaddingTop = 0
 		}
@@ -148,17 +139,17 @@ func (a *axisPainter) Render() (Box, error) {
 		y1 = p.Height()
 		labelPaddingLeft = width - textMaxWidth
 	default:
-		if opt.LabelRotation != 0 {
-			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.Labels, 0, fontStyle)
-			labelPaddingTop = tickLength<<1 + (textMaxHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.LabelRotation))
+		if opt.labelRotation != 0 {
+			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.labels, 0, fontStyle)
+			labelPaddingTop = tickLength<<1 + (textMaxHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.labelRotation))
 		} else {
 			labelPaddingTop = height
 		}
 		x1 = p.Width()
 	}
 
-	dataCount := len(opt.Labels)
-	labelCount := opt.LabelCount
+	dataCount := len(opt.labels)
+	labelCount := opt.labelCount
 	if labelCount <= 0 {
 		var maxLabelCount int
 		// Add 10px and remove one for some minimal extra padding so that letters don't collide
@@ -167,10 +158,10 @@ func (a *axisPainter) Render() (Box, error) {
 		} else {
 			maxLabelCount = (top.Width() / (textMaxWidth + 10)) - 1
 		}
-		if opt.Unit > 0 {
+		if opt.unit > 0 {
 			multiplier := 1.0
 			for {
-				labelCount = int(math.Ceil(float64(dataCount) / (opt.Unit * multiplier)))
+				labelCount = int(math.Ceil(float64(dataCount) / (opt.unit * multiplier)))
 				if labelCount > maxLabelCount {
 					multiplier++
 				} else {
@@ -184,14 +175,14 @@ func (a *axisPainter) Render() (Box, error) {
 	if labelCount > dataCount {
 		labelCount = dataCount
 	}
-	labelCount += opt.LabelCountAdjustment
+	labelCount += opt.labelCountAdjustment
 	if labelCount < 2 {
 		labelCount = 2
 	}
 
 	centerLabels := true
-	if opt.BoundaryGap != nil {
-		centerLabels = *opt.BoundaryGap
+	if opt.boundaryGap != nil {
+		centerLabels = *opt.boundaryGap
 	} else if dataCount > 1 && a.p.Width()/dataCount <= boundaryGapDefaultThreshold {
 		// for dense datasets it's visually better to have the label aligned to the tick mark
 		// this default is also handled in the chart rendering to ensure data aligns with the labels
@@ -211,7 +202,6 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 
 	if strokeWidth > 0 {
-		strokeColor := theme.GetAxisStrokeColor()
 		p.Child(PainterPaddingOption(Box{
 			Top:   ticksPaddingTop,
 			Left:  ticksPaddingLeft,
@@ -222,14 +212,14 @@ func (a *axisPainter) Render() (Box, error) {
 			tickSpaces:  tickSpaces,
 			length:      tickLength,
 			vertical:    isVertical,
-			firstIndex:  opt.DataStartIndex,
+			firstIndex:  opt.dataStartIndex,
 			strokeWidth: strokeWidth,
-			strokeColor: strokeColor,
+			strokeColor: opt.axisColor,
 		})
 		p.LineStroke([]Point{
 			{X: x0, Y: y0},
 			{X: x1, Y: y1},
-		}, strokeColor, strokeWidth)
+		}, opt.axisColor, strokeWidth)
 	}
 
 	p.Child(PainterPaddingOption(Box{
@@ -238,24 +228,24 @@ func (a *axisPainter) Render() (Box, error) {
 		Right: labelPaddingRight,
 		IsSet: true,
 	})).multiText(multiTextOption{
-		firstIndex:     opt.DataStartIndex,
+		firstIndex:     opt.dataStartIndex,
 		align:          textAlign,
-		textList:       opt.Labels,
+		textList:       opt.labels,
 		fontStyle:      fontStyle,
 		vertical:       isVertical,
 		labelCount:     labelCount,
 		tickCount:      tickCount,
-		labelSkipCount: opt.LabelSkipCount,
+		labelSkipCount: opt.labelSkipCount,
 		centerLabels:   centerLabels,
-		textRotation:   opt.LabelRotation,
-		offset:         opt.LabelOffset,
+		textRotation:   opt.labelRotation,
+		offset:         opt.labelOffset,
 	})
 
-	if opt.SplitLineShow { // show auxiliary lines
+	if opt.splitLineShow { // show auxiliary lines
 		if isVertical {
 			x0 := p.Width()
 			x1 := top.Width()
-			if opt.Position == PositionRight {
+			if opt.position == PositionRight {
 				x0 = 0
 				x1 = top.Width() - p.Width()
 			}
@@ -265,7 +255,7 @@ func (a *axisPainter) Render() (Box, error) {
 				top.LineStroke([]Point{
 					{X: x0, Y: y},
 					{X: x1, Y: y},
-				}, theme.GetAxisSplitLineColor(), 1)
+				}, opt.axisSplitLineColor, 1)
 			}
 		} else {
 			y0 := p.Height() - defaultXAxisHeight
@@ -278,7 +268,7 @@ func (a *axisPainter) Render() (Box, error) {
 				top.LineStroke([]Point{
 					{X: x, Y: y0},
 					{X: x, Y: y1},
-				}, theme.GetAxisSplitLineColor(), 1)
+				}, opt.axisSplitLineColor, 1)
 			}
 		}
 	}

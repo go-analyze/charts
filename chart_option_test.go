@@ -174,9 +174,7 @@ func TestHorizontalBarRender(t *testing.T) {
 			Bottom: 20,
 			Left:   20,
 		}),
-		LegendLabelsOptionFunc([]string{
-			"2011", "2012",
-		}),
+		LegendLabelsOptionFunc([]string{"2011", "2012"}),
 		YAxisDataOptionFunc([]string{
 			"Brazil", "Indonesia", "USA", "India", "China", "World",
 		}),

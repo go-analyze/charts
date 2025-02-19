@@ -5,7 +5,7 @@ type YAxisOption struct {
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
-	// Color for y-axis.
+	// Deprecated: AxisColor is deprecated, instead use a Theme with the axis color changed.
 	AxisColor Color
 	// Min, if set this will force the minimum value of y-axis.
 	Min *float64
@@ -51,40 +51,42 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		opt.Labels = opt.Data
 	}
 	theme := getPreferredTheme(opt.Theme, fallbackTheme)
+	if opt.FontStyle.FontColor.IsZero() {
+		opt.FontStyle.FontColor = theme.GetTextColor()
+	}
 	axisOpt := axisOption{
-		Formatter:            opt.Formatter,
-		Theme:                theme,
-		Labels:               opt.Labels,
-		Position:             position,
-		FontStyle:            opt.FontStyle,
-		StrokeWidth:          -1,
-		BoundaryGap:          False(),
-		Unit:                 opt.Unit,
-		LabelCount:           opt.LabelCount,
-		LabelCountAdjustment: opt.LabelCountAdjustment,
-		LabelSkipCount:       opt.LabelSkipCount,
-		SplitLineShow:        true,
-		Show:                 opt.Show,
+		show:                 opt.Show,
+		labels:               opt.Labels,
+		formatter:            opt.Formatter,
+		position:             position,
+		fontStyle:            opt.FontStyle,
+		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
+		axisColor:            theme.GetAxisStrokeColor(),
+		strokeWidth:          -1,
+		boundaryGap:          False(),
+		unit:                 opt.Unit,
+		labelCount:           opt.LabelCount,
+		labelCountAdjustment: opt.LabelCountAdjustment,
+		labelSkipCount:       opt.LabelSkipCount,
+		splitLineShow:        true,
 	}
 	if !opt.AxisColor.IsZero() {
-		if axisOpt.FontStyle.FontColor.IsZero() {
-			axisOpt.FontStyle.FontColor = opt.AxisColor
-		}
-		axisOpt.Theme = theme.WithAxisColor(opt.AxisColor)
+		axisOpt.fontStyle.FontColor = opt.AxisColor
+		axisOpt.axisColor = opt.AxisColor
 	}
 	if opt.isCategoryAxis {
-		axisOpt.BoundaryGap = True()
-		axisOpt.StrokeWidth = 1
-		axisOpt.SplitLineShow = false
+		axisOpt.boundaryGap = True()
+		axisOpt.strokeWidth = 1
+		axisOpt.splitLineShow = false
 	}
 	if opt.SplitLineShow != nil {
-		axisOpt.SplitLineShow = *opt.SplitLineShow
+		axisOpt.splitLineShow = *opt.SplitLineShow
 	}
 	if opt.SpineLineShow != nil {
 		if *opt.SpineLineShow {
-			axisOpt.StrokeWidth = 1
+			axisOpt.strokeWidth = 1
 		} else {
-			axisOpt.StrokeWidth = -1
+			axisOpt.strokeWidth = -1
 		}
 	}
 	return axisOpt
@@ -104,7 +106,7 @@ func newRightYAxis(p *Painter, opt YAxisOption) *axisPainter {
 		Bottom: defaultXAxisHeight,
 	}))
 	axisOpt := opt.toAxisOption(p.theme)
-	axisOpt.Position = PositionRight
-	axisOpt.SplitLineShow = false
+	axisOpt.position = PositionRight
+	axisOpt.splitLineShow = false
 	return newAxisPainter(p, axisOpt)
 }

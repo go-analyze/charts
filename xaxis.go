@@ -40,7 +40,7 @@ type XAxisOption struct {
 const defaultXAxisHeight = 30
 const boundaryGapDefaultThreshold = 40
 
-func (opt *XAxisOption) toAxisOption() axisOption {
+func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 	position := PositionBottom
 	if opt.Position == PositionTop {
 		position = PositionTop
@@ -51,29 +51,34 @@ func (opt *XAxisOption) toAxisOption() axisOption {
 	if opt.LabelRotation == 0 {
 		opt.LabelRotation = opt.TextRotation
 	}
+	theme := getPreferredTheme(opt.Theme, fallbackTheme)
+	if opt.FontStyle.FontColor.IsZero() {
+		opt.FontStyle.FontColor = theme.GetTextColor()
+	}
 	axisOpt := axisOption{
-		Theme:                opt.Theme,
-		Labels:               opt.Labels,
-		DataStartIndex:       opt.DataStartIndex,
-		BoundaryGap:          opt.BoundaryGap,
-		Position:             position,
-		FontStyle:            opt.FontStyle,
-		Show:                 opt.Show,
-		Unit:                 opt.Unit,
-		LabelCount:           opt.LabelCount,
-		LabelCountAdjustment: opt.LabelCountAdjustment,
-		LabelRotation:        opt.LabelRotation,
-		LabelOffset:          opt.LabelOffset,
+		show:                 opt.Show,
+		labels:               opt.Labels,
+		dataStartIndex:       opt.DataStartIndex,
+		boundaryGap:          opt.BoundaryGap,
+		position:             position,
+		fontStyle:            opt.FontStyle,
+		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
+		axisColor:            theme.GetAxisStrokeColor(),
+		unit:                 opt.Unit,
+		labelCount:           opt.LabelCount,
+		labelCountAdjustment: opt.LabelCountAdjustment,
+		labelRotation:        opt.LabelRotation,
+		labelOffset:          opt.LabelOffset,
 	}
 	if opt.isValueAxis {
-		axisOpt.SplitLineShow = true
-		axisOpt.StrokeWidth = -1
-		axisOpt.BoundaryGap = False()
+		axisOpt.splitLineShow = true
+		axisOpt.strokeWidth = -1
+		axisOpt.boundaryGap = False()
 	}
 	return axisOpt
 }
 
 // newBottomXAxis returns a bottom x-axis renderer.
 func newBottomXAxis(p *Painter, opt XAxisOption) *axisPainter {
-	return newAxisPainter(p, opt.toAxisOption())
+	return newAxisPainter(p, opt.toAxisOption(p.theme))
 }
