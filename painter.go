@@ -467,7 +467,7 @@ func (p *Painter) VerticalMarkLine(x, y, height int, fillColor, strokeColor Colo
 	p.lineTo(x, endY)
 	p.render.Stroke() // apply stroke with the dash array
 
-	p.ArrowDown(x, y, arrowWidth, arrowHeight, fillColor, strokeColor, strokeWidth)
+	p.ArrowUp(x, y+arrowHeight, arrowWidth, arrowHeight, fillColor, strokeColor, strokeWidth)
 }
 
 // Polygon draws a polygon with the specified center, radius, and number of sides.
@@ -881,7 +881,7 @@ func textRotationHeightAdjustment(textWidth, textHeight int, radians float64) in
 
 	switch {
 	// Very close to 0 radians: no vertical adjustment needed
-	case r < 1e-9:
+	case r < math.SmallestNonzeroFloat64:
 		return 0
 	// 0 to π (0 to 180 degrees)
 	case r < math.Pi:
@@ -1044,6 +1044,12 @@ func (p *Painter) FunnelChart(opt FunnelChartOption) error {
 // LineChart renders a line chart with the provided configuration to the painter.
 func (p *Painter) LineChart(opt LineChartOption) error {
 	_, err := newLineChart(p, opt).Render()
+	return err
+}
+
+// ScatterChart renders a scatter chart with the provided configuration to the painter.
+func (p *Painter) ScatterChart(opt ScatterChartOption) error {
+	_, err := newScatterChart(p, opt).Render()
 	return err
 }
 

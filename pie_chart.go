@@ -264,7 +264,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 		seriesPainter.lineTo(s.lineEndX, s.lineEndY)
 		seriesPainter.stroke(s.color, 1)
 		textStyle := FontStyle{
-			FontColor: theme.GetTextColor(),
+			FontColor: theme.GetLabelTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,
 		}
@@ -281,6 +281,10 @@ func (p *pieChart) Render() (Box, error) {
 	opt := p.opt
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.p.theme)
+	}
+	if opt.Legend.Symbol == "" {
+		// default to square symbol for this chart type
+		opt.Legend.Symbol = SymbolSquare
 	}
 
 	renderResult, err := defaultRender(p.p, defaultRenderOption{

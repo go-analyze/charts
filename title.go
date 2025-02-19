@@ -20,6 +20,8 @@ type TitleOption struct {
 	FontStyle FontStyle
 	// SubtextFontStyle specifies the font, size, and style for rendering the subtext.
 	SubtextFontStyle FontStyle
+	// BorderWidth can be set to a non-zero value to render a box around the title.
+	BorderWidth float64
 }
 
 type titleMeasureOption struct {
@@ -74,7 +76,7 @@ func (t *titlePainter) Render() (Box, error) {
 		fontStyle.Font = GetDefaultFont()
 	}
 	if fontStyle.FontColor.IsZero() {
-		fontStyle.FontColor = theme.GetTextColor()
+		fontStyle.FontColor = theme.GetTitleTextColor()
 	}
 	if fontStyle.FontSize == 0 {
 		fontStyle.FontSize = defaultFontSize
@@ -160,11 +162,24 @@ func (t *titlePainter) Render() (Box, error) {
 		titleY = y
 	}
 
-	return Box{
+	result := Box{
 		Top:    startY,
 		Bottom: titleY,
 		Left:   titleX,
 		Right:  titleX + width,
 		IsSet:  true,
-	}, nil
+	}
+
+	if opt.BorderWidth > 0 {
+		boxPad := 10 // built in adjustment for possible measure vs render variations
+		boxPoints := []Point{
+			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
+			{X: result.Left - boxPad, Y: result.Top - boxPad},
+			{X: result.Left + result.Width() + boxPad, Y: result.Top - boxPad},
+			{X: result.Left + result.Width() + boxPad, Y: result.Bottom + boxPad},
+			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
+		}
+		p.LineStroke(boxPoints, theme.GetTitleBorderColor(), opt.BorderWidth)
+	}
+	return result, nil
 }

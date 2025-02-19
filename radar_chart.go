@@ -128,7 +128,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList RadarSeriesL
 		seriesPainter.stroke(theme.GetAxisSplitLineColor(), 1)
 	}
 	fontStyle := FontStyle{
-		FontColor: theme.GetTextColor(),
+		FontColor: theme.GetLabelTextColor(),
 		FontSize:  labelFontSize,
 		Font:      opt.Font,
 	}
@@ -219,6 +219,10 @@ func (r *radarChart) Render() (Box, error) {
 	opt := r.opt
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.theme)
+	}
+	if opt.Legend.Symbol == "" {
+		// default to square symbol for this chart type
+		opt.Legend.Symbol = SymbolSquare
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{

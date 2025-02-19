@@ -125,7 +125,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList FunnelSerie
 
 		text := textList[index]
 		fontStyle := FontStyle{
-			FontColor: theme.GetTextColor(),
+			FontColor: theme.GetLabelTextColor(),
 			FontSize:  labelFontSize,
 			Font:      opt.Font,
 		}
@@ -144,6 +144,9 @@ func (f *funnelChart) Render() (Box, error) {
 	opt := f.opt
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.theme)
+	}
+	if opt.Legend.Symbol == "" {
+		opt.Legend.Symbol = SymbolSquare
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{

@@ -73,7 +73,11 @@ func (a *axisPainter) Render() (Box, error) {
 	fontStyle := opt.fontStyle
 	fontStyle.Font = getPreferredFont(fontStyle.Font, a.p.font)
 	if fontStyle.FontColor.IsZero() {
-		fontStyle.FontColor = defaultTheme.GetTextColor()
+		if isVertical {
+			fontStyle.FontColor = defaultTheme.GetYAxisTextColor()
+		} else {
+			fontStyle.FontColor = defaultTheme.GetXAxisTextColor()
+		}
 	}
 	if fontStyle.FontSize == 0 {
 		fontStyle.FontSize = defaultFontSize

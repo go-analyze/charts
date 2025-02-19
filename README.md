@@ -34,7 +34,7 @@ If you are a former user of `wcharczuk/go-chart`, you should be able to use this
 
 ### Chart Types
 
-These chart types are supported: `line`, `bar`, `horizontal bar`, `pie`, `radar` or `funnel` and `table`.
+These chart types are supported: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `radar` or `funnel` and `table`.
 
 Please see the [./examples/](./examples/) directory and the [README](./examples/README.md) within it to see a variety of implementations of our different chart types and configurations.
 
@@ -83,6 +83,39 @@ func main() {
 			"Search Engine",
 		}),
 		// other options as desired...
+```
+
+### Scatter Chart
+
+<img src="./assets/chart-scatter.png" alt="Scatter Chart">
+
+```go
+import (
+	"github.com/go-analyze/charts"
+)
+
+func main() {
+	opt := charts.NewScatterChartOptionWithData([][]float64{
+		{120, 132, 101, charts.GetNullValue(), 90, 230, 210},
+		{ /* values for search engine go here */ },
+	})
+	opt.Title.Text = "Scatter"
+	opt.XAxis.Labels = []string{
+		// The 7 labels here match to the 7 values above
+		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
+	}
+	opt.Legend.SeriesNames = []string{"Email", "Search Engine"}
+	// set other field options as desired...
+
+	p := charts.NewPainter(charts.PainterOptions{
+		OutputFormat: charts.ChartOutputPNG,
+		Width:        600,
+		Height:       400,
+	})
+	err := p.ScatterChart(opt)
+	// ... err check
+	buf, err := p.Bytes()
+	// ...
 ```
 
 ### Bar Chart

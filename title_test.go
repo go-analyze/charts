@@ -164,6 +164,23 @@ func TestTitleRenderer(t *testing.T) {
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"2\" y=\"51\" style=\"stroke:none;fill:blue;font-size:51.1px;font-family:'Roboto Medium',sans-serif\">title</text><text x=\"0\" y=\"76\" style=\"stroke:none;fill:purple;font-size:25.6px;font-family:'Roboto Medium',sans-serif\">subTitle</text></svg>",
 		},
+		{
+			name: "border",
+			render: func(p *Painter) ([]byte, error) {
+				theme := GetTheme(ThemeAnt).WithTitleBorderColor(ColorRed)
+				_, err := newTitlePainter(p.Child(PainterThemeOption(theme), PainterPaddingOption(NewBoxEqual(100))),
+					TitleOption{
+						Text:        "title",
+						Subtext:     "subTitle",
+						BorderWidth: defaultStrokeWidth,
+					}).Render()
+				if err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"114\" y=\"115\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">title</text><text x=\"100\" y=\"130\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">subTitle</text><path  d=\"M 90 140\nL 90 90\nL 166 90\nL 166 140\nL 90 140\" style=\"stroke-width:2;stroke:red;fill:none\"/></svg>",
+		},
 	}
 
 	for i, tt := range tests {

@@ -59,7 +59,7 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 		text = labelFormatValue(o.seriesNames, label.FormatTemplate, value.index, value.value, -1)
 	}
 	labelStyle := FontStyle{
-		FontColor: o.theme.GetTextColor(),
+		FontColor: o.theme.GetLabelTextColor(),
 		FontSize:  labelFontSize,
 		Font:      getPreferredFont(label.FontStyle.Font, value.fontStyle.Font, o.font),
 	}

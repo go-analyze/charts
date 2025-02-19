@@ -95,7 +95,7 @@ type defaultRenderResult struct {
 }
 
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
-	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis)
+	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis, opt.yAxis)
 
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
 	if opt.seriesList.hasMarkPoint() {
@@ -132,6 +132,10 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 		// ensure order of series is consistent with legend
 		opt.seriesList.sortByNameIndex(nameIndexDict)
+	}
+	opt.legend.seriesSymbols = make([]Symbol, opt.seriesList.len())
+	for index := range opt.legend.seriesSymbols {
+		opt.legend.seriesSymbols[index] = opt.seriesList.getSeriesSymbol(index)
 	}
 
 	const legendTitlePadding = 15
@@ -347,6 +351,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 
 	seriesList := opt.SeriesList
 	lineSeriesList := filterSeriesList[LineSeriesList](opt.SeriesList, ChartTypeLine)
+	scatterSeriesList := filterSeriesList[ScatterSeriesList](opt.SeriesList, ChartTypeScatter)
 	barSeriesList := filterSeriesList[BarSeriesList](opt.SeriesList, ChartTypeBar)
 	horizontalBarSeriesList := filterSeriesList[HorizontalBarSeriesList](opt.SeriesList, ChartTypeHorizontalBar)
 	pieSeriesList := filterSeriesList[PieSeriesList](opt.SeriesList, ChartTypePie)
@@ -463,6 +468,19 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				FillArea:        opt.FillArea,
 				FillOpacity:     opt.FillOpacity,
 			}).render(renderResult, lineSeriesList)
+			return err
+		})
+	}
+
+	// scatter chart
+	if len(scatterSeriesList) != 0 {
+		handler.Add(func() error {
+			_, err := newScatterChart(p, ScatterChartOption{
+				Theme:  opt.Theme,
+				Font:   opt.Font,
+				XAxis:  opt.XAxis,
+				Symbol: opt.Symbol,
+			}).render(renderResult, scatterSeriesList)
 			return err
 		})
 	}

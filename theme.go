@@ -30,23 +30,48 @@ type ColorPalette interface {
 	GetYAxisStrokeColor() Color
 	GetAxisSplitLineColor() Color
 	GetSeriesColor(int) Color
+	GetSeriesTrendColor(int) Color
 	GetBackgroundColor() Color
-	GetTextColor() Color
+	GetTitleTextColor() Color
+	GetMarkTextColor() Color
+	GetLabelTextColor() Color
+	GetLegendTextColor() Color
+	GetXAxisTextColor() Color
+	GetYAxisTextColor() Color
+	GetTitleBorderColor() Color
+	GetLegendBorderColor() Color
 	// WithXAxisColor will provide a new ColorPalette that uses the specified color for X axis. To adjust the text
-	// color invoke WithTextColor following this.
+	// color invoke WithXAxisTextColor following this.
 	WithXAxisColor(Color) ColorPalette
 	// WithYAxisColor will provide a new ColorPalette that uses the specified color for Y axis. To adjust the text
-	// color invoke WithTextColor following this.
+	// color invoke WithYAxisTextColor following this.
 	WithYAxisColor(Color) ColorPalette
 	// WithYAxisSeriesColor will provide a new ColorPalette that uses the specified series index color for Y axis and values.
 	WithYAxisSeriesColor(int) ColorPalette
-	// WithTextColor will provide a new ColorPalette that uses the specified color for text.
-	// This is generally recommended over using the FontColor config values.
-	WithTextColor(Color) ColorPalette
-	// WithSeriesColors will provide a new ColorPalette that uses the specified series colors.
+	// WithTitleTextColor will provide a new ColorPalette that uses the specified color for the title text.
+	WithTitleTextColor(Color) ColorPalette
+	// WithMarkTextColor will provide a new ColorPalette that uses the specified color for mark point and mark line labels.
+	WithMarkTextColor(Color) ColorPalette
+	// WithLabelTextColor will provide a new ColorPalette that uses the specified color for value labels.
+	WithLabelTextColor(Color) ColorPalette
+	// WithLegendTextColor will provide a new ColorPalette that uses the specified color for the legend labels
+	WithLegendTextColor(Color) ColorPalette
+	// WithXAxisTextColor will provide a new ColorPalette that uses the specified color for the x-axis labels.
+	WithXAxisTextColor(Color) ColorPalette
+	// WithYAxisTextColor will provide a new ColorPalette that uses the specified color for the y-axis labels.
+	WithYAxisTextColor(Color) ColorPalette
+	// WithSeriesColors will provide a new ColorPalette that uses the specified series colors. This will default the
+	// trend line colors to be related to the series colors provided. If you want to customize them further use
+	// WithSeriesTrendColors.
 	WithSeriesColors([]Color) ColorPalette
+	// WithSeriesTrendColors will provide a new ColorPalette that uses the specified series trend line colors.
+	WithSeriesTrendColors([]Color) ColorPalette
 	// WithBackgroundColor will provide a new ColorPalette that uses the specified color for the background.
 	WithBackgroundColor(Color) ColorPalette
+	// WithTitleBorderColor will provide a new ColorPalette that uses the specified color for the title border.
+	WithTitleBorderColor(Color) ColorPalette
+	// WithLegendBorderColor will provide a new ColorPalette that uses the specified color for the legend border.
+	WithLegendBorderColor(Color) ColorPalette
 }
 
 type themeColorPalette struct {
@@ -56,8 +81,40 @@ type themeColorPalette struct {
 	yaxisStrokeColor   Color
 	axisSplitLineColor Color
 	backgroundColor    Color
-	textColor          Color
+	titleTextColor     Color
+	markTextColor      Color
+	labelTextColor     Color
+	legendTextColor    Color
+	xaxisTextColor     Color
+	yaxisTextColor     Color
+	titleBorderColor   Color
+	legendBorderColor  Color
 	seriesColors       []Color
+	seriesTrendColors  []Color
+}
+
+func (t *themeColorPalette) GetTitleTextColor() Color {
+	return t.titleTextColor
+}
+
+func (t *themeColorPalette) GetMarkTextColor() Color {
+	return t.markTextColor
+}
+
+func (t *themeColorPalette) GetLabelTextColor() Color {
+	return t.labelTextColor
+}
+
+func (t *themeColorPalette) GetLegendTextColor() Color {
+	return t.legendTextColor
+}
+
+func (t *themeColorPalette) GetXAxisTextColor() Color {
+	return t.xaxisTextColor
+}
+
+func (t *themeColorPalette) GetYAxisTextColor() Color {
+	return t.yaxisTextColor
 }
 
 type ThemeOption struct {
@@ -68,7 +125,16 @@ type ThemeOption struct {
 	AxisSplitLineColor Color
 	BackgroundColor    Color
 	TextColor          Color
+	TextColorTitle     Color
+	TextColorMark      Color
+	TextColorLabel     Color
+	TextColorLegend    Color
+	TextColorXAxis     Color
+	TextColorYAxis     Color
+	TitleBorderColor   Color
+	LegendBorderColor  Color
 	SeriesColors       []Color
+	SeriesTrendColors  []Color
 }
 
 var palettes = sync.Map{}
@@ -286,22 +352,71 @@ func InstallTheme(name string, opt ThemeOption) {
 	palettes.Store(name, cp)
 }
 
-func makeColorPalette(opt ThemeOption) *themeColorPalette {
-	if opt.XAxisStrokeColor.IsZero() {
-		opt.XAxisStrokeColor = opt.AxisStrokeColor
+func makeColorPalette(o ThemeOption) *themeColorPalette {
+	if o.XAxisStrokeColor.IsZero() {
+		o.XAxisStrokeColor = o.AxisStrokeColor
 	}
-	if opt.YAxisStrokeColor.IsZero() {
-		opt.YAxisStrokeColor = opt.AxisStrokeColor
+	if o.YAxisStrokeColor.IsZero() {
+		o.YAxisStrokeColor = o.AxisStrokeColor
+	}
+	if o.TextColor.IsZero() {
+		o.TextColor = ColorBlack
+	}
+	if o.TextColorLabel.IsZero() {
+		o.TextColorLabel = o.TextColor
+	}
+	if o.TextColorTitle.IsZero() {
+		o.TextColorTitle = o.TextColor
+	}
+	if o.TextColorMark.IsZero() {
+		o.TextColorMark = o.TextColor
+	}
+	if o.TextColorLegend.IsZero() {
+		o.TextColorLegend = o.TextColor
+	}
+	if o.TextColorXAxis.IsZero() {
+		o.TextColorXAxis = o.TextColor
+	}
+	if o.TextColorYAxis.IsZero() {
+		o.TextColorYAxis = o.TextColor
+	}
+	if o.LegendBorderColor.IsZero() {
+		o.LegendBorderColor = ColorBlack
+	}
+	if o.TitleBorderColor.IsZero() {
+		o.TitleBorderColor = ColorBlack
+	}
+	for i := len(o.SeriesTrendColors); i < len(o.SeriesColors); i++ {
+		o.SeriesTrendColors = append(o.SeriesTrendColors, autoSeriesTrendColor(o.SeriesColors[i]))
 	}
 	return &themeColorPalette{
-		isDarkMode:         opt.IsDarkMode,
-		xaxisStrokeColor:   opt.XAxisStrokeColor,
-		yaxisStrokeColor:   opt.YAxisStrokeColor,
-		axisSplitLineColor: opt.AxisSplitLineColor,
-		backgroundColor:    opt.BackgroundColor,
-		textColor:          opt.TextColor,
-		seriesColors:       opt.SeriesColors,
+		isDarkMode:         o.IsDarkMode,
+		xaxisStrokeColor:   o.XAxisStrokeColor,
+		yaxisStrokeColor:   o.YAxisStrokeColor,
+		axisSplitLineColor: o.AxisSplitLineColor,
+		backgroundColor:    o.BackgroundColor,
+		titleBorderColor:   o.TitleBorderColor,
+		legendBorderColor:  o.LegendBorderColor,
+		titleTextColor:     o.TextColorTitle,
+		markTextColor:      o.TextColorMark,
+		labelTextColor:     o.TextColorLabel,
+		legendTextColor:    o.TextColorLegend,
+		xaxisTextColor:     o.TextColorXAxis,
+		yaxisTextColor:     o.TextColorYAxis,
+		seriesColors:       o.SeriesColors,
+		seriesTrendColors:  o.SeriesTrendColors,
 	}
+}
+
+func autoSeriesTrendColor(color Color) Color {
+	if color.IsTransparent() {
+		return color
+	}
+	c := color.WithAdjustHSL(0.0, 0.1, -0.1)
+	if c.A < 255 {
+		c.A += (255 - c.A) / 2
+	}
+	return c
 }
 
 // GetTheme returns an installed theme by name, or the default if the theme is not installed.
@@ -335,65 +450,58 @@ func (t *themeColorPalette) GetAxisSplitLineColor() Color {
 }
 
 func (t *themeColorPalette) GetSeriesColor(index int) Color {
-	colors := t.seriesColors
+	return getSeriesColor(t.seriesColors, t.isDarkMode, index)
+}
+
+func (t *themeColorPalette) GetSeriesTrendColor(index int) Color {
+	return getSeriesColor(t.seriesTrendColors, t.isDarkMode, index)
+}
+
+func getSeriesColor(colors []Color, darkTheme bool, index int) Color {
 	colorCount := len(colors)
 	if index < colorCount {
 		return colors[index]
 	} else {
-		result := colors[index%colorCount]
-		// adjust the color shade automatically
-		rMax, gMax, bMax := 200, 200, 200
-		var rMin, gMin, bMin int
-		// the adjustment amount and mod count must be balanced to ensure colors don't hit their limits quickly
-		adjustment := 40 * ((index / colorCount) % 3)
-		if t.IsDark() { // adjust the shade darker for dark themes
-			adjustment *= -1
-			rMax, gMax, bMax = 255, 255, 255
-			rMin, gMin, bMin = 40, 40, 40
-		}
-		if result.R != result.G || result.R != result.B {
-			// try to ensure the brightest channel maintains emphasis
-			if result.R >= result.G && result.R >= result.B {
-				rMin += 80
-				gMax -= 20
-				bMax -= 20
-			} else if result.G >= result.R && result.G >= result.B {
-				gMin += 80
-				rMax -= 20
-				bMax -= 20
-			} else {
-				bMin += 80
-				rMax -= 20
-				gMax -= 20
-			}
-		}
-
-		result.R = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.R)+adjustment, rMax), rMin))
-		result.G = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.G)+adjustment, gMax), gMin))
-		result.B = uint8(chartdraw.MaxInt(chartdraw.MinInt(int(result.B)+adjustment, bMax), bMin))
-
-		return result
+		return adjustSeriesColor(colors[index%colorCount], index/colorCount, darkTheme)
 	}
+}
+
+func adjustSeriesColor(c Color, loopCount int, darkTheme bool) Color {
+	impact := ((loopCount - 1) % 3) + 1
+	satAdj := float64(impact) * -0.1
+	ltAdj := 0.08
+	if chartdraw.AbsInt(int(c.R)-int(c.G)) < 20 && chartdraw.AbsInt(int(c.R)-int(c.B)) < 20 {
+		ltAdj += 0.1 // more adjustment if close to gray
+	}
+	ltAdj *= float64(impact)
+	if darkTheme {
+		ltAdj *= -1
+	}
+	return c.WithAdjustHSL(0.0, satAdj, ltAdj)
 }
 
 func (t *themeColorPalette) GetBackgroundColor() Color {
 	return t.backgroundColor
 }
 
-func (t *themeColorPalette) GetTextColor() Color {
-	return t.textColor
+func (t *themeColorPalette) GetTitleBorderColor() Color {
+	return t.titleBorderColor
+}
+
+func (t *themeColorPalette) GetLegendBorderColor() Color {
+	return t.legendBorderColor
 }
 
 func (t *themeColorPalette) WithXAxisColor(c Color) ColorPalette {
 	copy := *t
-	copy.name += "-xaxis_mod"
+	copy.name += "-xaxis_stroke_mod"
 	copy.xaxisStrokeColor = c
 	return &copy
 }
 
 func (t *themeColorPalette) WithYAxisColor(c Color) ColorPalette {
 	copy := *t
-	copy.name += "-yaxis_mod"
+	copy.name += "-yaxis_stroke_mod"
 	copy.yaxisStrokeColor = c
 	return &copy
 }
@@ -403,14 +511,61 @@ func (t *themeColorPalette) WithYAxisSeriesColor(series int) ColorPalette {
 	copy.name += "-yaxis_mod"
 	seriesColor := t.GetSeriesColor(series)
 	copy.yaxisStrokeColor = seriesColor
-	copy.textColor = seriesColor
+	copy.yaxisTextColor = seriesColor
 	return &copy
 }
 
 func (t *themeColorPalette) WithTextColor(c Color) ColorPalette {
 	copy := *t
 	copy.name += "-text_mod"
-	copy.textColor = c
+	copy.titleTextColor = c
+	copy.markTextColor = c
+	copy.labelTextColor = c
+	copy.legendTextColor = c
+	copy.xaxisTextColor = c
+	copy.yaxisTextColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithTitleTextColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-title_mod"
+	copy.titleTextColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithMarkTextColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-mark_mod"
+	copy.markTextColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithLabelTextColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-label_mod"
+	copy.labelTextColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithLegendTextColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-legend_text_mod"
+	copy.legendTextColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithXAxisTextColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-xaxis_text_mod"
+	copy.xaxisTextColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithYAxisTextColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-yaxis_text_mod"
+	copy.yaxisTextColor = c
 	return &copy
 }
 
@@ -422,6 +577,25 @@ func (t *themeColorPalette) WithSeriesColors(colors []Color) ColorPalette {
 	}
 	copy.name += "-series_mod"
 	copy.seriesColors = colors
+	for i, c := range colors {
+		trendColor := autoSeriesTrendColor(c)
+		if i < len(copy.seriesTrendColors) {
+			copy.seriesTrendColors[i] = trendColor
+		} else {
+			copy.seriesTrendColors = append(copy.seriesTrendColors, trendColor)
+		}
+	}
+	return &copy
+}
+
+func (t *themeColorPalette) WithSeriesTrendColors(colors []Color) ColorPalette {
+	copy := *t
+	if len(colors) == 0 { // ignore invalid input rather than panic later
+		copy.name += "-ignored_invalid_series_mod"
+		return &copy
+	}
+	copy.name += "-trend_mod"
+	copy.seriesTrendColors = colors
 	return &copy
 }
 
@@ -438,5 +612,19 @@ func (t *themeColorPalette) WithBackgroundColor(color Color) ColorPalette {
 			copy.name += "_light"
 		}
 	}
+	return &copy
+}
+
+func (t *themeColorPalette) WithTitleBorderColor(color Color) ColorPalette {
+	copy := *t
+	copy.name += "-title_border_mod"
+	copy.titleBorderColor = color
+	return &copy
+}
+
+func (t *themeColorPalette) WithLegendBorderColor(color Color) ColorPalette {
+	copy := *t
+	copy.name += "-legend_border_mod"
+	copy.legendBorderColor = color
 	return &copy
 }
