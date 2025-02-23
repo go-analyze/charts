@@ -49,13 +49,17 @@ func main() {
 		},
 	}
 	opt := charts.NewLineChartOptionWithData(values)
-	opt.Title.Text = "Line Chart Demo"
+	opt.Title = charts.TitleOption{
+		Text: "Line Chart Demo",
+	}
 	opt.XAxis.Labels = []string{
 		// The 7 labels here match to the 7 values above
 		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 	}
-	opt.Legend.SeriesNames = []string{
-		"Email", "Search Engine",
+	opt.Legend = charts.LegendOption{
+		SeriesNames: []string{
+			"Email", "Search Engine",
+		},
 	}
 	// other options as desired...
 
@@ -196,13 +200,11 @@ func main() {
 	}
 	opt := charts.NewPieChartOptionWithData(values)
 	opt.Title = charts.TitleOption{
-		Text:             "Rainfall vs Evaporation",
+		Text:             "Pie Chart",
 		Offset:           charts.OffsetCenter,
 	}
-	opt.Legend = charts.LegendOption{
-		SeriesNames: []string{
-			"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
-		},
+	opt.Legend.SeriesNames = []string{
+		"Search Engine", "Direct", "Email", "Union Ads", "Video Ads",
 	}
 	// other options as desired...
 
@@ -256,7 +258,7 @@ func main() {
 		20,  // Order
 	}
 	opt := charts.NewFunnelChartOptionWithData(values)
-	opt.Title.Text = "Funnel"
+	opt.Title.Text = "Funnel Chart"
 	opt.Legend.SeriesNames = []string{
 		"Show", "Click", "Visit", "Inquiry", "Order",
 	}
@@ -283,7 +285,7 @@ import (
 func main() {
 	buf, err := charts.RenderEChartsToPNG(`{
 		"title": {
-			"text": "Line"
+			"text": "Line Chart"
 		},
 		"xAxis": {
 			"data": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
