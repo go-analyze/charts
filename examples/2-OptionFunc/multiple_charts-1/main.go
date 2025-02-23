@@ -79,7 +79,7 @@ func main() {
 			{80, 100, 120, 140},
 		}),
 	}
-	p = p.Child(charts.PainterBoxOption(charts.NewBox(0, 200, 200, 600)))
+	p = p.Child(charts.PainterBoxOption(charts.NewBox(200, 0, 600, 200)))
 
 	if err = p.HorizontalBarChart(hBarOpt); err != nil {
 		panic(err)

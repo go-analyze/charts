@@ -44,12 +44,12 @@ func main() {
 		Width:        1200,
 		Height:       400,
 	})
-	boundaryGapPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 400, 0, 600)))
+	boundaryGapPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 600, 400)))
 	opt.Title.Text = "Boundary Gap"
 	if err := boundaryGapPainter.LineChart(opt); err != nil {
 		panic(err)
 	}
-	boundaryGapDisabledPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 400, 600, 1200)))
+	boundaryGapDisabledPainter := p.Child(charts.PainterBoxOption(charts.NewBox(600, 0, 1200, 400)))
 	opt.XAxis.BoundaryGap = charts.Ptr(false)
 	opt.Title.Text = "Boundary Gap Disabled"
 	if err := boundaryGapDisabledPainter.LineChart(opt); err != nil {

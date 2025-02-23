@@ -75,9 +75,9 @@ func renderChartGroup(themeNames []string, chartsPerRow int, filename string) {
 	})
 	var themeIndex int
 	for r := 0; r < rowCount; r++ {
+		startY := r * chartHeight
 		for c := 0; c < chartsPerRow; c++ {
 			startX := c * chartWidth
-			startY := r * chartHeight
 			if themeIndex >= len(themeNames) {
 				p.FilledRect(startX, startY, startX+chartWidth, startY+chartHeight,
 					charts.ColorWhite, charts.ColorWhite, 0.0)
@@ -87,7 +87,7 @@ func renderChartGroup(themeNames []string, chartsPerRow int, filename string) {
 			themeIndex++
 			lineOpt.Title.Text = "Theme '" + themeName + "'"
 			lineOpt.Theme = charts.GetTheme(themeName)
-			p.Child(charts.PainterBoxOption(charts.NewBox(startY, startY+chartHeight, startX, startX+chartWidth))).
+			p.Child(charts.PainterBoxOption(charts.NewBox(startX, startY, startX+chartWidth, startY+chartHeight))).
 				LineChart(lineOpt)
 		}
 	}
@@ -109,7 +109,7 @@ func renderMultiChart(themeName string) {
 		values,
 		charts.ThemeOptionFunc(theme),
 		charts.TitleTextOptionFunc("Theme '"+themeName+"'"),
-		charts.PaddingOptionFunc(charts.NewBox(24, 8, 24, 24)),
+		charts.PaddingOptionFunc(charts.NewBox(24, 24, 24, 8)),
 		charts.XAxisLabelsOptionFunc([]string{
 			"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 		}),
@@ -196,7 +196,7 @@ func renderMultiChart(themeName string) {
 		pieOpt.SeriesList[i].Label.Show = charts.Ptr(pieOpt.SeriesList[i].Value/pieSum > 0.04)
 		pieOpt.SeriesList[i].Label.FontStyle.FontColor = theme.GetSeriesColor(i)
 	}
-	p = p.Child(charts.PainterBoxOption(charts.NewBox(0, 200, 200, 600)))
+	p = p.Child(charts.PainterBoxOption(charts.NewBox(200, 0, 600, 200)))
 	if err = p.PieChart(pieOpt); err != nil {
 		panic(err)
 	}

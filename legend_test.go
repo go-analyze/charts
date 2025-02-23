@@ -101,7 +101,7 @@ func TestNewLegend(t *testing.T) {
 					Theme:       GetDefaultTheme(),
 					SeriesNames: []string{"One", "Two", "Three"},
 					FontStyle:   NewFontStyleWithSize(20.0).WithColor(ColorBlue),
-					Padding:     NewBox(200, 20, 20, 20),
+					Padding:     NewBox(20, 200, 20, 20),
 				}).Render()
 				if err != nil {
 					return nil, err

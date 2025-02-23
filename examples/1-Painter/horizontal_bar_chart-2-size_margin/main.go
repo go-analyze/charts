@@ -38,18 +38,18 @@ func main() {
 		Width:        1200,
 		Height:       400,
 	})
-	defaultPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 400, 0, 400)))
+	defaultPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 400, 400)))
 	opt.Title.Text = "Default"
 	if err := defaultPainter.HorizontalBarChart(opt); err != nil {
 		panic(err)
 	}
-	barSizePainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 400, 400, 800)))
+	barSizePainter := p.Child(charts.PainterBoxOption(charts.NewBox(400, 0, 800, 400)))
 	opt.Title.Text = "Small Bar"
 	opt.BarHeight = 4
 	if err := barSizePainter.HorizontalBarChart(opt); err != nil {
 		panic(err)
 	}
-	marginPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 400, 800, 1200)))
+	marginPainter := p.Child(charts.PainterBoxOption(charts.NewBox(800, 0, 1200, 400)))
 	opt.Title.Text = "No Margin"
 	opt.BarMargin = charts.Ptr(0.0)
 	opt.BarHeight = 0 // reset to default size

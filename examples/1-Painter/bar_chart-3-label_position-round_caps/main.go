@@ -46,12 +46,12 @@ func main() {
 		Width:        1000,
 		Height:       400,
 	})
-	defaultPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 400, 0, 500)))
+	defaultPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 500, 400)))
 	opt.Title.Text = "Bar Chart Top Label"
 	if err := defaultPainter.BarChart(opt); err != nil {
 		panic(err)
 	}
-	bottomLabelPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 400, 500, 1000)))
+	bottomLabelPainter := p.Child(charts.PainterBoxOption(charts.NewBox(500, 0, 1000, 400)))
 	opt.Title.Text = "Bar Chart Bottom Label"
 	opt.SeriesLabelPosition = charts.PositionBottom
 	if err := bottomLabelPainter.BarChart(opt); err != nil {

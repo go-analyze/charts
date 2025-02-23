@@ -294,7 +294,7 @@ func TestChildRender(t *testing.T) {
 		SVGOutputOptionFunc(),
 		XAxisLabelsOptionFunc([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}),
 		ChildOptionFunc(ChartOption{
-			Box: NewBox(10, 200, 200, 500),
+			Box: NewBox(200, 10, 500, 200),
 			SeriesList: NewSeriesListHorizontalBar([][]float64{
 				{70, 90, 110, 130},
 				{80, 100, 120, 140},

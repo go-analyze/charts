@@ -29,7 +29,7 @@ func main() {
 	}
 
 	opt := charts.NewLineChartOptionWithData(values)
-	opt.Padding = charts.NewBox(20, 20, 20, 48)
+	opt.Padding = charts.NewBox(20, 20, 48, 20)
 	opt.Title.FontStyle.FontSize = 16
 	opt.XAxis.Labels = []string{
 		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",

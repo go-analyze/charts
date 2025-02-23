@@ -14,8 +14,8 @@ type FontStyle = chartdraw.FontStyle
 
 var BoxZero = chartdraw.BoxZero
 
-// NewBox returns a new box with the provided top, bottom, left, and right sizes.
-func NewBox(top, left, bottom, right int) Box {
+// NewBox returns a new box with the provided left, top, right, and bottom sizes.
+func NewBox(left, top, right, bottom int) Box {
 	return Box{
 		IsSet:  true,
 		Top:    top,

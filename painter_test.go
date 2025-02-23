@@ -263,7 +263,7 @@ func TestPainterExternal(t *testing.T) {
 					return fmt.Sprintf("%.0f", f)
 				}
 				_ = p.LineChart(opt)
-				p = p.Child(PainterBoxOption(NewBox(0, 200, 200, 400)))
+				p = p.Child(PainterBoxOption(NewBox(200, 0, 400, 200)))
 				opt = makeMinimalLineChartOption()
 				opt.Theme = GetDefaultTheme().WithBackgroundColor(ColorTransparent)
 				_ = p.LineChart(opt)
@@ -568,11 +568,11 @@ func TestMultipleChartsOnPainter(t *testing.T) {
 	})
 	p.FilledRect(0, 0, 800, 600, ColorWhite, ColorTransparent, 0.0)
 	// set the space and theme for each chart
-	topCenterPainter := p.Child(PainterBoxOption(NewBox(0, 0, 300, 800)),
+	topCenterPainter := p.Child(PainterBoxOption(NewBox(0, 0, 800, 300)),
 		PainterThemeOption(GetTheme(ThemeVividLight)))
-	bottomLeftPainter := p.Child(PainterBoxOption(NewBox(300, 0, 600, 400)),
+	bottomLeftPainter := p.Child(PainterBoxOption(NewBox(0, 300, 400, 600)),
 		PainterThemeOption(GetTheme(ThemeAnt)))
-	bottomRightPainter := p.Child(PainterBoxOption(NewBox(300, 400, 600, 800)),
+	bottomRightPainter := p.Child(PainterBoxOption(NewBox(400, 300, 800, 600)),
 		PainterThemeOption(GetTheme(ThemeLight)))
 
 	pieOpt := makeBasicPieChartOption()

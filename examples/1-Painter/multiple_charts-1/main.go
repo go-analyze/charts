@@ -29,11 +29,11 @@ func main() {
 	})
 	p.FilledRect(0, 0, 800, 600, charts.ColorWhite, charts.ColorWhite, 0.0)
 	// set the space and theme for each chart
-	topCenterPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 300, 800)),
+	topCenterPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 800, 300)),
 		charts.PainterThemeOption(charts.GetTheme(charts.ThemeVividLight)))
-	bottomLeftPainter := p.Child(charts.PainterBoxOption(charts.NewBox(300, 0, 600, 400)),
+	bottomLeftPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 300, 400, 600)),
 		charts.PainterThemeOption(charts.GetTheme(charts.ThemeAnt)))
-	bottomRightPainter := p.Child(charts.PainterBoxOption(charts.NewBox(300, 400, 600, 800)),
+	bottomRightPainter := p.Child(charts.PainterBoxOption(charts.NewBox(400, 300, 800, 600)),
 		charts.PainterThemeOption(charts.GetTheme(charts.ThemeLight)))
 
 	lineOpt := charts.LineChartOption{

@@ -712,7 +712,7 @@ func TestLineChart(t *testing.T) {
 				// add global point configurations
 				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.AddGlobalPoints(SeriesMarkTypeMin, SeriesMarkTypeMax)
 				// disable extra stuff
-				opt.Padding = NewBox(40, 20, 20, 20)
+				opt.Padding = NewBox(20, 40, 20, 20)
 				opt.Legend.Show = Ptr(false)
 				opt.YAxis[0].Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -732,7 +732,7 @@ func TestLineChart(t *testing.T) {
 					opt.SeriesList[i].MarkPoint = SeriesMarkPoint{}
 					opt.SeriesList[i].Label.Show = Ptr(false)
 				}
-				opt.Padding = NewBox(40, 20, 20, 20)
+				opt.Padding = NewBox(20, 40, 20, 20)
 				opt.Legend.Show = Ptr(false)
 				opt.YAxis[0].Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
