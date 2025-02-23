@@ -29,9 +29,9 @@ func main() {
 	})
 	p.FilledRect(0, 0, 800, 600, charts.ColorWhite, charts.ColorWhite, 0.0)
 	// set the space and theme for each chart
-	topCenterPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 300, 0, 800)))
-	bottomLeftPainter := p.Child(charts.PainterBoxOption(charts.NewBox(300, 600, 0, 400)))
-	bottomRightPainter := p.Child(charts.PainterBoxOption(charts.NewBox(300, 600, 400, 800)))
+	topCenterPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 300, 800)))
+	bottomLeftPainter := p.Child(charts.PainterBoxOption(charts.NewBox(300, 0, 600, 400)))
+	bottomRightPainter := p.Child(charts.PainterBoxOption(charts.NewBox(300, 400, 600, 800)))
 
 	dataValues := [][]float64{
 		{120, 132, 101, 134, 90, 230, 210},
