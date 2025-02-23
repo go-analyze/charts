@@ -175,9 +175,61 @@ func renderPainterLine(painter *Painter) {
 	}
 	if err := painter.LineChart(lineOpt); err != nil {
 		panic(err)
+	} else if buf, err := painter.Bytes(); err != nil {
+		panic(err)
+	} else if len(buf) == 0 {
+		panic(errors.New("data is nil"))
 	}
+}
 
-	if buf, err := painter.Bytes(); err != nil {
+func BenchmarkPainterScatterChartPNGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputPNG,
+		})
+
+		renderPainterScatter(painter)
+	}
+}
+
+func BenchmarkPainterScatterChartSVGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+		})
+
+		renderPainterScatter(painter)
+	}
+}
+
+func renderPainterScatter(painter *Painter) {
+	lineOpt := NewScatterChartOptionWithData([][]float64{
+		{56.5, 82.1, 88.7, 70.1, 53.4, 85.1},
+		{51.1, 51.4, 55.1, 53.3, 73.8, 68.7},
+	})
+	lineMarks := NewSeriesMarkList(SeriesMarkTypeAverage)
+	lineOpt.SeriesList[0].MarkLine.Lines = lineMarks
+	lineOpt.SeriesList[0].TrendLine = NewTrendLine(SeriesTrendTypeCubic)
+	lineOpt.SeriesList[1].MarkLine.Lines = lineMarks
+	lineOpt.SeriesList[1].TrendLine = NewTrendLine(SeriesTrendTypeAverage)
+	lineOpt.Legend = LegendOption{
+		Offset: OffsetStr{
+			Top: "-90",
+		},
+		SeriesNames: []string{"Milk Tea", "Matcha Latte", "Cheese Cocoa", "Walnut Brownie"},
+	}
+	lineOpt.XAxis = XAxisOption{
+		Labels: []string{"2012", "2013", "2014", "2015", "2016", "2017"},
+	}
+	lineOpt.YAxis = []YAxisOption{
+		{
+			Min: Ptr(0.0),
+			Max: Ptr(90.0),
+		},
+	}
+	if err := painter.ScatterChart(lineOpt); err != nil {
+		panic(err)
+	} else if buf, err := painter.Bytes(); err != nil {
 		panic(err)
 	} else if len(buf) == 0 {
 		panic(errors.New("data is nil"))
