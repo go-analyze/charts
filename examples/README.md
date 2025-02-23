@@ -6,7 +6,7 @@ Our library offers two primary ways to configure charts:
 1. The "Painter API" allows you to initialize a "Painter" using `NewPainter`, then build chart configuration structs and apply them with function calls on the `Painter`. This API is designed to be easy to learn and navigate, with fields being named and formed to be natural for the chart type.
 2. Also offered is `ChartOption`, which is built providing functions to modify the very generic chart struct. This API can be useful when representing the same data, and similar chart configuration, but changing the chart types.
 
-For most use cases the `Painter API` is recommended. In our examples we demonstrate rendering chart types using both methods, see either examples in the [1-Painter](./1-Painter) directory or [2-OptionFun](./2-OptionFunc)`.
+For most use cases the `Painter API` is recommended. In our examples we demonstrate rendering chart types using both methods, see either examples in the [1-Painter](./1-Painter) directory or [2-OptionFun](./2-OptionFunc).
 
 ## `Painter` API Example List
 
@@ -36,7 +36,7 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [radar_chart-1-basic](./1-Painter/radar_chart-1-basic) - Basic radar chart.
 * [scatter_chart-1-basic](./1-Painter/scatter_chart-1-basic) - Basic scatter chart with some simple styling changes and a demonstration of `null` values.
 * [scatter_chart-2-symbols](./1-Painter/scatter_chart-2-symbols) - Basic scatter chart showing per-series symbols.
-* [scatter_chart-3-dense_data](./1-Painter/scatter_chart-3-dense_data) - Scatter chart with dense data and more custom styling configured.
+* [scatter_chart-3-dense_data](./1-Painter/scatter_chart-3-dense_data) - Scatter chart with dense data, trend lines, and more custom styling configured.
 * [table-1](./1-Painter/table-1) - Table with a variety of table specific configuration and styling demonstrated.
 
 ## `ChartOption` / `OptionFunc` Example List
