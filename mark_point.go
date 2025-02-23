@@ -2,8 +2,6 @@ package charts
 
 import (
 	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 // NewMarkPoint returns a mark point for the provided types, this is set on a specific instance within a Series.
@@ -53,12 +51,9 @@ func (m *markPointPainter) Render() (Box, error) {
 			continue
 		}
 		summary := summarizePopulationData(opt.seriesValues)
-		textStyle := chartdraw.Style{
-			FontStyle: FontStyle{
-				FontSize: labelFontSize,
-				Font:     opt.font,
-			},
-			StrokeWidth: 1,
+		textStyle := FontStyle{
+			FontSize: labelFontSize,
+			Font:     opt.font,
 		}
 		if isLightColor(opt.fillColor) {
 			textStyle.FontColor = defaultLightFontColor
@@ -83,12 +78,12 @@ func (m *markPointPainter) Render() (Box, error) {
 
 			painter.Pin(p.X, p.Y-opt.symbolSize>>1, opt.symbolSize, opt.fillColor, opt.fillColor, 0.0)
 			text := opt.valueFormatter(value)
-			textBox := painter.MeasureText(text, 0, textStyle.FontStyle)
+			textBox := painter.MeasureText(text, 0, textStyle)
 			if textStyle.FontSize > smallLabelFontSize && textBox.Width() > opt.symbolSize {
 				textStyle.FontSize = smallLabelFontSize
-				textBox = painter.MeasureText(text, 0, textStyle.FontStyle)
+				textBox = painter.MeasureText(text, 0, textStyle)
 			}
-			painter.Text(text, p.X-textBox.Width()>>1, p.Y-opt.symbolSize>>1-2, 0, textStyle.FontStyle)
+			painter.Text(text, p.X-textBox.Width()>>1, p.Y-opt.symbolSize>>1-2, 0, textStyle)
 		}
 	}
 	return BoxZero, nil
