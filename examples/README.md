@@ -1,37 +1,60 @@
 # go-analyze/charts Examples
 
-Examples are our primary method for demonstrating the starting point our use and configuration. For more advanced configuration review the other fields and descriptions of the structs used in our examples.
+Examples are our primary method for demonstrating the starting point our use and configuration. Find an example close to your use case and use it as a starting place to find the relevant API's. Our API's include godocs, review the descriptions of each field to understand possible options.
 
-## Example List
+Our library offers two primary ways to configure charts:
+1. The "Painter API" allows you to initialize a "Painter" using `NewPainter`, then build chart configuration structs and apply them with function calls on the `Painter`. This API is designed to be easy to learn and navigate, with fields being named and formed to be natural for the chart type.
+2. Also offered is `ChartOption`, which is built providing functions to modify the very generic chart struct. This API can be useful when representing the same data, and similar chart configuration, but changing the chart types.
 
-* [bar_chart-1](./bar_chart-1) - Bar chart with included mark points and mark lines.
-* [bar_chart-2](./bar_chart-2) - The above example bar chart re-demonstrated using the Painter API.
-* [bar_chart-3](./bar_chart-3) - A bar chart with "Stacked" series enabled, collapsing the bars into a single layered bar.
-* [chinese](./chinese) - Line chart with chinese characters that uses a custom font (must be downloaded by user, see comment in code).
-* [funnel_chart-1](./funnel_chart-1) - Basic funnel chart.
-* [funnel_chart-2](./funnel_chart-2) - The above example funnel chart re-demonstrated using the Painter API.
-* [horizontal_bar_chart-1](./horizontal_bar_chart-1) - Basic horizontal bar chart.
-* [horizontal_bar_chart-2](./horizontal_bar_chart-2) - The above example bar chart re-demonstrated using the Painter API.
-* [horizontal_bar_chart-3](./horizontal_bar_chart-3) - A horizontal bar chart with "Stacked" series, collapsing the bars into a single layered bar.
-* [line_chart-1](./line_chart-1) - Basic line chart with some simple styling changes and a demonstration of `null` values.
-* [line_chart-2](./line_chart-2) - The above example line chart re-demonstrated using the Painter API.
-* [line_chart-3](./line_chart-3) - Line chart with dense data and more custom styling configured.
-* [line_chart-4](./line_chart-4) - Line chart with "Stacked" series enabled, making each series a layer on the chart and the top line showing the sum.
-* [line_chart-5](./line_chart-5) - Line chart with dense data and most default rendering disabled, instead rendering labels manually on the Painter.
-* [line_chart-area](./line_chart-area) - Example line chart with the area below the line shaded.
-* [multiple_charts-1](./multiple_charts-1) - Example of manually building a painter so that you can render 4 charts on the same image.
-* [multiple_charts-2](./multiple_charts-2) - Combining two charts together by writting one chart over the other.
-* [multiple_charts-3](./multiple_charts-3) - An alternative API for overlaying two charts together in the same image.
-* [multiple_charts-4](./multiple_charts-4) - Shows how to use a single set of data and demonstrate it with multiple chart types.
-* [pie_chart-1](./pie_chart-1) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
-* [pie_chart-2](./pie_chart-2) - The above example pie chart re-demonstrated using the Painter API.
-* [radar_chart-1](./radar_chart-1) - Basic radar chart.
-* [radar_chart-2](./radar_chart-2) - The above example radar chart re-demonstrated using the Painter API.
-* [scatter_chart-1](./scatter_chart-1) - Basic scatter chart with some simple styling changes and a demonstration of `null` values.
-* [scatter_chart-2](./scatter_chart-2) - The above example scatter chart re-demonstrated using the Painter API.
-* [scatter_chart-3](./scatter_chart-3) - Scatter chart with dense data and more custom styling configured.
-* [table-1](./table-1) - Table with a variety of table specific configuration and styling demonstrated.
-* [web-1](./web-1) - Hosts an example http server which will render the charts to the web page.
+For most use cases the `Painter API` is recommended. In our examples we demonstrate rendering chart types using both methods, see either examples in the [1-Painter](./1-Painter) directory or [2-OptionFun](./2-OptionFunc)`.
+
+## `Painter` API Example List
+
+* [bar_chart-1-basic](./1-Painter/bar_chart-1-basic) - Basic bar chart.
+* [bar_chart-2-size_margin](./1-Painter/bar_chart-2-size_margin) - Showing the visual impact of different bar sizes and margins.
+* [bar_chart-3-label_position-round_caps](./1-Painter/bar_chart-3-label_position-round_caps) - Showing the different label positions and rounded caps.
+* [bar_chart-4-mark](./1-Painter/bar_chart-4-mark) - Bar chart with included mark points and mark lines.
+* [bar_chart-5-stacked](./1-Painter/bar_chart-5-stacked) - A bar chart with "Stacked" series enabled, collapsing the bars into a single layered bar.
+* [funnel_chart-1-basic](./1-Painter/funnel_chart-1-basic) - Basic funnel chart.
+* [horizontal_bar_chart-1-basic](./1-Painter/horizontal_bar_chart-1-basic) - Basic horizontal bar chart.
+* [horizontal_bar_chart-2-size_margin](./1-Painter/horizontal_bar_chart-2-size_margin) - Showing the visual impact of different bar sizes and margins.
+* [horizontal_bar_chart-3-mark](./1-Painter/horizontal_bar_chart-3-mark) - Horizontal bar chart with included mark lines.
+* [horizontal_bar_chart-4-stacked](./1-Painter/horizontal_bar_chart-4-stacked) - A horizontal bar chart with "Stacked" series, collapsing the bars into a single layered bar.
+* [line_chart-1-basic](./1-Painter/line_chart-1-basic) - Basic line chart with some simple styling changes and a demonstration of `null` values.
+* [line_chart-2-symbols](./1-Painter/line_chart-2-symbols) - Basic line chart which sets a different symbol for each series item.
+* [line_chart-3-smooth](./1-Painter/line_chart-3-smooth) - Basic line chart with thick smooth lines drawn.
+* [line_chart-4-mark](./1-Painter/line_chart-4-mark) - Line chart with included mark points and mark lines.
+* [line_chart-5-area](./1-Painter/line_chart-5-area) - Line chart with the area below the line shaded.
+* [line_chart-6-stacked](./1-Painter/line_chart-6-stacked) - Line chart with "Stacked" series enabled, making each series a layer on the chart and the top line showing the sum.
+* [line_chart-7-boundary_gap](./1-Painter/line_chart-7-boundary_gap) - Showing the visual difference on the line chart of enabling or disabling the x-axis boundary gap.
+* [line_chart-8-dual_y_axis](./1-Painter/line_chart-8-dual_y_axis) - Basic line chart with two series, one rendered to the left axis and one to a second y axis on the right.
+* [line_chart-9-custom](./1-Painter/line_chart-9-custom) - Line chart with dense data and most default rendering disabled, instead rendering labels manually on the Painter.
+* [multiple_charts-1](./1-Painter/multiple_charts-1) - Example of manually building a painter so that you can render 4 charts on the same image.
+* [multiple_charts-2](./1-Painter/multiple_charts-2) - Shows how to use a single set of data and demonstrate it with multiple chart types.
+* [pie_chart-1-basic](./1-Painter/pie_chart-1-basic) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
+* [pie_chart-2-radius](./1-Painter/pie_chart-2-radius) - Pie chart which varies the series radius by the percentage of the series.
+* [radar_chart-1-basic](./1-Painter/radar_chart-1-basic) - Basic radar chart.
+* [scatter_chart-1-basic](./1-Painter/scatter_chart-1-basic) - Basic scatter chart with some simple styling changes and a demonstration of `null` values.
+* [scatter_chart-2-symbols](./1-Painter/scatter_chart-2-symbols) - Basic scatter chart showing per-series symbols.
+* [scatter_chart-3-dense_data](./1-Painter/scatter_chart-3-dense_data) - Scatter chart with dense data and more custom styling configured.
+* [table-1](./1-Painter/table-1) - Table with a variety of table specific configuration and styling demonstrated.
+
+## `ChartOption` / `OptionFunc` Example List
+
+* [bar_chart-1-basic](./2-OptionFunc/bar_chart-1-basic) - Bar chart with included mark points and mark lines.
+* [chinese](./2-OptionFunc/chinese) - Line chart with chinese characters that uses a custom font (must be downloaded by user, see comment in code).
+* [funnel_chart-1-basic](./2-OptionFunc/funnel_chart-1-basic) - Basic funnel chart.
+* [horizontal_bar_chart-1-basic](./2-OptionFunc/horizontal_bar_chart-1-basic) - Basic horizontal bar chart.
+* [line_chart-1-basic](./2-OptionFunc/line_chart-1-basic) - Basic line chart with some simple styling changes and a demonstration of `null` values.
+* [line_chart-2-dense_data](./2-OptionFunc/line_chart-2-dense_data) - Line chart with dense data and more custom styling configured.
+* [line_chart-3-area](./2-OptionFunc/line_chart-3-area) - Line chart with the area below the line shaded.
+* [multiple_charts-1](./2-OptionFunc/multiple_charts-1) - Combining two charts together by writting one chart over the other.
+* [multiple_charts-2](./2-OptionFunc/multiple_charts-2) - An alternative API for overlaying two charts together in the same image.
+* [pie_chart-1-basic](./2-OptionFunc/pie_chart-1-basic) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
+* [radar_chart-1-basic](./2-OptionFunc/radar_chart-1-basic) - Basic radar chart.
+* [scatter_chart-1-basic](./2-OptionFunc/scatter_chart-1-basic) - Basic scatter chart with some simple styling changes and a demonstration of `null` values.
+* [table-1](./2-OptionFunc/table-1) - Table with a variety of table specific configuration and styling demonstrated.
+* [web-1](./2-OptionFunc/web-1) - Hosts an example http server which will render the charts to the web page.
 
 ## chartdraw/examples
 
