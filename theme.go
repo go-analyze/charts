@@ -22,6 +22,26 @@ const (
 	ThemeGrafana = "grafana"
 	// ThemeAnt is an ant styled theme.
 	ThemeAnt = "ant"
+	// ThemeNatureLight provides earthy color tones.
+	ThemeNatureLight = "nature-light"
+	// ThemeNatureDark provides earthy color tones with a dark background.
+	ThemeNatureDark = "nature-dark"
+	// ThemeRetro provides colors from the 50's and 60's, silver, maroon, tan, and other vintage colors.
+	ThemeRetro = "retro"
+	// ThemeOcean is a light colored theme that focuses on shades of green, blue, and other ocean colors.
+	ThemeOcean = "ocean"
+	// ThemeSlate is a dark theme with a slate background, and light pastel series colors.
+	ThemeSlate = "slate"
+	// ThemeGray is a light theme that only contains shades of gray.
+	ThemeGray = "gray"
+	// ThemeWinter is a light theme with shades of white and blue, some light purple.
+	ThemeWinter = "winter"
+	// ThemeSpring is a light theme with bright greens, yellows, and blues.
+	ThemeSpring = "spring"
+	// ThemeSummer is a light theme with red, orange, and yellow shades.
+	ThemeSummer = "summer"
+	// ThemeFall is a dark theme with shades of yellow, orange and brown.
+	ThemeFall = "fall"
 )
 
 type ColorPalette interface {
@@ -310,6 +330,308 @@ func init() {
 			},
 		},
 	)
+	natureSeriesColors := []Color{
+		ColorSageGreen,
+		{ // Terracotta
+			R: 242, G: 153, B: 119, A: 255,
+		},
+		{ // Sky blue alt
+			R: 130, G: 175, B: 222, A: 255,
+		},
+		{ // Moss green
+			R: 121, G: 191, B: 127, A: 255,
+		},
+		{ // Light Forest brown
+			R: 171, G: 136, B: 100, A: 255,
+		},
+		ColorDesertSand,
+		{ // Ocean blue
+			R: 100, G: 150, B: 180, A: 255,
+		},
+		{ // Clay red
+			R: 203, G: 134, B: 115, A: 255,
+		},
+		{ // Earthy olive
+			R: 135, G: 164, B: 112, A: 255,
+		},
+		{ // Driftwood gray-brown
+			R: 145, G: 133, B: 116, A: 255,
+		},
+		{ // River stone gray
+			R: 128, G: 146, B: 140, A: 255,
+		},
+	}
+	greenHeaderText := ColorGreenAlt3.WithAdjustHSL(0, 0, -0.2)
+	InstallTheme(
+		ThemeNatureLight,
+		ThemeOption{
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 138, G: 142, B: 146, A: 255},
+			AxisSplitLineColor: Color{R: 200, G: 203, B: 208, A: 255},
+			BackgroundColor:    ColorWhite,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+			TextColorTitle:     greenHeaderText,
+			TextColorLegend:    greenHeaderText,
+			SeriesColors:       natureSeriesColors,
+		},
+	)
+	InstallTheme(
+		ThemeNatureDark,
+		ThemeOption{
+			IsDarkMode:         true,
+			AxisStrokeColor:    Color{R: 138, G: 142, B: 146, A: 255},
+			AxisSplitLineColor: Color{R: 72, G: 71, B: 83, A: 255},
+			BackgroundColor:    ColorDarkGray,
+			TextColor:          Color{R: 238, G: 238, B: 238, A: 255},
+			TextColorTitle:     ColorWhite,
+			SeriesColors:       natureSeriesColors,
+		},
+	)
+	InstallTheme(
+		ThemeRetro,
+		ThemeOption{
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 140, G: 135, B: 130, A: 255},
+			AxisSplitLineColor: Color{R: 190, G: 190, B: 190, A: 255},
+			BackgroundColor:    Color{R: 255, G: 250, B: 240, A: 255},
+			TextColor:          Color{R: 51, G: 36, B: 16, A: 255},
+			SeriesColors: []Color{
+				ColorMaroon,
+				{ // sage olive green
+					R: 145, G: 150, B: 99, A: 255,
+				},
+				ColorTan,
+				{ // dark orange
+					R: 184, G: 90, B: 0, A: 255,
+				},
+				{ // brown
+					R: 101, G: 67, B: 33, A: 255,
+				},
+				ColorMustardYellow,
+				ColorTeal,
+				{ // light red
+					R: 200, G: 80, B: 50, A: 255,
+				},
+				{ // navy blue
+					R: 25, G: 42, B: 64, A: 255,
+				},
+			},
+		},
+	)
+	blueHeaderText := ColorBlue.WithAdjustHSL(0, 0, -0.2)
+	InstallTheme(
+		ThemeOcean,
+		ThemeOption{
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 120, G: 130, B: 140, A: 255},
+			AxisSplitLineColor: Color{R: 200, G: 210, B: 220, A: 255},
+			BackgroundColor:    ColorWhite,
+			TextColor:          Color{R: 0, G: 45, B: 72, A: 255},
+			TextColorTitle:     blueHeaderText,
+			TextColorLegend:    blueHeaderText,
+			SeriesColors: []Color{
+				ColorSkyBlue,
+				{ // seafoam green
+					R: 90, G: 210, B: 160, A: 255,
+				},
+				{ // coral pink
+					R: 252, G: 163, B: 148, A: 255,
+				},
+				{ // light purple
+					R: 180, G: 140, B: 210, A: 255,
+				},
+				ColorBlueAlt1,
+				{ // light teal
+					R: 110, G: 220, B: 210, A: 255,
+				},
+				ColorPink,
+				ColorPlum,
+			},
+		},
+	)
+	InstallTheme(
+		ThemeSlate,
+		ThemeOption{
+			IsDarkMode:         true,
+			AxisStrokeColor:    Color{R: 128, G: 129, B: 132, A: 255},
+			AxisSplitLineColor: Color{R: 72, G: 71, B: 73, A: 255},
+			BackgroundColor:    Color{R: 51, G: 53, B: 60, A: 255}, // Slate with slight blue tint
+			TextColor:          ColorWhite,
+			TextColorLegend:    ColorSlateGray.WithAdjustHSL(0, 0, 0.2),
+			SeriesColors: []Color{
+				ColorLightCoral,
+				{ // pale aqua
+					R: 125, G: 210, B: 196, A: 255,
+				},
+				{ // pale yellow
+					R: 250, G: 240, B: 120, A: 255,
+				},
+				{ // pale blue
+					R: 170, G: 190, B: 255, A: 255,
+				},
+				{ // pale purple
+					R: 190, G: 164, B: 240, A: 255,
+				},
+				{ // pale salmon
+					R: 250, G: 160, B: 140, A: 255,
+				},
+				{ // pale sage green
+					R: 180, G: 200, B: 165, A: 255,
+				},
+				{ // dusty yellow
+					R: 238, G: 214, B: 63, A: 255,
+				},
+				{ // slate blue
+					R: 100, G: 130, B: 170, A: 255,
+				},
+				{ // dusty purple
+					R: 178, G: 132, B: 173, A: 255,
+				},
+				{ // muted green
+					R: 120, G: 160, B: 140, A: 255,
+				},
+			},
+		},
+	)
+	InstallTheme(
+		ThemeGray,
+		ThemeOption{
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 142, G: 142, B: 142, A: 255},
+			AxisSplitLineColor: Color{R: 204, G: 204, B: 204, A: 255},
+			BackgroundColor:    ColorWhite,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+			TextColorTitle:     ColorBlack,
+			SeriesColors: []Color{
+				ColorDarkGray,
+				{R: 88, G: 88, B: 88, A: 255},
+				ColorGray,
+				{R: 160, G: 160, B: 160, A: 255},
+				{R: 190, G: 190, B: 190, A: 255},
+				ColorLightGray,
+				{R: 228, G: 228, B: 228, A: 255},
+				{R: 248, G: 248, B: 248, A: 255},
+			},
+		},
+	)
+	InstallTheme(
+		ThemeWinter,
+		ThemeOption{
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 140, G: 145, B: 150, A: 255},
+			AxisSplitLineColor: Color{R: 200, G: 210, B: 220, A: 255},
+			BackgroundColor:    ColorAzure,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+			TextColorTitle:     blueHeaderText,
+			TextColorLegend:    blueHeaderText,
+			SeriesColors: []Color{
+				{ // Light blue
+					R: 150, G: 190, B: 255, A: 255,
+				},
+				ColorPlum,
+				{ // Frosty blue
+					R: 110, G: 150, B: 240, A: 255,
+				},
+				{ // Pale lavender
+					R: 210, G: 180, B: 230, A: 255,
+				},
+				{ // Ice blue
+					R: 90, G: 130, B: 210, A: 255,
+				},
+				{ // Soft purple
+					R: 190, G: 160, B: 220, A: 255,
+				},
+				{ // Glacier blue
+					R: 80, G: 110, B: 190, A: 255,
+				},
+			},
+		},
+	)
+	InstallTheme(
+		ThemeSpring,
+		ThemeOption{
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 120, G: 130, B: 140, A: 255},
+			AxisSplitLineColor: Color{R: 200, G: 210, B: 220, A: 255},
+			BackgroundColor:    ColorWhite,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+			TextColorTitle:     greenHeaderText,
+			TextColorLegend:    greenHeaderText,
+			SeriesColors: []Color{
+				{ // Lime green
+					R: 120, G: 200, B: 130, A: 255,
+				},
+				{ // Golden yellow
+					R: 220, G: 210, B: 100, A: 255,
+				},
+				ColorSkyBlue,
+				{ // Mint green
+					R: 150, G: 230, B: 180, A: 255,
+				},
+				{ // Sun yellow
+					R: 240, G: 220, B: 120, A: 255,
+				},
+				{ // Light teal
+					R: 110, G: 210, B: 200, A: 255,
+				},
+			},
+		},
+	)
+	InstallTheme(
+		ThemeSummer,
+		ThemeOption{
+			IsDarkMode:         false,
+			AxisStrokeColor:    Color{R: 150, G: 140, B: 130, A: 255},
+			AxisSplitLineColor: Color{R: 220, G: 210, B: 200, A: 255},
+			BackgroundColor:    ColorWhite,
+			TextColor:          Color{R: 70, G: 70, B: 70, A: 255},
+			TextColorTitle:     ColorBlack,
+			SeriesColors: []Color{
+				ColorSalmon,
+				{ // Bright yellow
+					R: 230, G: 220, B: 110, A: 255,
+				},
+				ColorOrange,
+				ColorOrangeAlt1,
+				{ // Coral pink
+					R: 250, G: 160, B: 140, A: 255,
+				},
+				{ // pale yellow
+					R: 250, G: 240, B: 120, A: 255,
+				},
+				ColorOrangeAlt2,
+			},
+		},
+	)
+	InstallTheme(
+		ThemeFall,
+		ThemeOption{
+			IsDarkMode:         true,
+			AxisStrokeColor:    Color{R: 130, G: 90, B: 60, A: 255},
+			AxisSplitLineColor: Color{R: 160, G: 120, B: 80, A: 255},
+			BackgroundColor:    ColorDarkGray,
+			TextColor:          ColorWhite,
+			TextColorLegend:    ColorLightGray,
+			SeriesColors: []Color{
+				{ // Golden yellow
+					R: 220, G: 190, B: 110, A: 255,
+				},
+				{ // Copper orange
+					R: 200, G: 130, B: 70, A: 255,
+				},
+				{ // Burnt brown
+					R: 180, G: 120, B: 60, A: 255,
+				},
+				{ // Amber yellow
+					R: 240, G: 190, B: 90, A: 255,
+				},
+				{ // Rust orange
+					R: 230, G: 140, B: 50, A: 255,
+				},
+			},
+		},
+	)
+
 	if err := SetDefaultTheme(ThemeLight); err != nil {
 		panic(fmt.Errorf("could not setup default theme %s", ThemeLight))
 	}

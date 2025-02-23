@@ -751,6 +751,25 @@ func (p *PieSeries) getType() string {
 // PieSeriesList provides the data populations for pie charts (PieChartOption).
 type PieSeriesList []PieSeries
 
+func (p PieSeriesList) SumSeries() float64 {
+	var sum float64
+	for _, s := range p {
+		sum += s.Value
+	}
+	return sum
+}
+
+// MaxValue returns the maximum value within the series, or MinInt64 if no values.
+func (p PieSeriesList) MaxValue() float64 {
+	max := float64(math.MinInt64)
+	for _, s := range p {
+		if s.Value > max {
+			max = s.Value
+		}
+	}
+	return max
+}
+
 func (p PieSeriesList) names() []string {
 	return seriesNames(p)
 }

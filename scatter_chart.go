@@ -139,9 +139,9 @@ func (s *scatterChart) render(result *defaultRenderResult, seriesList ScatterSer
 		case SymbolCircle:
 			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1.0, symbolSize)
 		case SymbolSquare:
-			seriesPainter.squares(points, seriesColor, seriesColor, 1.0, ceilFloatToInt(symbolSize))
+			seriesPainter.squares(points, seriesColor, seriesColor, 1.0, ceilFloatToInt(symbolSize*2.0))
 		case SymbolDiamond:
-			seriesPainter.diamonds(points, seriesColor, seriesColor, 1.0, ceilFloatToInt(symbolSize))
+			seriesPainter.diamonds(points, seriesColor, seriesColor, 1.0, ceilFloatToInt(symbolSize*2.8))
 		default:
 			seriesPainter.Dots(points, seriesColor, seriesColor, 1.0, symbolSize)
 		}
@@ -185,6 +185,13 @@ func (s *scatterChart) Render() (Box, error) {
 	// boundary gap default must be set here as it's used by the x-axis as well
 	if opt.XAxis.BoundaryGap == nil {
 		opt.XAxis.BoundaryGap = Ptr(false)
+	}
+	if opt.Legend.Symbol == "" {
+		if opt.Symbol == "" {
+			opt.Legend.Symbol = SymbolDot
+		} else {
+			opt.Legend.Symbol = opt.Symbol
+		}
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{

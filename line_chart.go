@@ -255,17 +255,21 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 		}
 		switch seriesSymbol {
 		case SymbolCircle:
-			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1, strokeWidth)
+			radius := 1.4
+			if strokeWidth > 1 {
+				radius = strokeWidth * 1.4
+			}
+			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1, radius)
 		case SymbolDot:
-			radius := 1.0
-			if strokeWidth > 0 {
+			radius := 1.5
+			if strokeWidth > 1 {
 				radius = strokeWidth * 1.5
 			}
 			seriesPainter.Dots(points, seriesColor, seriesColor, 1, radius)
 		case SymbolSquare:
 			size := 2
 			if strokeWidth > 1 {
-				size = ceilFloatToInt(strokeWidth * 2.0)
+				size = ceilFloatToInt(strokeWidth * 2.8)
 			}
 			seriesPainter.squares(points, seriesColor, seriesColor, 1, size)
 		case SymbolDiamond:
@@ -377,6 +381,15 @@ func (l *lineChart) Render() (Box, error) {
 		}
 		boundaryGap := !fillArea // boundary gap default enabled unless fill area is set
 		l.opt.XAxis.BoundaryGap = &boundaryGap
+	}
+	if opt.Legend.Symbol == "" {
+		if opt.Symbol == "" {
+			opt.Legend.Symbol = SymbolCircle
+		} else if opt.Symbol == SymbolNone {
+			opt.Legend.Symbol = SymbolDot
+		} else {
+			opt.Legend.Symbol = opt.Symbol
+		}
 	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{

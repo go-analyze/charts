@@ -187,6 +187,10 @@ func (l *legendPainter) Render() (Box, error) {
 				return left
 			}
 		default:
+			centerColor := ColorTransparent
+			if seriesSymbol == SymbolCircle {
+				centerColor = opt.Theme.GetBackgroundColor()
+			}
 			drawIcon = func(top, left int, color Color) int {
 				p.legendLineDot(Box{
 					Top:    top + 1,
@@ -194,7 +198,7 @@ func (l *legendPainter) Render() (Box, error) {
 					Right:  left + legendWidth,
 					Bottom: top + legendHeight + 1,
 					IsSet:  true,
-				}, color, 3, color)
+				}, color, 3, color, centerColor)
 				return left + legendWidth
 			}
 		}

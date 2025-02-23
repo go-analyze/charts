@@ -64,7 +64,7 @@ func makeFullBarChartStackedOption() BarChartOption {
 		},
 		Legend: LegendOption{
 			SeriesNames: dataLabels,
-			Symbol:      SymbolCircle,
+			Symbol:      SymbolDot,
 		},
 		YAxis: []YAxisOption{
 			{

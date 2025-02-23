@@ -20,7 +20,7 @@ func makeBasicHorizontalBarChartOption() HorizontalBarChartOption {
 		},
 		Legend: LegendOption{
 			SeriesNames: []string{"2011", "2012"},
-			Symbol:      SymbolCircle,
+			Symbol:      SymbolDot,
 		},
 		YAxis: YAxisOption{
 			Labels: []string{"Brazil", "Indonesia", "USA", "India", "China", "World"},
@@ -61,7 +61,7 @@ func makeFullHorizontalBarChartStackedOption() HorizontalBarChartOption {
 		StackSeries: Ptr(true),
 		Legend: LegendOption{
 			SeriesNames: dataLabels,
-			Symbol:      SymbolCircle,
+			Symbol:      SymbolDot,
 		},
 		YAxis: YAxisOption{
 			Labels: []string{"1", "2", "3", "4", "5", "6", "7", "8"},

@@ -62,6 +62,8 @@ var (
 	ColorChocolate = drawing.ColorChocolate
 	// ColorCoral is R: 255, G: 127, B: 80.
 	ColorCoral = drawing.ColorCoral
+	// ColorLightCoral is R: 240, G: 128, B: 128.
+	ColorLightCoral = drawing.ColorLightCoral
 	// ColorGold is R: 255, G: 215, B: 0.
 	ColorGold = drawing.ColorGold
 	// ColorIndigo is R: 75, G: 0, B: 130.
@@ -84,6 +86,12 @@ var (
 	ColorTurquoise = drawing.ColorTurquoise
 	// ColorViolet is R: 238, G: 130, B: 238.
 	ColorViolet = drawing.ColorViolet
+	// ColorSkyBlue is R: 135, G: 206, B: 235.
+	ColorSkyBlue = drawing.ColorSkyBlue
+	// ColorLavender is R: 230, G: 230, B: 250.
+	ColorLavender = drawing.ColorLavender
+	// ColorThistle is R: 216, G: 191, B: 216.
+	ColorThistle = drawing.ColorThistle
 
 	// alternate non-standard shades //
 
@@ -95,6 +103,8 @@ var (
 	ColorBlueAlt2 = chartdraw.ColorAlternateBlue
 	// ColorAquaAlt1 is a lighter aqua: R: 0, G: 217, B: 210.
 	ColorAquaAlt1 = chartdraw.ColorCyan
+	// ColorSageGreen is a more neutral green, R: 158, G: 188, B: 169.
+	ColorSageGreen = Color{R: 156, G: 175, B: 136, A: 255}
 	// ColorGreenAlt1 is lighter green: R: 0, G: 217, B: 101.
 	ColorGreenAlt1 = chartdraw.ColorGreen
 	// ColorGreenAlt2 is R: 42, G: 190, B: 137.
@@ -115,6 +125,10 @@ var (
 	ColorOrangeAlt3 = Color{R: 255, G: 152, B: 69, A: 255}
 	// ColorYellowAlt1 is a slightly darker yellow: R: 217, G: 210, B: 0.
 	ColorYellowAlt1 = chartdraw.ColorYellow
+	// ColorMustardYellow is a dark yellow, R: 200, G: 160, B: 60.
+	ColorMustardYellow = Color{R: 200, G: 160, B: 60, A: 255}
+	// ColorDesertSand is a very light yellow / tan, R: 226, G: 201, B: 175.
+	ColorDesertSand = Color{R: 226, G: 201, B: 175, A: 255}
 )
 
 func isLightColor(c Color) bool {

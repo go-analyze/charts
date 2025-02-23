@@ -1008,7 +1008,7 @@ func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool,
 }
 
 // legendLineDot draws a small horizontal line with a dot in the middle, often used in legends.
-func (p *Painter) legendLineDot(box Box, strokeColor Color, strokeWidth float64, dotColor Color) {
+func (p *Painter) legendLineDot(box Box, strokeColor Color, strokeWidth float64, dotColor, centerColor Color) {
 	center := (box.Height()-int(strokeWidth))>>1 - 1
 
 	defer p.render.ResetStyle()
@@ -1021,6 +1021,9 @@ func (p *Painter) legendLineDot(box Box, strokeColor Color, strokeWidth float64,
 	// draw dot in the middle
 	midX := box.Left + (box.Width() >> 1)
 	p.Circle(5, midX, box.Top-center, dotColor, dotColor, 3)
+	if dotColor != centerColor && !centerColor.IsTransparent() {
+		p.Circle(2, midX, box.Top-center, centerColor, centerColor, 3)
+	}
 }
 
 // BarChart renders a bar chart with the provided configuration to the painter.

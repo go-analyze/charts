@@ -64,6 +64,8 @@ var (
 	ColorChocolate = Color{R: 210, G: 105, B: 30, A: 255}
 	// ColorCoral is R: 255, G: 127, B: 80.
 	ColorCoral = Color{R: 255, G: 127, B: 80, A: 255}
+	// ColorLightCoral is R: 240, G: 128, B: 128.
+	ColorLightCoral = Color{R: 240, G: 128, B: 128, A: 255}
 	// ColorGold is R: 255, G: 215, B: 0.
 	ColorGold = Color{R: 255, G: 215, B: 0, A: 255}
 	// ColorIndigo is R: 75, G: 0, B: 130.
@@ -86,6 +88,12 @@ var (
 	ColorTurquoise = Color{R: 64, G: 224, B: 208, A: 255}
 	// ColorViolet is R: 238, G: 130, B: 238.
 	ColorViolet = Color{R: 238, G: 130, B: 238, A: 255}
+	// ColorSkyBlue is R: 135, G: 206, B: 235.
+	ColorSkyBlue = Color{R: 135, G: 206, B: 235, A: 255}
+	// ColorLavender is R: 230, G: 230, B: 250.
+	ColorLavender = Color{R: 230, G: 230, B: 250, A: 255}
+	// ColorThistle is R: 216, G: 191, B: 216.
+	ColorThistle = Color{R: 216, G: 191, B: 216, A: 255}
 )
 
 // ParseColor parses a color from a string.
@@ -210,6 +218,8 @@ func ColorFromKnown(known string) Color {
 		return ColorChocolate
 	case "coral":
 		return ColorCoral
+	case "lightcoral":
+		return ColorLightCoral
 	case "gold":
 		return ColorGold
 	case "indigo":
@@ -230,6 +240,12 @@ func ColorFromKnown(known string) Color {
 		return ColorTurquoise
 	case "violet":
 		return ColorViolet
+	case "skyblue":
+		return ColorSkyBlue
+	case "lavender":
+		return ColorLavender
+	case "thistle":
+		return ColorThistle
 	case "":
 		return Color{}
 	default:
