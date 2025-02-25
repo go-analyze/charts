@@ -1435,10 +1435,14 @@ func NewSeriesListFunnel(values []float64, opts ...FunnelSeriesOption) FunnelSer
 type populationSummary struct {
 	// Max is the maximum value in the series.
 	Max float64
+	// MaxFirstIndex is the first index of the maximum value in the series. If the series is empty this value will be -1.
+	MaxFirstIndex int
 	// MaxIndex is the index of the maximum value in the series. If the series is empty this value will be -1.
 	MaxIndex int
 	// Min is the minimum value in the series.
 	Min float64
+	// MinFirstIndex is the first index of the minimum value in the series. If the series is empty this value will be -1.
+	MinFirstIndex int
 	// MinIndex is the index of the minimum value in the series. If the series is empty this value will be -1.
 	MinIndex int
 	// Average is the mean of all values in the series.
@@ -1461,7 +1465,7 @@ type populationSummary struct {
 
 // summarizePopulationData returns numeric summary of the values (population statistics).
 func summarizePopulationData(data []float64) populationSummary {
-	var minIndex, maxIndex int
+	var minFirstIndex, minIndex, maxFirstIndex, maxIndex int
 	minValue := math.MaxFloat64
 	maxValue := -math.MaxFloat64
 	var sum, sumSq, sumCu, sumQd float64
@@ -1474,11 +1478,17 @@ func summarizePopulationData(data []float64) populationSummary {
 
 		if x < minValue {
 			minValue = x
+			minFirstIndex = i
 			minIndex = i
+		} else if i > 0 && x == minValue && data[i-1] != minValue {
+			minIndex = i // update the index to be the first point we returned to a minimum value
 		}
 		if x > maxValue {
 			maxValue = x
+			maxFirstIndex = i
 			maxIndex = i
+		} else if i > 0 && x == maxValue && data[i-1] != maxValue {
+			maxIndex = i // update the index to be the first point we returned to a maximum value
 		}
 
 		sum += x
@@ -1540,8 +1550,10 @@ func summarizePopulationData(data []float64) populationSummary {
 
 	return populationSummary{
 		Max:               maxValue,
+		MaxFirstIndex:     maxFirstIndex,
 		MaxIndex:          maxIndex,
 		Min:               minValue,
+		MinFirstIndex:     minFirstIndex,
 		MinIndex:          minIndex,
 		Average:           mean,
 		Median:            median,

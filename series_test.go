@@ -231,8 +231,10 @@ func TestSeriesSummary(t *testing.T) {
 	t.Run("one_value", func(t *testing.T) {
 		assert.Equal(t, populationSummary{
 			Max:               10,
+			MaxFirstIndex:     0,
 			MaxIndex:          0,
 			Min:               10,
+			MinFirstIndex:     0,
 			MinIndex:          0,
 			Average:           10,
 			Median:            10,
@@ -245,7 +247,9 @@ func TestSeriesSummary(t *testing.T) {
 		assert.Equal(t, populationSummary{
 			Max:               2,
 			MaxIndex:          1,
+			MaxFirstIndex:     1,
 			Min:               1,
+			MinFirstIndex:     0,
 			MinIndex:          0,
 			Average:           1.5,
 			Median:            1.5,
@@ -257,8 +261,10 @@ func TestSeriesSummary(t *testing.T) {
 	t.Run("three_values", func(t *testing.T) {
 		assert.Equal(t, populationSummary{
 			Max:               3,
+			MaxFirstIndex:     2,
 			MaxIndex:          2,
 			Min:               1,
+			MinFirstIndex:     0,
 			MinIndex:          0,
 			Average:           2,
 			Median:            2,
@@ -270,8 +276,10 @@ func TestSeriesSummary(t *testing.T) {
 	t.Run("four_values", func(t *testing.T) {
 		assert.Equal(t, populationSummary{
 			Max:               4,
+			MaxFirstIndex:     3,
 			MaxIndex:          3,
 			Min:               1,
+			MinFirstIndex:     0,
 			MinIndex:          0,
 			Average:           2.5,
 			Median:            2.5,
@@ -283,8 +291,10 @@ func TestSeriesSummary(t *testing.T) {
 	t.Run("prime_values", func(t *testing.T) {
 		assert.Equal(t, populationSummary{
 			Max:               13,
+			MaxFirstIndex:     3,
 			MaxIndex:          3,
 			Min:               3,
+			MinFirstIndex:     0,
 			MinIndex:          0,
 			Average:           8.5,
 			Median:            9,
@@ -302,8 +312,10 @@ func TestSeriesSummary(t *testing.T) {
 	t.Run("value_null", func(t *testing.T) {
 		assert.Equal(t, populationSummary{
 			Max:               10,
+			MaxFirstIndex:     0,
 			MaxIndex:          0,
 			Min:               10,
+			MinFirstIndex:     0,
 			MinIndex:          0,
 			Average:           10,
 			Median:            10,
@@ -315,8 +327,10 @@ func TestSeriesSummary(t *testing.T) {
 	t.Run("value_null_value", func(t *testing.T) {
 		assert.Equal(t, populationSummary{
 			Max:               2,
+			MaxFirstIndex:     2,
 			MaxIndex:          2,
 			Min:               1,
+			MinFirstIndex:     0,
 			MinIndex:          0,
 			Average:           1.5,
 			Median:            1.5,
