@@ -28,7 +28,7 @@ func main() {
 	p, err := charts.PieRender(
 		values,
 		charts.TitleOptionFunc(charts.TitleOption{
-			Text:             "Rainfall vs Evaporation",
+			Text:             "Pie Chart",
 			Subtext:          "(Fake Data)",
 			Offset:           charts.OffsetCenter,
 			FontStyle:        charts.NewFontStyleWithSize(16),
