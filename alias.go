@@ -116,6 +116,7 @@ const (
 const (
 	ChartOutputSVG           = "svg"
 	ChartOutputPNG           = "png"
+	ChartOutputJPG           = "jpg"
 	chartDefaultOutputFormat = ChartOutputPNG
 )
 

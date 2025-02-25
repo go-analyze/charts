@@ -2,6 +2,7 @@ package chartdraw
 
 import (
 	"image"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"math"
@@ -11,19 +12,33 @@ import (
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
-// PNG returns a new png/raster renderer.
+// PNG returns a new png raster renderer.
 func PNG(width, height int) Renderer {
+	i := image.NewRGBA(image.Rect(0, 0, width, height))
+	return &rasterRenderer{
+		i:          i,
+		gc:         drawing.NewRasterGraphicContext(i),
+		encodeFunc: png.Encode,
+	}
+}
+
+// JPG returns a new jpg raster renderer.
+func JPG(width, height int) Renderer {
 	i := image.NewRGBA(image.Rect(0, 0, width, height))
 	return &rasterRenderer{
 		i:  i,
 		gc: drawing.NewRasterGraphicContext(i),
+		encodeFunc: func(w io.Writer, i image.Image) error {
+			return jpeg.Encode(w, i, &jpeg.Options{Quality: 90})
+		},
 	}
 }
 
 // rasterRenderer renders chart commands to a bitmap.
 type rasterRenderer struct {
-	i  *image.RGBA
-	gc *drawing.RasterGraphicContext
+	i          *image.RGBA
+	gc         *drawing.RasterGraphicContext
+	encodeFunc func(w io.Writer, i image.Image) error
 
 	rotateRadians *float64
 
@@ -173,16 +188,14 @@ func (rr *rasterRenderer) MeasureText(body string) Box {
 	if l < 0 {
 		r -= l // equivalent to r+(-1*l)
 		l = 0
+	} else if l > 0 {
+		r += l
+		l = 0
 	}
 	if t < 0 {
 		b -= t
 		t = 0
-	}
-	if l > 0 {
-		r += l
-		l = 0
-	}
-	if t > 0 {
+	} else if t > 0 {
 		b += t
 		t = 0
 	}
@@ -229,6 +242,8 @@ func (rr *rasterRenderer) Save(w io.Writer) error {
 	if typed, isTyped := w.(RGBACollector); isTyped {
 		typed.SetRGBA(rr.i)
 		return nil
+	} else if rr.encodeFunc != nil {
+		return rr.encodeFunc(w, rr.i)
 	}
 	return png.Encode(w, rr.i)
 }

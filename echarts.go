@@ -528,6 +528,10 @@ func RenderEChartsToPNG(options string) ([]byte, error) {
 	return renderEcharts(options, ChartOutputPNG)
 }
 
+func RenderEChartsToJPG(options string) ([]byte, error) {
+	return renderEcharts(options, ChartOutputJPG)
+}
+
 func RenderEChartsToSVG(options string) ([]byte, error) {
 	return renderEcharts(options, ChartOutputSVG)
 }

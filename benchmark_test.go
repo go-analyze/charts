@@ -7,7 +7,6 @@ import (
 
 func makeDefaultMultiChartOptions() ChartOption {
 	opt := ChartOption{
-		OutputFormat: ChartOutputPNG,
 		Legend: LegendOption{
 			Offset: OffsetStr{
 				Top: "-90",
@@ -76,6 +75,21 @@ func BenchmarkChartOptionMultiChartPNGRender(b *testing.B) {
 	}
 }
 
+func BenchmarkChartOptionMultiChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		opt := makeDefaultMultiChartOptions()
+		opt.OutputFormat = ChartOutputJPG
+
+		if d, err := Render(opt); err != nil {
+			panic(err)
+		} else if buf, err := d.Bytes(); err != nil {
+			panic(err)
+		} else if len(buf) == 0 {
+			panic(errors.New("data is nil"))
+		}
+	}
+}
+
 func BenchmarkChartOptionMultiChartSVGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		opt := makeDefaultMultiChartOptions()
@@ -95,6 +109,16 @@ func BenchmarkPainterFunnelChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		painter := NewPainter(PainterOptions{
 			OutputFormat: ChartOutputPNG,
+		})
+
+		renderPainterFunnel(painter)
+	}
+}
+
+func BenchmarkPainterFunnelChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputJPG,
 		})
 
 		renderPainterFunnel(painter)
@@ -131,6 +155,16 @@ func BenchmarkPainterLineChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		painter := NewPainter(PainterOptions{
 			OutputFormat: ChartOutputPNG,
+		})
+
+		renderPainterLine(painter)
+	}
+}
+
+func BenchmarkPainterLineChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputJPG,
 		})
 
 		renderPainterLine(painter)
@@ -192,6 +226,16 @@ func BenchmarkPainterScatterChartPNGRender(b *testing.B) {
 	}
 }
 
+func BenchmarkPainterScatterChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputJPG,
+		})
+
+		renderPainterScatter(painter)
+	}
+}
+
 func BenchmarkPainterScatterChartSVGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		painter := NewPainter(PainterOptions{
@@ -240,6 +284,16 @@ func BenchmarkPainterBarChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		painter := NewPainter(PainterOptions{
 			OutputFormat: ChartOutputPNG,
+		})
+
+		renderPainterBar(painter)
+	}
+}
+
+func BenchmarkPainterBarChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputJPG,
 		})
 
 		renderPainterBar(painter)
@@ -295,6 +349,16 @@ func BenchmarkPainterPieChartPNGRender(b *testing.B) {
 	}
 }
 
+func BenchmarkPainterPieChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputJPG,
+		})
+
+		renderPainterPie(painter)
+	}
+}
+
 func BenchmarkPainterPieChartSVGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		painter := NewPainter(PainterOptions{
@@ -337,6 +401,16 @@ func BenchmarkPainterRadarChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		painter := NewPainter(PainterOptions{
 			OutputFormat: ChartOutputPNG,
+		})
+
+		renderPainterRadar(painter)
+	}
+}
+
+func BenchmarkPainterRadarChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputJPG,
 		})
 
 		renderPainterRadar(painter)

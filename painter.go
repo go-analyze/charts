@@ -121,7 +121,9 @@ func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) *Painter {
 		opts.Height = defaultChartHeight
 	}
 	fn := chartdraw.PNG
-	if opts.OutputFormat == ChartOutputSVG {
+	if opts.OutputFormat == ChartOutputJPG {
+		fn = chartdraw.JPG
+	} else if opts.OutputFormat == ChartOutputSVG {
 		fn = chartdraw.SVG
 	}
 

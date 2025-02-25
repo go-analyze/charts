@@ -11,7 +11,7 @@ test-cover:
 
 bench:
 	$(eval CORES_HALF := $(shell expr `getconf _NPROCESSORS_ONLN` / 2))
-	go test -parallel=$(CORES_HALF) --benchmem -benchtime=20s -bench=. -run='^$$' ./...
+	go test -parallel=$(CORES_HALF) --benchmem -benchtime=20s -bench='Benchmark.*Render' -run='^$$'
 
 lint:
 	golangci-lint run --timeout=600s --enable=asasalint,asciicheck,bidichk,containedctx,contextcheck,decorder,durationcheck,errorlint,exptostd,fatcontext,forbidigo,gocheckcompilerdirectives,gochecksumtype,goconst,gofmt,goimports,gosmopolitan,grouper,iface,importas,mirror,misspell,nilerr,nilnil,perfsprint,prealloc,reassign,recvcheck,sloglint,testifylint,unconvert,wastedassign,whitespace

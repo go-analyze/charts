@@ -64,14 +64,19 @@ type ChartOption struct {
 // OptionFunc option function.
 type OptionFunc func(opt *ChartOption)
 
-// SVGOutputOptionFunc set svg type of chart's output.
+// SVGOutputOptionFunc sets svg as the image type for the chart's output.
 func SVGOutputOptionFunc() OptionFunc {
 	return outputFormatOptionFunc(ChartOutputSVG)
 }
 
-// PNGOutputOptionFunc set png type of chart's output.
+// PNGOutputOptionFunc sets png as the image type for the chart's output.
 func PNGOutputOptionFunc() OptionFunc {
 	return outputFormatOptionFunc(ChartOutputPNG)
+}
+
+// JPGOutputOptionFunc sets jpg as the image type for the chart's output.
+func JPGOutputOptionFunc() OptionFunc {
+	return outputFormatOptionFunc(ChartOutputJPG)
 }
 
 // outputFormatOptionFunc set type of chart's output.

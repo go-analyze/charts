@@ -1,7 +1,10 @@
 package charts
 
 import (
+	"bytes"
 	"fmt"
+	"image"
+	"image/color"
 	"math"
 	"strconv"
 	"testing"
@@ -53,6 +56,84 @@ func TestPainterOption(t *testing.T) {
 
 		assert.Equal(t, font, p.font)
 	})
+}
+
+func TestBytesFormat(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		outputFormat string
+		magicStart   []byte
+	}{
+		{
+			outputFormat: ChartOutputPNG,
+			magicStart:   []byte{0x89, 0x50, 0x4E, 0x47},
+		},
+		{
+			outputFormat: ChartOutputJPG,
+			magicStart:   []byte{0xFF, 0xD8},
+		},
+		{
+			outputFormat: ChartOutputSVG,
+			magicStart:   []byte("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 "),
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.outputFormat, func(t *testing.T) {
+			p := NewPainter(PainterOptions{
+				OutputFormat: tc.outputFormat,
+				Width:        200,
+				Height:       100,
+			})
+			err := p.LineChart(makeFullLineChartStackedOption())
+			require.NoError(t, err)
+			content, err := p.Bytes()
+			require.NoError(t, err)
+
+			assert.True(t, bytes.HasPrefix(content, tc.magicStart))
+		})
+	}
+}
+
+func TestBytesCompareRenderedOutputs(t *testing.T) {
+	t.Parallel()
+
+	pngP := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputPNG,
+		Width:        200,
+		Height:       100,
+	})
+	jpgP := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputJPG,
+		Width:        200,
+		Height:       100,
+	})
+	err := pngP.LineChart(makeFullLineChartStackedOption())
+	require.NoError(t, err)
+	err = jpgP.LineChart(makeFullLineChartStackedOption())
+	require.NoError(t, err)
+
+	pngData, err := pngP.Bytes()
+	require.NoError(t, err)
+	jpgData, err := jpgP.Bytes()
+	require.NoError(t, err)
+
+	pngImg, err := decodeImage(pngData)
+	require.NoError(t, err)
+	jpgImg, err := decodeImage(jpgData)
+	require.NoError(t, err)
+
+	assert.Equal(t, color.RGBAModel, pngImg.ColorModel())
+	assert.Equal(t, color.YCbCrModel, jpgImg.ColorModel())
+
+	assert.Equal(t, pngImg.Bounds().Size().X, jpgImg.Bounds().Size().X)
+	assert.Equal(t, pngImg.Bounds().Size().Y, jpgImg.Bounds().Size().Y)
+}
+
+func decodeImage(data []byte) (image.Image, error) {
+	reader := bytes.NewReader(data)
+	img, _, err := image.Decode(reader)
+	return img, err
 }
 
 func TestPainterInternal(t *testing.T) {
@@ -520,6 +601,11 @@ func TestPainterMeasureText(t *testing.T) {
 		Width:        400,
 		Height:       300,
 	})
+	jpgP := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputJPG,
+		Width:        400,
+		Height:       300,
+	})
 	style := FontStyle{
 		FontSize:  12,
 		FontColor: ColorBlack,
@@ -530,6 +616,8 @@ func TestPainterMeasureText(t *testing.T) {
 		svgP.MeasureText("Hello World!", 0, style))
 	assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
 		pngP.MeasureText("Hello World!", 0, style))
+	assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
+		jpgP.MeasureText("Hello World!", 0, style))
 }
 
 func TestPainterTextFit(t *testing.T) {
