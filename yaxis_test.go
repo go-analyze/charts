@@ -7,54 +7,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRightYAxis(t *testing.T) {
+func TestYAxis(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name       string
-		makeOption func() YAxisOption
+		makeOption func() *YAxisOption
 		result     string
 	}{
 		{
 			name: "basic",
-			makeOption: func() YAxisOption {
-				return YAxisOption{
-					Labels: []string{"a", "b", "c", "d"},
-				}
-			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"581\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"581\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"581\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"581\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text></svg>",
-		},
-	}
-
-	for i, tt := range tests {
-		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
-			p := NewPainter(PainterOptions{
-				OutputFormat: ChartOutputSVG,
-				Width:        600,
-				Height:       400,
-			}, PainterThemeOption(GetTheme(ThemeLight)), PainterPaddingOption(NewBoxEqual(10)))
-
-			_, err := newRightYAxis(p, tt.makeOption()).Render()
-			require.NoError(t, err)
-			data, err := p.Bytes()
-			require.NoError(t, err)
-			assertEqualSVG(t, tt.result, data)
-		})
-	}
-}
-
-func TestLeftYAxis(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name       string
-		makeOption func() YAxisOption
-		result     string
-	}{
-		{
-			name: "basic",
-			makeOption: func() YAxisOption {
-				return YAxisOption{
+			makeOption: func() *YAxisOption {
+				return &YAxisOption{
 					Labels: []string{"a", "b", "c", "d"},
 				}
 			},
@@ -62,8 +26,8 @@ func TestLeftYAxis(t *testing.T) {
 		},
 		{
 			name: "font_style",
-			makeOption: func() YAxisOption {
-				return YAxisOption{
+			makeOption: func() *YAxisOption {
+				return &YAxisOption{
 					Labels:    []string{"a", "b", "c"},
 					FontStyle: NewFontStyleWithSize(20),
 				}
@@ -72,8 +36,8 @@ func TestLeftYAxis(t *testing.T) {
 		},
 		{
 			name: "lines",
-			makeOption: func() YAxisOption {
-				return YAxisOption{
+			makeOption: func() *YAxisOption {
+				return &YAxisOption{
 					Labels:        []string{"a", "b", "c", "d"},
 					SplitLineShow: Ptr(true),
 					SpineLineShow: Ptr(true),
@@ -89,13 +53,36 @@ func TestLeftYAxis(t *testing.T) {
 				OutputFormat: ChartOutputSVG,
 				Width:        600,
 				Height:       400,
-			}, PainterThemeOption(GetTheme(ThemeLight)), PainterPaddingOption(NewBoxEqual(10)))
+			}, PainterThemeOption(GetTheme(ThemeLight)),
+				PainterPaddingOption(NewBoxEqual(10)), PainterPaddingOption(Box{Bottom: defaultXAxisHeight}))
 
-			_, err := newLeftYAxis(p, tt.makeOption()).Render()
+			_, err := newAxisPainter(p, tt.makeOption().toAxisOption(p.theme)).Render()
 			require.NoError(t, err)
 			data, err := p.Bytes()
 			require.NoError(t, err)
 			assertEqualSVG(t, tt.result, data)
 		})
 	}
+}
+
+func TestYAxisSplitLineDisabled(t *testing.T) {
+	t.Parallel()
+
+	p := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputSVG,
+		Width:        600,
+		Height:       400,
+	}, PainterPaddingOption(NewBoxEqual(10)), PainterPaddingOption(Box{Bottom: defaultXAxisHeight}))
+	yaxisOpt := &YAxisOption{
+		Position: PositionRight,
+		Labels:   []string{"a", "b", "c", "d"},
+	}
+
+	opt := yaxisOpt.toAxisOption(GetTheme(ThemeLight))
+	opt.splitLineShow = false
+	_, err := newAxisPainter(p, opt).Render()
+	require.NoError(t, err)
+	data, err := p.Bytes()
+	require.NoError(t, err)
+	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"581\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"581\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"581\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"581\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text></svg>", data)
 }

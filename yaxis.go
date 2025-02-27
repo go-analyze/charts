@@ -80,22 +80,3 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 	}
 	return axisOpt
 }
-
-// newLeftYAxis returns a left y-axis renderer.
-func newLeftYAxis(p *Painter, opt YAxisOption) *axisPainter {
-	p = p.Child(PainterPaddingOption(Box{
-		Bottom: defaultXAxisHeight,
-	}))
-	return newAxisPainter(p, opt.toAxisOption(p.theme))
-}
-
-// newRightYAxis returns a right y-axis renderer.
-func newRightYAxis(p *Painter, opt YAxisOption) *axisPainter {
-	p = p.Child(PainterPaddingOption(Box{
-		Bottom: defaultXAxisHeight,
-	}))
-	axisOpt := opt.toAxisOption(p.theme)
-	axisOpt.position = PositionRight
-	axisOpt.splitLineShow = false
-	return newAxisPainter(p, axisOpt)
-}

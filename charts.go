@@ -278,22 +278,29 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 		reverseSlice(yAxisOption.Labels)
 		child := p.Child(PainterPaddingOption(Box{
-			Left:  rangeWidthLeft,
-			Right: rangeWidthRight,
-			IsSet: true,
+			Left:   rangeWidthLeft,
+			Right:  rangeWidthRight,
+			Bottom: defaultXAxisHeight,
+			IsSet:  true,
 		}))
-		var yAxis *axisPainter
-		if index == 0 {
-			yAxis = newLeftYAxis(child, yAxisOption)
-		} else {
-			yAxis = newRightYAxis(child, yAxisOption)
+		if yAxisOption.Position == "" {
+			if index == 0 {
+				yAxisOption.Position = PositionLeft
+			} else {
+				yAxisOption.Position = PositionRight
+			}
 		}
+		axisOpt := yAxisOption.toAxisOption(p.theme)
+		if index != 0 {
+			axisOpt.splitLineShow = false // only show split lines on primary index axis
+		}
+		yAxis := newAxisPainter(child, axisOpt)
 		if yAxisBox, err := yAxis.Render(); err != nil {
 			return nil, err
-		} else if index == 0 {
-			rangeWidthLeft += yAxisBox.Width()
-		} else {
+		} else if (yAxisOption.Position == "" && index == 1) || yAxisOption.Position == PositionRight {
 			rangeWidthRight += yAxisBox.Width()
+		} else {
+			rangeWidthLeft += yAxisBox.Width()
 		}
 	}
 
