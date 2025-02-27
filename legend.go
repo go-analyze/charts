@@ -64,13 +64,7 @@ func (l *legendPainter) Render() (Box, error) {
 	if theme == nil {
 		theme = getPreferredTheme(l.p.theme)
 	}
-	fontStyle := opt.FontStyle
-	if fontStyle.FontSize == 0 {
-		fontStyle.FontSize = defaultFontSize
-	}
-	if fontStyle.FontColor.IsZero() {
-		fontStyle.FontColor = theme.GetLegendTextColor()
-	}
+	fontStyle := fillFontStyleDefaults(opt.FontStyle, defaultFontSize, theme.GetLegendTextColor())
 	vertical := flagIs(true, opt.Vertical)
 	offset := opt.Offset
 	if offset.Left == "" {

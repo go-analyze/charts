@@ -3,6 +3,8 @@ package charts
 import (
 	"strconv"
 
+	"github.com/golang/freetype/truetype"
+
 	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
@@ -37,6 +39,19 @@ func NewFontStyleWithSize(size float64) FontStyle {
 	return FontStyle{
 		FontSize: size,
 	}
+}
+
+func fillFontStyleDefaults(fs FontStyle, defaultSize float64, defaultColor Color, fontOptions ...*truetype.Font) FontStyle {
+	if fs.FontSize == 0 {
+		fs.FontSize = defaultSize
+	}
+	if fs.FontColor.IsZero() {
+		fs.FontColor = defaultColor
+	}
+	if fs.Font == nil {
+		fs.Font = getPreferredFont(fontOptions...)
+	}
+	return fs
 }
 
 // OffsetInt provides an ability to configure a shift from the top or left alignments.

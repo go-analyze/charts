@@ -170,7 +170,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 	}
 	fontStyle := opt.FontStyle
 	if fontStyle.FontSize <= 0 {
-		fontStyle.FontSize = 12
+		fontStyle.FontSize = defaultFontSize
 	}
 	if fontStyle.FontColor.IsZero() {
 		if opt.Theme.IsDark() {

@@ -186,7 +186,7 @@ func TestAxis(t *testing.T) {
 			optionFactory: func() axisOption {
 				return axisOption{
 					labels: letterLabels,
-					fontStyle: FontStyle{
+					labelFontStyle: FontStyle{
 						FontSize:  40.0,
 						FontColor: ColorBlue,
 					},

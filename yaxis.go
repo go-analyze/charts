@@ -5,6 +5,10 @@ type YAxisOption struct {
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
+	// Title specifies a name for the axis, if specified the axis name is rendered on the outside of the Y-Axis.
+	Title string
+	// TitleFontStyle provides the font, size, and color for the axis title.
+	TitleFontStyle FontStyle
 	// Min, if set this will force the minimum value of y-axis.
 	Min *float64
 	// Max, if set this will force the maximum value of y-axis.
@@ -15,8 +19,10 @@ type YAxisOption struct {
 	Labels []string
 	// Position describes the position of y-axis, it can be 'left' or 'right'.
 	Position string
-	// FontStyle specifies the font configuration for each label.
+	// Deprecated: FontStyle is deprecated, use LabelFontStyle.
 	FontStyle FontStyle
+	// LabelFontStyle specifies the font configuration for each label.
+	LabelFontStyle FontStyle
 	// Formatter for replacing y-axis text values.
 	Formatter string
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
@@ -44,15 +50,23 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		position = PositionRight
 	}
 	theme := getPreferredTheme(opt.Theme, fallbackTheme)
-	if opt.FontStyle.FontColor.IsZero() {
-		opt.FontStyle.FontColor = theme.GetYAxisTextColor()
+	if opt.LabelFontStyle.IsZero() {
+		opt.LabelFontStyle = opt.FontStyle
+	}
+	if opt.LabelFontStyle.FontColor.IsZero() {
+		opt.LabelFontStyle.FontColor = theme.GetYAxisTextColor()
+	}
+	if opt.TitleFontStyle.FontColor.IsZero() {
+		opt.TitleFontStyle.FontColor = opt.LabelFontStyle.FontColor
 	}
 	axisOpt := axisOption{
 		show:                 opt.Show,
+		title:                opt.Title,
+		titleFontStyle:       opt.TitleFontStyle,
 		labels:               opt.Labels,
 		formatter:            opt.Formatter,
 		position:             position,
-		fontStyle:            opt.FontStyle,
+		labelFontStyle:       opt.LabelFontStyle,
 		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
 		axisColor:            theme.GetYAxisStrokeColor(),
 		strokeWidth:          -1,

@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 
 	"github.com/go-analyze/charts"
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 /*
@@ -46,10 +45,10 @@ func main() {
 	dataLabels := []string{"A", "B", "C"}
 	opt := charts.LineChartOption{
 		Padding: charts.Box{
-			Top:    20,
+			Top:    10,
 			Right:  40,
-			Left:   25,
-			Bottom: 20,
+			Left:   10,
+			Bottom: 10,
 		},
 		SeriesList:  seriesList,
 		StackSeries: charts.Ptr(true),
@@ -64,8 +63,13 @@ func main() {
 		},
 		YAxis: []charts.YAxisOption{
 			{
+				Title: "A+B+C Sum",
+				TitleFontStyle: charts.FontStyle{
+					FontSize:  12,
+					FontColor: charts.ColorBlack,
+				},
 				Labels: dataLabels,
-				FontStyle: charts.FontStyle{
+				LabelFontStyle: charts.FontStyle{
 					FontSize:  8,
 					FontColor: charts.ColorBlack,
 					Font:      charts.GetDefaultFont(),
@@ -82,11 +86,6 @@ func main() {
 	if err := p.LineChart(opt); err != nil {
 		panic(err)
 	}
-	p.Text("A+B+C Sum", 20, 240, chartdraw.DegreesToRadians(270), charts.FontStyle{
-		FontSize:  12,
-		FontColor: charts.ColorBlack,
-		Font:      charts.GetDefaultFont(),
-	})
 
 	if buf, err := p.Bytes(); err != nil {
 		panic(err)

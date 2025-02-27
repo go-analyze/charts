@@ -193,8 +193,13 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		axisIndexList[i] = i
 	}
 	reverseSlice(axisIndexList)
-	// the height needs to be subtracted from the height of the x-axis
-	rangeHeight := p.Height() - defaultXAxisHeight
+	var xAxisTitleHeight int
+	if opt.xAxis.Title != "" {
+		titleBox := p.MeasureText(opt.xAxis.Title, 0, opt.xAxis.TitleFontStyle)
+		xAxisTitleHeight = titleBox.Height()
+	}
+	// the height needs to be subtracted from the height of the x-axis (and title if present)
+	rangeHeight := p.Height() - defaultXAxisHeight - xAxisTitleHeight
 	var rangeWidthLeft, rangeWidthRight int
 
 	// calculate the axis range
@@ -280,7 +285,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		child := p.Child(PainterPaddingOption(Box{
 			Left:   rangeWidthLeft,
 			Right:  rangeWidthRight,
-			Bottom: defaultXAxisHeight,
+			Bottom: xAxisTitleHeight + defaultXAxisHeight,
 			IsSet:  true,
 		}))
 		if yAxisOption.Position == "" {

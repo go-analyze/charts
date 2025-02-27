@@ -2,6 +2,7 @@ package chartdraw
 
 import (
 	"fmt"
+	"math"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
@@ -75,6 +76,11 @@ type FontStyle struct {
 	FontSize  float64
 	FontColor drawing.Color
 	Font      *truetype.Font
+}
+
+// IsZero returns if the font style is set or not.
+func (s FontStyle) IsZero() bool {
+	return s.FontSize <= math.SmallestNonzeroFloat64 && s.Font == nil && s.FontColor.IsZero()
 }
 
 // IsZero returns if the object is set or not.

@@ -71,26 +71,9 @@ func (t *titlePainter) Render() (Box, error) {
 		theme = getPreferredTheme(p.theme)
 	}
 
-	fontStyle := opt.FontStyle
-	if fontStyle.Font == nil {
-		fontStyle.Font = GetDefaultFont()
-	}
-	if fontStyle.FontColor.IsZero() {
-		fontStyle.FontColor = theme.GetTitleTextColor()
-	}
-	if fontStyle.FontSize == 0 {
-		fontStyle.FontSize = defaultFontSize
-	}
-	subtextFontStyle := opt.SubtextFontStyle
-	if subtextFontStyle.Font == nil {
-		subtextFontStyle.Font = fontStyle.Font
-	}
-	if subtextFontStyle.FontColor.IsZero() {
-		subtextFontStyle.FontColor = fontStyle.FontColor
-	}
-	if subtextFontStyle.FontSize == 0 {
-		subtextFontStyle.FontSize = fontStyle.FontSize
-	}
+	fontStyle := fillFontStyleDefaults(opt.FontStyle, defaultFontSize, theme.GetTitleTextColor())
+	subtextFontStyle := fillFontStyleDefaults(opt.SubtextFontStyle,
+		fontStyle.FontSize, fontStyle.FontColor, fontStyle.Font)
 
 	mainSplit := splitTitleText(opt.Text)
 	subSplit := splitTitleText(opt.Subtext)
