@@ -314,14 +314,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		Right: rangeWidthRight,
 		IsSet: true,
 	})), *opt.xAxis)
-	if _, err := xAxis.Render(); err != nil {
+	xAxisBox, err := xAxis.Render()
+	if err != nil {
 		return nil, err
 	}
 
 	result.seriesPainter = p.Child(PainterPaddingOption(Box{
 		Left:   rangeWidthLeft,
 		Right:  rangeWidthRight,
-		Bottom: defaultXAxisHeight,
+		Bottom: xAxisBox.Bottom,
 		IsSet:  true,
 	}))
 	return &result, nil

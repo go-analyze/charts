@@ -117,7 +117,6 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 
 	// Measure and render the axis title to shift the axis
-	var titleShift int
 	if opt.title != "" {
 		opt.titleFontStyle = fillFontStyleDefaults(opt.titleFontStyle, defaultFontSize,
 			opt.labelFontStyle.FontColor, opt.titleFontStyle.Font, top.font)
@@ -130,20 +129,20 @@ func (a *axisPainter) Render() (Box, error) {
 			titleBox := top.MeasureText(opt.title, titleRotation, opt.titleFontStyle)
 			titleX = 16
 			titleY = (top.Height() / 2) + (titleBox.Height() / 2)
-			titleShift = titleBox.Width() + 8
+			titleShift := titleBox.Width() + 8
 			padding.Right -= titleShift
 		case PositionRight:
 			titleRotation = DegreesToRadians(90)
 			titleBox := top.MeasureText(opt.title, titleRotation, opt.titleFontStyle)
 			titleX = top.Width() - 16
 			titleY = (top.Height() / 2) - (titleBox.Height() / 2)
-			titleShift = titleBox.Width() + 8
+			titleShift := titleBox.Width() + 8
 			padding.Left -= titleShift
 		default: // horizontal top / bottom
 			titleBox := top.MeasureText(opt.title, titleRotation, opt.titleFontStyle)
 			titleX = (top.Width() / 2) - (titleBox.Width() / 2)
 			titleY = top.Height() - 2
-			titleShift = titleBox.Height()
+			titleShift := titleBox.Height()
 			padding.Top -= titleShift
 		}
 
@@ -318,15 +317,9 @@ func (a *axisPainter) Render() (Box, error) {
 		}
 	}
 
-	// we need to adjust the dimensions for the title here, adjusting earlier would change the axis draw box
-	if isVertical {
-		width += titleShift
-	} else {
-		height += titleShift
-	}
 	return Box{
-		Bottom: height,
-		Right:  width,
+		Bottom: p.Height(),
+		Right:  p.Width(),
 		IsSet:  true,
 	}, nil
 }
