@@ -24,7 +24,7 @@ func makeBasicBarChartOption() BarChartOption {
 		},
 		YAxis: []YAxisOption{
 			{
-				Labels: []string{"Rainfall", "Evaporation"},
+				Show: Ptr(true),
 			},
 		},
 	}
@@ -54,7 +54,6 @@ func makeFullBarChartStackedOption() BarChartOption {
 		},
 		MarkPoint: NewMarkPoint("max"),
 	})
-	dataLabels := []string{"A", "B", "C"}
 	return BarChartOption{
 		Padding:     NewBoxEqual(20),
 		SeriesList:  seriesList,
@@ -63,13 +62,12 @@ func makeFullBarChartStackedOption() BarChartOption {
 			Labels: []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 		},
 		Legend: LegendOption{
-			SeriesNames: dataLabels,
+			SeriesNames: []string{"A", "B", "C"},
 			Symbol:      SymbolDot,
 		},
 		YAxis: []YAxisOption{
 			{
 				RangeValuePaddingScale: Ptr(1.0),
-				Labels:                 dataLabels,
 			},
 		},
 	}

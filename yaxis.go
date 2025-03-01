@@ -34,7 +34,6 @@ type YAxisOption struct {
 	LabelCountAdjustment int
 	// LabelSkipCount specifies a number of lines between labels where there will be no label and instead just a horizontal line.
 	LabelSkipCount int
-	isCategoryAxis bool
 	// SplitLineShow for showing axis split line, set this to true to show the horizontal axis split lines.
 	SplitLineShow *bool
 	// SpineLineShow can be set to enforce if the vertical spine on the axis should be shown or not.
@@ -42,6 +41,7 @@ type YAxisOption struct {
 	SpineLineShow *bool
 	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
+	isCategoryAxis bool
 }
 
 func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {

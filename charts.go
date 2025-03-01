@@ -271,7 +271,16 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			yAxisOption.Theme = opt.theme
 		}
 		if !opt.axisReversed {
-			yAxisOption.Labels = r.Values()
+			if len(yAxisOption.Labels) == 0 {
+				yAxisOption.Labels = r.Values()
+			} else {
+				for i, autoValue := range r.Values() {
+					if i < len(yAxisOption.Labels) {
+						continue
+					}
+					yAxisOption.Labels = append(yAxisOption.Labels, autoValue)
+				}
+			}
 		} else {
 			yAxisOption.isCategoryAxis = true
 			// we need to update the range labels or the bars won't be aligned to the Y axis

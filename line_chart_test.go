@@ -94,7 +94,6 @@ func makeFullLineChartStackedOption() LineChartOption {
 		},
 		MarkPoint: NewMarkPoint("min", "max"),
 	})
-	dataLabels := []string{"A", "B", "C"}
 	return LineChartOption{
 		Padding:     NewBoxEqual(20),
 		SeriesList:  seriesList,
@@ -104,13 +103,12 @@ func makeFullLineChartStackedOption() LineChartOption {
 			BoundaryGap: Ptr(true),
 		},
 		Legend: LegendOption{
-			SeriesNames: dataLabels,
+			SeriesNames: []string{"A", "B", "C"},
 			Symbol:      SymbolDot,
 		},
 		YAxis: []YAxisOption{
 			{
 				RangeValuePaddingScale: Ptr(1.0),
-				Labels:                 dataLabels,
 			},
 		},
 	}
