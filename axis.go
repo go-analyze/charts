@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+const minimumAxisLabels = 2 // 2 labels so range is fully shown
+
 type axisPainter struct {
 	p   *Painter
 	opt *axisOption
@@ -200,6 +202,9 @@ func (a *axisPainter) Render() (Box, error) {
 		} else {
 			maxLabelCount = (top.Width() / (textMaxWidth + 10)) - 1
 		}
+		if maxLabelCount < minimumAxisLabels {
+			maxLabelCount = minimumAxisLabels // required to prevent infinite loop if less than zero
+		}
 		if opt.unit > 0 {
 			multiplier := 1.0
 			for {
@@ -211,6 +216,7 @@ func (a *axisPainter) Render() (Box, error) {
 				}
 			}
 		} else {
+			// TODO - check if a small adjustment allows for a better unit
 			labelCount = maxLabelCount
 		}
 	}
@@ -218,8 +224,8 @@ func (a *axisPainter) Render() (Box, error) {
 		labelCount = dataCount
 	}
 	labelCount += opt.labelCountAdjustment
-	if labelCount < 2 {
-		labelCount = 2
+	if labelCount < minimumAxisLabels {
+		labelCount = minimumAxisLabels
 	}
 
 	centerLabels := true
