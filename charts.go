@@ -193,13 +193,22 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		axisIndexList[i] = i
 	}
 	reverseSlice(axisIndexList)
-	var xAxisTitleHeight int
-	if opt.xAxis.Title != "" {
-		titleBox := p.MeasureText(opt.xAxis.Title, 0, opt.xAxis.TitleFontStyle)
-		xAxisTitleHeight = titleBox.Height()
+	// render the x-axis early to determine the height it will occupy
+	// we will need to render it again once we know the space the y-axis will occupy
+	xAxisBox, err := newBottomXAxis(NewPainter(PainterOptions{
+		OutputFormat: p.outputFormat,
+		Width:        p.Width(),
+		Height:       p.Height(),
+		Theme:        p.theme,
+		Font:         p.font,
+	}), *opt.xAxis).Render()
+	if err != nil {
+		return nil, err
 	}
+	xAxisHeight := xAxisBox.Height() + 2 // TODO - the + 2 is a hack, not clear why the yaxis and axis don't naturally align without it
+
 	// the height needs to be subtracted from the height of the x-axis (and title if present)
-	rangeHeight := p.Height() - defaultXAxisHeight - xAxisTitleHeight
+	rangeHeight := p.Height() - xAxisHeight
 	var rangeWidthLeft, rangeWidthRight int
 
 	// calculate the axis range
@@ -294,7 +303,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		child := p.Child(PainterPaddingOption(Box{
 			Left:   rangeWidthLeft,
 			Right:  rangeWidthRight,
-			Bottom: xAxisTitleHeight + defaultXAxisHeight,
+			Bottom: xAxisHeight,
 			IsSet:  true,
 		}))
 		if yAxisOption.Position == "" {
@@ -318,12 +327,11 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		}
 	}
 
-	xAxis := newBottomXAxis(p.Child(PainterPaddingOption(Box{
+	_, err = newBottomXAxis(p.Child(PainterPaddingOption(Box{
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
 		IsSet: true,
-	})), *opt.xAxis)
-	xAxisBox, err := xAxis.Render()
+	})), *opt.xAxis).Render()
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +339,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	result.seriesPainter = p.Child(PainterPaddingOption(Box{
 		Left:   rangeWidthLeft,
 		Right:  rangeWidthRight,
-		Bottom: xAxisBox.Bottom,
+		Bottom: xAxisHeight,
 		IsSet:  true,
 	}))
 	return &result, nil

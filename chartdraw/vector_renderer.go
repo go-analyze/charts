@@ -120,8 +120,8 @@ func (vr *vectorRenderer) ArcTo(cx, cy int, rx, ry, startAngle, delta float64) {
 	startAngle = RadianAdd(startAngle, _pi2)
 	endAngle := RadianAdd(startAngle, delta)
 
-	startx := cx + int(rx*math.Sin(startAngle))
-	starty := cy - int(ry*math.Cos(startAngle))
+	startx := cx + int(math.Round(rx*math.Sin(startAngle)))
+	starty := cy - int(math.Round(ry*math.Cos(startAngle)))
 
 	if len(vr.p) > 0 {
 		vr.LineTo(startx, starty)
@@ -129,8 +129,8 @@ func (vr *vectorRenderer) ArcTo(cx, cy int, rx, ry, startAngle, delta float64) {
 		vr.MoveTo(startx, starty)
 	}
 
-	endx := cx + int(rx*math.Sin(endAngle))
-	endy := cy - int(ry*math.Cos(endAngle))
+	endx := cx + int(math.Round(rx*math.Sin(endAngle)))
+	endy := cy - int(math.Round(ry*math.Cos(endAngle)))
 
 	dd := RadiansToDegrees(delta)
 
@@ -139,7 +139,8 @@ func (vr *vectorRenderer) ArcTo(cx, cy int, rx, ry, startAngle, delta float64) {
 		largeArcFlag = 1
 	}
 
-	vr.p = append(vr.p, fmt.Sprintf("A %d %d %0.2f %d 1 %d %d", int(rx), int(ry), dd, largeArcFlag, endx, endy))
+	vr.p = append(vr.p, fmt.Sprintf("A %d %d %0.2f %d 1 %d %d",
+		int(math.Round(rx)), int(math.Round(ry)), dd, largeArcFlag, endx, endy))
 }
 
 // Close closes a shape.
@@ -170,7 +171,7 @@ func (vr *vectorRenderer) drawPath() {
 
 // Circle implements the interface method.
 func (vr *vectorRenderer) Circle(radius float64, x, y int) {
-	vr.c.Circle(x, y, int(radius), vr.s.GetFillAndStrokeOptions())
+	vr.c.Circle(x, y, int(math.Round(radius)), vr.s.GetFillAndStrokeOptions())
 }
 
 // SetFont implements the interface method.
@@ -210,7 +211,7 @@ func (vr *vectorRenderer) MeasureText(body string) (box Box) {
 		}
 
 		box.Right = font.MeasureString(vr.face, body).Ceil()
-		box.Bottom = int(drawing.PointsToPixels(vr.c.dpi, vr.s.FontSize))
+		box.Bottom = int(math.Ceil(drawing.PointsToPixels(vr.c.dpi, vr.s.FontSize)))
 		box.IsSet = true
 		if vr.c.textTheta == nil {
 			return

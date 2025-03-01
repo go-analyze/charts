@@ -22,7 +22,7 @@ func TestAxis(t *testing.T) {
 		result        string
 	}{
 		{
-			name:       "x-axis_bottom",
+			name:       "x-axis",
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
@@ -35,7 +35,7 @@ func TestAxis(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 50 325\nL 50 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 121 325\nL 121 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 192 325\nL 192 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 264 325\nL 264 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 335 325\nL 335 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 407 325\nL 407 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 478 325\nL 478 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 550 325\nL 550 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 50 320\nL 550 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"62\" y=\"353\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\">Mon</text><text x=\"136\" y=\"353\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\">Tue</text><text x=\"205\" y=\"353\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\">Wed</text><text x=\"279\" y=\"353\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\">Thu</text><text x=\"358\" y=\"353\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\">Fri</text><text x=\"425\" y=\"353\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\">Sat</text><text x=\"494\" y=\"353\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\">Sun</text></svg>",
 		},
 		{
-			name:       "x-axis_bottom_rotation45",
+			name:       "x-axis_rotation45",
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
@@ -49,7 +49,7 @@ func TestAxis(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 50 325\nL 50 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 121 325\nL 121 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 192 325\nL 192 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 264 325\nL 264 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 335 325\nL 335 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 407 325\nL 407 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 478 325\nL 478 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 550 325\nL 550 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 50 320\nL 550 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"61\" y=\"346\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,61,346)\">Mon</text><text x=\"135\" y=\"346\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,135,346)\">Tue</text><text x=\"204\" y=\"346\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,204,346)\">Wed</text><text x=\"278\" y=\"346\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,278,346)\">Thu</text><text x=\"354\" y=\"346\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,354,346)\">Fri</text><text x=\"423\" y=\"346\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,423,346)\">Sat</text><text x=\"493\" y=\"346\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,493,346)\">Sun</text></svg>",
 		},
 		{
-			name:       "x-axis_bottom_rotation90",
+			name:       "x-axis_rotation90",
 			padPainter: true,
 			optionFactory: func() axisOption {
 				opt := XAxisOption{
@@ -63,37 +63,7 @@ func TestAxis(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 50 325\nL 50 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 121 325\nL 121 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 192 325\nL 192 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 264 325\nL 264 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 335 325\nL 335 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 407 325\nL 407 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 478 325\nL 478 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 550 325\nL 550 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 50 320\nL 550 320\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"74\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,74,330)\">Mon</text><text x=\"145\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,145,330)\">Tue</text><text x=\"217\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,217,330)\">Wed</text><text x=\"288\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,288,330)\">Thu</text><text x=\"360\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,360,330)\">Fri</text><text x=\"431\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,431,330)\">Sat</text><text x=\"503\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,503,330)\">Sun</text></svg>",
 		},
 		{
-			name:       "x-axis_top_rotation45",
-			padPainter: true,
-			optionFactory: func() axisOption {
-				opt := XAxisOption{
-					Labels:        dayLabels,
-					BoundaryGap:   Ptr(true),
-					FontStyle:     NewFontStyleWithSize(18),
-					Position:      PositionTop,
-					LabelRotation: DegreesToRadians(45),
-				}
-				return opt.toAxisOption(nil)
-			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 50 314\nL 50 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 121 314\nL 121 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 192 314\nL 192 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 264 314\nL 264 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 335 314\nL 335 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 407 314\nL 407 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 478 314\nL 478 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 550 314\nL 550 309\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 50 314\nL 550 314\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"61\" y=\"281\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,61,281)\">Mon</text><text x=\"135\" y=\"281\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,135,281)\">Tue</text><text x=\"204\" y=\"281\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,204,281)\">Wed</text><text x=\"278\" y=\"281\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,278,281)\">Thu</text><text x=\"354\" y=\"281\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,354,281)\">Fri</text><text x=\"423\" y=\"281\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,423,281)\">Sat</text><text x=\"493\" y=\"281\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(45.00,493,281)\">Sun</text></svg>",
-		},
-		{
-			name:       "x-axis_top_rotation90",
-			padPainter: true,
-			optionFactory: func() axisOption {
-				opt := XAxisOption{
-					Labels:        dayLabels,
-					BoundaryGap:   Ptr(true),
-					FontStyle:     NewFontStyleWithSize(18),
-					Position:      PositionTop,
-					LabelRotation: DegreesToRadians(90),
-				}
-				return opt.toAxisOption(nil)
-			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 50 316\nL 50 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 121 316\nL 121 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 192 316\nL 192 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 264 316\nL 264 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 335 316\nL 335 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 407 316\nL 407 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 478 316\nL 478 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 550 316\nL 550 311\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 50 316\nL 550 316\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"74\" y=\"269\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,74,269)\">Mon</text><text x=\"145\" y=\"269\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,145,269)\">Tue</text><text x=\"217\" y=\"269\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,217,269)\">Wed</text><text x=\"288\" y=\"269\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,288,269)\">Thu</text><text x=\"360\" y=\"269\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,360,269)\">Fri</text><text x=\"431\" y=\"269\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,431,269)\">Sat</text><text x=\"503\" y=\"269\" style=\"stroke:none;fill:rgb(70,70,70);font-size:23px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,503,269)\">Sun</text></svg>",
-		},
-		{
-			name: "x-axis_bottom_splitline",
+			name: "x-axis_splitline",
 			optionFactory: func() axisOption {
 				return axisOption{
 					labels:        dayLabels,
@@ -103,7 +73,7 @@ func TestAxis(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 375\nL 0 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 85 375\nL 85 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 171 375\nL 171 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 257 375\nL 257 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 342 375\nL 342 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 428 375\nL 428 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 514 375\nL 514 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 600 375\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 0 370\nL 600 370\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"27\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Mon</text><text x=\"115\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Tue</text><text x=\"199\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Wed</text><text x=\"286\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Thu</text><text x=\"376\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Fri</text><text x=\"460\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sat</text><text x=\"544\" y=\"395\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sun</text><path  d=\"M 85 0\nL 85 370\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 171 0\nL 171 370\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 257 0\nL 257 370\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 342 0\nL 342 370\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 428 0\nL 428 370\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 514 0\nL 514 370\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 600 0\nL 600 370\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
-			name: "x-axis_bottom_left",
+			name: "x-axis_left",
 			optionFactory: func() axisOption {
 				return axisOption{
 					labels:      dayLabels,

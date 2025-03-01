@@ -75,7 +75,7 @@ func TestYAxis(t *testing.T) {
 				Width:        600,
 				Height:       400,
 			}, PainterThemeOption(GetTheme(ThemeLight)),
-				PainterPaddingOption(NewBoxEqual(10)), PainterPaddingOption(Box{Bottom: defaultXAxisHeight}))
+				PainterPaddingOption(NewBoxEqual(10)))
 
 			_, err := newAxisPainter(p, tt.makeOption().toAxisOption(p.theme)).Render()
 			require.NoError(t, err)
@@ -93,7 +93,7 @@ func TestYAxisSplitLineDisabled(t *testing.T) {
 		OutputFormat: ChartOutputSVG,
 		Width:        600,
 		Height:       400,
-	}, PainterPaddingOption(NewBoxEqual(10)), PainterPaddingOption(Box{Bottom: defaultXAxisHeight}))
+	}, PainterPaddingOption(NewBoxEqual(10)))
 	yaxisOpt := &YAxisOption{
 		Position: PositionRight,
 		Labels:   []string{"a", "b", "c", "d"},

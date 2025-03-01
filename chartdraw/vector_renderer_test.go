@@ -45,7 +45,7 @@ func TestVectorRendererMeasureText(t *testing.T) {
 
 	tb := vr.MeasureText("Ljp")
 	assert.Equal(t, 21, tb.Width())
-	assert.Equal(t, 15, tb.Height())
+	assert.Equal(t, 16, tb.Height())
 }
 
 func TestCanvasStyleSVG(t *testing.T) {
