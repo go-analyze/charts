@@ -151,10 +151,11 @@ func (p *Painter) setOptions(opts ...PainterOptionFunc) {
 // Child returns a painter with the passed-in options applied to it. Useful when you want to render relative to only a portion of the canvas via PainterBoxOption.
 func (p *Painter) Child(opt ...PainterOptionFunc) *Painter {
 	child := &Painter{
-		render: p.render,
-		box:    p.box.Clone(),
-		theme:  p.theme,
-		font:   p.font,
+		outputFormat: p.outputFormat,
+		render:       p.render,
+		box:          p.box.Clone(),
+		theme:        p.theme,
+		font:         p.font,
 	}
 	child.setOptions(opt...)
 	return child
