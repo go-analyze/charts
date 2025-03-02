@@ -4,8 +4,9 @@ import (
 	"strings"
 )
 
-const minimumAxisLabels = 2 // 2 labels so range is fully shown
 const axisMargin = 4
+const minimumAxisLabels = 2            // 2 labels so range is fully shown
+const minimumHorizontalAxisHeight = 24 // too small looks too crowded to the chart data, notable for horizontal bar charts
 
 type axisPainter struct {
 	p   *Painter
@@ -100,17 +101,13 @@ func (a *axisPainter) Render() (Box, error) {
 	// Basic measurements for ticks + labels
 	tickLength := getDefaultInt(opt.tickLength, 5)
 	labelMargin := getDefaultInt(opt.labelMargin, 5)
-	if !isVertical {
-		labelMargin += textMaxHeight // add height to move label past line
-	}
-
-	// Compute needed dimension for axis line + ticks + label margin
 	var axisNeededWidth, axisNeededHeight int
 	if isVertical {
 		axisNeededWidth = labelMargin + textMaxWidth + axisMargin
 		axisNeededHeight = top.Height()
 	} else {
 		axisNeededWidth = top.Width()
+		labelMargin += textMaxHeight // add height to move label past line
 		axisNeededHeight = labelMargin + axisMargin
 	}
 
@@ -130,6 +127,9 @@ func (a *axisPainter) Render() (Box, error) {
 		} else {
 			axisNeededHeight += titleShift
 		}
+	}
+	if !isVertical && axisNeededHeight < minimumHorizontalAxisHeight {
+		axisNeededHeight = minimumHorizontalAxisHeight
 	}
 
 	// Build a Box to reduce the parent's painter area, so that
@@ -153,21 +153,21 @@ func (a *axisPainter) Render() (Box, error) {
 	if opt.title != "" {
 		switch opt.position {
 		case PositionLeft:
-			cx := child.Height() / 2
-			xTitle := titleShift / 2 // No margin adjustment on this one for some reason
-			yTitle := cx + (titleBox.Width() / 2)
+			cx := child.Height() >> 1
+			xTitle := titleShift >> 1 // No margin adjustment on this one for some reason
+			yTitle := cx + (titleBox.Width() >> 1)
 			child.Text(opt.title, xTitle, yTitle, DegreesToRadians(270), opt.titleFontStyle)
 		case PositionRight:
-			cx := child.Height() / 2
-			xTitle := child.Width() - (titleShift / 2) - axisMargin
-			yTitle := cx - (titleBox.Width() / 2)
+			cx := child.Height() >> 1
+			xTitle := child.Width() - (titleShift >> 1) - axisMargin
+			yTitle := cx - (titleBox.Width() >> 1)
 			child.Text(opt.title, xTitle, yTitle, DegreesToRadians(90), opt.titleFontStyle)
 		case PositionTop:
-			xTitle := (child.Width() - titleBox.Width()) / 2
-			yTitle := titleShift / 2
+			xTitle := (child.Width() - titleBox.Width()) >> 1
+			yTitle := titleShift >> 1
 			child.Text(opt.title, xTitle, yTitle, 0, opt.titleFontStyle)
 		default: // PositionBottom
-			xTitle := (child.Width() - titleBox.Width()) / 2
+			xTitle := (child.Width() - titleBox.Width()) >> 1
 			yTitle := child.Height() - axisMargin
 			child.Text(opt.title, xTitle, yTitle, 0, opt.titleFontStyle)
 		}
@@ -289,8 +289,12 @@ func (a *axisPainter) Render() (Box, error) {
 	case PositionLeft:
 		// Place labels to the left, so we leave margin on the right
 		labelPadding.Right = tickLength + labelMargin
+		labelPadding.Top = -2 // TODO - it's unclear why this adjustment is needed for vertical to position labels right
+		labelPadding.Bottom = 4
 	case PositionRight:
 		labelPadding.Left = tickLength + labelMargin
+		labelPadding.Top = -2
+		labelPadding.Bottom = 4
 	case PositionTop:
 		labelPadding.Bottom = tickLength + labelMargin
 	default: // PositionBottom

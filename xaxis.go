@@ -80,6 +80,7 @@ func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		axisOpt.splitLineShow = true
 		axisOpt.strokeWidth = -1
 		axisOpt.boundaryGap = Ptr(false)
+		axisOpt.labelMargin = 2
 	}
 	return axisOpt
 }
