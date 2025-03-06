@@ -1071,6 +1071,12 @@ func (p *Painter) RadarChart(opt RadarChartOption) error {
 	return err
 }
 
+// HeatMapChart renders a heat map with the provided configuration to the painter.
+func (p *Painter) HeatMapChart(opt HeatMapOption) error {
+	_, err := newHeatMapChart(p, opt).Render()
+	return err
+}
+
 // TableChart renders a table with the provided configuration to the painter.
 func (p *Painter) TableChart(opt TableChartOption) error {
 	_, err := newTableChart(p, opt).Render()

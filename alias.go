@@ -126,6 +126,7 @@ const (
 	ChartTypeRadar         = "radar"
 	ChartTypeFunnel        = "funnel"
 	ChartTypeHorizontalBar = "horizontalBar"
+	ChartTypeHeatMap       = "heatMap"
 )
 
 const (
