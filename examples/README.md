@@ -16,6 +16,7 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [bar_chart-4-mark](./1-Painter/bar_chart-4-mark) - Bar chart with included mark points and mark lines.
 * [bar_chart-5-stacked](./1-Painter/bar_chart-5-stacked) - A bar chart with "Stacked" series enabled, collapsing the bars into a single layered bar.
 * [funnel_chart-1-basic](./1-Painter/funnel_chart-1-basic) - Basic funnel chart.
+* [heat_map_chart-1-basic](./1-Painter/heat_map_chart-1-basic) - Basic heat map chart.
 * [horizontal_bar_chart-1-basic](./1-Painter/horizontal_bar_chart-1-basic) - Basic horizontal bar chart.
 * [horizontal_bar_chart-2-size_margin](./1-Painter/horizontal_bar_chart-2-size_margin) - Showing the visual impact of different bar sizes and margins.
 * [horizontal_bar_chart-3-mark](./1-Painter/horizontal_bar_chart-3-mark) - Horizontal bar chart with included mark lines.
