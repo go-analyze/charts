@@ -152,8 +152,7 @@ func (a *axisPainter) Render() (Box, error) {
 	}
 	child := top.Child(PainterPaddingOption(padding))
 
-	// If we have a title, draw it onto the child painter.
-	// We'll place it in the correct spot relative to the axis line.
+	// If we have a title, draw it onto the child painter
 	if opt.title != "" {
 		switch opt.position {
 		case PositionLeft:
@@ -177,7 +176,7 @@ func (a *axisPainter) Render() (Box, error) {
 		}
 	}
 
-	// Draw the main axis line at whichever edge is "touching" the chart region
+	// Draw the main axis line at whichever edge is touching the chart region
 	if strokeWidth > 0 {
 		var x0, y0, x1, y1 int
 		switch opt.position {
@@ -200,7 +199,7 @@ func (a *axisPainter) Render() (Box, error) {
 		}, opt.axisColor, strokeWidth)
 	}
 
-	// Decide how many of the labels to draw (labelCount + logic for skipping, etc.)
+	// determine how many of the labels to draw
 	dataCount := len(opt.labels)
 	labelCount := opt.labelCount
 	if labelCount <= 0 {
