@@ -231,6 +231,15 @@ Radar Chart Feature List: https://github.com/go-analyze/charts/wiki/Feature-Over
 Top Radar Chart Examples:
 * [radar_chart-1-basic](./examples/1-Painter/radar_chart-1-basic) - Basic radar chart.
 
+### Heat Map Chart
+
+<img src="./assets/chart-heat_map.png" alt="Heat Map Chart">
+
+Heat Map Chart Feature List: https://github.com/go-analyze/charts/wiki/Feature-Overview#heat-map-charts
+
+Top Radar Chart Examples:
+* [heat_map-1-basic](./examples/1-Painter/heat_map-1-basic) - Basic heat map chart.
+
 ### Table
 
 <img src="./assets/chart-table.png" alt="Table">
