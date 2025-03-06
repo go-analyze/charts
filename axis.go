@@ -1,11 +1,12 @@
 package charts
 
 import (
-	"math"
 	"strings"
 )
 
-const minimumAxisLabels = 2 // 2 labels so range is fully shown
+const axisMargin = 4
+const minimumAxisLabels = 2            // 2 labels so range is fully shown
+const minimumHorizontalAxisHeight = 24 // too small looks too crowded to the chart data, notable for horizontal bar charts
 
 type axisPainter struct {
 	p   *Painter
@@ -36,6 +37,7 @@ type axisOption struct {
 	// graph. Specify a *bool to enforce a spacing.
 	boundaryGap        *bool
 	strokeWidth        float64
+	minimumAxisHeight  int
 	tickLength         int
 	labelMargin        int
 	labelFontStyle     FontStyle
@@ -49,6 +51,7 @@ type axisOption struct {
 	labelCount           int
 	labelCountAdjustment int
 	labelSkipCount       int
+	painterPrePositioned bool
 }
 
 func (a *axisPainter) Render() (Box, error) {
@@ -57,12 +60,14 @@ func (a *axisPainter) Render() (Box, error) {
 		return BoxZero, nil
 	}
 	top := a.p
-	defaultTheme := getPreferredTheme(top.theme)
 	isVertical := opt.position == PositionLeft || opt.position == PositionRight
 
+	defaultTheme := getPreferredTheme(top.theme)
 	strokeWidth := opt.strokeWidth
 	if strokeWidth == 0 {
 		strokeWidth = 1
+	} else if strokeWidth < 0 {
+		strokeWidth = 0 // set to zero as negative values will confuse calculations below
 	}
 	if opt.axisColor.IsZero() {
 		if isVertical {
@@ -86,129 +91,134 @@ func (a *axisPainter) Render() (Box, error) {
 		opt.labelFontStyle.FontSize = defaultFontSize
 	}
 
-	formatter := opt.formatter
-	if formatter != "" {
-		for index, text := range opt.labels {
-			opt.labels[index] = strings.ReplaceAll(formatter, "{value}", text)
+	if opt.formatter != "" {
+		for i, text := range opt.labels {
+			opt.labels[i] = strings.ReplaceAll(opt.formatter, "{value}", text)
 		}
 	}
 
-	tickLength := getDefaultInt(opt.tickLength, 5)
-	labelMargin := getDefaultInt(opt.labelMargin, 5)
-
+	// Measure labels to determine space needed
 	textMaxWidth, textMaxHeight := top.measureTextMaxWidthHeight(opt.labels, opt.labelRotation, opt.labelFontStyle)
 
-	var width, height int
+	// Basic measurements for ticks + labels
+	tickLength := getDefaultInt(opt.tickLength, 5)
+	labelMargin := getDefaultInt(opt.labelMargin, 5)
+	var axisNeededWidth, axisNeededHeight int
 	if isVertical {
-		width = textMaxWidth + (tickLength << 1)
-		height = top.Height()
+		axisNeededWidth = labelMargin + textMaxWidth + axisMargin
+		axisNeededHeight = top.Height()
 	} else {
-		width = top.Width()
-		height = textMaxHeight + (tickLength << 1)
-	}
-	padding := Box{IsSet: true}
-	switch opt.position {
-	case PositionTop:
-		padding.Top = top.Height() - height
-	case PositionLeft:
-		padding.Right = top.Width() - width
-	case PositionRight:
-		padding.Left = top.Width() - width
-	default: // PositionBottom
-		padding.Top = top.Height() - defaultXAxisHeight
+		axisNeededWidth = top.Width()
+		labelMargin += textMaxHeight // add height to move label past line
+		axisNeededHeight = labelMargin + axisMargin
 	}
 
-	// Measure and render the axis title to shift the axis
+	// Measure axis title and add its needed space
+	var titleBox Box
+	var titleShift int
 	if opt.title != "" {
-		opt.titleFontStyle = fillFontStyleDefaults(opt.titleFontStyle, defaultFontSize,
-			opt.labelFontStyle.FontColor, opt.titleFontStyle.Font, top.font)
+		// Fill title font defaults with label's color if not set
+		opt.titleFontStyle =
+			fillFontStyleDefaults(opt.titleFontStyle, defaultFontSize, opt.labelFontStyle.FontColor, top.font)
+		// measured without rotation, we choose measurement side as appropriate
+		titleBox = top.MeasureText(opt.title, 0, opt.titleFontStyle)
+		// measuring without rotation also allows us to simply refer to the height as the shift for any orientation
+		titleShift = titleBox.Height()
+		if isVertical {
+			axisNeededWidth += titleShift
+		} else {
+			axisNeededHeight += titleShift
+		}
+	}
+	if axisNeededHeight < opt.minimumAxisHeight {
+		axisNeededHeight = opt.minimumAxisHeight
+	}
 
-		var titleX, titleY int
-		var titleRotation float64
+	// Build a Box to reduce the parent's painter area, so that
+	// this child painter is exactly the region for the axis
+	padding := Box{IsSet: true}
+	if !opt.painterPrePositioned {
 		switch opt.position {
 		case PositionLeft:
-			titleRotation = DegreesToRadians(270)
-			titleBox := top.MeasureText(opt.title, titleRotation, opt.titleFontStyle)
-			titleX = 16
-			titleY = (top.Height() / 2) + (titleBox.Height() / 2)
-			titleShift := titleBox.Width() + 8
-			padding.Right -= titleShift
+			padding.Left = axisMargin
+			padding.Right = top.Width() - axisNeededWidth
 		case PositionRight:
-			titleRotation = DegreesToRadians(90)
-			titleBox := top.MeasureText(opt.title, titleRotation, opt.titleFontStyle)
-			titleX = top.Width() - 16
-			titleY = (top.Height() / 2) - (titleBox.Height() / 2)
-			titleShift := titleBox.Width() + 8
-			padding.Left -= titleShift
-		default: // horizontal top / bottom
-			titleBox := top.MeasureText(opt.title, titleRotation, opt.titleFontStyle)
-			titleX = (top.Width() / 2) - (titleBox.Width() / 2)
-			titleY = top.Height() - 2
-			titleShift := titleBox.Height()
-			padding.Top -= titleShift
+			padding.Left = top.Width() - axisNeededWidth // margin not needed here
+		case PositionTop:
+			padding.Top = top.Height() - axisNeededHeight
+		default: // PositionBottom
+			padding.Top = top.Height() - axisNeededHeight - axisMargin
 		}
+	}
+	child := top.Child(PainterPaddingOption(padding))
 
-		top.Text(opt.title, titleX, titleY, titleRotation, opt.titleFontStyle)
+	// If we have a title, draw it onto the child painter.
+	// We'll place it in the correct spot relative to the axis line.
+	if opt.title != "" {
+		switch opt.position {
+		case PositionLeft:
+			cx := child.Height() >> 1
+			xTitle := titleShift >> 1 // No margin adjustment on this one for some reason
+			yTitle := cx + (titleBox.Width() >> 1)
+			child.Text(opt.title, xTitle, yTitle, DegreesToRadians(270), opt.titleFontStyle)
+		case PositionRight:
+			cx := child.Height() >> 1
+			xTitle := child.Width() - (titleShift >> 1) - axisMargin
+			yTitle := cx - (titleBox.Width() >> 1)
+			child.Text(opt.title, xTitle, yTitle, DegreesToRadians(90), opt.titleFontStyle)
+		case PositionTop:
+			xTitle := (child.Width() - titleBox.Width()) >> 1
+			yTitle := titleShift >> 1
+			child.Text(opt.title, xTitle, yTitle, 0, opt.titleFontStyle)
+		default: // PositionBottom
+			xTitle := (child.Width() - titleBox.Width()) >> 1
+			yTitle := child.Height() - axisMargin
+			child.Text(opt.title, xTitle, yTitle, 0, opt.titleFontStyle)
+		}
 	}
 
-	// Create a child painter using the adjusted padding for the axis
-	p := top.Child(PainterPaddingOption(padding))
-
-	// Set up variables used for drawing ticks and labels
-	var x0, y0, x1, y1 int
-	var ticksPaddingTop, ticksPaddingLeft int
-	var labelPaddingTop, labelPaddingLeft, labelPaddingRight int
-	var textAlign string
-	switch opt.position {
-	case PositionTop:
-		if opt.labelRotation != 0 {
-			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.labels, 0, opt.labelFontStyle)
-			labelPaddingTop = flatHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.labelRotation)
-		} else {
-			labelPaddingTop = 0
+	// Draw the main axis line at whichever edge is "touching" the chart region
+	if strokeWidth > 0 {
+		var x0, y0, x1, y1 int
+		switch opt.position {
+		case PositionLeft:
+			x0, x1 = child.Width(), child.Width()
+			y0, y1 = 0, child.Height()
+		case PositionRight:
+			x0, x1 = 0, 0
+			y0, y1 = 0, child.Height()
+		case PositionTop:
+			x0, x1 = 0, child.Width()
+			y0, y1 = child.Height(), child.Height()
+		default: // PositionBottom
+			x0, x1 = 0, child.Width()
+			y0, y1 = 0, 0
 		}
-		x1 = p.Width()
-		y0 = labelMargin + int(opt.labelFontStyle.FontSize)
-		ticksPaddingTop = int(opt.labelFontStyle.FontSize)
-		y1 = y0
-	case PositionLeft:
-		x0 = p.Width()
-		y0 = 0
-		x1 = p.Width()
-		y1 = p.Height()
-		textAlign = AlignRight
-		ticksPaddingLeft = textMaxWidth + tickLength
-		labelPaddingRight = width - textMaxWidth
-	case PositionRight:
-		y1 = p.Height()
-		labelPaddingLeft = width - textMaxWidth
-	default: // PositionBottom
-		if opt.labelRotation != 0 {
-			flatWidth, flatHeight := top.measureTextMaxWidthHeight(opt.labels, 0, opt.labelFontStyle)
-			labelPaddingTop = (tickLength << 1) + (textMaxHeight - textRotationHeightAdjustment(flatWidth, flatHeight, opt.labelRotation))
-		} else {
-			labelPaddingTop = height
-		}
-		x1 = p.Width()
+		child.LineStroke([]Point{
+			{X: x0, Y: y0},
+			{X: x1, Y: y1},
+		}, opt.axisColor, strokeWidth)
 	}
 
+	// Decide how many of the labels to draw (labelCount + logic for skipping, etc.)
 	dataCount := len(opt.labels)
 	labelCount := opt.labelCount
 	if labelCount <= 0 {
 		var maxLabelCount int
 		// Add 10px and remove one for some minimal extra padding so that letters don't collide
 		if isVertical {
-			maxLabelCount = (top.Height() / (textMaxHeight + 10)) - 1
+			maxLabelCount = (child.Height() / (textMaxHeight + 10)) - 1
 		} else {
-			maxLabelCount = (top.Width() / (textMaxWidth + 10)) - 1
+			maxLabelCount = (child.Width() / (textMaxWidth + 10)) - 1
 		}
 		if maxLabelCount < minimumAxisLabels {
 			maxLabelCount = minimumAxisLabels // required to prevent infinite loop if less than zero
 		}
 		if opt.unit > 0 {
+			// If the user gave a 'unit', figure out how many 'units' fit
 			multiplier := 1.0
 			for {
-				labelCount = int(math.Ceil(float64(dataCount) / (opt.unit * multiplier)))
+				labelCount = ceilFloatToInt(float64(dataCount) / (opt.unit * multiplier))
 				if labelCount > maxLabelCount {
 					multiplier++
 				} else {
@@ -228,6 +238,7 @@ func (a *axisPainter) Render() (Box, error) {
 		labelCount = minimumAxisLabels
 	}
 
+	// Decide whether to center the labels between ticks or align them
 	centerLabels := true
 	if opt.boundaryGap != nil {
 		centerLabels = *opt.boundaryGap
@@ -249,13 +260,22 @@ func (a *axisPainter) Render() (Box, error) {
 		tickSpaces--
 	}
 
-	// Render ticks and axis line
+	// Child painter for drawing the *tick marks* themselves
 	if strokeWidth > 0 {
-		p.Child(PainterPaddingOption(Box{
-			Top:   ticksPaddingTop,
-			Left:  ticksPaddingLeft,
-			IsSet: true,
-		})).ticks(ticksOption{
+		var tickPaddingBox Box
+		tickPaddingBox.IsSet = true
+		switch opt.position {
+		case PositionLeft:
+			tickPaddingBox.Left = child.Width() - tickLength
+		case PositionRight:
+			tickPaddingBox.Right = tickLength
+		case PositionTop:
+			tickPaddingBox.Top = child.Height() - tickLength
+		default: // PositionBottom
+			tickPaddingBox.Bottom = tickLength
+		}
+		tickPainter := child.Child(PainterPaddingOption(tickPaddingBox))
+		tickPainter.ticks(ticksOption{
 			labelCount:  labelCount,
 			tickCount:   tickCount,
 			tickSpaces:  tickSpaces,
@@ -265,67 +285,96 @@ func (a *axisPainter) Render() (Box, error) {
 			strokeWidth: strokeWidth,
 			strokeColor: opt.axisColor,
 		})
-		p.LineStroke([]Point{
-			{X: x0, Y: y0},
-			{X: x1, Y: y1},
-		}, opt.axisColor, strokeWidth)
 	}
 
 	// Render tick labels
-	p.Child(PainterPaddingOption(Box{
-		Left:  labelPaddingLeft,
-		Top:   labelPaddingTop,
-		Right: labelPaddingRight,
-		IsSet: true,
-	})).multiText(multiTextOption{
-		firstIndex:     opt.dataStartIndex,
-		align:          textAlign,
+	labelPadding := Box{IsSet: true}
+	switch opt.position {
+	case PositionLeft:
+		// Place labels to the left, so we leave margin on the right
+		labelPadding.Right = tickLength + labelMargin
+		labelPadding.Top = -2 // TODO - it's unclear why this adjustment is needed for vertical to position labels right
+		labelPadding.Bottom = 4
+	case PositionRight:
+		labelPadding.Left = tickLength + labelMargin
+		labelPadding.Top = -2
+		labelPadding.Bottom = 4
+	case PositionTop:
+		labelPadding.Bottom = tickLength + labelMargin
+	default: // PositionBottom
+		labelPadding.Top = tickLength + labelMargin
+	}
+	labelPainter := child.Child(PainterPaddingOption(labelPadding))
+	alignSide := AlignCenter
+	if isVertical {
+		if opt.position == PositionLeft {
+			alignSide = AlignRight
+		} else {
+			alignSide = AlignLeft
+		}
+	}
+	labelPainter.multiText(multiTextOption{
 		textList:       opt.labels,
-		fontStyle:      opt.labelFontStyle,
 		vertical:       isVertical,
+		centerLabels:   centerLabels,
+		align:          alignSide,
+		textRotation:   opt.labelRotation,
+		offset:         opt.labelOffset,
+		firstIndex:     opt.dataStartIndex,
 		labelCount:     labelCount,
 		tickCount:      tickCount,
 		labelSkipCount: opt.labelSkipCount,
-		centerLabels:   centerLabels,
-		textRotation:   opt.labelRotation,
-		offset:         opt.labelOffset,
+		fontStyle:      opt.labelFontStyle,
 	})
 
 	if opt.splitLineShow { // show auxiliary lines
 		if isVertical {
-			x0 := p.Width()
-			x1 := top.Width()
-			if opt.position == PositionRight {
-				x0 = 0
-				x1 = top.Width() - p.Width()
+			var x0Split, x1Split int
+			if opt.position == PositionLeft {
+				x0Split = child.Width()
+				x1Split = top.Width()
+			} else { // right axis
+				x0Split = 0
+				x1Split = top.Width() - child.Width()
 			}
-			yValues := autoDivide(height, tickSpaces)
-			yValues = yValues[0 : len(yValues)-1]
-			for _, y := range yValues {
+			yValues := autoDivide(child.Height(), tickSpaces)
+			// Typically skip the last one to avoid re-drawing the axis line
+			if len(yValues) > 0 {
+				yValues = yValues[:len(yValues)-1]
+			}
+			for _, yy := range yValues {
 				top.LineStroke([]Point{
-					{X: x0, Y: y},
-					{X: x1, Y: y},
+					{X: x0Split, Y: yy},
+					{X: x1Split, Y: yy},
 				}, opt.axisSplitLineColor, 1)
 			}
 		} else {
-			y0 := p.Height() - defaultXAxisHeight
-			y1 := top.Height() - defaultXAxisHeight
-			xValues := autoDivide(width, tickSpaces)
-			for index, x := range xValues {
-				if index == 0 {
-					continue
+			var y0Split, y1Split int
+			if opt.position == PositionTop {
+				y0Split = child.Height()
+				y1Split = top.Height()
+			} else { // PositionBottom
+				y0Split = 0
+				y1Split = top.Height() - child.Height()
+			}
+			xValues := autoDivide(child.Width(), tickSpaces)
+			for i, xx := range xValues {
+				if i == 0 {
+					continue // skip the first, so we don't overlap the axis line
 				}
 				top.LineStroke([]Point{
-					{X: x, Y: y0},
-					{X: x, Y: y1},
+					{X: xx, Y: y0Split},
+					{X: xx, Y: y1Split},
 				}, opt.axisSplitLineColor, 1)
 			}
 		}
 	}
 
+	// Return the “used” dimension for this axis
+	// This consumed space will be removed from the chart space in defaultRender
 	return Box{
-		Bottom: p.Height(),
-		Right:  p.Width(),
+		Right:  axisNeededWidth + ceilFloatToInt(strokeWidth),
+		Bottom: axisNeededHeight + ceilFloatToInt(strokeWidth),
 		IsSet:  true,
 	}, nil
 }

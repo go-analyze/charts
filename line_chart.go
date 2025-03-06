@@ -255,9 +255,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 		}
 		switch seriesSymbol {
 		case SymbolCircle:
-			radius := 1.4
+			radius := 1.2
 			if strokeWidth > 1 {
-				radius = strokeWidth * 1.4
+				radius = strokeWidth * 1.2
 			}
 			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1, radius)
 		case SymbolDot:

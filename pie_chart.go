@@ -271,6 +271,9 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 		if !s.seriesLabel.FontStyle.FontColor.IsZero() {
 			textStyle.FontColor = s.seriesLabel.FontStyle.FontColor
 		}
+		if s.seriesLabel.FontStyle.FontSize > 0 {
+			textStyle.FontSize = s.seriesLabel.FontStyle.FontSize
+		}
 		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label, 0, textStyle))
 		seriesPainter.Text(s.label, x, y, 0, textStyle)
 	}

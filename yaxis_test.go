@@ -22,17 +22,18 @@ func TestYAxis(t *testing.T) {
 					Labels: []string{"a", "b", "c", "d"},
 				}
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"10\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"10\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"10\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 29 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 29 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 29 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"99\" y=\"106\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"99\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"99\" y=\"238\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"99\" y=\"304\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 114 100\nL 500 100\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 114 166\nL 500 166\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 114 233\nL 500 233\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
 		},
 		{
-			name: "font_style",
+			name: "font_style_with_rotation",
 			makeOption: func() *YAxisOption {
 				return &YAxisOption{
-					Labels:    []string{"a", "b", "c"},
-					FontStyle: NewFontStyleWithSize(20),
+					Labels:        []string{"a", "b", "c"},
+					FontStyle:     NewFontStyleWithSize(20),
+					LabelRotation: DegreesToRadians(270),
 				}
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"11\" y=\"22\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"10\" y=\"197\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"11\" y=\"372\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\">c</text><path  d=\"M 35 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 35 185\nL 590 185\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"99\" y=\"104\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(270.00,99,104)\">a</text><text x=\"99\" y=\"203\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(270.00,99,203)\">b</text><text x=\"99\" y=\"302\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(270.00,99,302)\">c</text><path  d=\"M 129 100\nL 500 100\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 129 200\nL 500 200\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
 		},
 		{
 			name: "lines",
@@ -43,7 +44,7 @@ func TestYAxis(t *testing.T) {
 					SpineLineShow: Ptr(true),
 				}
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 24 10\nL 29 10\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 24 126\nL 29 126\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 24 243\nL 29 243\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 24 360\nL 29 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 29 10\nL 29 360\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"10\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"10\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"10\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"10\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 29 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 29 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 29 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 118 100\nL 118 300\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 113 100\nL 118 100\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 113 166\nL 118 166\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 113 233\nL 118 233\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 113 300\nL 118 300\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"99\" y=\"106\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"99\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"99\" y=\"238\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"99\" y=\"304\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 114 100\nL 500 100\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 114 166\nL 500 166\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 114 233\nL 500 233\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
 		},
 		{
 			name: "title_left",
@@ -53,7 +54,7 @@ func TestYAxis(t *testing.T) {
 					Labels: []string{"a", "b", "c", "d"},
 				}
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"26\" y=\"197\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(270.00,26,197)\">title</text><text x=\"31\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"31\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"31\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"31\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 50 10\nL 590 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 50 126\nL 590 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 50 243\nL 590 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"112\" y=\"213\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(270.00,112,213)\">title</text><text x=\"115\" y=\"106\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"115\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"115\" y=\"238\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"115\" y=\"304\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 130 100\nL 500 100\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 130 166\nL 500 166\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 130 233\nL 500 233\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
 		},
 		{
 			name: "title_right",
@@ -64,7 +65,7 @@ func TestYAxis(t *testing.T) {
 					Labels:   []string{"a", "b", "c", "d"},
 				}
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"574\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,574,172)\">title</text><text x=\"558\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"558\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"558\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"558\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 10 10\nL 548 10\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 10 126\nL 548 126\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 10 243\nL 548 243\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"488\" y=\"187\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,488,187)\">title</text><text x=\"476\" y=\"106\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"476\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"476\" y=\"238\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"476\" y=\"304\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><path  d=\"M 100 100\nL 466 100\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 100 166\nL 466 166\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 100 233\nL 466 233\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/></svg>",
 		},
 	}
 
@@ -75,7 +76,7 @@ func TestYAxis(t *testing.T) {
 				Width:        600,
 				Height:       400,
 			}, PainterThemeOption(GetTheme(ThemeLight)),
-				PainterPaddingOption(NewBoxEqual(10)), PainterPaddingOption(Box{Bottom: defaultXAxisHeight}))
+				PainterPaddingOption(NewBoxEqual(100)))
 
 			_, err := newAxisPainter(p, tt.makeOption().toAxisOption(p.theme)).Render()
 			require.NoError(t, err)
@@ -93,7 +94,7 @@ func TestYAxisSplitLineDisabled(t *testing.T) {
 		OutputFormat: ChartOutputSVG,
 		Width:        600,
 		Height:       400,
-	}, PainterPaddingOption(NewBoxEqual(10)), PainterPaddingOption(Box{Bottom: defaultXAxisHeight}))
+	}, PainterPaddingOption(NewBoxEqual(10)))
 	yaxisOpt := &YAxisOption{
 		Position: PositionRight,
 		Labels:   []string{"a", "b", "c", "d"},
@@ -105,5 +106,5 @@ func TestYAxisSplitLineDisabled(t *testing.T) {
 	require.NoError(t, err)
 	data, err := p.Bytes()
 	require.NoError(t, err)
-	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"581\" y=\"17\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"581\" y=\"133\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"581\" y=\"250\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"581\" y=\"367\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text></svg>", data)
+	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"582\" y=\"16\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">a</text><text x=\"582\" y=\"142\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">b</text><text x=\"582\" y=\"268\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"582\" y=\"394\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text></svg>", data)
 }

@@ -128,7 +128,7 @@ func (l *legendPainter) Render() (Box, error) {
 	case PositionRight:
 		left = p.Width() - width
 	case PositionCenter:
-		left = p.Width()>>1 - (width >> 1)
+		left = (p.Width() - width) >> 1
 	default:
 		if v, err := parseFlexibleValue(offset.Left, float64(p.Width())); err != nil {
 			return BoxZero, fmt.Errorf("error parsing legend position: %w", err)

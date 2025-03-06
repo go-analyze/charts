@@ -13,7 +13,10 @@ type XAxisOption struct {
 	Labels []string
 	// DataStartIndex specifies what index the Data values should start from.
 	DataStartIndex int
-	// Position describes the position of x-axis, it can be 'top' or 'bottom'.
+	// Deprecated: Position is deprecated. Currently, when set to `bottom` and the labels would render on the top
+	// side of the axis line. However, the line would remain at the bottom of the chart. This seems confusing, and
+	// attempts to actually move the axis line to the top of the chart are currently very messy looking. For that
+	// reason this is currently deprecated. If a top X-Axis is valuable to you, please open a feature request.
 	Position string
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
@@ -39,7 +42,6 @@ type XAxisOption struct {
 	isValueAxis          bool
 }
 
-const defaultXAxisHeight = 30
 const boundaryGapDefaultThreshold = 40
 
 func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
@@ -65,6 +67,7 @@ func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		dataStartIndex:       opt.DataStartIndex,
 		boundaryGap:          opt.BoundaryGap,
 		position:             position,
+		minimumAxisHeight:    minimumHorizontalAxisHeight,
 		labelFontStyle:       opt.LabelFontStyle,
 		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
 		axisColor:            theme.GetXAxisStrokeColor(),
@@ -78,11 +81,7 @@ func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		axisOpt.splitLineShow = true
 		axisOpt.strokeWidth = -1
 		axisOpt.boundaryGap = Ptr(false)
+		axisOpt.labelMargin = 2
 	}
 	return axisOpt
-}
-
-// newBottomXAxis returns a bottom x-axis renderer.
-func newBottomXAxis(p *Painter, opt XAxisOption) *axisPainter {
-	return newAxisPainter(p, opt.toAxisOption(p.theme))
 }

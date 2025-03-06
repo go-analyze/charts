@@ -836,12 +836,12 @@ func (p *Painter) multiText(opt multiTextOption) {
 			} else {
 				start = positions[index]
 			}
-			y = start + box.Height()>>1
+			y = start + (box.Height() >> 1)
 			switch opt.align {
 			case AlignRight:
 				x = width - box.Width()
 			case AlignCenter:
-				x = width - box.Width()>>1
+				x = width - (box.Width() >> 1)
 			default:
 				x = 0
 			}

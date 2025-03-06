@@ -95,7 +95,9 @@ type defaultRenderResult struct {
 }
 
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
-	fillThemeDefaults(getPreferredTheme(opt.theme, p.theme), &opt.title, opt.legend, opt.xAxis, opt.yAxis)
+	theme := getPreferredTheme(opt.theme, p.theme)
+	fillThemeDefaults(theme, &opt.title, opt.legend, opt.xAxis, opt.yAxis)
+	top := p
 
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
 	if opt.seriesList.hasMarkPoint() {
@@ -193,16 +195,26 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		axisIndexList[i] = i
 	}
 	reverseSlice(axisIndexList)
-	var xAxisTitleHeight int
-	if opt.xAxis.Title != "" {
-		titleBox := p.MeasureText(opt.xAxis.Title, 0, opt.xAxis.TitleFontStyle)
-		xAxisTitleHeight = titleBox.Height()
+	// render the x-axis early to determine the height it will occupy
+	// we will need to render it again once we know the space the y-axis will occupy
+	xAxisOptions := opt.xAxis.toAxisOption(theme)
+	if top.Height() < 100 {
+		xAxisOptions.minimumAxisHeight = 0 // don't reserve if chart is too small
 	}
-	// the height needs to be subtracted from the height of the x-axis (and title if present)
-	rangeHeight := p.Height() - defaultXAxisHeight - xAxisTitleHeight
+	xAxisBox, err := newAxisPainter(NewPainter(PainterOptions{
+		OutputFormat: p.outputFormat,
+		Width:        p.Width(),
+		Height:       p.Height(),
+		Theme:        p.theme,
+		Font:         p.font,
+	}), xAxisOptions).Render()
+	if err != nil {
+		return nil, err
+	}
+	xAxisHeight := xAxisBox.Height()
+	rangeHeight := p.Height() - xAxisHeight
 	var rangeWidthLeft, rangeWidthRight int
-
-	// calculate the axis range
+	// calculate and render the axis range
 	for _, index := range axisIndexList {
 		yAxisOption := YAxisOption{}
 		if len(opt.yAxis) > index {
@@ -219,8 +231,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			min = *yAxisOption.Min
 			minPadRange = 0.0
 		}
-		if opt.stackSeries {
-			// If stacking, max should be the highest sum
+		if opt.stackSeries { // If stacked, max should be the max data point of all series summed together
 			max = sumMax
 		}
 		if yAxisOption.Max != nil && *yAxisOption.Max > max {
@@ -294,7 +305,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		child := p.Child(PainterPaddingOption(Box{
 			Left:   rangeWidthLeft,
 			Right:  rangeWidthRight,
-			Bottom: xAxisTitleHeight + defaultXAxisHeight,
+			Bottom: xAxisHeight,
 			IsSet:  true,
 		}))
 		if yAxisOption.Position == "" {
@@ -304,26 +315,32 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 				yAxisOption.Position = PositionRight
 			}
 		}
-		axisOpt := yAxisOption.toAxisOption(p.theme)
+		axisOpt := yAxisOption.toAxisOption(theme)
 		if index != 0 {
 			axisOpt.splitLineShow = false // only show split lines on primary index axis
 		}
 		yAxis := newAxisPainter(child, axisOpt)
 		if yAxisBox, err := yAxis.Render(); err != nil {
 			return nil, err
-		} else if (yAxisOption.Position == "" && index == 1) || yAxisOption.Position == PositionRight {
+		} else if yAxisOption.Position == PositionRight {
 			rangeWidthRight += yAxisBox.Width()
 		} else {
 			rangeWidthLeft += yAxisBox.Width()
 		}
 	}
 
-	xAxis := newBottomXAxis(p.Child(PainterPaddingOption(Box{
+	xAxisPadding := Box{
 		Left:  rangeWidthLeft,
 		Right: rangeWidthRight,
 		IsSet: true,
-	})), *opt.xAxis)
-	xAxisBox, err := xAxis.Render()
+	}
+	if opt.axisReversed {
+		xAxisOptions = opt.xAxis.toAxisOption(theme) // regenerate axis options after value changes above
+	} else {
+		xAxisPadding.Top = p.Height() - xAxisHeight // only limit height when the axis is rendered short
+		xAxisOptions.painterPrePositioned = true    // we must provide the exact painter position which will meet with the y-axis exactly
+	}
+	_, err = newAxisPainter(p.Child(PainterPaddingOption(xAxisPadding)), xAxisOptions).Render()
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +348,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	result.seriesPainter = p.Child(PainterPaddingOption(Box{
 		Left:   rangeWidthLeft,
 		Right:  rangeWidthRight,
-		Bottom: xAxisBox.Bottom,
+		Bottom: xAxisHeight,
 		IsSet:  true,
 	}))
 	return &result, nil

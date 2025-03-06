@@ -23,6 +23,8 @@ type YAxisOption struct {
 	FontStyle FontStyle
 	// LabelFontStyle specifies the font configuration for each label.
 	LabelFontStyle FontStyle
+	// LabelRotation are the radians for rotating the label. Convert from degrees using DegreesToRadians(float64).
+	LabelRotation float64
 	// Formatter for replacing y-axis text values.
 	Formatter string
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
@@ -67,6 +69,7 @@ func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
 		formatter:            opt.Formatter,
 		position:             position,
 		labelFontStyle:       opt.LabelFontStyle,
+		labelRotation:        opt.LabelRotation,
 		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
 		axisColor:            theme.GetYAxisStrokeColor(),
 		strokeWidth:          -1,
