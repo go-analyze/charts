@@ -123,7 +123,7 @@ func (a *axisPainter) Render() (Box, error) {
 		// measured without rotation, we choose measurement side as appropriate
 		titleBox = top.MeasureText(opt.title, 0, opt.titleFontStyle)
 		// measuring without rotation also allows us to simply refer to the height as the shift for any orientation
-		titleShift = titleBox.Height()
+		titleShift = titleBox.Height() + axisMargin
 		if isVertical {
 			axisNeededWidth += titleShift
 		} else {
