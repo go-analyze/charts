@@ -1,7 +1,7 @@
 # go-analyze/charts
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/go-analyze/charts/blob/master/LICENSE)
-[![Build Status](https://github.com/go-analyze/charts/workflows/Test/badge.svg)](https://github.com/go-analyze/charts/actions)
+[![Build Status](https://github.com/go-analyze/charts/actions/workflows/tests-main.yml/badge.svg)](https://github.com/go-analyze/charts/actions/workflows/tests-main.yml)
 
 Our library focuses on generating beautiful charts and graphs within Go. Graphs are used to show a lot of different types of data, needing to be represented in a unique in order to convey the meaning behind the data. This Go module attempts to use sophisticated defaults to try and render this data in a simple way, while still offering intuitive options to update the graph rendering as you see fit.
 
