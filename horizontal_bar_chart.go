@@ -72,17 +72,14 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 		return BoxZero, errors.New("empty series list")
 	}
 	seriesPainter := result.seriesPainter
-	yRange := result.axisRanges[0]
-	y0, y1 := yRange.GetRange(0)
+	yRange := result.yaxisRanges[0]
+	y0, y1 := yRange.getRange(0)
 	height := int(y1 - y0)
 	stackedSeries := flagIs(true, opt.StackSeries)
-	min, max, sumMax := getSeriesMinMaxSumMax(seriesList, 0, stackedSeries)
 	// If stacking, keep track of accumulated widths for each data index (after the “reverse” logic).
 	var accumulatedWidths []int
 	var margin, barMargin, barHeight int
 	if stackedSeries {
-		// If stacking, max should be the highest sum
-		max = sumMax
 		accumulatedWidths = make([]int, yRange.divideCount)
 		margin, _, barHeight = calculateBarMarginsAndSize(1, height, opt.BarHeight, nil)
 	} else {
@@ -90,10 +87,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 	}
 
 	seriesNames := seriesList.names()
-	// xRange is used to convert data values into horizontal bar widths
-	xRange := newRange(p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
-		seriesPainter.Width(), len(seriesList[0].Values), min, max, 1.0, 1.0)
-	divideValues := yRange.AutoDivide()
+	divideValues := yRange.autoDivide()
 
 	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []renderer{markLinePainter}
@@ -118,7 +112,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 			y := divideValues[reversedJ] + margin
 
 			// Determine the width (horizontal length) of the bar based on the data value
-			w := xRange.getHeight(item)
+			w := result.xaxisRange.getHeight(item)
 
 			var left, right int
 			if stackedSeries {
@@ -193,7 +187,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 					font:           opt.Font,
 					marklines:      seriesMarks,
 					seriesValues:   series.Values,
-					axisRange:      xRange,
+					axisRange:      result.xaxisRange,
 					valueFormatter: markLineValueFormatter,
 				})
 			}
@@ -209,7 +203,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 					font:           opt.Font,
 					marklines:      globalMarks,
 					seriesValues:   globalSeriesData,
-					axisRange:      xRange,
+					axisRange:      result.xaxisRange,
 					valueFormatter: markLineValueFormatter,
 				})
 			}

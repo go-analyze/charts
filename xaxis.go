@@ -1,5 +1,9 @@
 package charts
 
+import (
+	"math"
+)
+
 type XAxisOption struct {
 	// Show specifies if the x-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
@@ -44,38 +48,35 @@ type XAxisOption struct {
 
 const boundaryGapDefaultThreshold = 40
 
-func (opt *XAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
+func (opt *XAxisOption) prep(fallbackTheme ColorPalette) *XAxisOption {
+	opt.Theme = getPreferredTheme(opt.Theme, fallbackTheme)
+	if opt.LabelFontStyle.IsZero() {
+		opt.LabelFontStyle = opt.FontStyle
+	}
+	opt.LabelFontStyle = fillFontStyleDefaults(opt.LabelFontStyle, defaultFontSize,
+		opt.Theme.GetXAxisTextColor())
+	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, math.Max(opt.LabelFontStyle.FontSize, defaultFontSize),
+		opt.LabelFontStyle.FontColor, opt.LabelFontStyle.Font)
+	return opt
+}
+
+// toAxisOption converts the XAxisOption to axisOption after prep has been invoked.
+func (opt *XAxisOption) toAxisOption(xAxisRange axisRange) axisOption {
 	position := PositionBottom
 	if opt.Position == PositionTop {
 		position = PositionTop
 	}
-	theme := getPreferredTheme(opt.Theme, fallbackTheme)
-	if opt.LabelFontStyle.IsZero() {
-		opt.LabelFontStyle = opt.FontStyle
-	}
-	if opt.LabelFontStyle.FontColor.IsZero() {
-		opt.LabelFontStyle.FontColor = theme.GetXAxisTextColor()
-	}
-	if opt.TitleFontStyle.FontColor.IsZero() {
-		opt.TitleFontStyle.FontColor = opt.LabelFontStyle.FontColor
-	}
 	axisOpt := axisOption{
-		show:                 opt.Show,
-		title:                opt.Title,
-		titleFontStyle:       opt.TitleFontStyle,
-		labels:               opt.Labels,
-		dataStartIndex:       opt.DataStartIndex,
-		boundaryGap:          opt.BoundaryGap,
-		position:             position,
-		minimumAxisHeight:    minimumHorizontalAxisHeight,
-		labelFontStyle:       opt.LabelFontStyle,
-		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
-		axisColor:            theme.GetXAxisStrokeColor(),
-		unit:                 opt.Unit,
-		labelCount:           opt.LabelCount,
-		labelCountAdjustment: opt.LabelCountAdjustment,
-		labelRotation:        opt.LabelRotation,
-		labelOffset:          opt.LabelOffset,
+		show:               opt.Show,
+		aRange:             xAxisRange,
+		title:              opt.Title,
+		titleFontStyle:     opt.TitleFontStyle,
+		boundaryGap:        opt.BoundaryGap,
+		position:           position,
+		minimumAxisHeight:  minimumHorizontalAxisHeight,
+		axisSplitLineColor: opt.Theme.GetAxisSplitLineColor(),
+		axisColor:          opt.Theme.GetXAxisStrokeColor(),
+		labelOffset:        opt.LabelOffset,
 	}
 	if opt.isValueAxis {
 		axisOpt.splitLineShow = true

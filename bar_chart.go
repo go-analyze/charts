@@ -110,13 +110,11 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 	}
 	seriesPainter := result.seriesPainter
 
-	xRange := newRange(b.p, getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter),
-		seriesPainter.Width(), len(opt.XAxis.Labels), 0.0, 0.0, 0.0, 0.0)
-	x0, x1 := xRange.GetRange(0)
+	x0, x1 := result.xaxisRange.getRange(0)
 	width := int(x1 - x0)
 	barMaxHeight := seriesPainter.Height() // total vertical space for bars
 	seriesNames := seriesList.names()
-	divideValues := xRange.AutoDivide()
+	divideValues := result.xaxisRange.autoDivide()
 	stackedSeries := flagIs(true, opt.StackSeries)
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
@@ -127,7 +125,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 			configuredMargin = nil // no margin needed with a single bar
 		}
 		margin, _, barWidth = calculateBarMarginsAndSize(barCount, width, opt.BarWidth, configuredMargin)
-		accumulatedHeights = make([]int, xRange.divideCount)
+		accumulatedHeights = make([]int, result.xaxisRange.divideCount)
 	} else {
 		margin, barMargin, barWidth = calculateBarMarginsAndSize(seriesCount, width, opt.BarWidth, opt.BarMargin)
 	}
@@ -139,7 +137,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 
 	for index, series := range seriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
-		yRange := result.axisRanges[series.YAxisIndex]
+		yRange := result.yaxisRanges[series.YAxisIndex]
 		seriesColor := opt.Theme.GetSeriesColor(index)
 
 		var labelPainter *seriesLabelPainter
@@ -150,7 +148,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 
 		points := make([]Point, len(series.Values)) // used for mark points
 		for j, item := range series.Values {
-			if j >= xRange.divideCount {
+			if j >= result.xaxisRange.divideCount {
 				continue
 			}
 

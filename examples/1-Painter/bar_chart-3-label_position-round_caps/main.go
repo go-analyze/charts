@@ -31,7 +31,6 @@ func main() {
 	opt.XAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	}
-	opt.XAxis.LabelCount = 12 // force label count due to the labels being very close
 	opt.BarMargin = charts.Ptr(1.0)
 	for i := range opt.SeriesList {
 		opt.SeriesList[i].Label.Show = charts.Ptr(true)

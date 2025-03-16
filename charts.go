@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 	"math"
+	"strings"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -31,15 +32,6 @@ func SetDefaultChartDimensions(width, height int) {
 // GetNullValue gets the null value, allowing you to set a series point with "no" value.
 func GetNullValue() float64 {
 	return math.MaxFloat64
-}
-
-func defaultYAxisLabelCount(span float64, decimalData bool) int {
-	result := math.Min(math.Max(span+1, defaultYAxisLabelCountLow), defaultYAxisLabelCountHigh)
-	if decimalData {
-		// if there is a decimal, we double our labels to provide more detail
-		result = math.Min(result*2, defaultYAxisLabelCountHigh)
-	}
-	return int(result)
 }
 
 type renderer interface {
@@ -89,16 +81,15 @@ type defaultRenderOption struct {
 }
 
 type defaultRenderResult struct {
-	axisRanges map[int]axisRange
-	// legend area
+	yaxisRanges   map[int]axisRange
+	xaxisRange    axisRange
 	seriesPainter *Painter
 }
 
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
 	theme := getPreferredTheme(opt.theme, p.theme)
 	fillThemeDefaults(theme, &opt.title, opt.legend, opt.xAxis, opt.yAxis)
-	top := p
-
+	opt.xAxis = opt.xAxis.prep(theme)
 	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
 	if opt.seriesList.hasMarkPoint() {
 		// adjust padding scale to give space for mark point (if not specified by user)
@@ -108,6 +99,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			}
 		}
 	}
+	top := p
 
 	if !opt.backgroundIsFilled {
 		p.drawBackground(opt.theme.GetBackgroundColor())
@@ -121,19 +113,25 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		opt.legend.SeriesNames = opt.seriesList.names()
 	} else {
 		seriesCount := opt.seriesList.len()
+		setAllSeriesNames := true
 		for index, name := range opt.legend.SeriesNames {
 			if index >= seriesCount {
+				setAllSeriesNames = false
 				break
 			} else if opt.seriesList.getSeriesName(index) == "" {
 				opt.seriesList.setSeriesName(index, name)
+			} else {
+				setAllSeriesNames = false
 			}
 		}
-		nameIndexDict := map[string]int{}
-		for index, name := range opt.legend.SeriesNames {
-			nameIndexDict[name] = index
+		if !setAllSeriesNames {
+			// if the series had names already set, make sure they are consistent ordered with the legend
+			nameIndexDict := map[string]int{}
+			for index, name := range opt.legend.SeriesNames {
+				nameIndexDict[name] = index
+			}
+			opt.seriesList.sortByNameIndex(nameIndexDict)
 		}
-		// ensure order of series is consistent with legend
-		opt.seriesList.sortByNameIndex(nameIndexDict)
 	}
 	opt.legend.seriesSymbols = make([]Symbol, opt.seriesList.len())
 	for index := range opt.legend.seriesSymbols {
@@ -165,20 +163,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		return nil, err
 	}
 	if !titleBox.IsZero() {
-		var top, bottom int
+		titlePadBox := Box{IsSet: true}
 		if titleBox.Bottom < p.Height()/2 {
-			top = chartdraw.MaxInt(legendTopSpacing, titleBox.Bottom+legendTitlePadding)
-		} else {
-			// title is at the bottom, raise the chart to be above the title
-			bottom = titleBox.Height()
-			top = legendTopSpacing // the legend may still need space on the top, set to whatever the legend requested
+			titlePadBox.Top = chartdraw.MaxInt(legendTopSpacing, titleBox.Bottom+legendTitlePadding)
+		} else { // else, title is at the bottom, raise the chart to be above the title
+			titlePadBox.Top = legendTopSpacing // the legend may still need space on the top, set to the legend space
+			titlePadBox.Bottom = titleBox.Height()
 		}
 
-		p = p.Child(PainterPaddingOption(Box{
-			Top:    top,
-			Bottom: bottom,
-			IsSet:  true,
-		}))
+		p = p.Child(PainterPaddingOption(titlePadBox))
 	} else if legendTopSpacing > 0 { // apply chart spacing below legend
 		p = p.Child(PainterPaddingOption(Box{
 			Top:   legendTopSpacing,
@@ -187,142 +180,102 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 
 	result := defaultRenderResult{
-		axisRanges: make(map[int]axisRange),
+		yaxisRanges: make(map[int]axisRange),
 	}
 
-	axisIndexList := make([]int, getSeriesYAxisCount(opt.seriesList))
-	for i := range axisIndexList {
-		axisIndexList[i] = i
+	// calculate x-axis range and do a dry-render to find height
+	// we will render on the actual painter once we know the space the y-axis will occupy
+	var xAxisOpts axisOption
+	if opt.axisReversed { // X is value axis
+		xAxisRange := calculateValueAxisRange(p, false, p.Width(),
+			nil, nil, nil,
+			opt.xAxis.Labels, opt.xAxis.DataStartIndex,
+			opt.xAxis.LabelCount, opt.xAxis.Unit, opt.xAxis.LabelCountAdjustment,
+			opt.seriesList, 0, opt.stackSeries,
+			getPreferredValueFormatter(opt.xAxis.ValueFormatter, opt.valueFormatter),
+			opt.xAxis.LabelRotation, opt.xAxis.LabelFontStyle)
+		opt.xAxis.isValueAxis = true
+		xAxisOpts = opt.xAxis.toAxisOption(xAxisRange)
+	} else { //  X is category axis
+		xAxisRange := calculateCategoryAxisRange(p, p.Width(), false,
+			opt.xAxis.Labels, opt.xAxis.DataStartIndex,
+			opt.xAxis.LabelCount, opt.xAxis.LabelCountAdjustment, opt.xAxis.Unit,
+			opt.seriesList,
+			opt.xAxis.LabelRotation, opt.xAxis.LabelFontStyle)
+		xAxisOpts = opt.xAxis.toAxisOption(xAxisRange)
 	}
-	reverseSlice(axisIndexList)
-	// render the x-axis early to determine the height it will occupy
-	// we will need to render it again once we know the space the y-axis will occupy
-	xAxisOptions := opt.xAxis.toAxisOption(theme)
 	if top.Height() < 100 {
-		xAxisOptions.minimumAxisHeight = 0 // don't reserve if chart is too small
+		xAxisOpts.minimumAxisHeight = 0 // don't reserve if chart is too small
 	}
-	xAxisBox, err := newAxisPainter(NewPainter(PainterOptions{
-		OutputFormat: p.outputFormat,
-		Width:        p.Width(),
-		Height:       p.Height(),
-		Theme:        p.theme,
-		Font:         p.font,
-	}), xAxisOptions).Render()
+	xAxisBox, err := newAxisPainter(
+		NewPainter(PainterOptions{
+			OutputFormat: p.outputFormat,
+			Width:        p.Width(),
+			Height:       p.Height(),
+			Theme:        p.theme,
+			Font:         p.font,
+		}),
+		xAxisOpts,
+	).Render()
 	if err != nil {
 		return nil, err
 	}
 	xAxisHeight := xAxisBox.Height()
+
 	rangeHeight := p.Height() - xAxisHeight
 	var rangeWidthLeft, rangeWidthRight int
-	// calculate and render the axis range
-	for _, index := range axisIndexList {
-		yAxisOption := YAxisOption{}
-		if len(opt.yAxis) > index {
-			yAxisOption = opt.yAxis[index]
+	// go in reverse order to ensure mark lines from left axis don't extend into right axis
+	for yIndex := getSeriesYAxisCount(opt.seriesList) - 1; yIndex >= 0; yIndex-- {
+		var yAxisOption YAxisOption
+		if len(opt.yAxis) > yIndex {
+			yAxisOption = opt.yAxis[yIndex]
 		}
-		minPadRange, maxPadRange := 1.0, 1.0
-		if yAxisOption.RangeValuePaddingScale != nil {
-			minPadRange = *yAxisOption.RangeValuePaddingScale
-			maxPadRange = *yAxisOption.RangeValuePaddingScale
-		}
-		min, max, sumMax := getSeriesMinMaxSumMax(opt.seriesList, index, opt.stackSeries)
-		decimalData := min != math.Floor(min) || (max-min) != math.Floor(max-min)
-		if yAxisOption.Min != nil && *yAxisOption.Min < min {
-			min = *yAxisOption.Min
-			minPadRange = 0.0
-		}
-		if opt.stackSeries { // If stacked, max should be the max data point of all series summed together
-			max = sumMax
-		}
-		if yAxisOption.Max != nil && *yAxisOption.Max > max {
-			max = *yAxisOption.Max
-			maxPadRange = 0.0
-		}
-
-		// Label counts and y-axis padding are linked together to produce a user-friendly graph.
-		// First when considering padding we want to prefer a zero axis start if reasonable, and add a slight
-		// padding to the max so there is a little space at the top of the graph. In addition, we want to pick
-		// a max value that will result in round intervals on the axis. These details are in range.go.
-		// But in order to produce round intervals we need to have an idea of how many intervals there are.
-		// In addition, if the user specified a `Unit` value we may need to adjust our label count calculation
-		// based on the padded range.
-		//
-		// In order to accomplish this, we estimate the label count (if necessary), pad the range, then precisely
-		// calculate the label count.
-		// TODO - label counts are also calculated in axis.go, for the X axis, ideally we unify these implementations
-		labelCount := yAxisOption.LabelCount
-		padLabelCount := labelCount
-		if padLabelCount < 1 {
-			if yAxisOption.Unit > 0 {
-				padLabelCount = int((max-min)/yAxisOption.Unit) + 1
-			} else {
-				padLabelCount = defaultYAxisLabelCount(max-min, decimalData)
-			}
-		}
-		padLabelCount = chartdraw.MaxInt(padLabelCount+yAxisOption.LabelCountAdjustment, 2)
-		// we call padRange directly because we need to do this padding before we can calculate the final labelCount for the axisRange
-		min, max = padRange(padLabelCount, min, max, minPadRange, maxPadRange)
-		if labelCount <= 0 {
-			if yAxisOption.Unit > 0 {
-				if yAxisOption.Max == nil {
-					max = math.Trunc(math.Ceil(max/yAxisOption.Unit) * yAxisOption.Unit)
-				}
-				labelCount = int((max-min)/yAxisOption.Unit) + 1
-			} else {
-				labelCount = defaultYAxisLabelCount(max-min, decimalData)
-			}
-			yAxisOption.LabelCount = labelCount
-		}
-		labelCount = chartdraw.MaxInt(labelCount+yAxisOption.LabelCountAdjustment, 2)
-		r := newRange(p, getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter),
-			rangeHeight, labelCount, min, max, 0, 0)
-		result.axisRanges[index] = r
-
-		if yAxisOption.Theme == nil {
-			yAxisOption.Theme = opt.theme
-		}
-		if !opt.axisReversed {
-			if len(yAxisOption.Labels) == 0 {
-				yAxisOption.Labels = r.Values()
-			} else {
-				for i, autoValue := range r.Values() {
-					if i < len(yAxisOption.Labels) {
-						continue
-					}
-					yAxisOption.Labels = append(yAxisOption.Labels, autoValue)
+		yAxisOption = *yAxisOption.prep(theme)
+		var r axisRange
+		if opt.axisReversed { // Y is category axis and X is the value axis
+			r = calculateCategoryAxisRange(p, rangeHeight, true,
+				yAxisOption.Labels, 0,
+				yAxisOption.LabelCount, yAxisOption.LabelCountAdjustment, yAxisOption.Unit,
+				opt.seriesList,
+				yAxisOption.LabelRotation, yAxisOption.LabelFontStyle)
+		} else { // Standard Y value axis
+			floatFormatter := getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter)
+			valueFormatter := floatFormatter
+			if yAxisOption.Formatter != "" {
+				valueFormatter = func(f float64) string {
+					return strings.ReplaceAll(yAxisOption.Formatter, "{value}", floatFormatter(f))
 				}
 			}
-		} else {
-			yAxisOption.isCategoryAxis = true
-			// we need to update the range labels or the bars won't be aligned to the Y axis
-			r.divideCount = getSeriesMaxDataCount(opt.seriesList)
-			result.axisRanges[index] = r
-			// since the x-axis is the value part, it's label is calculated and processed separately
-			opt.xAxis.Labels = r.Values()
-			opt.xAxis.isValueAxis = true
+			r = calculateValueAxisRange(p, true, rangeHeight,
+				yAxisOption.Min, yAxisOption.Max, yAxisOption.RangeValuePaddingScale,
+				yAxisOption.Labels, 0,
+				yAxisOption.LabelCount, yAxisOption.Unit, yAxisOption.LabelCountAdjustment,
+				opt.seriesList, yIndex, opt.stackSeries,
+				valueFormatter,
+				yAxisOption.LabelRotation, yAxisOption.LabelFontStyle)
 		}
-		reverseSlice(yAxisOption.Labels)
-		child := p.Child(PainterPaddingOption(Box{
+		result.yaxisRanges[yIndex] = r
+
+		axisOpt := yAxisOption.toAxisOption(r)
+		if yIndex != 0 {
+			axisOpt.splitLineShow = false // only show split lines on primary index axis
+		}
+		if axisOpt.position == "" {
+			if yIndex == 0 {
+				axisOpt.position = PositionLeft
+			} else {
+				axisOpt.position = PositionRight
+			}
+		}
+		yAxisBox, err := newAxisPainter(p.Child(PainterPaddingOption(Box{
 			Left:   rangeWidthLeft,
 			Right:  rangeWidthRight,
 			Bottom: xAxisHeight,
 			IsSet:  true,
-		}))
-		if yAxisOption.Position == "" {
-			if index == 0 {
-				yAxisOption.Position = PositionLeft
-			} else {
-				yAxisOption.Position = PositionRight
-			}
-		}
-		axisOpt := yAxisOption.toAxisOption(theme)
-		if index != 0 {
-			axisOpt.splitLineShow = false // only show split lines on primary index axis
-		}
-		yAxis := newAxisPainter(child, axisOpt)
-		if yAxisBox, err := yAxis.Render(); err != nil {
+		})), axisOpt).Render()
+		if err != nil {
 			return nil, err
-		} else if yAxisOption.Position == PositionRight {
+		} else if axisOpt.position == PositionRight {
 			rangeWidthRight += yAxisBox.Width()
 		} else {
 			rangeWidthLeft += yAxisBox.Width()
@@ -335,16 +288,20 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		IsSet: true,
 	}
 	if opt.axisReversed {
-		xAxisOptions = opt.xAxis.toAxisOption(theme) // regenerate axis options after value changes above
+		xAxisOpts.aRange.size = p.Width() - rangeWidthLeft   // adjust size to match new painter dimensions
+		xAxisOpts = opt.xAxis.toAxisOption(xAxisOpts.aRange) // regenerate axis options after value changes above
 	} else {
-		xAxisPadding.Top = p.Height() - xAxisHeight // only limit height when the axis is rendered short
-		xAxisOptions.painterPrePositioned = true    // we must provide the exact painter position which will meet with the y-axis exactly
+		xAxisOpts.aRange.size -= rangeWidthLeft + rangeWidthRight // adjust size to match new painter dimensions
+		xAxisPadding.Top = p.Height() - xAxisHeight
+		xAxisOpts.painterPrePositioned = true // we must provide the exact painter position which will meet with the y-axis exactly
 	}
-	_, err = newAxisPainter(p.Child(PainterPaddingOption(xAxisPadding)), xAxisOptions).Render()
+
+	_, err = newAxisPainter(p.Child(PainterPaddingOption(xAxisPadding)), xAxisOpts).Render()
 	if err != nil {
 		return nil, err
 	}
 
+	result.xaxisRange = xAxisOpts.aRange
 	result.seriesPainter = p.Child(PainterPaddingOption(Box{
 		Left:   rangeWidthLeft,
 		Right:  rangeWidthRight,

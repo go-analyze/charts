@@ -1,5 +1,9 @@
 package charts
 
+import (
+	"math"
+)
+
 type YAxisOption struct {
 	// Show specifies if the y-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
@@ -25,7 +29,7 @@ type YAxisOption struct {
 	LabelFontStyle FontStyle
 	// LabelRotation are the radians for rotating the label. Convert from degrees using DegreesToRadians(float64).
 	LabelRotation float64
-	// Formatter for replacing y-axis text values.
+	// Deprecated: Formatter is deprecated, use ValueFormatter instead.
 	Formatter string
 	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
 	Unit float64
@@ -46,41 +50,34 @@ type YAxisOption struct {
 	isCategoryAxis bool
 }
 
-func (opt *YAxisOption) toAxisOption(fallbackTheme ColorPalette) axisOption {
-	position := PositionLeft
-	if opt.Position == PositionRight {
-		position = PositionRight
-	}
-	theme := getPreferredTheme(opt.Theme, fallbackTheme)
+func (opt *YAxisOption) prep(fallbackTheme ColorPalette) *YAxisOption {
+	opt.Theme = getPreferredTheme(opt.Theme, fallbackTheme)
 	if opt.LabelFontStyle.IsZero() {
 		opt.LabelFontStyle = opt.FontStyle
 	}
-	if opt.LabelFontStyle.FontColor.IsZero() {
-		opt.LabelFontStyle.FontColor = theme.GetYAxisTextColor()
-	}
-	if opt.TitleFontStyle.FontColor.IsZero() {
-		opt.TitleFontStyle.FontColor = opt.LabelFontStyle.FontColor
-	}
+	opt.LabelFontStyle = fillFontStyleDefaults(opt.LabelFontStyle, defaultFontSize,
+		opt.Theme.GetXAxisTextColor())
+	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, math.Max(opt.LabelFontStyle.FontSize, defaultFontSize),
+		opt.LabelFontStyle.FontColor, opt.LabelFontStyle.Font)
+	return opt
+}
+
+// toAxisOption converts the YAxisOption to axisOption after prep has been invoked.
+func (opt *YAxisOption) toAxisOption(yAxisRange axisRange) axisOption {
 	axisOpt := axisOption{
-		show:                 opt.Show,
-		title:                opt.Title,
-		titleFontStyle:       opt.TitleFontStyle,
-		labels:               opt.Labels,
-		formatter:            opt.Formatter,
-		position:             position,
-		labelFontStyle:       opt.LabelFontStyle,
-		labelRotation:        opt.LabelRotation,
-		axisSplitLineColor:   theme.GetAxisSplitLineColor(),
-		axisColor:            theme.GetYAxisStrokeColor(),
-		strokeWidth:          -1,
-		boundaryGap:          Ptr(false),
-		unit:                 opt.Unit,
-		labelCount:           opt.LabelCount,
-		labelCountAdjustment: opt.LabelCountAdjustment,
-		labelSkipCount:       opt.LabelSkipCount,
-		splitLineShow:        true,
+		show:               opt.Show,
+		aRange:             yAxisRange,
+		title:              opt.Title,
+		titleFontStyle:     opt.TitleFontStyle,
+		position:           opt.Position,
+		axisSplitLineColor: opt.Theme.GetAxisSplitLineColor(),
+		axisColor:          opt.Theme.GetYAxisStrokeColor(),
+		strokeWidth:        -1,
+		boundaryGap:        Ptr(false),
+		labelSkipCount:     opt.LabelSkipCount,
+		splitLineShow:      true,
 	}
-	if opt.isCategoryAxis {
+	if opt.isCategoryAxis || yAxisRange.isCategory {
 		axisOpt.boundaryGap = Ptr(true)
 		axisOpt.strokeWidth = 1
 		axisOpt.splitLineShow = false

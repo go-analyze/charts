@@ -19,7 +19,7 @@ func TestTrendLine(t *testing.T) {
 			name: "linear",
 			render: func(p *Painter) ([]byte, error) {
 				trendLine := newTrendLinePainter(p)
-				axisRange := newRange(p, nil, p.Height(), 6, 0.0, 10.0, 0.0, 0.0)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 10.0, 0.0, 0.0)
 				xValues := []int{50, 150, 250, 350, 450, 550}
 				trend := SeriesTrendLine{
 					Type: SeriesTrendTypeLinear,
@@ -42,7 +42,7 @@ func TestTrendLine(t *testing.T) {
 			name: "cubic",
 			render: func(p *Painter) ([]byte, error) {
 				trendLine := newTrendLinePainter(p)
-				axisRange := newRange(p, nil, p.Height(), 6, 0.0, 40.0, 0.0, 0.0)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 40.0, 0.0, 0.0)
 				xValues := []int{50, 150, 250, 350, 450, 550}
 				trend := SeriesTrendLine{
 					Type: SeriesTrendTypeCubic,
@@ -65,7 +65,7 @@ func TestTrendLine(t *testing.T) {
 			name: "average",
 			render: func(p *Painter) ([]byte, error) {
 				trendLine := newTrendLinePainter(p)
-				axisRange := newRange(p, nil, p.Height(), 6, 0.0, 6.0, 0.0, 0.0)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 6.0, 0.0, 0.0)
 				xValues := []int{50, 150, 250, 350, 450, 550}
 				trend := SeriesTrendLine{
 					Type:   SeriesTrendTypeAverage,

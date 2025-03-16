@@ -55,7 +55,6 @@ type ticksOption struct {
 	firstIndex  int
 	length      int
 	vertical    bool
-	labelCount  int
 	tickCount   int
 	tickSpaces  int
 	strokeWidth float64
@@ -72,7 +71,6 @@ type multiTextOption struct {
 	offset         OffsetInt
 	firstIndex     int
 	labelCount     int
-	tickCount      int
 	labelSkipCount int
 }
 
@@ -752,7 +750,7 @@ func isTick(totalRange int, numTicks int, index int) bool {
 
 // ticks draws small lines to indicate tick marks, using a fixed stroke color/width.
 func (p *Painter) ticks(opt ticksOption) {
-	if opt.labelCount <= 0 || opt.length <= 0 {
+	if opt.tickCount <= 0 || opt.length <= 0 {
 		return
 	}
 	var values []int
@@ -808,6 +806,10 @@ func (p *Painter) multiText(opt multiTextOption) {
 		p.render.SetTextRotation(opt.textRotation)
 	}
 	positionCount := len(positions)
+	tickCount := opt.labelCount
+	if opt.centerLabels {
+		tickCount++
+	}
 
 	skippedLabels := opt.labelSkipCount // specify the skip count to ensure the top value is listed
 	for index, start := range positions {
@@ -815,9 +817,8 @@ func (p *Painter) multiText(opt multiTextOption) {
 			break // positions have one item more than we can map to text, this extra value is used to center against
 		} else if index < opt.firstIndex {
 			continue
-		} else if !opt.vertical &&
-			index != count-1 && // one off case for last label due to values and label qty difference
-			!isTick(positionCount-opt.firstIndex, opt.tickCount, index-opt.firstIndex) {
+		} else if index != count-1 && // one off case for last label due to values and label qty difference
+			!isTick(positionCount-opt.firstIndex, tickCount, index-opt.firstIndex) {
 			continue
 		} else if index != count-1 && // ensure the bottom value is always printed
 			skippedLabels < opt.labelSkipCount {

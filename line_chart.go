@@ -159,7 +159,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 	for index, series := range seriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
 		seriesColor := opt.Theme.GetSeriesColor(index)
-		yRange := result.axisRanges[series.YAxisIndex]
+		yRange := result.yaxisRanges[series.YAxisIndex]
 		points := make([]Point, len(series.Values))
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {

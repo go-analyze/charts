@@ -493,14 +493,21 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			}
 			axisTheme = axisTheme.WithYAxisColor(axisLineColor).WithYAxisTextColor(axisLineColor)
 		}
+		var valFormatter ValueFormatter
+		if item.AxisLabel.Formatter != "" {
+			valFormatter = func(f float64) string {
+				return strings.ReplaceAll(item.AxisLabel.Formatter, "{value}",
+					FormatValueHumanize(f, 2, false))
+			}
+		}
 		yAxisOptions[index] = YAxisOption{
-			Min:           item.Min,
-			Max:           item.Max,
-			Formatter:     item.AxisLabel.Formatter,
-			Theme:         axisTheme,
-			Labels:        item.Data,
-			FontStyle:     item.AxisLabel.makeFontStyle(),
-			SpineLineShow: item.AxisLine.Show,
+			Min:            item.Min,
+			Max:            item.Max,
+			ValueFormatter: valFormatter,
+			Theme:          axisTheme,
+			Labels:         item.Data,
+			LabelFontStyle: item.AxisLabel.makeFontStyle(),
+			SpineLineShow:  item.AxisLine.Show,
 		}
 	}
 	o.YAxis = yAxisOptions

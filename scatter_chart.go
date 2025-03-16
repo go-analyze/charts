@@ -94,7 +94,7 @@ func (s *scatterChart) render(result *defaultRenderResult, seriesList ScatterSer
 			seriesSymbol = opt.Symbol
 		}
 		seriesColor := opt.Theme.GetSeriesColor(index)
-		yRange := result.axisRanges[series.YAxisIndex]
+		yRange := result.yaxisRanges[series.YAxisIndex]
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
 			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)

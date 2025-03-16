@@ -77,7 +77,7 @@ func TestBottomXAxis(t *testing.T) {
 			}, PainterThemeOption(theme), PainterPaddingOption(NewBoxEqual(100)))
 
 			xAxisOpt := tt.makeOption()
-			_, err := newAxisPainter(p, xAxisOpt.toAxisOption(theme)).Render()
+			_, err := newAxisPainter(p, xAxisOpt.prep(theme).toAxisOption(axisRange{})).Render()
 			require.NoError(t, err)
 			data, err := p.Bytes()
 			require.NoError(t, err)

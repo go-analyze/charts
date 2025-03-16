@@ -49,7 +49,6 @@ func main() {
 			opt.SeriesList[1].MarkLine = charts.NewMarkLine(
 				charts.SeriesMarkTypeAverage,
 			)
-			opt.XAxis.LabelCount = 12 // force label count due to the labels being very close
 		},
 	)
 	if err != nil {

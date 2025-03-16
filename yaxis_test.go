@@ -78,7 +78,7 @@ func TestYAxis(t *testing.T) {
 			}, PainterThemeOption(GetTheme(ThemeLight)),
 				PainterPaddingOption(NewBoxEqual(100)))
 
-			_, err := newAxisPainter(p, tt.makeOption().toAxisOption(p.theme)).Render()
+			_, err := newAxisPainter(p, tt.makeOption().prep(p.theme).toAxisOption(axisRange{})).Render()
 			require.NoError(t, err)
 			data, err := p.Bytes()
 			require.NoError(t, err)
@@ -100,7 +100,7 @@ func TestYAxisSplitLineDisabled(t *testing.T) {
 		Labels:   []string{"a", "b", "c", "d"},
 	}
 
-	opt := yaxisOpt.toAxisOption(GetTheme(ThemeLight))
+	opt := yaxisOpt.prep(GetTheme(ThemeLight)).toAxisOption(axisRange{})
 	opt.splitLineShow = false
 	_, err := newAxisPainter(p, opt).Render()
 	require.NoError(t, err)
