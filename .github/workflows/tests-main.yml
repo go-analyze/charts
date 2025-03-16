@@ -1,0 +1,10 @@
+name: Tests - Main Push
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  call-reusable:
+    uses: ./.github/workflows/tests-workflow.yml
+

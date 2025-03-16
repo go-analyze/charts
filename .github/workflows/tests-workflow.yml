@@ -1,9 +1,7 @@
-name: Test
+name: Tests
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
+  workflow_call:
 
 jobs:
   lint-and-tidy:

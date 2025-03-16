@@ -1,0 +1,9 @@
+name: Tests - Pull Request
+
+on:
+  pull_request:
+
+jobs:
+  call-reusable:
+    uses: ./.github/workflows/tests-workflow.yml
+
