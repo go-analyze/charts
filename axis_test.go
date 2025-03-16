@@ -137,6 +137,16 @@ func TestAxis(t *testing.T) {
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 50 321\nL 550 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 50 326\nL 50 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 121 326\nL 121 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 192 326\nL 192 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 335 326\nL 335 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 407 326\nL 407 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 478 326\nL 478 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 550 326\nL 550 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><text x=\"49\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><text x=\"151\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><text x=\"223\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><text x=\"367\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">E</text><text x=\"438\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">F</text><text x=\"539\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">G</text></svg>",
 		},
 		{
+			name: "label_start_offset",
+			optionFactory: func() axisOption {
+				return axisOption{
+					labels:         letterLabels,
+					dataStartIndex: 2,
+				}
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 50 321\nL 550 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 192 326\nL 192 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 264 326\nL 264 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 335 326\nL 335 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 407 326\nL 407 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 478 326\nL 478 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 550 326\nL 550 321\" style=\"stroke-width:1;stroke:blue;fill:none\"/><text x=\"223\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><text x=\"294\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">D</text><text x=\"367\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">E</text><text x=\"438\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">F</text><text x=\"509\" y=\"347\" style=\"stroke:none;fill:green;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">G</text></svg>",
+		},
+		{
 			name: "custom_unit",
 			optionFactory: func() axisOption {
 				return axisOption{

@@ -55,6 +55,16 @@ func TestBottomXAxis(t *testing.T) {
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 100 245\nL 500 245\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 100 250\nL 100 245\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 233 250\nL 233 245\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 366 250\nL 366 245\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 500 250\nL 500 245\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"153\" y=\"297\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,153,297)\">abc</text><text x=\"286\" y=\"297\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,286,297)\">def</text><text x=\"420\" y=\"297\" style=\"stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif\" transform=\"rotate(90.00,420,297)\">ghi</text></svg>",
 		},
+		{
+			name: "label_start_offset",
+			makeOption: func() XAxisOption {
+				return XAxisOption{
+					Labels:         []string{"a", "b", "c", "d", "e", "f"},
+					DataStartIndex: 2,
+				}
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 100 271\nL 500 271\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 233 276\nL 233 271\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 300 276\nL 300 271\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 366 276\nL 366 271\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 433 276\nL 433 271\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 500 276\nL 500 271\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"262\" y=\"297\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">c</text><text x=\"329\" y=\"297\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">d</text><text x=\"395\" y=\"297\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">e</text><text x=\"463\" y=\"297\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">f</text></svg>",
+		},
 	}
 
 	for i, tt := range tests {
