@@ -56,7 +56,7 @@ func (opt *YAxisOption) prep(fallbackTheme ColorPalette) *YAxisOption {
 		opt.LabelFontStyle = opt.FontStyle
 	}
 	opt.LabelFontStyle = fillFontStyleDefaults(opt.LabelFontStyle, defaultFontSize,
-		opt.Theme.GetXAxisTextColor())
+		opt.Theme.GetYAxisTextColor())
 	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, math.Max(opt.LabelFontStyle.FontSize, defaultFontSize),
 		opt.LabelFontStyle.FontColor, opt.LabelFontStyle.Font)
 	return opt

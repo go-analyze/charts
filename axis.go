@@ -71,9 +71,6 @@ func (a *axisPainter) Render() (Box, error) {
 	var titleBox Box
 	var titleShift int
 	if opt.title != "" {
-		// Fill title font defaults with label's color if not set
-		opt.titleFontStyle =
-			fillFontStyleDefaults(opt.titleFontStyle, defaultFontSize, opt.aRange.labelFontStyle.FontColor, top.font)
 		// measured without rotation, we choose measurement side as appropriate
 		titleBox = top.MeasureText(opt.title, 0, opt.titleFontStyle)
 		// measuring without rotation also allows us to simply refer to the height as the shift for any orientation
@@ -153,8 +150,11 @@ func (a *axisPainter) Render() (Box, error) {
 		}, opt.axisColor, strokeWidth)
 	}
 
-	rangeLabels := opt.aRange.Values()
+	rangeLabels := opt.aRange.labels
 	if isVertical { // reverse to match multitext expectations (draws from top down)
+		// make copy first to avoid changing range slice
+		rangeLabels = make([]string, len(opt.aRange.labels))
+		copy(rangeLabels, opt.aRange.labels)
 		reverseSlice(rangeLabels)
 	}
 
@@ -222,6 +222,11 @@ func (a *axisPainter) Render() (Box, error) {
 		labelPadding.Bottom = tickLength + labelMargin
 	default: // PositionBottom
 		labelPadding.Top = tickLength + labelMargin
+		if opt.aRange.labelRotation != 0 {
+			flatWidth, flatHeight :=
+				top.measureTextMaxWidthHeight(opt.aRange.labels, 0, opt.aRange.labelFontStyle)
+			labelPadding.Top -= textRotationHeightAdjustment(flatWidth, flatHeight, opt.aRange.labelRotation)
+		}
 	}
 	labelPainter := child.Child(PainterPaddingOption(labelPadding))
 	alignSide := AlignCenter

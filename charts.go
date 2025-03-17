@@ -194,7 +194,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			opt.seriesList, 0, opt.stackSeries,
 			getPreferredValueFormatter(opt.xAxis.ValueFormatter, opt.valueFormatter),
 			opt.xAxis.LabelRotation, opt.xAxis.LabelFontStyle)
-		opt.xAxis.isValueAxis = true
 		xAxisOpts = opt.xAxis.toAxisOption(xAxisRange)
 	} else { //  X is category axis
 		xAxisRange := calculateCategoryAxisRange(p, p.Width(), false,
@@ -230,7 +229,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		if len(opt.yAxis) > yIndex {
 			yAxisOption = opt.yAxis[yIndex]
 		}
-		yAxisOption = *yAxisOption.prep(theme)
+		yAxisOption = *yAxisOption.prep(getPreferredTheme(yAxisOption.Theme, theme))
 		var r axisRange
 		if opt.axisReversed { // Y is category axis and X is the value axis
 			r = calculateCategoryAxisRange(p, rangeHeight, true,

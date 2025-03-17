@@ -43,7 +43,6 @@ type XAxisOption struct {
 	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
 	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.
 	LabelCountAdjustment int
-	isValueAxis          bool
 }
 
 const boundaryGapDefaultThreshold = 40
@@ -78,7 +77,7 @@ func (opt *XAxisOption) toAxisOption(xAxisRange axisRange) axisOption {
 		axisColor:          opt.Theme.GetXAxisStrokeColor(),
 		labelOffset:        opt.LabelOffset,
 	}
-	if opt.isValueAxis {
+	if !xAxisRange.isCategory {
 		axisOpt.splitLineShow = true
 		axisOpt.strokeWidth = -1
 		axisOpt.boundaryGap = Ptr(false)

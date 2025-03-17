@@ -17,10 +17,10 @@ func newTestRange(size, divideCount int, min, max, minPaddingScale, maxPaddingSc
 	}
 }
 
-func newTestRangeForLabels(labels []string, style FontStyle) axisRange {
+func newTestRangeForLabels(labels []string, rotation float64, style FontStyle) axisRange {
 	p := NewPainter(PainterOptions{})
 	style = fillFontStyleDefaults(style, defaultFontSize, ColorBlack)
-	width, height := p.measureTextMaxWidthHeight(labels, 0, style)
+	width, height := p.measureTextMaxWidthHeight(labels, rotation, style)
 	return axisRange{
 		isCategory:     true,
 		labels:         labels,
@@ -30,6 +30,7 @@ func newTestRangeForLabels(labels []string, style FontStyle) axisRange {
 		textMaxWidth:   width,
 		textMaxHeight:  height,
 		labelFontStyle: style,
+		labelRotation:  rotation,
 	}
 }
 
@@ -101,21 +102,7 @@ func (tsl testSeriesList) getSeriesSymbol(index int) Symbol {
 }
 
 func TestCalculateValueAxisRange(t *testing.T) {
-	fs := FontStyle{FontSize: 16}
-
-	t.Run("lable_rotation_and_font_defaults", func(t *testing.T) {
-		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		series := testSeries{yAxisIndex: 0, values: []float64{10, 20, 30}}
-		tsl := testSeriesList{series: []testSeries{series}}
-		fs := FontStyle{} // Missing Font and FontSize.
-
-		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			nil, 0, 5, 0, 0,
-			tsl, 0, false, defaultValueFormatter, 0, fs)
-
-		assert.NotNil(t, ar.labelFontStyle.Font)
-		assert.InDelta(t, defaultFontSize, ar.labelFontStyle.FontSize, 0.0)
-	})
+	fs := FontStyle{FontSize: 16, FontColor: ColorGray}
 
 	t.Run("label_count", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
@@ -141,7 +128,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			nil, 0, 0, 5, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, 3, ar.labelCount)
+		assert.Equal(t, 12, ar.labelCount)
 		assert.Equal(t, []string{"0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"}, ar.labels)
 	})
 
@@ -154,9 +141,9 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			nil, 0, 0, 5, 2,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, 5, ar.labelCount)
+		assert.Equal(t, 12, ar.labelCount)
 		assert.InDelta(t, 0.0, ar.min, 0.0)
-		assert.InDelta(t, 120.0, ar.max, 0.0)
+		assert.InDelta(t, 110.0, ar.max, 0.0)
 	})
 
 	t.Run("label_unit_adjusted_negative", func(t *testing.T) {
@@ -168,9 +155,9 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			nil, 0, 0, 5, 4,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, 5, ar.labelCount)
-		assert.InDelta(t, -20.0, ar.min, 0.0)
-		assert.InDelta(t, 120.0, ar.max, 0.0)
+		assert.Equal(t, 24, ar.labelCount)
+		assert.InDelta(t, -10.0, ar.min, 0.0)
+		assert.InDelta(t, 105.0, ar.max, 0.0)
 	})
 
 	t.Run("stacked_series", func(t *testing.T) {
@@ -214,7 +201,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 
 		assert.InDelta(t, 1.0, ar.min, 0.0)
 		assert.InDelta(t, 5.0, ar.max, 0.0)
-		assert.Equal(t, 10, ar.labelCount)
+		assert.Equal(t, 6, ar.labelCount)
 	})
 
 	t.Run("long_horizontal_labels", func(t *testing.T) {
@@ -222,7 +209,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 20, 30}}
 		tsl := testSeriesList{series: []testSeries{series}}
 
-		fs := FontStyle{FontSize: 28}
+		fs := FontStyle{FontSize: 28, FontColor: ColorGray}
 		inputLabels := []string{"ThisIsAVeryLongLabelThatExceedsNormal", "AnotherVeryLongLabelThatExceedsNormal",
 			"WowLookAtTheseLabels!", "AndHereIsAnotherReallyLongLabel"}
 		ar := calculateValueAxisRange(p, false, 800, nil, nil, nil,
@@ -277,14 +264,14 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			providedLabels, 0, explicitLabelCount, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, providedLabels, ar.labels)
-		assert.Equal(t, len(providedLabels), ar.divideCount)
+		assert.Equal(t, []string{"Label1", "Label2", "Label3"}, ar.labels)
+		assert.Equal(t, 3, ar.divideCount)
 		assert.Equal(t, explicitLabelCount, ar.labelCount)
 	})
 }
 
 func TestCalculateCategoryAxisRange(t *testing.T) {
-	fs := FontStyle{FontSize: 16}
+	fs := FontStyle{FontSize: 16, FontColor: ColorGray}
 
 	t.Run("no_labels_provided_uses_series_names", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
@@ -336,21 +323,6 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		assert.Equal(t, []string{"series:0", "series:1", "series:2", "series:3"}, ar.labels)
 		assert.Equal(t, 4, ar.divideCount)
 		assert.Equal(t, 3, ar.labelCount)
-	})
-
-	t.Run("font_defaults", func(t *testing.T) {
-		fsEmpty := FontStyle{}
-		p := NewPainter(PainterOptions{Width: 600, Height: 400})
-		tsl := testSeriesList{series: []testSeries{
-			{values: []float64{1}},
-			{values: []float64{2}},
-		}}
-
-		ar := calculateCategoryAxisRange(p, 800, true, []string{}, 0,
-			0, 0, 0, tsl, 0, fsEmpty)
-
-		assert.NotNil(t, ar.labelFontStyle.Font)
-		assert.InDelta(t, defaultFontSize, ar.labelFontStyle.FontSize, 0.0)
 	})
 
 	t.Run("label_rotation", func(t *testing.T) {

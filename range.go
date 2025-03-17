@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 const rangeMinPaddingPercentMin = 0.0 // increasing could result in forced negative y-axis minimum
@@ -33,7 +34,7 @@ type axisRange struct {
 // calculateValueAxisRange centralizes the logic for numeric axes, picking a scale and label count that is human friendly.
 func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	minCfg, maxCfg, rangeValuePaddingScale *float64,
-	labels []string, dataStartIndex int,
+	labelsCfg []string, dataStartIndex int,
 	labelCountCfg int, labelUnit float64, labelCountAdjustment int,
 	seriesList seriesList, yAxisIndex int, stackSeries bool,
 	valueFormatter ValueFormatter,
@@ -56,86 +57,113 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		maxVal = *maxCfg
 		maxPadScale = 0.0
 	}
-	decimalData := minVal != math.Floor(minVal) || (maxVal-minVal) != math.Floor(maxVal-minVal) // TODO - does this need to be done after padding
+	decimalData := minVal != math.Floor(minVal) || (maxVal-minVal) != math.Floor(maxVal-minVal)
 
-	// Label counts and y-axis padding are linked together to produce a user-friendly graph.
+	// Label counts and range padding are linked together to produce a user-friendly graph.
 	// First when considering padding we want to prefer a zero axis start if reasonable, and add a slight
-	// padding to the maxVal so there is a little space at the top of the graph. In addition, we want to pick
-	// a maxVal value that will result in round intervals on the axis. These details are in range.go.
-	// But in order to produce round intervals we need to have an idea of how many intervals there are.
-	// In addition, if the user specified a `Unit` value we may need to adjust our label count calculation
-	// based on the padded range.
+	// padding to the maxVal so there is a little space at the top of the graph. We also want to pick
+	// a maxVal value and label count that will result in round intervals on the axis, or match the user
+	// supplied unit (if provided).
 	//
-	// In order to accomplish this, we estimate the label count (if necessary), pad the range, then precisely
-	// calculate the label count.
-	padLabelCount := labelCountCfg
-	if padLabelCount < 1 {
+	// In order to accomplish this, we estimate the label count (if necessary), produce some labels to measure,
+	// calculate our label limit, pad the range, then once the label count is finalized produce the final labels.
+	initialLabelCount := labelCountCfg
+	if initialLabelCount < 1 {
 		if labelUnit > 0 {
-			padLabelCount = int((maxVal-minVal)/labelUnit) + 1
+			initialLabelCount = int((maxVal-minVal)/labelUnit) + 1
 		} else {
-			padLabelCount = defaultYAxisLabelCount(maxVal-minVal, decimalData)
-		}
-	}
-	padLabelCount = chartdraw.MaxInt(padLabelCount+labelCountAdjustment, minimumAxisLabels)
-	// we call padRange directly because we need to do this padding before we can calculate the final labelCount for the axisRange
-	minPadded, maxPadded := padRange(padLabelCount, minVal, maxVal, minPadScale, maxPadScale)
-	labelCount := labelCountCfg
-	if labelCount == 0 { // If user never explicitly set labelCount, refine again after padding
-		if labelUnit > 0 {
-			// Round up max to a multiple of the unit
-			if maxCfg == nil {
-				maxPadded = math.Trunc(math.Ceil(maxPadded/labelUnit) * labelUnit)
+			initialLabelCount =
+				chartdraw.MinInt(chartdraw.MaxInt(int(maxVal-minVal)+1, defaultYAxisLabelCountLow),
+					defaultYAxisLabelCountHigh)
+			if decimalData { // if there is a decimal, we double our labels to provide more detail
+				initialLabelCount = chartdraw.MinInt(initialLabelCount*2, defaultYAxisLabelCountHigh)
 			}
-			// set labelCount so that unit is respected
-			labelCount = int((maxPadded-minPadded)/labelUnit) + 1
-		} else {
-			labelCount = defaultYAxisLabelCount(maxPadded-minPadded, decimalData)
 		}
 	}
-	if labelCountAdjustment != 0 {
-		if labelUnit > 0 {
-			// in order to maintain unit we need to expand the scale range to add the labels
-			for i := 0; i < labelCountAdjustment; i++ {
-				if i%2 == 0 || minPadded == 0 {
-					maxPadded += labelUnit
-				} else {
-					minPadded -= labelUnit
-				}
-			}
-		} else {
-			labelCount = chartdraw.MaxInt(labelCount+labelCountAdjustment, minimumAxisLabels)
-		}
-	}
+	initialLabelCount = chartdraw.MaxInt(initialLabelCount+labelCountAdjustment, minimumAxisLabels)
+	labels := valueLabels(labelsCfg, valueFormatter, minVal, maxVal, initialLabelCount)
+	labelW, labelH := p.measureTextMaxWidthHeight(labels, labelRotation, fontStyle)
 
-	// ensure labels are set for the full range is met
-	if len(labels) < labelCount {
-		offset := (maxPadded - minPadded) / float64(labelCount-1)
-		for i := len(labels); i < labelCount; i++ {
-			labels = append(labels, valueFormatter(minPadded+float64(i)*offset))
-		}
-	}
-
-	textW, textH := p.measureTextMaxWidthHeight(labels, labelRotation, fontStyle)
-
-	// If user gave an explicit .LabelCount, then we do NOT do a collision check.
+	// If user gave an explicit LabelCount, then we do NOT do a collision check
 	// For default logic we want to make sure we choose a label count that is visually appealing
+	padLabelCount := initialLabelCount
 	if labelCountCfg == 0 {
-		if maxLabels := calculateLabelFixMax(isVertical, labelUnit, labelCount, axisSize, textW, textH); maxLabels < labelCount {
-			labelCount = maxLabels
+		maxLabelCount := padLabelCount
+		if isVertical {
+			if labelH > 0 { // avoid divide by zero
+				maxLabelCount = axisSize / labelH
+			}
+		} else {
+			if labelW > 0 {
+				// add to the label width to give good spacing
+				maxLabelCount = axisSize / (labelW + chartdraw.MinInt(20, labelW))
+			}
 		}
+		if maxLabelCount < padLabelCount {
+			padLabelCount = chartdraw.MaxInt(maxLabelCount, minimumAxisLabels)
+		}
+		if labelUnit > 0 && padLabelCount > minimumAxisLabels {
+			// reduce padLabelCount to ensure it remains within the max count if we have to add one to meet unit expectations
+			padLabelCount--
+		}
+	}
+	minPadded, maxPadded := padRange(padLabelCount, minVal, maxVal, minPadScale, maxPadScale)
+	labelCount := padLabelCount
+	// if the user set only a unit we may need to refine again after padding to meet th eunit
+	if labelCountCfg == 0 && labelUnit > 0 {
+		if maxCfg == nil {
+			// if no max enforced, round up max to a multiple of the unit
+			maxPadded = math.Trunc(math.Ceil(maxPadded/labelUnit) * labelUnit)
+		}
+		// ensure we have a label count that will meet the requested units
+		if fastCalc := int((maxPadded-minPadded)/labelUnit) + 1; fastCalc > minimumAxisLabels && fastCalc < defaultYAxisLabelCountHigh {
+			// trivial case that can avoid the loop search below
+			labelCount = fastCalc
+		}
+		currentInterval := (maxPadded - minPadded) / float64(padLabelCount-1)
+		remainder := math.Mod(currentInterval, labelUnit)
+		if math.Abs(remainder) > matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) > matrix.DefaultEpsilon {
+			// Search for a candidate labelCount by adjusting downward and upward to find the closest possible
+			for delta := 0; ; delta++ {
+				// Try candidate below, ensuring it doesn't drop below 4
+				if candidate := padLabelCount - delta; candidate >= minimumAxisLabels*2 {
+					candidateInterval := (maxPadded - minPadded) / float64(candidate-1)
+					remainder = math.Mod(candidateInterval, labelUnit)
+					if math.Abs(remainder) < matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) < matrix.DefaultEpsilon {
+						labelCount = candidate
+						break
+					}
+				}
+				// Try candidate above
+				candidate := padLabelCount + delta
+				candidateInterval := (maxPadded - minPadded) / float64(candidate-1)
+				remainder = math.Mod(candidateInterval, labelUnit)
+				if math.Abs(remainder) < matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) < matrix.DefaultEpsilon {
+					labelCount = candidate
+					break
+				}
+				// Continue expanding the search if no candidate matches
+			}
+		}
+	}
+
+	if len(labels) != labelCount || minVal-minPadded > matrix.DefaultEpsilon || maxPadded-maxVal > matrix.DefaultEpsilon {
+		// regenerate labels to meet new scale
+		labels = valueLabels(labelsCfg, valueFormatter, minPadded, maxPadded, labelCount)
+		labelW, labelH = p.measureTextMaxWidthHeight(labels, labelRotation, fontStyle)
 	}
 
 	return axisRange{
 		isCategory:     false,
 		labels:         labels,
-		dataStartIndex: dataStartIndex, // TODO - ensure implemented correct
+		dataStartIndex: dataStartIndex,
 		divideCount:    len(labels),
 		labelCount:     labelCount,
 		min:            minPadded,
 		max:            maxPadded,
 		size:           axisSize,
-		textMaxWidth:   textW,
-		textMaxHeight:  textH,
+		textMaxWidth:   labelW,
+		textMaxHeight:  labelH,
 		labelRotation:  labelRotation,
 		labelFontStyle: fontStyle,
 	}
@@ -154,7 +182,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool,
 		for i := len(labels); i < seriesList.len(); i++ {
 			seriesName := seriesList.getSeriesName(i)
 			if seriesName == "" {
-				seriesName = strconv.Itoa(i + 1) // TODO - use value formatter?
+				seriesName = strconv.Itoa(i + 1)
 			}
 			labels = append(labels, seriesName)
 		}
@@ -169,20 +197,49 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool,
 	} else if labelCount > dataCount {
 		labelCount = dataCount
 	}
-	labelCount += labelCountAdjustment
-	if labelCount < minimumAxisLabels {
-		labelCount = minimumAxisLabels
-	}
+	labelCount = chartdraw.MaxInt(labelCount+labelCountAdjustment, minimumAxisLabels)
+	// validate the labels fit, otherwise reduce the count
 	if labelCountCfg == 0 {
-		if maxLabels := calculateLabelFixMax(isVertical, labelUnit, dataCount, axisSize, textW, textH); maxLabels < labelCount {
-			labelCount = maxLabels
+		maxLabelCount := labelCount
+		if isVertical {
+			if textH > 0 {
+				maxLabelCount = chartdraw.MaxInt(axisSize/textH, minimumAxisLabels)
+			}
+		} else {
+			if textW > 0 {
+				// add a little extra padding for horizontal layouts
+				maxLabelCount = chartdraw.MaxInt(axisSize/(textW+chartdraw.MinInt(10, textW)), minimumAxisLabels)
+			}
+		}
+		if labelUnit > 0 {
+			// If the user gave a 'unit', figure out how many 'units' fit
+			multiplier := 1.0
+			for {
+				count := ceilFloatToInt(float64(dataCount) / (labelUnit * multiplier))
+				if count > maxLabelCount {
+					multiplier++
+				} else {
+					labelCount = chartdraw.MaxInt(count, minimumAxisLabels)
+					break
+				}
+			}
+		} else if maxLabelCount < labelCount {
+			// Instead of a slight reduction, we choose a skip factor (step) so that we skip every other label until
+			// we are within our limit.
+			step := 1
+			candidateCount := 2 + (dataCount-2)/step
+			for candidateCount > maxLabelCount {
+				step++
+				candidateCount = 2 + (dataCount-2)/step
+			}
+			labelCount = chartdraw.MaxInt(candidateCount, minimumAxisLabels)
 		}
 	}
 
 	return axisRange{
 		isCategory:     true,
 		labels:         labels,
-		dataStartIndex: dataStartIndex, // TODO - ensure implemented correct
+		dataStartIndex: dataStartIndex,
 		divideCount:    dataCount,
 		labelCount:     labelCount,
 		size:           axisSize,
@@ -193,13 +250,17 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool,
 	}
 }
 
-func defaultYAxisLabelCount(span float64, decimalData bool) int {
-	result := chartdraw.MinInt(chartdraw.MaxInt(int(span)+1, defaultYAxisLabelCountLow), defaultYAxisLabelCountHigh)
-	if decimalData {
-		// if there is a decimal, we double our labels to provide more detail
-		result = chartdraw.MinInt(result*2, defaultYAxisLabelCountHigh)
+func valueLabels(labelsCfg []string, valueFormatter ValueFormatter, min, max float64, labelCount int) []string {
+	labels := make([]string, labelCount)
+	offset := (max - min) / float64(labelCount-1)
+	for i := range labels {
+		if i < len(labelsCfg) {
+			labels[i] = labelsCfg[i]
+		} else {
+			labels[i] = valueFormatter(min + float64(i)*offset)
+		}
 	}
-	return result
+	return labels
 }
 
 func padRange(divideCount int, min, max, minPaddingScale, maxPaddingScale float64) (float64, float64) {
@@ -326,48 +387,6 @@ func friendlyRound(val, increment, defaultMultiplier, minMultiplier, maxMultipli
 	} else {
 		return val - (increment * defaultMultiplier), defaultMultiplier
 	}
-}
-
-func calculateLabelFixMax(isVertical bool, unit float64, dataCount, space, textW, textH int) int {
-	// set minimum values to avoid divide by zero
-	textW = chartdraw.MaxInt(textW, 1)
-	textH = chartdraw.MaxInt(textH, 1)
-
-	var maxLabelCount int
-	if isVertical {
-		maxLabelCount = space / textH
-	} else {
-		// add a little extra padding for horizontal layouts
-		maxLabelCount = space / (textW + 10)
-	}
-	if maxLabelCount < minimumAxisLabels {
-		return minimumAxisLabels // required to prevent infinite loop if less than zero
-	}
-
-	if unit > 0 {
-		// If the user gave a 'unit', figure out how many 'units' fit
-		multiplier := 1.0
-		for {
-			count := ceilFloatToInt(float64(dataCount) / (unit * multiplier))
-			if count > maxLabelCount {
-				multiplier++
-			} else {
-				return count
-			}
-		}
-	}
-	// TODO - check if a small adjustment allows for a better unit
-	return maxLabelCount
-}
-
-// Values returns values of range.
-// For a value axis, if no custom labels are set, it uses the valueFormatter to compute friendly numbers.
-// For a category axis, it returns the stored labels.
-func (r axisRange) Values() []string {
-	// TODO - copy necessary?
-	result := make([]string, len(r.labels))
-	copy(result, r.labels)
-	return result
 }
 
 func (r axisRange) getHeight(value float64) int {
