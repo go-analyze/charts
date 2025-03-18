@@ -53,16 +53,14 @@ func (s testSeries) getValues() []float64 {
 }
 
 // testSeriesList implements the seriesList interface.
-type testSeriesList struct {
-	series []testSeries
-}
+type testSeriesList []testSeries
 
 func (tsl testSeriesList) len() int {
-	return len(tsl.series)
+	return len(tsl)
 }
 
 func (tsl testSeriesList) getSeries(index int) series {
-	return tsl.series[index]
+	return tsl[index]
 }
 
 func (tsl testSeriesList) getSeriesName(index int) string {
@@ -70,11 +68,11 @@ func (tsl testSeriesList) getSeriesName(index int) string {
 }
 
 func (tsl testSeriesList) getSeriesValues(index int) []float64 {
-	return tsl.series[index].values
+	return tsl[index].values
 }
 
 func (tsl testSeriesList) getSeriesLen(i int) int {
-	return len(tsl.series[i].values)
+	return len(tsl[i].values)
 }
 
 func (tsl testSeriesList) names() []string {
@@ -107,7 +105,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("label_count", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 20, 30}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, false, 800, nil, nil, Ptr(0.0),
 			nil, 0, 3, 0, 0,
@@ -122,7 +120,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("label_unit", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{0, 50}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
 			nil, 0, 0, 5, 0,
@@ -135,7 +133,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("label_unit_adjusted_positive", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 100}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, false, 800, nil, nil, nil,
 			nil, 0, 0, 5, 2,
@@ -149,7 +147,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("label_unit_adjusted_negative", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{-10, 100}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, false, 800, nil, nil, nil,
 			nil, 0, 0, 5, 4,
@@ -162,10 +160,10 @@ func TestCalculateValueAxisRange(t *testing.T) {
 
 	t.Run("stacked_series", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1, 2, 3}},
 			{values: []float64{4, 5, 6}},
-		}}
+		}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
 			nil, 0, 0, 0, 0,
@@ -178,7 +176,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("min_max_set", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 20}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		min := Ptr(5.0)
 		max := Ptr(25.0)
@@ -193,7 +191,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("decimal_range", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{1.1, 2.2, 3.3}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
 			nil, 0, 0, 0, 0,
@@ -207,7 +205,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("long_horizontal_labels", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 600, Height: 400})
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 20, 30}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		fs := FontStyle{FontSize: 28, FontColor: ColorGray}
 		inputLabels := []string{"ThisIsAVeryLongLabelThatExceedsNormal", "AnotherVeryLongLabelThatExceedsNormal",
@@ -226,7 +224,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		// When the data point is nonzero, we expect: min = value - zeroSpanAdjustment, max = value + zeroSpanAdjustment.
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{50}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
 			nil, 0, 0, 0, 0,
@@ -239,7 +237,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	t.Run("vertical_label_rotation", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 20, 30}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		rotation := DegreesToRadians(45.0)
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
@@ -256,7 +254,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		// the provided labels should be distributed across the range
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{5, 15, 25}}
-		tsl := testSeriesList{series: []testSeries{series}}
+		tsl := testSeriesList{series}
 
 		providedLabels := []string{"Label1", "Label2", "Label3", "Label4", "Label5"}
 		explicitLabelCount := 3
@@ -275,11 +273,11 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("no_labels_provided_uses_series_names", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
 			{values: []float64{3}},
-		}}
+		}
 
 		ar := calculateCategoryAxisRange(p, 800, false, nil, 0,
 			0, 0, 0, tsl, 0, fs)
@@ -294,11 +292,11 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		// Provide fewer labels than the number of series.
 		providedLabels := []string{"CustomLabel"}
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
 			{values: []float64{3}},
-		}}
+		}
 
 		ar := calculateCategoryAxisRange(p, 800, false, providedLabels, 0,
 			0, 0, 0, tsl, 0, fs)
@@ -310,12 +308,12 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("explicit_label_count_cfg", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
 			{values: []float64{3}},
 			{values: []float64{4}},
-		}}
+		}
 
 		ar := calculateCategoryAxisRange(p, 800, false, nil, 0,
 			2, 1, 0, tsl, 0, fs)
@@ -327,10 +325,10 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("label_rotation", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 600, Height: 400})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
-		}}
+		}
 
 		rotation := DegreesToRadians(30.0)
 		ar := calculateCategoryAxisRange(p, 800, true, []string{}, 0,
@@ -343,11 +341,11 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("negative_label_count_adjustment", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
 			{values: []float64{3}},
-		}}
+		}
 
 		ar := calculateCategoryAxisRange(p, 800, false, []string{}, 0,
 			0, -2, 0, tsl, 0, fs)
@@ -357,10 +355,10 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("label_count_exceeds_series_count", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
-		}}
+		}
 
 		ar := calculateCategoryAxisRange(p, 800, false, []string{}, 0,
 			5, 0, 0, tsl, 0, fs)
@@ -370,11 +368,11 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("long_horizontal_labels", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 600, Height: 400})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
 			{values: []float64{3}},
-		}}
+		}
 
 		inputLabels := []string{"ThisIsAVeryLongLabelThatExceedsNormal", "AnotherVeryLongLabelThatExceedsNormal",
 			"WowLookAtTheseLabels!", "AndHereIsAnotherReallyLongLabel"}
@@ -386,7 +384,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("label_unit", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		tsl := testSeriesList{series: []testSeries{
+		tsl := testSeriesList{
 			{values: []float64{1}},
 			{values: []float64{2}},
 			{values: []float64{3}},
@@ -397,7 +395,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{8}},
 			{values: []float64{9}},
 			{values: []float64{10}},
-		}}
+		}
 
 		ar := calculateCategoryAxisRange(p, 800, false, []string{}, 0,
 			0, 0, 4.0, tsl, 0, fs)
@@ -407,7 +405,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 	t.Run("empty_series_list", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
-		tsl := testSeriesList{series: []testSeries{}}
+		tsl := testSeriesList{}
 		ar := calculateCategoryAxisRange(p, 800, false, nil, 0,
 			0, 0, 0, tsl, 0, fs)
 
