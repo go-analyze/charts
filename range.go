@@ -244,7 +244,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 		}
 	}
 	// ensure each tick has at least 8px of space
-	maxTickCount := axisSize / 8
+	maxTickCount := chartdraw.MinInt(axisSize/8, labelCount*4)
 	for dataCount > maxTickCount {
 		// cut in half until we within our limit, ensuring the first and last tick always remain
 		dataCount = minimumAxisLabels + ((dataCount - minimumAxisLabels) / 2)
