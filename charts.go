@@ -196,7 +196,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			opt.xAxis.LabelRotation, opt.xAxis.LabelFontStyle)
 		xAxisOpts = opt.xAxis.toAxisOption(xAxisRange)
 	} else { //  X is category axis
-		xAxisRange := calculateCategoryAxisRange(p, p.Width(), false,
+		xAxisRange := calculateCategoryAxisRange(p, p.Width(), false, flagIs(false, opt.xAxis.BoundaryGap),
 			opt.xAxis.Labels, opt.xAxis.DataStartIndex,
 			opt.xAxis.LabelCount, opt.xAxis.LabelCountAdjustment, opt.xAxis.Unit,
 			opt.seriesList,
@@ -232,7 +232,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		yAxisOption = *yAxisOption.prep(getPreferredTheme(yAxisOption.Theme, theme))
 		var r axisRange
 		if opt.axisReversed { // Y is category axis and X is the value axis
-			r = calculateCategoryAxisRange(p, rangeHeight, true,
+			r = calculateCategoryAxisRange(p, rangeHeight, true, false,
 				yAxisOption.Labels, 0,
 				yAxisOption.LabelCount, yAxisOption.LabelCountAdjustment, yAxisOption.Unit,
 				opt.seriesList,

@@ -279,7 +279,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{3}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, nil, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
 			0, 0, 0, tsl, 0, fs)
 
 		expectedLabels := []string{"series:0", "series:1", "series:2"}
@@ -298,7 +298,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{3}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, providedLabels, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, providedLabels, 0,
 			0, 0, 0, tsl, 0, fs)
 
 		assert.Equal(t, []string{"CustomLabel", "series:1", "series:2"}, ar.labels)
@@ -315,7 +315,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{4}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, nil, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
 			2, 1, 0, tsl, 0, fs)
 
 		assert.Equal(t, []string{"series:0", "series:1", "series:2", "series:3"}, ar.labels)
@@ -331,7 +331,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		}
 
 		rotation := DegreesToRadians(30.0)
-		ar := calculateCategoryAxisRange(p, 800, true, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, true, false, []string{}, 0,
 			0, 0, 0, tsl, rotation, fs)
 
 		assert.Equal(t, 81, ar.textMaxWidth)
@@ -347,7 +347,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{3}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, []string{}, 0,
 			0, -2, 0, tsl, 0, fs)
 
 		assert.Equal(t, 2, ar.labelCount)
@@ -360,7 +360,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{2}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, []string{}, 0,
 			5, 0, 0, tsl, 0, fs)
 
 		assert.Equal(t, 2, ar.labelCount)
@@ -376,7 +376,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 		inputLabels := []string{"ThisIsAVeryLongLabelThatExceedsNormal", "AnotherVeryLongLabelThatExceedsNormal",
 			"WowLookAtTheseLabels!", "AndHereIsAnotherReallyLongLabel"}
-		ar := calculateCategoryAxisRange(p, 600, false, inputLabels, 0,
+		ar := calculateCategoryAxisRange(p, 600, false, false, inputLabels, 0,
 			0, 0, 0, tsl, 0, fs)
 
 		assert.Equal(t, 2, ar.labelCount)
@@ -397,7 +397,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{10}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, []string{}, 0,
 			0, 0, 4.0, tsl, 0, fs)
 
 		assert.Equal(t, 3, ar.labelCount)
@@ -406,7 +406,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 	t.Run("empty_series_list", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		tsl := testSeriesList{}
-		ar := calculateCategoryAxisRange(p, 800, false, nil, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
 			0, 0, 0, tsl, 0, fs)
 
 		assert.Equal(t, []string{}, ar.labels)

@@ -170,7 +170,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 }
 
 // calculateCategoryAxisRange does the same for category axes (common for X-axis in line/bar charts).
-func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool,
+func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extraSpace bool,
 	labels []string, dataStartIndex int,
 	labelCountCfg int, labelCountAdjustment int, labelUnit float64,
 	seriesList seriesList, labelRotation float64, fontStyle FontStyle) axisRange {
@@ -203,12 +203,20 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool,
 		maxLabelCount := labelCount
 		if isVertical {
 			if textH > 0 {
-				maxLabelCount = chartdraw.MaxInt(axisSize/textH, minimumAxisLabels)
+				var extra int
+				if extraSpace {
+					extra = 10
+				}
+				maxLabelCount = chartdraw.MaxInt(axisSize/(textH+extra), minimumAxisLabels)
 			}
 		} else {
 			if textW > 0 {
 				// add a little extra padding for horizontal layouts
-				maxLabelCount = chartdraw.MaxInt(axisSize/(textW+chartdraw.MinInt(10, textW)), minimumAxisLabels)
+				extra := textW
+				if !extraSpace {
+					extra /= 2
+				}
+				maxLabelCount = chartdraw.MaxInt(axisSize/(textW+extra), minimumAxisLabels)
 			}
 		}
 		if labelUnit > 0 {
