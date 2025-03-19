@@ -168,8 +168,8 @@ func (a *axisPainter) Render() (Box, error) {
 		centerLabels = false
 	}
 
-	tickSpaces := opt.aRange.divideCount
-	tickCount := opt.aRange.divideCount
+	tickSpaces := opt.aRange.tickCount
+	tickCount := opt.aRange.tickCount
 	if centerLabels {
 		// In order to center the labels we need an extra tick mark to center the labels between
 		tickCount++

@@ -21,6 +21,7 @@ type axisRange struct {
 	labels []string
 	// dataStartIndex specifies what index the label values should start from.
 	dataStartIndex int
+	tickCount      int
 	divideCount    int
 	labelCount     int
 	min, max       float64 // only valid if !isCategory
@@ -158,6 +159,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		labels:         labels,
 		dataStartIndex: dataStartIndex,
 		divideCount:    len(labels),
+		tickCount:      labelCount,
 		labelCount:     labelCount,
 		min:            minPadded,
 		max:            maxPadded,
@@ -243,11 +245,12 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 			labelCount = chartdraw.MaxInt(candidateCount, minimumAxisLabels)
 		}
 	}
-	// ensure each tick has at least 8px of space
-	maxTickCount := chartdraw.MinInt(axisSize/8, labelCount*4)
-	for dataCount > maxTickCount {
-		// cut in half until we within our limit, ensuring the first and last tick always remain
-		dataCount = minimumAxisLabels + ((dataCount - minimumAxisLabels) / 2)
+	// ensure there are not too many ticks, we want them relative and related to the label positions
+	tickCount := dataCount
+	if tickCount > labelCount*2 {
+		// it's difficult to choose a tick count that allows multiple ticks while staying lined up with the labels
+		// TODO - I would like to improve this, but for simplicity we will match the label count if ticks are too dense
+		tickCount = labelCount
 	}
 
 	return axisRange{
@@ -255,6 +258,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 		labels:         labels,
 		dataStartIndex: dataStartIndex,
 		divideCount:    dataCount,
+		tickCount:      tickCount,
 		labelCount:     labelCount,
 		size:           axisSize,
 		textMaxWidth:   textW,

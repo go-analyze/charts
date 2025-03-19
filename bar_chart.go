@@ -149,7 +149,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 		points := make([]Point, len(series.Values)) // used for mark points
 		for j, item := range series.Values {
 			if j >= result.xaxisRange.divideCount {
-				continue
+				break
 			}
 
 			// Compute bar placement differently for stacked vs non-stacked.

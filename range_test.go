@@ -25,6 +25,7 @@ func newTestRangeForLabels(labels []string, rotation float64, style FontStyle) a
 		isCategory:     true,
 		labels:         labels,
 		divideCount:    len(labels),
+		tickCount:      len(labels),
 		labelCount:     len(labels),
 		size:           800,
 		textMaxWidth:   width,

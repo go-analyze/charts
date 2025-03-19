@@ -380,9 +380,8 @@ func TestBarChartError(t *testing.T) {
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
 			p := NewPainter(PainterOptions{
-				OutputFormat: ChartOutputSVG,
-				Width:        600,
-				Height:       400,
+				Width:  600,
+				Height: 400,
 			})
 
 			err := p.BarChart(tt.makeOptions())

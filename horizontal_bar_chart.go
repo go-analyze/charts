@@ -103,7 +103,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 
 		for j, item := range series.Values {
 			if j >= yRange.divideCount {
-				continue
+				break
 			}
 			// Reverse the category index for drawing from top to bottom
 			reversedJ := yRange.divideCount - j - 1
