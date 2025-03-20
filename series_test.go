@@ -341,16 +341,6 @@ func TestSeriesSummary(t *testing.T) {
 	})
 }
 
-func TestFormatter(t *testing.T) {
-	t.Parallel()
-
-	assert.Equal(t, "a: 12%",
-		labelFormatPie([]string{"a", "b"}, "", 0, 10, 0.12))
-
-	assert.Equal(t, "10",
-		labelFormatValue([]string{"a", "b"}, "", 0, 10, 0.12))
-}
-
 func BenchmarkGetSeriesYAxisCount(b *testing.B) { // benchmark used to evaluate methods for iterating the series
 	nameCount := 100
 	seriesList := make(LineSeriesList, nameCount)

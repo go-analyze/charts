@@ -3,9 +3,6 @@ package charts
 import (
 	"math"
 	"sort"
-	"strings"
-
-	"github.com/dustin/go-humanize"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -1624,47 +1621,4 @@ func getSeriesMaxDataCount(sl seriesList) int {
 		}
 	}
 	return result
-}
-
-// labelFormatPie formats the value for a pie chart label.
-func labelFormatPie(seriesNames []string, layout string, index int, value float64, percent float64) string {
-	if len(layout) == 0 {
-		layout = "{b}: {d}"
-	}
-	return newLabelFormatter(seriesNames, layout)(index, value, percent)
-}
-
-// labelFormatFunnel formats the value for a funnel chart label.
-func labelFormatFunnel(seriesNames []string, layout string, index int, value float64, percent float64) string {
-	if len(layout) == 0 {
-		layout = "{b}({d})"
-	}
-	return newLabelFormatter(seriesNames, layout)(index, value, percent)
-}
-
-// labelFormatValue returns a formatted value.
-func labelFormatValue(seriesNames []string, layout string, index int, value float64, percent float64) string {
-	if len(layout) == 0 {
-		layout = "{c}"
-	}
-	return newLabelFormatter(seriesNames, layout)(index, value, percent)
-}
-
-// newLabelFormatter returns a label formatter.
-func newLabelFormatter(seriesNames []string, layout string) func(index int, value float64, percent float64) string {
-	return func(index int, value, percent float64) string {
-		var percentText string
-		if percent >= 0 {
-			percentText = humanize.FtoaWithDigits(percent*100, 2) + "%"
-		}
-		valueText := humanize.FtoaWithDigits(value, 2)
-		var name string
-		if len(seriesNames) > index {
-			name = seriesNames[index]
-		}
-		text := strings.ReplaceAll(layout, "{c}", valueText)
-		text = strings.ReplaceAll(text, "{d}", percentText)
-		text = strings.ReplaceAll(text, "{b}", name)
-		return text
-	}
 }

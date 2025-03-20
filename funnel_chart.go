@@ -81,10 +81,15 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList FunnelSerie
 			percent = item.Value / max
 		}
 		if !flagIs(false, item.Label.Show) {
-			if item.Label.ValueFormatter != nil || opt.ValueFormatter != nil {
-				textList[index] = getPreferredValueFormatter(item.Label.ValueFormatter, opt.ValueFormatter)(item.Value)
+			valueFormatter := item.Label.ValueFormatter
+			if valueFormatter == nil {
+				valueFormatter = opt.ValueFormatter
+			}
+			if valueFormatter != nil && item.Label.FormatTemplate == "" {
+				textList[index] = valueFormatter(item.Value)
 			} else {
-				textList[index] = labelFormatFunnel(seriesNames, item.Label.FormatTemplate, index, item.Value, percent)
+				textList[index] = labelFormatFunnel(seriesNames, item.Label.FormatTemplate, item.Label.ValueFormatter,
+					index, item.Value, percent)
 			}
 		}
 	}

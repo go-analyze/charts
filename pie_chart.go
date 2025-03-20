@@ -111,10 +111,15 @@ func newSector(cx int, cy int, radius float64, labelRadius float64,
 	s.lineEndX = s.lineBranchX + s.offset
 	s.lineEndY = s.lineBranchY
 	if !flagIs(false, seriesLabel.Show) { // only set the label if it's being rendered
-		if seriesLabel.ValueFormatter != nil || altFormatter != nil {
-			s.label = getPreferredValueFormatter(seriesLabel.ValueFormatter, altFormatter)(s.value)
+		valueFormatter := seriesLabel.ValueFormatter
+		if valueFormatter == nil {
+			valueFormatter = altFormatter
+		}
+		if valueFormatter != nil && seriesLabel.FormatTemplate == "" {
+			s.label = valueFormatter(s.value)
 		} else {
-			s.label = labelFormatPie([]string{label}, seriesLabel.FormatTemplate, 0, s.value, s.percent)
+			s.label = labelFormatPie([]string{label}, seriesLabel.FormatTemplate, seriesLabel.ValueFormatter,
+				0, s.value, s.percent)
 		}
 	}
 	return s
