@@ -76,7 +76,8 @@ func NewHeatMapOptionWithData(data [][]float64) HeatMapOption {
 	}
 }
 
-func (h *heatMap) render(result *defaultRenderResult, opt *HeatMapOption) (Box, error) {
+func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
+	opt := h.opt
 	if len(opt.Values) == 0 {
 		return BoxZero, errors.New("empty values")
 	}
@@ -252,7 +253,7 @@ func (h *heatMap) Render() (Box, error) {
 		return BoxZero, err
 	}
 
-	return h.render(renderResult, opt)
+	return h.renderChart(renderResult)
 }
 
 // heatMapFakeSeries is a dummy series type used solely to satisfy defaultRender's needs and notably drive axis rendering.

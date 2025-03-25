@@ -67,10 +67,10 @@ type ScatterChartOption struct {
 
 const defaultSymbolSize = 2.0
 
-func (s *scatterChart) render(result *defaultRenderResult, seriesList ScatterSeriesList) (Box, error) {
+func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 	p := s.p
 	opt := s.opt
-	if len(seriesList) == 0 {
+	if len(opt.SeriesList) == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
 	seriesPainter := result.seriesPainter
@@ -86,9 +86,9 @@ func (s *scatterChart) render(result *defaultRenderResult, seriesList ScatterSer
 	trendLinePainter := newTrendLinePainter(seriesPainter)
 	rendererList := []renderer{markLinePainter, trendLinePainter}
 
-	seriesNames := seriesList.names()
+	seriesNames := opt.SeriesList.names()
 	var points []Point
-	for index, series := range seriesList {
+	for index, series := range opt.SeriesList {
 		seriesSymbol := series.Symbol
 		if seriesSymbol == "" {
 			seriesSymbol = opt.Symbol
@@ -210,5 +210,5 @@ func (s *scatterChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	return s.render(renderResult, opt.SeriesList)
+	return s.renderChart(renderResult)
 }

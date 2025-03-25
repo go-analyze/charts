@@ -64,10 +64,10 @@ func newHorizontalBarChart(p *Painter, opt HorizontalBarChartOption) *horizontal
 	}
 }
 
-func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList HorizontalBarSeriesList) (Box, error) {
+func (h *horizontalBarChart) renderChart(result *defaultRenderResult) (Box, error) {
 	p := h.p
 	opt := h.opt
-	seriesCount := len(seriesList)
+	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
@@ -86,13 +86,13 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 		margin, barMargin, barHeight = calculateBarMarginsAndSize(seriesCount, height, opt.BarHeight, opt.BarMargin)
 	}
 
-	seriesNames := seriesList.names()
+	seriesNames := opt.SeriesList.names()
 	divideValues := yRange.autoDivide()
 
 	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []renderer{markLinePainter}
 
-	for index, series := range seriesList {
+	for index, series := range opt.SeriesList {
 		seriesColor := opt.Theme.GetSeriesColor(index)
 
 		var labelPainter *seriesLabelPainter
@@ -196,7 +196,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 			}
 			if len(globalMarks) > 0 {
 				if globalSeriesData == nil {
-					globalSeriesData = sumSeriesData(seriesList, 0)
+					globalSeriesData = sumSeriesData(opt.SeriesList, 0)
 				}
 				markLinePainter.add(markLineRenderOption{
 					verticalLine:   true,
@@ -245,5 +245,5 @@ func (h *horizontalBarChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	return h.render(renderResult, opt.SeriesList)
+	return h.renderChart(renderResult)
 }

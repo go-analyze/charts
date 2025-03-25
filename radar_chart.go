@@ -82,17 +82,17 @@ func newRadarChart(p *Painter, opt RadarChartOption) *radarChart {
 	}
 }
 
-func (r *radarChart) render(result *defaultRenderResult, seriesList RadarSeriesList) (Box, error) {
+func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := r.opt
 	indicators := opt.RadarIndicators
 	sides := len(indicators)
 	if sides < 3 {
 		return BoxZero, errors.New("indicator count should be at least 3")
-	} else if len(seriesList) == 0 {
+	} else if len(opt.SeriesList) == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
 	maxValues := make([]float64, len(indicators))
-	for _, series := range seriesList {
+	for _, series := range opt.SeriesList {
 		for index, item := range series.Values {
 			if index < len(maxValues) && item > maxValues[index] {
 				maxValues[index] = item
@@ -174,7 +174,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList RadarSeriesL
 	// radar chart
 	angles := getPolygonPointAngles(sides)
 	maxCount := len(indicators)
-	for index, series := range seriesList {
+	for index, series := range opt.SeriesList {
 		valueFormatter := getPreferredValueFormatter(series.Label.ValueFormatter, opt.ValueFormatter,
 			radarDefaultValueFormatter)
 		linePoints := make([]Point, 0, maxCount)
@@ -243,5 +243,5 @@ func (r *radarChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	return r.render(renderResult, opt.SeriesList)
+	return r.renderChart(renderResult)
 }

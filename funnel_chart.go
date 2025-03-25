@@ -46,28 +46,28 @@ type FunnelChartOption struct {
 	ValueFormatter ValueFormatter
 }
 
-func (f *funnelChart) render(result *defaultRenderResult, seriesList FunnelSeriesList) (Box, error) {
+func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := f.opt
-	count := len(seriesList)
-	if count == 0 {
+	seriesCount := len(opt.SeriesList)
+	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
 	seriesPainter := result.seriesPainter
-	max := seriesList[0].Value
+	max := opt.SeriesList[0].Value
 	var min float64
 	theme := opt.Theme
 	gap := 2
 	height := seriesPainter.Height()
 	width := seriesPainter.Width()
 
-	h := (height - gap*(count-1)) / count
+	h := (height - gap*(seriesCount-1)) / seriesCount
 
 	var y int
-	widthList := make([]int, len(seriesList))
-	textList := make([]string, len(seriesList))
-	seriesNames := seriesList.names()
+	widthList := make([]int, seriesCount)
+	textList := make([]string, seriesCount)
+	seriesNames := opt.SeriesList.names()
 	offset := max - min
-	for index, item := range seriesList {
+	for index, item := range opt.SeriesList {
 		// if the maximum and minimum are consistent it's 100%
 		widthPercent := 100.0
 		if offset != 0 {
@@ -129,7 +129,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList FunnelSerie
 		seriesPainter.FillArea(points, theme.GetSeriesColor(index))
 
 		text := textList[index]
-		fontStyle := fillFontStyleDefaults(seriesList[index].Label.FontStyle,
+		fontStyle := fillFontStyleDefaults(opt.SeriesList[index].Label.FontStyle,
 			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font)
 		textBox := seriesPainter.MeasureText(text, 0, fontStyle)
 		textX := width>>1 - textBox.Width()>>1
@@ -169,5 +169,5 @@ func (f *funnelChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	return f.render(renderResult, opt.SeriesList)
+	return f.renderChart(renderResult)
 }

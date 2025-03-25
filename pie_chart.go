@@ -154,9 +154,9 @@ func (s *sector) calculateTextXY(textBox Box) (x int, y int) {
 	return
 }
 
-func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList) (Box, error) {
+func (p *pieChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := p.opt
-	seriesCount := len(seriesList)
+	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
@@ -167,7 +167,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
 	radius := getRadius(float64(diameter), opt.Radius)
 	var total float64
-	for index, series := range seriesList {
+	for index, series := range opt.SeriesList {
 		if opt.Radius == "" && series.Radius != "" {
 			seriesRadius := getRadius(float64(diameter), series.Radius)
 			if index == 0 || seriesRadius > radius {
@@ -190,13 +190,13 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 	labelRadius := radius + float64(labelLineWidth)
 	seriesNames := opt.Legend.SeriesNames
 	if len(seriesNames) == 0 {
-		seriesNames = seriesList.names()
+		seriesNames = opt.SeriesList.names()
 	}
 	theme := opt.Theme
 
 	var currentSum float64
 	var quadrant1, quadrant2, quadrant3, quadrant4 []sector
-	for index, series := range seriesList {
+	for index, series := range opt.SeriesList {
 		seriesRadius := radius
 		if series.Radius != "" {
 			seriesRadius = getRadius(float64(diameter), series.Radius)
@@ -299,5 +299,5 @@ func (p *pieChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	return p.render(renderResult, opt.SeriesList)
+	return p.renderChart(renderResult)
 }

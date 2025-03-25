@@ -99,10 +99,10 @@ func boundaryGapAxisPositions(painterWidth int, boundaryGap bool, xDivideCount i
 	return xValues
 }
 
-func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesList) (Box, error) {
+func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	p := l.p
 	opt := l.opt
-	seriesCount := len(seriesList)
+	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
@@ -126,7 +126,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 		boundaryGap = false
 	}
 	xValues := boundaryGapAxisPositions(seriesPainter.Width(), boundaryGap, xDivideCount)
-	dataCount := getSeriesMaxDataCount(seriesList)
+	dataCount := getSeriesMaxDataCount(opt.SeriesList)
 	// accumulatedValues is used for stacking: it holds the summed data values at each X index
 	var accumulatedValues []float64
 	if stackedSeries {
@@ -154,9 +154,9 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 	markLinePainter := newMarkLinePainter(seriesPainter)
 	rendererList := []renderer{markPointPainter, markLinePainter}
 
-	seriesNames := seriesList.names()
+	seriesNames := opt.SeriesList.names()
 	var priorSeriesPoints []Point
-	for index, series := range seriesList {
+	for index, series := range opt.SeriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
 		seriesColor := opt.Theme.GetSeriesColor(index)
 		yRange := result.yaxisRanges[series.YAxisIndex]
@@ -305,7 +305,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 			}
 			if len(globalMarks) > 0 {
 				if globalSeriesData == nil {
-					globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+					globalSeriesData = sumSeriesData(opt.SeriesList, series.YAxisIndex)
 				}
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      defaultGlobalMarkFillColor,
@@ -342,7 +342,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 			}
 			if len(globalMarks) > 0 {
 				if globalSeriesData == nil {
-					globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+					globalSeriesData = sumSeriesData(opt.SeriesList, series.YAxisIndex)
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
@@ -406,5 +406,5 @@ func (l *lineChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	return l.render(renderResult, opt.SeriesList)
+	return l.renderChart(renderResult)
 }

@@ -407,10 +407,11 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Theme:       opt.Theme,
 				Font:        opt.Font,
 				XAxis:       opt.XAxis,
+				SeriesList:  barSeriesList,
 				StackSeries: opt.StackSeries,
 				BarWidth:    opt.BarWidth,
 				BarMargin:   opt.BarMargin,
-			}).render(renderResult, barSeriesList)
+			}).renderChart(renderResult)
 			return err
 		})
 	}
@@ -432,8 +433,9 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				BarHeight:   opt.BarHeight,
 				BarMargin:   opt.BarMargin,
 				YAxis:       yAxis,
+				SeriesList:  horizontalBarSeriesList,
 				StackSeries: opt.StackSeries,
-			}).render(renderResult, horizontalBarSeriesList)
+			}).renderChart(renderResult)
 			return err
 		})
 	}
@@ -442,10 +444,11 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(pieSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newPieChart(p, PieChartOption{
-				Theme:  opt.Theme,
-				Font:   opt.Font,
-				Radius: opt.Radius,
-			}).render(renderResult, pieSeriesList)
+				Theme:      opt.Theme,
+				Font:       opt.Font,
+				Radius:     opt.Radius,
+				SeriesList: pieSeriesList,
+			}).renderChart(renderResult)
 			return err
 		})
 	}
@@ -457,12 +460,13 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Theme:           opt.Theme,
 				Font:            opt.Font,
 				XAxis:           opt.XAxis,
+				SeriesList:      lineSeriesList,
 				StackSeries:     opt.StackSeries,
 				Symbol:          opt.Symbol,
 				LineStrokeWidth: opt.LineStrokeWidth,
 				FillArea:        opt.FillArea,
 				FillOpacity:     opt.FillOpacity,
-			}).render(renderResult, lineSeriesList)
+			}).renderChart(renderResult)
 			return err
 		})
 	}
@@ -471,11 +475,12 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(scatterSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newScatterChart(p, ScatterChartOption{
-				Theme:  opt.Theme,
-				Font:   opt.Font,
-				XAxis:  opt.XAxis,
-				Symbol: opt.Symbol,
-			}).render(renderResult, scatterSeriesList)
+				Theme:      opt.Theme,
+				Font:       opt.Font,
+				XAxis:      opt.XAxis,
+				Symbol:     opt.Symbol,
+				SeriesList: scatterSeriesList,
+			}).renderChart(renderResult)
 			return err
 		})
 	}
@@ -488,7 +493,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Font:            opt.Font,
 				RadarIndicators: opt.RadarIndicators,
 				Radius:          opt.Radius,
-			}).render(renderResult, radarSeriesList)
+				SeriesList:      radarSeriesList,
+			}).renderChart(renderResult)
 			return err
 		})
 	}
@@ -497,9 +503,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(funnelSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newFunnelChart(p, FunnelChartOption{
-				Theme: opt.Theme,
-				Font:  opt.Font,
-			}).render(renderResult, funnelSeriesList)
+				Theme:      opt.Theme,
+				Font:       opt.Font,
+				SeriesList: funnelSeriesList,
+			}).renderChart(renderResult)
 			return err
 		})
 	}

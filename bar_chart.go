@@ -101,10 +101,10 @@ func calculateBarMarginsAndSize(seriesCount, space int, configuredBarSize int, c
 	return margin, barMargin, barSize
 }
 
-func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList) (Box, error) {
+func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 	p := b.p
 	opt := b.opt
-	seriesCount := len(seriesList)
+	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
 		return BoxZero, errors.New("empty series list")
 	}
@@ -113,13 +113,13 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 	x0, x1 := result.xaxisRange.getRange(0)
 	width := int(x1 - x0)
 	barMaxHeight := seriesPainter.Height() // total vertical space for bars
-	seriesNames := seriesList.names()
+	seriesNames := opt.SeriesList.names()
 	divideValues := result.xaxisRange.autoDivide()
 	stackedSeries := flagIs(true, opt.StackSeries)
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
 	if stackedSeries {
-		barCount := getSeriesYAxisCount(seriesList) // only two bars if two y-axis
+		barCount := getSeriesYAxisCount(opt.SeriesList) // only two bars if two y-axis
 		configuredMargin := opt.BarMargin
 		if barCount == 1 {
 			configuredMargin = nil // no margin needed with a single bar
@@ -135,7 +135,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
 	rendererList := []renderer{markPointPainter, markLinePainter}
 
-	for index, series := range seriesList {
+	for index, series := range opt.SeriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
 		yRange := result.yaxisRanges[series.YAxisIndex]
 		seriesColor := opt.Theme.GetSeriesColor(index)
@@ -250,7 +250,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 			}
 			if len(globalMarks) > 0 {
 				if globalSeriesData == nil {
-					globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+					globalSeriesData = sumSeriesData(opt.SeriesList, series.YAxisIndex)
 				}
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      defaultGlobalMarkFillColor,
@@ -287,7 +287,7 @@ func (b *barChart) render(result *defaultRenderResult, seriesList BarSeriesList)
 			}
 			if len(globalMarks) > 0 {
 				if globalSeriesData == nil {
-					globalSeriesData = sumSeriesData(seriesList, series.YAxisIndex)
+					globalSeriesData = sumSeriesData(opt.SeriesList, series.YAxisIndex)
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
@@ -334,5 +334,5 @@ func (b *barChart) Render() (Box, error) {
 	if err != nil {
 		return BoxZero, err
 	}
-	return b.render(renderResult, opt.SeriesList)
+	return b.renderChart(renderResult)
 }
