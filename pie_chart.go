@@ -30,7 +30,7 @@ type PieChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding of pie chart.
 	Padding Box
-	// Font is the font used to render the chart.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListPie.
 	SeriesList PieSeriesList
@@ -128,12 +128,12 @@ func newSector(cx int, cy int, radius float64, labelRadius float64,
 func (s *sector) calculateY(prevY int) int {
 	for i := 0; i <= s.cy; i++ {
 		if s.quadrant <= 2 {
-			if (prevY - s.lineBranchY) > labelFontSize+5 {
+			if (prevY - s.lineBranchY) > defaultLabelFontSize+5 {
 				break
 			}
 			s.lineBranchY -= 1
 		} else {
-			if (s.lineBranchY - prevY) > labelFontSize+5 {
+			if (s.lineBranchY - prevY) > defaultLabelFontSize+5 {
 				break
 			}
 			s.lineBranchY += 1
@@ -194,21 +194,15 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 	}
 	theme := opt.Theme
 
-	var currentValue float64
+	var currentSum float64
 	var quadrant1, quadrant2, quadrant3, quadrant4 []sector
-	seriesLen := len(seriesList)
 	for index, series := range seriesList {
 		seriesRadius := radius
 		if series.Radius != "" {
 			seriesRadius = getRadius(float64(diameter), series.Radius)
 		}
 		color := theme.GetSeriesColor(index)
-		if index == seriesLen-1 {
-			if color == theme.GetSeriesColor(0) {
-				color = theme.GetSeriesColor(1)
-			}
-		}
-		s := newSector(cx, cy, seriesRadius, labelRadius, series.Value, currentValue, total, labelLineWidth,
+		s := newSector(cx, cy, seriesRadius, labelRadius, series.Value, currentSum, total, labelLineWidth,
 			seriesNames[index], series.Label, opt.ValueFormatter, color)
 		switch quadrant := s.quadrant; quadrant {
 		case 1:
@@ -220,7 +214,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 		case 4:
 			quadrant4 = append(quadrant4, s)
 		}
-		currentValue += series.Value
+		currentSum += series.Value
 	}
 	sectors := append(quadrant1, quadrant4...)
 	sectors = append(sectors, quadrant3...)
@@ -268,19 +262,11 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList PieSeriesList)
 		seriesPainter.moveTo(s.lineBranchX, s.lineBranchY)
 		seriesPainter.lineTo(s.lineEndX, s.lineEndY)
 		seriesPainter.stroke(s.color, 1)
-		textStyle := FontStyle{
-			FontColor: theme.GetLabelTextColor(),
-			FontSize:  labelFontSize,
-			Font:      opt.Font,
-		}
-		if !s.seriesLabel.FontStyle.FontColor.IsZero() {
-			textStyle.FontColor = s.seriesLabel.FontStyle.FontColor
-		}
-		if s.seriesLabel.FontStyle.FontSize > 0 {
-			textStyle.FontSize = s.seriesLabel.FontStyle.FontSize
-		}
-		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label, 0, textStyle))
-		seriesPainter.Text(s.label, x, y, 0, textStyle)
+
+		fontStyle := fillFontStyleDefaults(s.seriesLabel.FontStyle,
+			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font)
+		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label, 0, fontStyle))
+		seriesPainter.Text(s.label, x, y, 0, fontStyle)
 	}
 	return p.p.box, nil
 }

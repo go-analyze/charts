@@ -43,7 +43,7 @@ type LineChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding of line chart.
 	Padding Box
-	// Font is the font used to render the chart.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListLine.
 	SeriesList LineSeriesList
@@ -163,7 +163,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 		points := make([]Point, len(series.Values))
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
-			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme)
 			rendererList = append(rendererList, labelPainter)
 		}
 
@@ -296,7 +296,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 					fillColor:      seriesColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
-					font:           opt.Font,
+					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
 					marklines:      seriesMarks,
 					seriesValues:   series.Values,
 					axisRange:      yRange,
@@ -311,7 +311,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 					fillColor:      defaultGlobalMarkFillColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
-					font:           opt.Font,
+					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
 					marklines:      globalMarks,
 					seriesValues:   globalSeriesData,
 					axisRange:      yRange,
@@ -331,7 +331,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 			if len(seriesMarks) > 0 {
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          seriesColor,
-					font:               opt.Font,
+					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
 					symbolSize:         series.MarkPoint.SymbolSize,
 					points:             points,
 					markpoints:         seriesMarks,
@@ -346,7 +346,7 @@ func (l *lineChart) render(result *defaultRenderResult, seriesList LineSeriesLis
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
-					font:               opt.Font,
+					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
 					symbolSize:         series.MarkPoint.SymbolSize,
 					points:             points,
 					markpoints:         globalMarks,

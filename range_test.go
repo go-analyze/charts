@@ -88,15 +88,15 @@ func (tsl testSeriesList) hasMarkPoint() bool {
 	return false
 }
 
-func (tsl testSeriesList) setSeriesName(index int, name string) {
+func (tsl testSeriesList) setSeriesName(_ int, _ string) {
 	panic("not implemented")
 }
 
-func (tsl testSeriesList) sortByNameIndex(dict map[string]int) {
+func (tsl testSeriesList) sortByNameIndex(_ map[string]int) {
 	panic("not implemented")
 }
 
-func (tsl testSeriesList) getSeriesSymbol(index int) Symbol {
+func (tsl testSeriesList) getSeriesSymbol(_ int) Symbol {
 	panic("not implemented")
 }
 

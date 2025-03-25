@@ -17,7 +17,7 @@ type SeriesLabel struct {
 	ValueFormatter ValueFormatter
 	// FontStyle specifies the font and style for the label.
 	FontStyle FontStyle
-	// Show flag for label, if unset the behavior will be defaulted based on the chart.
+	// Show flag for label, if unset the behavior will be defaulted based on the chart type.
 	Show *bool
 	// Distance to the host graphic element.
 	Distance int // TODO - do we want to replace with just Offset?
@@ -226,6 +226,13 @@ func (g GenericSeriesList) sortByNameIndex(dict map[string]int) {
 	})
 }
 
+// SetSeriesLabels sets the label for all elements in the series.
+func (g GenericSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range g {
+		g[i].Label = label
+	}
+}
+
 // LineSeries references a population of data for line charts.
 type LineSeries struct {
 	// Values provides the series data values.
@@ -320,6 +327,13 @@ func (l LineSeriesList) sortByNameIndex(dict map[string]int) {
 	sort.Slice(l, func(i, j int) bool {
 		return dict[l[i].Name] < dict[l[j].Name]
 	})
+}
+
+// SetSeriesLabels sets the label for all elements in the series.
+func (l LineSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range l {
+		l[i].Label = label
+	}
 }
 
 func (l LineSeriesList) ToGenericSeriesList() GenericSeriesList {
@@ -435,6 +449,28 @@ func (s ScatterSeriesList) sortByNameIndex(dict map[string]int) {
 	})
 }
 
+// SetSeriesLabels sets the label for all elements in the series.
+func (s ScatterSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range s {
+		s[i].Label = label
+	}
+}
+
+func (s ScatterSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(s))
+	for i, s := range s {
+		result[i] = GenericSeries{
+			Values:     s.avgValues(),
+			YAxisIndex: s.YAxisIndex,
+			Label:      s.Label,
+			Name:       s.Name,
+			Type:       ChartTypeScatter,
+			MarkLine:   s.MarkLine,
+		}
+	}
+	return result
+}
+
 // BarSeries references a population of data for bar charts.
 type BarSeries struct {
 	// Values provides the series data values.
@@ -527,6 +563,13 @@ func (b BarSeriesList) sortByNameIndex(dict map[string]int) {
 	sort.Slice(b, func(i, j int) bool {
 		return dict[b[i].Name] < dict[b[j].Name]
 	})
+}
+
+// SetSeriesLabels sets the label for all elements in the series.
+func (b BarSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range b {
+		b[i].Label = label
+	}
 }
 
 func (b BarSeriesList) ToGenericSeriesList() GenericSeriesList {
@@ -628,6 +671,13 @@ func (h HorizontalBarSeriesList) sortByNameIndex(dict map[string]int) {
 	})
 }
 
+// SetSeriesLabels sets the label for all elements in the series.
+func (h HorizontalBarSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range h {
+		h[i].Label = label
+	}
+}
+
 func (h HorizontalBarSeriesList) ToGenericSeriesList() GenericSeriesList {
 	result := make([]GenericSeries, len(h))
 	for i, s := range h {
@@ -706,6 +756,13 @@ func (f FunnelSeriesList) sortByNameIndex(dict map[string]int) {
 	sort.Slice(f, func(i, j int) bool {
 		return dict[f[i].Name] < dict[f[j].Name]
 	})
+}
+
+// SetSeriesLabels sets the label for all elements in the series.
+func (f FunnelSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range f {
+		f[i].Label = label
+	}
 }
 
 func (f FunnelSeriesList) ToGenericSeriesList() GenericSeriesList {
@@ -809,6 +866,13 @@ func (p PieSeriesList) sortByNameIndex(dict map[string]int) {
 	})
 }
 
+// SetSeriesLabels sets the label for all elements in the series.
+func (p PieSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range p {
+		p[i].Label = label
+	}
+}
+
 func (p PieSeriesList) ToGenericSeriesList() GenericSeriesList {
 	result := make([]GenericSeries, len(p))
 	for i, s := range p {
@@ -890,6 +954,13 @@ func (r RadarSeriesList) sortByNameIndex(dict map[string]int) {
 	})
 }
 
+// SetSeriesLabels sets the label for all elements in the series.
+func (r RadarSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range r {
+		r[i].Label = label
+	}
+}
+
 func (r RadarSeriesList) ToGenericSeriesList() GenericSeriesList {
 	result := make([]GenericSeries, len(r))
 	for i, s := range r {
@@ -916,6 +987,7 @@ type seriesList interface {
 	setSeriesName(index int, name string)
 	sortByNameIndex(dict map[string]int)
 	getSeriesSymbol(index int) Symbol
+	//SetSeriesLabels(label SeriesLabel) // informally included in interface (not used internally in interface)
 }
 
 // series interface is used to provide the raw series struct to callers of seriesList, allowing direct type checks.

@@ -26,7 +26,7 @@ type ChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// Font is the font to use for rendering the chart.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// Box specifies the canvas box for the chart.
 	Box Box
@@ -86,7 +86,7 @@ func outputFormatOptionFunc(t string) OptionFunc {
 	}
 }
 
-// FontOptionFunc set the default font of the chart.
+// Deprecated: FontOptionFunc is deprecated, fonts should be set on the specific elements (SeriesLabel, Title, etc).
 func FontOptionFunc(font *truetype.Font) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Font = font

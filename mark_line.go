@@ -52,7 +52,7 @@ func (m *markLinePainter) Render() (Box, error) {
 		fontStyle := FontStyle{
 			Font:      getPreferredFont(opt.font),
 			FontColor: opt.fontColor,
-			FontSize:  labelFontSize,
+			FontSize:  defaultLabelFontSize,
 		}
 		for _, markLine := range opt.marklines {
 			var value float64

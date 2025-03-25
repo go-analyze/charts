@@ -17,7 +17,7 @@ type HeatMapOption struct {
 	BaseColorIndex int
 	// Padding specifies the padding around the heat map chart.
 	Padding Box
-	// Font specifies the default font used across the chart elements.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// Title options for rendering the chart title, including text and font styling.
 	Title TitleOption
@@ -134,9 +134,9 @@ func (h *heatMap) render(result *defaultRenderResult, opt *HeatMapOption) (Box, 
 
 	if flagIs(true, opt.ValuesLabel.Show) {
 		opt.ValuesLabel.FontStyle =
-			fillFontStyleDefaults(opt.ValuesLabel.FontStyle, labelFontSize, opt.Theme.GetLabelTextColor())
+			fillFontStyleDefaults(opt.ValuesLabel.FontStyle, defaultLabelFontSize, opt.Theme.GetLabelTextColor(), opt.Font)
 
-		labelPainter := newSeriesLabelPainter(seriesPainter, []string{""}, opt.ValuesLabel, opt.Theme, opt.Font)
+		labelPainter := newSeriesLabelPainter(seriesPainter, []string{""}, opt.ValuesLabel, opt.Theme)
 		for y := range opt.Values {
 			for x := 0; x < numCols; x++ {
 				var value float64

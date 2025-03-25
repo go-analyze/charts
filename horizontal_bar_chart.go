@@ -28,7 +28,7 @@ type HorizontalBarChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding of bar chart.
 	Padding Box
-	// Font is the font used to render the chart.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListHorizontalBar.
 	SeriesList HorizontalBarSeriesList
@@ -97,7 +97,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
-			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme)
 			rendererList = append(rendererList, labelPainter)
 		}
 
@@ -153,6 +153,9 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Hori
 							fontStyle.FontColor = defaultDarkFontColor
 						}
 					}
+				}
+				if fontStyle.Font == nil {
+					fontStyle.Font = opt.Font
 				}
 
 				labelPainter.Add(labelValue{

@@ -129,7 +129,7 @@ func (r *radarChart) render(result *defaultRenderResult, seriesList RadarSeriesL
 	}
 	fontStyle := FontStyle{
 		FontColor: theme.GetLabelTextColor(),
-		FontSize:  labelFontSize,
+		FontSize:  defaultLabelFontSize,
 		Font:      opt.Font,
 	}
 	offset := 5

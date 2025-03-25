@@ -43,7 +43,7 @@ type ScatterChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding of scatter chart.
 	Padding Box
-	// Font is the font used to render the chart.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListScatter or
 	// NewSeriesListScatterMultiValue.
@@ -97,7 +97,7 @@ func (s *scatterChart) render(result *defaultRenderResult, seriesList ScatterSer
 		yRange := result.yaxisRanges[series.YAxisIndex]
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
-			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Font)
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme)
 			rendererList = append(rendererList, labelPainter)
 		}
 
@@ -119,6 +119,9 @@ func (s *scatterChart) render(result *defaultRenderResult, seriesList ScatterSer
 				}
 				points = append(points, p)
 
+				if series.Label.FontStyle.Font == nil {
+					series.Label.FontStyle.Font = opt.Font
+				}
 				if labelPainter != nil {
 					labelPainter.Add(labelValue{
 						index:     index,

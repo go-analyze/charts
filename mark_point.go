@@ -52,7 +52,7 @@ func (m *markPointPainter) Render() (Box, error) {
 		}
 		summary := summarizePopulationData(opt.seriesValues)
 		textStyle := FontStyle{
-			FontSize: labelFontSize,
+			FontSize: defaultLabelFontSize,
 			Font:     opt.font,
 		}
 		if isLightColor(opt.fillColor) {
@@ -61,7 +61,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			textStyle.FontColor = defaultDarkFontColor
 		}
 		for _, markPointData := range opt.markpoints {
-			textStyle.FontSize = labelFontSize
+			textStyle.FontSize = defaultLabelFontSize
 			index := summary.MinIndex
 			value := summary.Min
 			switch markPointData.Type {

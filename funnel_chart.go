@@ -34,7 +34,7 @@ type FunnelChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding of funnel chart.
 	Padding Box
-	// Font is the font used to render the chart.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListFunnel.
 	SeriesList FunnelSeriesList
@@ -129,11 +129,8 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList FunnelSerie
 		seriesPainter.FillArea(points, theme.GetSeriesColor(index))
 
 		text := textList[index]
-		fontStyle := FontStyle{
-			FontColor: theme.GetLabelTextColor(),
-			FontSize:  labelFontSize,
-			Font:      opt.Font,
-		}
+		fontStyle := fillFontStyleDefaults(seriesList[index].Label.FontStyle,
+			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font)
 		textBox := seriesPainter.MeasureText(text, 0, fontStyle)
 		textX := width>>1 - textBox.Width()>>1
 		textY := y + h>>1

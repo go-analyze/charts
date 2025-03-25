@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/freetype/truetype"
 )
 
 type labelRenderValue struct {
@@ -31,18 +30,16 @@ type seriesLabelPainter struct {
 	seriesNames []string
 	label       *SeriesLabel
 	theme       ColorPalette
-	font        *truetype.Font
 	values      []labelRenderValue
 }
 
 func newSeriesLabelPainter(p *Painter, seriesNames []string, label SeriesLabel,
-	theme ColorPalette, font *truetype.Font) *seriesLabelPainter {
+	theme ColorPalette) *seriesLabelPainter {
 	return &seriesLabelPainter{
 		p:           p,
 		seriesNames: seriesNames,
 		label:       &label,
 		theme:       theme,
-		font:        font,
 	}
 }
 
@@ -64,8 +61,8 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 	}
 	labelStyle := FontStyle{
 		FontColor: o.theme.GetLabelTextColor(),
-		FontSize:  labelFontSize,
-		Font:      getPreferredFont(label.FontStyle.Font, value.fontStyle.Font, o.font),
+		FontSize:  defaultLabelFontSize,
+		Font:      getPreferredFont(label.FontStyle.Font, value.fontStyle.Font),
 	}
 	if label.FontStyle.FontSize != 0 {
 		labelStyle.FontSize = label.FontStyle.FontSize
