@@ -407,13 +407,17 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// bar chart
 	if len(barSeriesList) != 0 {
 		handler.Add(func() error {
+			width := opt.BarSize
+			if width == 0 {
+				width = opt.BarWidth
+			}
 			_, err := newBarChart(p, BarChartOption{
 				Theme:       opt.Theme,
 				Font:        opt.Font,
 				XAxis:       opt.XAxis,
 				SeriesList:  barSeriesList,
 				StackSeries: opt.StackSeries,
-				BarWidth:    opt.BarWidth,
+				BarWidth:    width,
 				BarMargin:   opt.BarMargin,
 			}).renderChart(renderResult)
 			return err
@@ -431,10 +435,14 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		}
 
 		handler.Add(func() error {
+			height := opt.BarSize
+			if height == 0 {
+				height = opt.BarHeight
+			}
 			_, err := newHorizontalBarChart(p, HorizontalBarChartOption{
 				Theme:       opt.Theme,
 				Font:        opt.Font,
-				BarHeight:   opt.BarHeight,
+				BarHeight:   height,
 				BarMargin:   opt.BarMargin,
 				YAxis:       yAxis,
 				SeriesList:  horizontalBarSeriesList,

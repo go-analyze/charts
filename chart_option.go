@@ -6,17 +6,19 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
+// ChartOption represents a generic method of representing a chart. This can be useful when you want to render
+// different chart types with the same data and configuration.
 type ChartOption struct {
-	// OutputFormat specifies the output type of chart, "svg" or "png", default value is "png".
+	// OutputFormat specifies the output type of chart, "svg", "png" or "jpg", default value is "png".
 	OutputFormat string
-	// Width is the width of chart, default width is 600.
+	// Width is the width of chart.
 	Width int
-	// Height is the height of chart, default height is 400.
+	// Height is the height of chart.
 	Height int
 	// Theme specifies the colors used for the chart. Built in themes can be loaded using GetTheme with
 	// "light", "dark", "vivid-light", "vivid-dark", "ant" or "grafana".
 	Theme ColorPalette
-	// Padding specifies the padding for chart, default padding is [20, 10, 10, 10].
+	// Padding specifies the padding for chart, default padding is [20, 20, 20, 20].
 	Padding Box
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption
@@ -46,10 +48,12 @@ type ChartOption struct {
 	FillArea *bool
 	// FillOpacity is the opacity (alpha) of the area fill in line charts.
 	FillOpacity uint8
-	// BarWidth is the width of the bars for bar charts.
+	// Deprecated: BarWidth is deprecated, instead use BarSize.
 	BarWidth int
-	// BarHeight is the height of the bars for horizontal bar charts.
+	// Deprecated: BarHeight is deprecated, instead use BarSize.
 	BarHeight int
+	// BarSize represents the width of the bar, or if a horizontal bar chart the height.
+	BarSize int
 	// BarMargin specifies the margin between bars grouped together. BarWidth or BarHeight takes priority over the margin.
 	BarMargin *float64
 	// Radius default radius for pie and radar charts e.g.: 40%, default is "40%"
