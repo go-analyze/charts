@@ -137,14 +137,7 @@ func (rr *rasterRenderer) FillStroke() {
 
 // Circle fully draws a circle at a given point but does not apply the fill or stroke.
 func (rr *rasterRenderer) Circle(radius float64, x, y int) {
-	xf := float64(x)
-	yf := float64(y)
-
-	rr.gc.MoveTo(xf-radius, yf)                            //9
-	rr.gc.QuadCurveTo(xf-radius, yf-radius, xf, yf-radius) //12
-	rr.gc.QuadCurveTo(xf+radius, yf-radius, xf+radius, yf) //3
-	rr.gc.QuadCurveTo(xf+radius, yf+radius, xf, yf+radius) //6
-	rr.gc.QuadCurveTo(xf-radius, yf+radius, xf-radius, yf) //9
+	rr.ArcTo(x, y, radius, radius, 0, _2pi)
 }
 
 // SetFont implements the interface method.
