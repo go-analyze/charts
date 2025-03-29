@@ -9,7 +9,7 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// HeatMapOption contains configuration options for a heat map chart.
+// HeatMapOption contains configuration options for a heat map chart. Render the chart using Painter.HeatMapChart.
 type HeatMapOption struct {
 	// Theme specifies the color palette used for rendering the heat map.
 	Theme ColorPalette

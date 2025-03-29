@@ -36,6 +36,7 @@ func NewRadarChartOptionWithData(data [][]float64, names []string, values []floa
 	}
 }
 
+// RadarChartOption defines the options for rendering a radar chart. Render the chart using Painter.RadarChart.
 type RadarChartOption struct {
 	// Theme specifies the colors used for the pie chart.
 	Theme ColorPalette

@@ -44,6 +44,7 @@ const (
 	ThemeFall = "fall"
 )
 
+// ColorPalette provides the theming for the chart.
 type ColorPalette interface {
 	IsDark() bool
 	GetXAxisStrokeColor() Color

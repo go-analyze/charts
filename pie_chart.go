@@ -27,6 +27,7 @@ func NewPieChartOptionWithData(data []float64) PieChartOption {
 	}
 }
 
+// PieChartOption defines the options for rendering a pie chart. Render the chart using Painter.PieChart.
 type PieChartOption struct {
 	// Theme specifies the colors used for the pie chart.
 	Theme ColorPalette

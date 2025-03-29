@@ -23,6 +23,8 @@ func NewHorizontalBarChartOptionWithData(data [][]float64) HorizontalBarChartOpt
 	}
 }
 
+// HorizontalBarChartOption defines the options for rendering a horizontal bar chart.
+// Render the chart using Painter.HorizontalBarChart.
 type HorizontalBarChartOption struct {
 	// Theme specifies the colors used for the chart.
 	Theme ColorPalette

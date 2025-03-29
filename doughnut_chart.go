@@ -22,7 +22,7 @@ func NewDoughnutChartOptionWithData(data []float64) DoughnutChartOption {
 	}
 }
 
-// DoughnutChartOption configures the doughnut chart.
+// DoughnutChartOption defines the options for rendering a doughnut chart. Render the chart using Painter.DoughnutChart.
 type DoughnutChartOption struct {
 	// Theme specifies the colors used for the doughnut chart.
 	Theme ColorPalette

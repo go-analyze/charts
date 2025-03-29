@@ -29,6 +29,7 @@ func NewFunnelChartOptionWithData(data []float64) FunnelChartOption {
 	}
 }
 
+// FunnelChartOption defines the options for rendering a funnel chart. Render the chart using Painter.FunnelChart.
 type FunnelChartOption struct {
 	// Theme specifies the colors used for the chart.
 	Theme ColorPalette

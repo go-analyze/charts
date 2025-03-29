@@ -38,6 +38,7 @@ func NewLineChartOptionWithData(data [][]float64) LineChartOption {
 	}
 }
 
+// LineChartOption defines the options for rendering a line chart. Render the chart using Painter.LineChart.
 type LineChartOption struct {
 	// Theme specifies the colors used for the line chart.
 	Theme ColorPalette

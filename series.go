@@ -7,6 +7,7 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
+// SeriesLabel specifies if and how the specific series values should be rendered on the chart.
 type SeriesLabel struct {
 	// FormatTemplate is a string template for formatting the data label.
 	// {b}: the name of a data item.

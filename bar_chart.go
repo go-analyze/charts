@@ -33,6 +33,7 @@ func NewBarChartOptionWithData(data [][]float64) BarChartOption {
 	}
 }
 
+// BarChartOption defines the options for rendering a bar chart. Render the chart using Painter.BarChart.
 type BarChartOption struct {
 	// Theme specifies the colors used for the bar chart.
 	Theme ColorPalette

@@ -38,6 +38,7 @@ func NewScatterChartOptionWithData(data [][]float64) ScatterChartOption {
 	}
 }
 
+// ScatterChartOption defines the options for rendering a scatter chart. Render the chart using Painter.ScatterChart.
 type ScatterChartOption struct {
 	// Theme specifies the colors used for the scatter chart.
 	Theme ColorPalette
