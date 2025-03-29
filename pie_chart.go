@@ -10,12 +10,14 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
+const defaultPieRadiusFactor = 0.4
+
 type pieChart struct {
 	p   *Painter
 	opt *PieChartOption
 }
 
-// NewPieChartOptionWithData returns an initialized PieChartOption with the SeriesList set for the provided data slice.
+// NewPieChartOptionWithData returns an initialized PieChartOption with the SeriesList set from the provided data slice.
 func NewPieChartOptionWithData(data []float64) PieChartOption {
 	return PieChartOption{
 		SeriesList: NewSeriesListPie(data),
@@ -40,6 +42,8 @@ type PieChartOption struct {
 	Legend LegendOption
 	// Radius default radius for pie e.g.: 40%, default is "40%"
 	Radius string
+	// SegmentGap provides a gap between each pie slice.
+	SegmentGap float64
 	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
 }
@@ -55,41 +59,31 @@ func newPieChart(p *Painter, opt PieChartOption) *pieChart {
 type sector struct {
 	value       float64
 	percent     float64
-	cx          int
-	cy          int
-	rx          float64
-	ry          float64
-	start       float64
-	delta       float64
-	offset      int
-	quadrant    int
-	lineStartX  int
-	lineStartY  int
-	lineBranchX int
-	lineBranchY int
-	lineEndX    int
-	lineEndY    int
+	radius      float64
+	startAngle  float64 // starting angle (radians)
+	delta       float64 // sweep angle (radians)
+	midAngle    float64
+	quadrant    int  // 1: top-right, 2: top-left, 3: bottom-left, 4: bottom-right
+	yCenter     bool // set to true if close to center in the y-axis
 	label       string
 	seriesLabel SeriesLabel
 	color       Color
 }
 
-func newSector(cx int, cy int, radius float64, labelRadius float64,
-	value float64, currentValue float64, totalValue float64,
-	labelLineLength int, label string, seriesLabel SeriesLabel, altFormatter ValueFormatter, color Color) sector {
+func newSector(radius float64, value, currentValue, totalValue float64,
+	label string, seriesLabel SeriesLabel, altFormatter ValueFormatter, color Color) sector {
 	s := sector{
 		value:       value,
 		percent:     value / totalValue,
-		cx:          cx,
-		cy:          cy,
-		rx:          radius,
-		ry:          radius,
-		start:       chartdraw.PercentToRadians(currentValue/totalValue) - math.Pi/2,
+		radius:      radius,
+		startAngle:  chartdraw.PercentToRadians(currentValue/totalValue) - math.Pi/2,
 		delta:       chartdraw.PercentToRadians(value / totalValue),
-		offset:      labelLineLength,
 		seriesLabel: seriesLabel,
 		color:       color,
 	}
+	s.midAngle = s.startAngle + s.delta/2
+
+	// determine quadrant based on the mid-percentage of this sector
 	p := (currentValue + value/2) / totalValue
 	if p < 0.25 {
 		s.quadrant = 1
@@ -100,16 +94,8 @@ func newSector(cx int, cy int, radius float64, labelRadius float64,
 	} else {
 		s.quadrant = 2
 	}
-	angle := s.start + s.delta/2
-	s.lineStartX = cx + int(radius*math.Cos(angle))
-	s.lineStartY = cy + int(radius*math.Sin(angle))
-	s.lineBranchX = cx + int(labelRadius*math.Cos(angle))
-	s.lineBranchY = cy + int(labelRadius*math.Sin(angle))
-	if s.lineBranchX <= cx {
-		s.offset *= -1
-	}
-	s.lineEndX = s.lineBranchX + s.offset
-	s.lineEndY = s.lineBranchY
+	s.yCenter = (p > .15 && p < .35) || (p > .65 && p < .85)
+
 	if !flagIs(false, seriesLabel.Show) { // only set the label if it's being rendered
 		valueFormatter := seriesLabel.ValueFormatter
 		if valueFormatter == nil {
@@ -125,52 +111,84 @@ func newSector(cx int, cy int, radius float64, labelRadius float64,
 	return s
 }
 
-func (s *sector) calculateY(prevY int) int {
-	for i := 0; i <= s.cy; i++ {
-		if s.quadrant <= 2 {
-			if (prevY - s.lineBranchY) > defaultLabelFontSize+5 {
-				break
-			}
-			s.lineBranchY -= 1
-		} else {
-			if (s.lineBranchY - prevY) > defaultLabelFontSize+5 {
-				break
-			}
-			s.lineBranchY += 1
-		}
+// calculateOuterLabelLines computes the basic line positions for an outer label.
+func (s *sector) calculateOuterLabelLines(cx, cy int, outerRadius, labelRadius float64, labelLineLength int) (lineStartX, lineStartY, lineBranchX, lineBranchY, lineEndX, lineEndY int) {
+	lineStartX = cx + int(outerRadius*math.Cos(s.midAngle))
+	lineStartY = cy + int(outerRadius*math.Sin(s.midAngle))
+	lineBranchX = cx + int(labelRadius*math.Cos(s.midAngle))
+	lineBranchY = cy + int(labelRadius*math.Sin(s.midAngle))
+	offset := labelLineLength
+	if lineBranchX <= cx {
+		offset = -offset
 	}
-	s.lineEndY = s.lineBranchY
-	return s.lineBranchY
+	lineEndX = lineBranchX + offset
+	lineEndY = lineBranchY
+	return
 }
 
-func (s *sector) calculateTextXY(textBox Box) (x int, y int) {
-	textMargin := 3
-	x = s.lineEndX + textMargin
-	y = s.lineEndY + textBox.Height()>>1 - 1
-	if s.offset < 0 {
-		textWidth := textBox.Width()
-		x = s.lineEndX - textWidth - textMargin
+// calculateAdjustedOuterLabelPosition adds collision avoidance to the outer label positions.
+func (s *sector) calculateAdjustedOuterLabelPosition(cx, cy int, outerRadius, labelRadius float64, labelLineLength, prevY int,
+	labelFontSize float64, textBox Box) (lineStartX, lineStartY, lineBranchX, lineBranchY, lineEndX, lineEndY, textX, textY int) {
+	lsX, lsY, lbX, lbY, leX, _ := s.calculateOuterLabelLines(cx, cy, outerRadius, labelRadius, labelLineLength)
+	// adjust Y to avoid collisions
+	threshold := ceilFloatToInt(labelFontSize) + 5
+	adjustedBranchY := lbY
+	if s.quadrant <= 2 {
+		// quadrants in the top half
+		for {
+			if (prevY - adjustedBranchY) > threshold {
+				break
+			}
+			adjustedBranchY--
+		}
+	} else {
+		// quadrants in the bottom half
+		for {
+			if (adjustedBranchY - prevY) > threshold {
+				break
+			}
+			adjustedBranchY++
+		}
 	}
-	return
+	leY := adjustedBranchY
+
+	// compute text position
+	const textMargin = 3
+	textX = leX + textMargin
+	textY = leY + (textBox.Height() >> 1) - 1
+	if leX <= cx {
+		textX = leX - textBox.Width() - textMargin
+	}
+	return lsX, lsY, lbX, adjustedBranchY, leX, leY, textX, textY
+}
+
+func circleChartPosition(painter *Painter) (int, int, float64) {
+	cx := painter.Width() >> 1
+	cy := painter.Height() >> 1
+	diameter := chartdraw.MinInt(painter.Width(), painter.Height())
+	return cx, cy, float64(diameter)
+}
+
+func getFlexibleRadius(diameter, defaultRadiusFactor float64, radiusValue string) float64 {
+	var radius float64
+	if radiusValue != "" {
+		radius, _ = parseFlexibleValue(radiusValue, diameter)
+	}
+	if radius <= 0 {
+		radius = diameter * defaultRadiusFactor
+	}
+	return radius
 }
 
 func (p *pieChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := p.opt
-	seriesCount := len(opt.SeriesList)
-	if seriesCount == 0 {
-		return BoxZero, errors.New("empty series list")
-	}
-
 	seriesPainter := result.seriesPainter
-	cx := seriesPainter.Width() >> 1
-	cy := seriesPainter.Height() >> 1
-	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
-	radius := getRadius(float64(diameter), opt.Radius)
+	cx, cy, diameter := circleChartPosition(seriesPainter)
+	radius := getFlexibleRadius(diameter, defaultPieRadiusFactor, opt.Radius)
 	var total float64
 	for index, series := range opt.SeriesList {
 		if opt.Radius == "" && series.Radius != "" {
-			seriesRadius := getRadius(float64(diameter), series.Radius)
-			if index == 0 || seriesRadius > radius {
+			if seriesRadius := getFlexibleRadius(diameter, defaultPieRadiusFactor, series.Radius); seriesRadius > radius {
 				radius = seriesRadius
 			}
 		}
@@ -179,32 +197,42 @@ func (p *pieChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 		total += series.Value
 	}
-	if total <= 0 {
-		return BoxZero, errors.New("the sum value of pie chart should greater than 0")
+
+	_, err := renderPie(seriesPainter, cx, cy, diameter, radius, total, true, opt.SeriesList,
+		opt.Theme, opt.SegmentGap, defaultPieRadiusFactor, opt.ValueFormatter, opt.Font)
+	return p.p.box, err
+}
+
+func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabels bool, seriesList PieSeriesList,
+	theme ColorPalette, sliceGap, defaultRadiusFactor float64,
+	valueFormatter ValueFormatter, fallbackFont *truetype.Font) ([]sector, error) {
+	if len(seriesList) == 0 {
+		return nil, errors.New("empty series list")
+	} else if total <= 0 {
+		return nil, errors.New("the sum value of pie chart should be greater than 0")
 	}
 
 	labelLineWidth := 15
 	if radius < 50 {
-		labelLineWidth = 10
+		labelLineWidth = 5
 	}
+	// compute labelRadius for outer labels
 	labelRadius := radius + float64(labelLineWidth)
-	seriesNames := opt.Legend.SeriesNames
-	if len(seriesNames) == 0 {
-		seriesNames = opt.SeriesList.names()
-	}
-	theme := opt.Theme
+	seriesNames := seriesList.names()
 
 	var currentSum float64
+	// organize sectors by quadrant
 	var quadrant1, quadrant2, quadrant3, quadrant4 []sector
-	for index, series := range opt.SeriesList {
+	for index, series := range seriesList {
 		seriesRadius := radius
 		if series.Radius != "" {
-			seriesRadius = getRadius(float64(diameter), series.Radius)
+			seriesRadius = getFlexibleRadius(space, defaultRadiusFactor, series.Radius)
 		}
 		color := theme.GetSeriesColor(index)
-		s := newSector(cx, cy, seriesRadius, labelRadius, series.Value, currentSum, total, labelLineWidth,
-			seriesNames[index], series.Label, opt.ValueFormatter, color)
-		switch quadrant := s.quadrant; quadrant {
+		s := newSector(seriesRadius, series.Value, currentSum, total,
+			seriesNames[index], series.Label, valueFormatter, color)
+
+		switch s.quadrant {
 		case 1:
 			quadrant1 = append([]sector{s}, quadrant1...)
 		case 2:
@@ -216,21 +244,27 @@ func (p *pieChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 		currentSum += series.Value
 	}
-	sectors := append(quadrant1, quadrant4...)
-	sectors = append(sectors, quadrant3...)
-	sectors = append(sectors, quadrant2...)
+	sectors := append(append(append(quadrant1, quadrant4...), quadrant3...), quadrant2...)
 
 	var currentQuadrant int
 	var prevY, maxY, minY int
 	for _, s := range sectors {
-		seriesPainter.moveTo(s.cx, s.cy)
-		seriesPainter.arcTo(s.cx, s.cy, s.rx, s.ry, s.start, s.delta)
-		seriesPainter.lineTo(s.cx, s.cy)
-		seriesPainter.close()
-		seriesPainter.fillStroke(s.color, s.color, 1)
-		if s.label == "" {
+		// draw the pie slice
+		p.moveTo(cx, cy)
+		p.arcTo(cx, cy, s.radius, s.radius, s.startAngle, s.delta)
+		p.lineTo(cx, cy)
+		p.close()
+		if sliceGap > 0 {
+			p.fillStroke(s.color, theme.GetBackgroundColor(), sliceGap)
+		} else {
+			p.fill(s.color)
+		}
+
+		if !renderLabels || s.label == "" {
 			continue
 		}
+
+		// initialize prevY for collision avoidance per quadrant
 		if currentQuadrant != s.quadrant {
 			currentQuadrant = s.quadrant
 			if s.quadrant == 1 {
@@ -250,25 +284,27 @@ func (p *pieChart) renderChart(result *defaultRenderResult) (Box, error) {
 				prevY = maxY
 			}
 		}
-		prevY = s.calculateY(prevY)
+		fontStyle := fillFontStyleDefaults(s.seriesLabel.FontStyle,
+			defaultLabelFontSize, theme.GetLabelTextColor(), fallbackFont)
+		textBox := p.MeasureText(s.label, 0, fontStyle)
+		// for outer labels use the adjusted positions
+		lsX, lsY, lbX, lbY, leX, leY, textX, textY :=
+			s.calculateAdjustedOuterLabelPosition(cx, cy, s.radius, labelRadius, labelLineWidth, prevY, fontStyle.FontSize, textBox)
+		prevY = leY
 		if prevY > maxY {
 			maxY = prevY
 		}
 		if prevY < minY {
 			minY = prevY
 		}
-		seriesPainter.moveTo(s.lineStartX, s.lineStartY)
-		seriesPainter.lineTo(s.lineBranchX, s.lineBranchY)
-		seriesPainter.moveTo(s.lineBranchX, s.lineBranchY)
-		seriesPainter.lineTo(s.lineEndX, s.lineEndY)
-		seriesPainter.stroke(s.color, 1)
-
-		fontStyle := fillFontStyleDefaults(s.seriesLabel.FontStyle,
-			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font)
-		x, y := s.calculateTextXY(seriesPainter.MeasureText(s.label, 0, fontStyle))
-		seriesPainter.Text(s.label, x, y, 0, fontStyle)
+		p.moveTo(lsX, lsY)
+		p.lineTo(lbX, lbY)
+		p.moveTo(lbX, lbY)
+		p.lineTo(leX, leY)
+		p.stroke(s.color, 1)
+		p.Text(s.label, textX, textY, 0, fontStyle)
 	}
-	return p.p.box, nil
+	return sectors, nil
 }
 
 func (p *pieChart) Render() (Box, error) {
@@ -277,8 +313,7 @@ func (p *pieChart) Render() (Box, error) {
 		opt.Theme = getPreferredTheme(p.p.theme)
 	}
 	if opt.Legend.Symbol == "" {
-		// default to square symbol for this chart type
-		opt.Legend.Symbol = SymbolSquare
+		opt.Legend.Symbol = SymbolSquare // default to square symbol for pie charts
 	}
 
 	renderResult, err := defaultRender(p.p, defaultRenderOption{

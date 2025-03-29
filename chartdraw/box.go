@@ -135,10 +135,19 @@ func (b Box) Height() int {
 	return AbsInt(b.Bottom - b.Top)
 }
 
-// Center returns the center of the box
+// CenterX returns the center x position of the box.
+func (b Box) CenterX() int {
+	return b.Left + (b.Width() >> 1)
+}
+
+// CenterY returns the center y position of the box.
+func (b Box) CenterY() int {
+	return b.Top + (b.Height() >> 1)
+}
+
+// Center returns the center of the box.
 func (b Box) Center() (x, y int) {
-	w2, h2 := b.Width()>>1, b.Height()>>1
-	return b.Left + w2, b.Top + h2
+	return b.CenterX(), b.CenterY()
 }
 
 // Aspect returns the aspect ratio of the box.
@@ -380,6 +389,11 @@ func (bc BoxCorners) Rotate(thetaDegrees float64) BoxCorners {
 		BottomRight: Point{brx, bry},
 		BottomLeft:  Point{blx, bly},
 	}
+}
+
+// ToPoints returns the corner points as a slice of Points.
+func (bc BoxCorners) ToPoints() []Point {
+	return []Point{bc.TopLeft, bc.TopRight, bc.BottomRight, bc.BottomLeft}
 }
 
 // Equals returns if the box equals another box.

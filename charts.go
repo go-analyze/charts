@@ -350,6 +350,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	barSeriesList := filterSeriesList[BarSeriesList](opt.SeriesList, ChartTypeBar)
 	horizontalBarSeriesList := filterSeriesList[HorizontalBarSeriesList](opt.SeriesList, ChartTypeHorizontalBar)
 	pieSeriesList := filterSeriesList[PieSeriesList](opt.SeriesList, ChartTypePie)
+	doughnutSeriesList := filterSeriesList[DoughnutSeriesList](opt.SeriesList, ChartTypeDoughnut)
 	radarSeriesList := filterSeriesList[RadarSeriesList](opt.SeriesList, ChartTypeRadar)
 	funnelSeriesList := filterSeriesList[FunnelSeriesList](opt.SeriesList, ChartTypeFunnel)
 
@@ -358,6 +359,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		return nil, errors.New("horizontal bar can not mix other charts")
 	} else if len(pieSeriesList) != 0 && len(pieSeriesList) != seriesCount {
 		return nil, errors.New("pie can not mix other charts")
+	} else if len(doughnutSeriesList) != 0 && len(doughnutSeriesList) != seriesCount {
+		return nil, errors.New("doughnut can not mix other charts")
 	} else if len(radarSeriesList) != 0 && len(radarSeriesList) != seriesCount {
 		return nil, errors.New("radar can not mix other charts")
 	} else if len(funnelSeriesList) != 0 && len(funnelSeriesList) != seriesCount {
@@ -380,6 +383,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		backgroundIsFilled: true,
 	}
 	if len(pieSeriesList) != 0 ||
+		len(doughnutSeriesList) != 0 ||
 		len(radarSeriesList) != 0 ||
 		len(funnelSeriesList) != 0 {
 		renderOpt.xAxis.Show = Ptr(false)
@@ -448,6 +452,18 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Font:       opt.Font,
 				Radius:     opt.Radius,
 				SeriesList: pieSeriesList,
+			}).renderChart(renderResult)
+			return err
+		})
+	}
+
+	// doughnut chart
+	if len(doughnutSeriesList) != 0 {
+		handler.Add(func() error {
+			_, err := newDoughnutChart(p, DoughnutChartOption{
+				Theme:      opt.Theme,
+				RadiusRing: opt.Radius,
+				SeriesList: doughnutSeriesList,
 			}).renderChart(renderResult)
 			return err
 		})

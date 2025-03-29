@@ -313,6 +313,13 @@ func PieRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 	}, opts...)
 }
 
+// DoughnutRender renders a doughnut or ring chart.
+func DoughnutRender(values []float64, opts ...OptionFunc) (*Painter, error) {
+	return Render(ChartOption{
+		SeriesList: NewSeriesListDoughnut(values).ToGenericSeriesList(),
+	}, opts...)
+}
+
 // RadarRender renders a radar chart.
 func RadarRender(values [][]float64, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{

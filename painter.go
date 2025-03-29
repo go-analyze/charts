@@ -904,17 +904,6 @@ func textRotationHeightAdjustment(textWidth, textHeight int, radians float64) in
 	}
 }
 
-// normalizeAngle brings the angle into the range [0, 2π).
-func normalizeAngle(radians float64) float64 {
-	if radians < 0 {
-		for radians < 0 {
-			radians += _2pi
-		}
-		return radians
-	}
-	return math.Mod(radians, _2pi)
-}
-
 // Dots prints filled circles for the given points.
 func (p *Painter) Dots(points []Point, fillColor, strokeColor Color, strokeWidth float64, dotRadius float64) {
 	defer p.render.ResetStyle()
@@ -1063,6 +1052,12 @@ func (p *Painter) ScatterChart(opt ScatterChartOption) error {
 // PieChart renders a pie chart with the provided configuration to the painter.
 func (p *Painter) PieChart(opt PieChartOption) error {
 	_, err := newPieChart(p, opt).Render()
+	return err
+}
+
+// DoughnutChart renders a doughnut or ring chart with the provided configuration to the painter.
+func (p *Painter) DoughnutChart(opt DoughnutChartOption) error {
+	_, err := newDoughnutChart(p, opt).Render()
 	return err
 }
 

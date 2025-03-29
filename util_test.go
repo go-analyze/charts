@@ -92,12 +92,12 @@ func TestAutoDivide(t *testing.T) {
 	}, autoDivide(600, 7))
 }
 
-func TestGetRadius(t *testing.T) {
+func TestGetFlexibleRadius(t *testing.T) {
 	t.Parallel()
 
-	assert.InDelta(t, 50.0, getRadius(100, "50%"), 0)
-	assert.InDelta(t, 30.0, getRadius(100, "30"), 0)
-	assert.InDelta(t, 40.0, getRadius(100, ""), 0)
+	assert.InDelta(t, 50.0, getFlexibleRadius(100, defaultPieRadiusFactor, "50%"), 0)
+	assert.InDelta(t, 30.0, getFlexibleRadius(100, defaultPieRadiusFactor, "30"), 0)
+	assert.InDelta(t, 40.0, getFlexibleRadius(100, defaultPieRadiusFactor, ""), 0)
 }
 
 func TestReverseSlice(t *testing.T) {

@@ -41,6 +41,7 @@ func NewFontStyleWithSize(size float64) FontStyle {
 	}
 }
 
+// fillFontStyleDefaults returns a FontStyle with the given size, color, and a font (if not already set).
 func fillFontStyleDefaults(fs FontStyle, defaultSize float64, defaultColor Color, fontOptions ...*truetype.Font) FontStyle {
 	if fs.FontSize == 0 {
 		fs.FontSize = defaultSize
@@ -52,6 +53,36 @@ func fillFontStyleDefaults(fs FontStyle, defaultSize float64, defaultColor Color
 		fs.Font = getPreferredFont(fontOptions...)
 	}
 	return fs
+}
+
+// mergeFontStyles will set from the default FontStyles the size, color, and font as
+// provided by the default styles (in order).
+func mergeFontStyles(primary FontStyle, defaultFs ...FontStyle) FontStyle {
+	if primary.FontSize == 0 {
+		for _, fs := range defaultFs {
+			if fs.FontSize != 0 {
+				primary.FontSize = fs.FontSize
+				break
+			}
+		}
+	}
+	if primary.FontColor.IsZero() {
+		for _, fs := range defaultFs {
+			if !fs.FontColor.IsZero() {
+				primary.FontColor = fs.FontColor
+				break
+			}
+		}
+	}
+	if primary.Font == nil {
+		for _, fs := range defaultFs {
+			if fs.Font != nil {
+				primary.Font = fs.Font
+				break
+			}
+		}
+	}
+	return primary
 }
 
 // OffsetInt provides an ability to configure a shift from the top or left alignments.
@@ -123,6 +154,7 @@ const (
 	ChartTypeScatter       = "scatter"
 	ChartTypeBar           = "bar"
 	ChartTypePie           = "pie"
+	ChartTypeDoughnut      = "doughnut"
 	ChartTypeRadar         = "radar"
 	ChartTypeFunnel        = "funnel"
 	ChartTypeHorizontalBar = "horizontalBar"

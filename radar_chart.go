@@ -5,8 +5,6 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 var radarDefaultValueFormatter = func(v float64) string {
@@ -108,10 +106,8 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 	seriesPainter := result.seriesPainter
 	theme := opt.Theme
 
-	cx := seriesPainter.Width() >> 1
-	cy := seriesPainter.Height() >> 1
-	diameter := chartdraw.MinInt(seriesPainter.Width(), seriesPainter.Height())
-	radius := getRadius(float64(diameter), opt.Radius)
+	cx, cy, diameter := circleChartPosition(seriesPainter)
+	radius := getFlexibleRadius(diameter, defaultPieRadiusFactor, opt.Radius)
 
 	divideCount := 5
 	divideRadius := float64(int(radius / float64(divideCount)))

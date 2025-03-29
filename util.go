@@ -224,6 +224,15 @@ func RadiansToDegrees(value float64) float64 {
 	return chartdraw.RadiansToDegrees(value)
 }
 
+// normalizeAngle brings the angle into the range [0, 2π).
+func normalizeAngle(radians float64) float64 {
+	radians = math.Mod(radians, _2pi)
+	if radians < 0 {
+		radians += _2pi
+	}
+	return radians
+}
+
 // FormatValueHumanizeShort takes in a value and a specified precision, rounding to the specified precision and
 // returning a human friendly number string including commas. If the value is over 1,000 it will be reduced to a
 // shorter version with the appropriate k, M, G, T suffix.
@@ -261,19 +270,6 @@ func FormatValueHumanize(value float64, decimals int, ensureTrailingZeros bool) 
 	}
 
 	return result
-}
-
-const defaultRadiusPercent = 0.4
-
-func getRadius(diameter float64, radiusValue string) float64 {
-	var radius float64
-	if radiusValue != "" {
-		radius, _ = parseFlexibleValue(radiusValue, diameter)
-	}
-	if radius <= 0 {
-		radius = diameter * defaultRadiusPercent
-	}
-	return radius
 }
 
 func getPolygonPointAngles(sides int) []float64 {

@@ -7,7 +7,7 @@ Our library focuses on generating beautiful charts and graphs within Go. Graphs 
 
 ## Functionality
 
-Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `radar`, `funnel` and `table`.
+Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `doughnut`, `radar`, `funnel` and `table`.
 
 New users should check out the [Features Overview](https://github.com/go-analyze/charts/wiki/Feature-Overview) on our Wiki to see commonly used features for each chart type, as well as linking to specific examples for the feature.
 
@@ -221,6 +221,16 @@ func main() {
 Top Pie Chart Examples:
 * [pie_chart-1-basic](./examples/1-Painter/pie_chart-1-basic) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
 * [pie_chart-2-radius](./examples/1-Painter/pie_chart-2-radius) - Pie chart which varies the series radius by the percentage of the series.
+
+### Doughnut Chart
+
+<img src="./assets/chart-doughnut.png" alt="Dougnut Chart">
+
+Doughnut Chart Feature List: https://github.com/go-analyze/charts/wiki/Feature-Overview#doughnut-charts
+
+Top Radar Chart Examples:
+* [doughnut_chart-1-basic](./examples/1-Painter/doughnut_chart-1-basic) - Basic doughnut chart.
+* [doughnut_chart-2-styles](./examples/1-Painter/doughnut_chart-2-styles) - A variety of styles shown for doughnut charts.
 
 ### Radar Chart
 

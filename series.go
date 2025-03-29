@@ -887,6 +887,123 @@ func (p PieSeriesList) ToGenericSeriesList() GenericSeriesList {
 	return result
 }
 
+// DoughnutSeries references a population of data for doughnut charts.
+type DoughnutSeries struct {
+	// Value provides the value for the Doughnut section.
+	Value float64
+	// Label provides the series labels.
+	Label SeriesLabel
+	// Name specifies a name for the series.
+	Name string
+	// Radius for Doughnut chart, e.g.: 40%, default is "40%"
+	Radius string
+}
+
+func (d *DoughnutSeries) getYAxisIndex() int {
+	return 0
+}
+
+func (d *DoughnutSeries) getValues() []float64 {
+	return []float64{d.Value}
+}
+
+func (d *DoughnutSeries) getType() string {
+	return ChartTypeDoughnut
+}
+
+// DoughnutSeriesList provides the data populations for Doughnut charts (DoughnutChartOption).
+type DoughnutSeriesList []DoughnutSeries
+
+func (d DoughnutSeriesList) SumSeries() float64 {
+	var sum float64
+	for _, s := range d {
+		sum += s.Value
+	}
+	return sum
+}
+
+// MaxValue returns the maximum value within the series, or MinInt64 if no values.
+func (d DoughnutSeriesList) MaxValue() float64 {
+	max := float64(math.MinInt64)
+	for _, s := range d {
+		if s.Value > max {
+			max = s.Value
+		}
+	}
+	return max
+}
+
+func (d DoughnutSeriesList) names() []string {
+	return seriesNames(d)
+}
+
+func (d DoughnutSeriesList) len() int {
+	return len(d)
+}
+
+func (d DoughnutSeriesList) getSeries(index int) series {
+	return &d[index]
+}
+
+func (d DoughnutSeriesList) getSeriesName(index int) string {
+	return d[index].Name
+}
+
+func (d DoughnutSeriesList) getSeriesValues(index int) []float64 {
+	return []float64{d[index].Value}
+}
+
+func (d DoughnutSeriesList) getSeriesLen(_ int) int {
+	return 1
+}
+
+func (d DoughnutSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
+func (d DoughnutSeriesList) hasMarkPoint() bool {
+	return false // not supported on this chart type
+}
+
+func (d DoughnutSeriesList) setSeriesName(index int, name string) {
+	d[index].Name = name
+}
+
+func (d DoughnutSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(d, func(i, j int) bool {
+		return dict[d[i].Name] < dict[d[j].Name]
+	})
+}
+
+// SetSeriesLabels sets the label for all elements in the series.
+func (d DoughnutSeriesList) SetSeriesLabels(label SeriesLabel) {
+	for i := range d {
+		d[i].Label = label
+	}
+}
+
+func (d DoughnutSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(d))
+	for i, s := range d {
+		result[i] = GenericSeries{
+			Values: []float64{s.Value},
+			Label:  s.Label,
+			Name:   s.Name,
+			Type:   ChartTypeDoughnut,
+			Radius: s.Radius,
+		}
+	}
+	return result
+}
+
+func (d DoughnutSeriesList) toPieSeriesList() PieSeriesList {
+	result := make([]PieSeries, len(d))
+	for i, s := range d {
+		result[i] = PieSeries(s)
+	}
+	return result
+}
+
 // RadarSeries references a population of data for radar charts.
 type RadarSeries struct {
 	// Values provides the series data list.
@@ -1106,6 +1223,25 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 			}
 		}
 		return any(result).(T)
+	case ChartTypeDoughnut:
+		result := make(DoughnutSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *DoughnutSeries:
+					result = append(result, *v)
+				case *GenericSeries:
+					result = append(result, DoughnutSeries{
+						Value:  chartdraw.SumFloat64(v.Values...),
+						Label:  v.Label,
+						Name:   v.Name,
+						Radius: v.Radius,
+					})
+				}
+			}
+		}
+		return any(result).(T)
 	case ChartTypeRadar:
 		result := make(RadarSeriesList, 0, sl.len())
 		for i := 0; i < sl.len(); i++ {
@@ -1181,6 +1317,13 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 						Name:   v.Name,
 					})
 				case *PieSeries:
+					result = append(result, GenericSeries{
+						Values: []float64{v.Value},
+						Label:  v.Label,
+						Name:   v.Name,
+						Radius: v.Radius,
+					})
+				case *DoughnutSeries:
 					result = append(result, GenericSeries{
 						Values: []float64{v.Value},
 						Label:  v.Label,
@@ -1436,6 +1579,33 @@ func NewSeriesListPie(values []float64, opts ...PieSeriesOption) PieSeriesList {
 	result := make([]PieSeries, len(values))
 	for index, v := range values {
 		s := PieSeries{
+			Value: v,
+			Label: opt.Label,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		result[index] = s
+	}
+	return result
+}
+
+// DoughnutSeriesOption provides series customization for NewSeriesListDoughnut.
+type DoughnutSeriesOption struct {
+	Label SeriesLabel
+	Names []string
+}
+
+// NewSeriesListDoughnut builds a SeriesList for a doughnut chart.
+func NewSeriesListDoughnut(values []float64, opts ...DoughnutSeriesOption) DoughnutSeriesList {
+	var opt DoughnutSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+
+	result := make([]DoughnutSeries, len(values))
+	for index, v := range values {
+		s := DoughnutSeries{
 			Value: v,
 			Label: opt.Label,
 		}

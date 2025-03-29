@@ -45,7 +45,7 @@ func makeDefaultMultiChartOptions() ChartOption {
 					Bottom: 120,
 				},
 				Radius: "35%",
-				SeriesList: NewSeriesListPie([]float64{
+				SeriesList: NewSeriesListDoughnut([]float64{
 					435.9, 354.3, 285.9, 204.5,
 				}).ToGenericSeriesList(),
 			},
@@ -372,7 +372,7 @@ func BenchmarkPainterPieChartSVGRender(b *testing.B) {
 func renderPainterPie(painter *Painter) {
 	pieOpt := NewPieChartOptionWithData([]float64{1048, 735, 580, 484, 300})
 	pieOpt.Title = TitleOption{
-		Text:             "Rainfall vs Evaporation",
+		Text:             "Pie Chart",
 		Subtext:          "(Fake Data)",
 		Offset:           OffsetCenter,
 		FontStyle:        NewFontStyleWithSize(16),
@@ -389,6 +389,64 @@ func renderPainterPie(painter *Painter) {
 		FontStyle: NewFontStyleWithSize(10),
 	}
 	if err := painter.PieChart(pieOpt); err != nil {
+		panic(err)
+	} else if buf, err := painter.Bytes(); err != nil {
+		panic(err)
+	} else if len(buf) == 0 {
+		panic(errors.New("data is nil"))
+	}
+}
+
+func BenchmarkPainterDoughnutChartPNGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputPNG,
+		})
+
+		renderPainterDoughnut(painter)
+	}
+}
+
+func BenchmarkPainterDoughnutChartJPGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputJPG,
+		})
+
+		renderPainterDoughnut(painter)
+	}
+}
+
+func BenchmarkPainterDoughnutChartSVGRender(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		painter := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+		})
+
+		renderPainterDoughnut(painter)
+	}
+}
+
+func renderPainterDoughnut(painter *Painter) {
+	doughnutOpt := NewDoughnutChartOptionWithData([]float64{1048, 735, 580, 484, 300})
+	doughnutOpt.Title = TitleOption{
+		Text:             "Doughnut Chart",
+		Subtext:          "(Fake Data)",
+		Offset:           OffsetCenter,
+		FontStyle:        NewFontStyleWithSize(16),
+		SubtextFontStyle: NewFontStyleWithSize(10),
+	}
+	doughnutOpt.Padding = NewBoxEqual(20)
+	doughnutOpt.Legend = LegendOption{
+		SeriesNames: []string{"Search Engine", "Direct", "Email", "Union Ads", "Video Ads"},
+		Vertical:    Ptr(true),
+		Offset: OffsetStr{
+			Left: "80%",
+			Top:  PositionBottom,
+		},
+		FontStyle: NewFontStyleWithSize(10),
+	}
+	if err := painter.DoughnutChart(doughnutOpt); err != nil {
 		panic(err)
 	} else if buf, err := painter.Bytes(); err != nil {
 		panic(err)
