@@ -43,6 +43,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	// calculate the range
 	minVal, maxVal, sumMax := getSeriesMinMaxSumMax(seriesList, yAxisIndex, stackSeries)
 	if stackSeries { // If stacked, maxVal should be the maxVal data point of all series summed together
+		minVal-- // subtract to ensure that all series are represented as a small stacked bar (may otherwise have 0 height)
 		maxVal = sumMax
 	}
 	minPadScale, maxPadScale := 1.0, 1.0
