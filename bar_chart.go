@@ -22,7 +22,11 @@ func newBarChart(p *Painter, opt BarChartOption) *barChart {
 
 // NewBarChartOptionWithData returns an initialized BarChartOption with the SeriesList set for the provided data slice.
 func NewBarChartOptionWithData(data [][]float64) BarChartOption {
-	sl := NewSeriesListBar(data)
+	return NewBarChartOptionWithSeries(NewSeriesListBar(data))
+}
+
+// NewBarChartOptionWithSeries returns an initialized BarChartOption with the provided SeriesList.
+func NewBarChartOptionWithSeries(sl BarSeriesList) BarChartOption {
 	return BarChartOption{
 		SeriesList:     sl,
 		Padding:        defaultPadding,

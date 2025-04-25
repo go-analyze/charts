@@ -24,7 +24,11 @@ func newLineChart(p *Painter, opt LineChartOption) *lineChart {
 
 // NewLineChartOptionWithData returns an initialized LineChartOption with the SeriesList set for the provided data slice.
 func NewLineChartOptionWithData(data [][]float64) LineChartOption {
-	sl := NewSeriesListLine(data)
+	return NewLineChartOptionWithSeries(NewSeriesListLine(data))
+}
+
+// NewLineChartOptionWithSeries returns an initialized LineChartOption with the provided SeriesList.
+func NewLineChartOptionWithSeries(sl LineSeriesList) LineChartOption {
 	return LineChartOption{
 		SeriesList: sl,
 		Padding:    defaultPadding,

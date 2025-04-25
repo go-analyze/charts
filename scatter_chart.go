@@ -24,7 +24,11 @@ func newScatterChart(p *Painter, opt ScatterChartOption) *scatterChart {
 
 // NewScatterChartOptionWithData returns an initialized ScatterChartOption with the SeriesList set for the provided data slice.
 func NewScatterChartOptionWithData(data [][]float64) ScatterChartOption {
-	sl := NewSeriesListScatter(data)
+	return NewScatterChartOptionWithSeries(NewSeriesListScatter(data))
+}
+
+// NewScatterChartOptionWithSeries returns an initialized ScatterChartOption with the provided SeriesList.
+func NewScatterChartOptionWithSeries(sl ScatterSeriesList) ScatterChartOption {
 	return ScatterChartOption{
 		SeriesList: sl,
 		Padding:    defaultPadding,
