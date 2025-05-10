@@ -308,7 +308,7 @@ func TestBarChart(t *testing.T) {
 				opt.YAxis[0].Show = Ptr(false)
 				return opt
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 30 140\nL 290 140\nL 290 380\nL 30 380\nL 30 140\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 30 80\nL 290 80\nL 290 140\nL 30 140\nL 30 80\" style=\"stroke:none;fill:rgb(145,204,117)\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 0 0\nL 600 0\nL 600 400\nL 0 400\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 30 140\nL 570 140\nL 570 380\nL 30 380\nL 30 140\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 30 80\nL 570 80\nL 570 140\nL 30 140\nL 30 80\" style=\"stroke:none;fill:rgb(145,204,117)\"/></svg>",
 		},
 		{
 			name: "stack_series_global_mark_line",

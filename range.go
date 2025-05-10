@@ -184,16 +184,8 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 	seriesList seriesList, labelRotation float64, fontStyle FontStyle) axisRange {
 	// If user provided no labels, use series names.
 	// If provided only partially, fill in the remaining labels.
-	if len(labels) == 0 {
-		labels = seriesList.names()
-	} else {
-		for i := len(labels); i < seriesList.len(); i++ {
-			seriesName := seriesList.getSeriesName(i)
-			if seriesName == "" {
-				seriesName = strconv.Itoa(i + 1)
-			}
-			labels = append(labels, seriesName)
-		}
+	for i := len(labels); i < getSeriesMaxDataCount(seriesList); i++ {
+		labels = append(labels, strconv.Itoa(i+1))
 	}
 	dataCount := len(labels)
 

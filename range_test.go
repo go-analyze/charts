@@ -340,10 +340,10 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
 			0, 0, 0, tsl, 0, fs)
 
-		expectedLabels := []string{"series:0", "series:1", "series:2"}
+		expectedLabels := []string{"1"}
 		assert.Equal(t, expectedLabels, ar.labels)
-		assert.Equal(t, 3, ar.divideCount)
-		assert.Equal(t, 3, ar.labelCount)
+		assert.Equal(t, 1, ar.divideCount)
+		assert.Equal(t, 2, ar.labelCount)
 	})
 
 	t.Run("provided_labels_filled_to_series_length", func(t *testing.T) {
@@ -351,17 +351,17 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		// Provide fewer labels than the number of series.
 		providedLabels := []string{"CustomLabel"}
 		tsl := testSeriesList{
-			{values: []float64{1}},
-			{values: []float64{2}},
-			{values: []float64{3}},
+			{values: []float64{1, 1}},
+			{values: []float64{2, 1}},
+			{values: []float64{3, 1}},
 		}
 
 		ar := calculateCategoryAxisRange(p, 800, false, false, providedLabels, 0,
 			0, 0, 0, tsl, 0, fs)
 
-		assert.Equal(t, []string{"CustomLabel", "series:1", "series:2"}, ar.labels)
-		assert.Equal(t, 3, ar.divideCount)
-		assert.Equal(t, 3, ar.labelCount)
+		assert.Equal(t, []string{"CustomLabel", "2"}, ar.labels)
+		assert.Equal(t, 2, ar.divideCount)
+		assert.Equal(t, 2, ar.labelCount)
 	})
 
 	t.Run("explicit_label_count_cfg", func(t *testing.T) {
@@ -376,9 +376,8 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
 			2, 1, 0, tsl, 0, fs)
 
-		assert.Equal(t, []string{"series:0", "series:1", "series:2", "series:3"}, ar.labels)
-		assert.Equal(t, 4, ar.divideCount)
-		assert.Equal(t, 3, ar.labelCount)
+		assert.Equal(t, 1, ar.divideCount)
+		assert.Equal(t, 2, ar.labelCount)
 	})
 
 	t.Run("label_rotation", func(t *testing.T) {
@@ -392,8 +391,8 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		ar := calculateCategoryAxisRange(p, 800, true, false, []string{}, 0,
 			0, 0, 0, tsl, rotation, fs)
 
-		assert.Equal(t, 81, ar.textMaxWidth)
-		assert.Equal(t, 57, ar.textMaxHeight)
+		assert.Equal(t, 17, ar.textMaxWidth)
+		assert.Equal(t, 20, ar.textMaxHeight)
 		assert.InDelta(t, rotation, ar.labelRotation, 0.0)
 	})
 
@@ -458,7 +457,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		ar := calculateCategoryAxisRange(p, 800, false, false, []string{}, 0,
 			0, 0, 4.0, tsl, 0, fs)
 
-		assert.Equal(t, 3, ar.labelCount)
+		assert.Equal(t, 2, ar.labelCount)
 	})
 
 	t.Run("empty_series_list", func(t *testing.T) {
@@ -467,7 +466,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
 			0, 0, 0, tsl, 0, fs)
 
-		assert.Equal(t, []string{}, ar.labels)
+		assert.Empty(t, ar.labels)
 		assert.Equal(t, 0, ar.divideCount)
 		assert.Equal(t, 2, ar.labelCount)
 	})
