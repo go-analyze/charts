@@ -252,6 +252,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 			}
 			if opt.CellModifier != nil {
 				tc = opt.CellModifier(tc)
+				// TODO - deprecate this behavior
 				// Update style values to capture any changes
 				fontStyle = tc.FontStyle
 				fillColor = tc.FillColor
@@ -274,7 +275,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 	info.tableCells = make([][]TableCell, len(opt.Data)+1)
 
 	// processing of the table headers
-	headerCells, headerHeight := renderTableCells(headerFontStyle, opt.HeaderFontColor,
+	headerCells, headerHeight := renderTableCells(headerFontStyle, ColorTransparent,
 		0, opt.Header, height, opt.Padding)
 	info.tableCells[0] = headerCells
 	height += headerHeight
@@ -282,7 +283,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 
 	// processing of the table contents
 	for index, textList := range opt.Data {
-		newCells, cellHeight := renderTableCells(fontStyle, fontStyle.FontColor, index+1, textList, height, opt.Padding)
+		newCells, cellHeight := renderTableCells(fontStyle, ColorTransparent, index+1, textList, height, opt.Padding)
 		info.tableCells[index+1] = newCells
 		info.rowHeights = append(info.rowHeights, cellHeight)
 		height += cellHeight
