@@ -267,6 +267,63 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		assert.Equal(t, 3, ar.divideCount)
 		assert.Equal(t, explicitLabelCount, ar.labelCount)
 	})
+
+	t.Run("label_unit_search_loop_zero_origin", func(t *testing.T) {
+		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+		series := testSeries{yAxisIndex: 0, values: []float64{0, 100}}
+		tsl := testSeriesList{series}
+
+		ar := calculateValueAxisRange(p, false, 800,
+			nil, nil, Ptr(0.0), // force no padding
+			nil, 0, 0, 7, 0,
+			tsl, 0, false, defaultValueFormatter, 0, fs)
+
+		assert.Equal(t, 6, ar.labelCount)
+		assert.InDelta(t, 0.0, ar.min, 0.0)
+		assert.InDelta(t, 105.0, ar.max, 0.0)
+		assert.Equal(t, []string{"0", "21", "42", "63", "84", "105"}, ar.labels)
+	})
+
+	t.Run("label_unit_search_loop_nonzero_min", func(t *testing.T) {
+		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+		series := testSeries{yAxisIndex: 0, values: []float64{9, 30}}
+		tsl := testSeriesList{series}
+
+		ar := calculateValueAxisRange(p, false, 800,
+			nil, nil, Ptr(0.0), // force no padding
+			nil, 0, 0, 9, 0,
+			tsl, 0, false, defaultValueFormatter, 0, fs)
+
+		assert.Equal(t, 2, ar.labelCount)
+		assert.InDelta(t, 9.0, ar.min, 0.0)
+		assert.InDelta(t, 36.0, ar.max, 0.0)
+		assert.Equal(t, []string{"9", "36"}, ar.labels)
+	})
+
+	t.Run("label_unit_infinite_loop", func(t *testing.T) {
+		p := NewPainter(PainterOptions{Width: 462, Height: 400})
+
+		tsl := testSeriesList{
+			{values: []float64{20, 46}},
+		}
+
+		ar := calculateValueAxisRange(
+			p, false, 462, // isVertical, axisSize
+			nil, nil, nil, nil, // minCfg, maxCfg, rangeValuePaddingScale, labelsCfg
+			0,            // dataStartIndex
+			0,            // labelCountCfg
+			100000,       // labelUnit (much larger than the data span)
+			0,            // labelCountAdjustment
+			tsl, 0, true, // seriesList, yAxisIndex, stackSeries
+			defaultValueFormatter,
+			0, fs, // labelRotation, fontStyle
+		)
+
+		assert.Equal(t, 2, ar.labelCount)
+		assert.InDelta(t, 19.0, ar.min, 0.0)
+		assert.InDelta(t, 100000, ar.max, 0.0)
+		assert.Equal(t, []string{"19", "100k"}, ar.labels)
+	})
 }
 
 func TestCalculateCategoryAxisRange(t *testing.T) {

@@ -126,7 +126,10 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		}
 		currentInterval := (maxPadded - minPadded) / float64(padLabelCount-1)
 		remainder := math.Mod(currentInterval, labelUnit)
-		if math.Abs(remainder) > matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) > matrix.DefaultEpsilon {
+		if labelUnit >= (maxPadded - minPadded) {
+			// With a unit that exceeds the range we can only put the first and last label
+			labelCount = minimumAxisLabels
+		} else if math.Abs(remainder) > matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) > matrix.DefaultEpsilon {
 			// Search for a candidate labelCount by adjusting downward and upward to find the closest possible
 			for delta := 0; ; delta++ {
 				// Try candidate below, ensuring it doesn't drop below 4
