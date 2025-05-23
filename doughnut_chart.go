@@ -137,7 +137,7 @@ func (d *doughnutChart) renderChart(result *defaultRenderResult) (Box, error) {
 
 	// Draw doughnut center / hole
 	circleColor := opt.Theme.GetBackgroundColor()
-	if circleColor.IsTransparent() {
+	if circleColor.IsZero() {
 		circleColor = ColorWhite
 	} else if circleColor.A != 255 {
 		circleColor = circleColor.WithAlpha(255)
