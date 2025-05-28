@@ -132,31 +132,31 @@ func TestCalculateValueAxisRange(t *testing.T) {
 	})
 
 	t.Run("label_unit_adjusted_positive", func(t *testing.T) {
-		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+		p := NewPainter(PainterOptions{Width: 1200, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 100}}
 		tsl := testSeriesList{series}
 
-		ar := calculateValueAxisRange(p, false, 800, nil, nil, nil,
+		ar := calculateValueAxisRange(p, false, 1200, nil, nil, nil,
 			nil, 0, 0, 5, 2,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, 12, ar.labelCount)
+		assert.Equal(t, 8, ar.labelCount)
 		assert.InDelta(t, 0.0, ar.min, 0.0)
-		assert.InDelta(t, 110.0, ar.max, 0.0)
+		assert.InDelta(t, 105.0, ar.max, 0.0)
 	})
 
 	t.Run("label_unit_adjusted_negative", func(t *testing.T) {
-		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+		p := NewPainter(PainterOptions{Width: 2400, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{-10, 100}}
 		tsl := testSeriesList{series}
 
-		ar := calculateValueAxisRange(p, false, 800, nil, nil, nil,
+		ar := calculateValueAxisRange(p, false, 2400, nil, nil, nil,
 			nil, 0, 0, 5, 4,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, 24, ar.labelCount)
+		assert.Equal(t, 25, ar.labelCount)
 		assert.InDelta(t, -10.0, ar.min, 0.0)
-		assert.InDelta(t, 105.0, ar.max, 0.0)
+		assert.InDelta(t, 110.0, ar.max, 0.0)
 	})
 
 	t.Run("stacked_series", func(t *testing.T) {
@@ -294,10 +294,10 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			nil, 0, 0, 9, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, 2, ar.labelCount)
+		assert.Equal(t, 4, ar.labelCount)
 		assert.InDelta(t, 9.0, ar.min, 0.0)
 		assert.InDelta(t, 36.0, ar.max, 0.0)
-		assert.Equal(t, []string{"9", "36"}, ar.labels)
+		assert.Equal(t, []string{"9", "18", "27", "36"}, ar.labels)
 	})
 
 	t.Run("label_unit_infinite_loop", func(t *testing.T) {
@@ -321,8 +321,8 @@ func TestCalculateValueAxisRange(t *testing.T) {
 
 		assert.Equal(t, 2, ar.labelCount)
 		assert.InDelta(t, 19.0, ar.min, 0.0)
-		assert.InDelta(t, 100000, ar.max, 0.0)
-		assert.Equal(t, []string{"19", "100k"}, ar.labels)
+		assert.InDelta(t, 49, ar.max, 0.0)
+		assert.Equal(t, []string{"19", "49"}, ar.labels)
 	})
 }
 

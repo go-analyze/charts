@@ -91,8 +91,8 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	// If user gave an explicit LabelCount, then we do NOT do a collision check
 	// For default logic we want to make sure we choose a label count that is visually appealing
 	padLabelCount := initialLabelCount
+	maxLabelCount := padLabelCount
 	if labelCountCfg == 0 {
-		maxLabelCount := padLabelCount
 		if isVertical {
 			if labelH > 0 { // avoid divide by zero
 				maxLabelCount = axisSize / labelH
@@ -113,44 +113,119 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	}
 	minPadded, maxPadded := padRange(padLabelCount, minVal, maxVal, minPadScale, maxPadScale)
 	labelCount := padLabelCount
-	// if the user set only a unit we may need to refine again after padding to meet th eunit
+	// if the user set only a unit, we may need to refine again after padding to meet the unit
 	if labelCountCfg == 0 && labelUnit > 0 {
-		if maxCfg == nil {
-			// if no max enforced, round up max to a multiple of the unit
-			maxPadded = math.Trunc(math.Ceil(maxPadded/labelUnit) * labelUnit)
-		}
-		// ensure we have a label count that will meet the requested units
-		if fastCalc := int((maxPadded-minPadded)/labelUnit) + 1; fastCalc > minimumAxisLabels && fastCalc < defaultYAxisLabelCountHigh {
-			// trivial case that can avoid the loop search below
-			labelCount = fastCalc
-		}
-		currentInterval := (maxPadded - minPadded) / float64(padLabelCount-1)
-		remainder := math.Mod(currentInterval, labelUnit)
-		if labelUnit >= (maxPadded - minPadded) {
-			// With a unit that exceeds the range we can only put the first and last label
+		// Quick exit when the unit itself is larger than the whole span
+		if dataSpan := maxPadded - minPadded; labelUnit >= dataSpan {
 			labelCount = minimumAxisLabels
-		} else if math.Abs(remainder) > matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) > matrix.DefaultEpsilon {
-			// Search for a candidate labelCount by adjusting downward and upward to find the closest possible
-			for delta := 0; ; delta++ {
-				// Try candidate below, ensuring it doesn't drop below 4
-				if candidate := padLabelCount - delta; candidate >= minimumAxisLabels*2 {
-					candidateInterval := (maxPadded - minPadded) / float64(candidate-1)
-					remainder = math.Mod(candidateInterval, labelUnit)
-					if math.Abs(remainder) < matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) < matrix.DefaultEpsilon {
-						labelCount = candidate
-						break
+		} else {
+			// Snap helpers to ensure we maintain a multiple of `labelUnit`
+			down := func(v float64) float64 { return math.Floor(v/labelUnit) * labelUnit }
+			up := func(v float64) float64 { return math.Ceil(v/labelUnit) * labelUnit }
+
+			var bestCount int
+			bestMin, bestMax := minPadded, maxPadded
+			bestPad := math.Inf(1)
+			bestDeltaAbs := math.MaxInt
+
+			// Helper that records the “best so far”
+			accept := func(c int, mn, mx float64) {
+				deltaAbs := int(math.Abs(float64(padLabelCount - c)))
+				pad := (minPadded - mn) + (mx - maxPadded)
+				if pad < bestPad-matrix.DefaultEpsilon ||
+					(math.Abs(pad-bestPad) < matrix.DefaultEpsilon && deltaAbs < bestDeltaAbs) {
+					if bestCount == 0 || down(mn)-mn < matrix.DefaultEpsilon && mx-up(mx) < matrix.DefaultEpsilon {
+						bestPad = pad
+						bestMin = mn
+						bestMax = mx
+						bestCount = c
+						bestDeltaAbs = deltaAbs
 					}
 				}
-				// Try candidate above
-				candidate := padLabelCount + delta
-				candidateInterval := (maxPadded - minPadded) / float64(candidate-1)
-				remainder = math.Mod(candidateInterval, labelUnit)
-				if math.Abs(remainder) < matrix.DefaultEpsilon || math.Abs(labelUnit-remainder) < matrix.DefaultEpsilon {
-					labelCount = candidate
-					break
-				}
-				// Continue expanding the search if no candidate matches
 			}
+
+			// The search expands symmetrically around padLabelCount
+			maxDelta := chartdraw.MaxInt(padLabelCount-minimumAxisLabels, maxLabelCount-padLabelCount)
+			for delta := 0; delta <= maxDelta; delta++ {
+				try := func(c int) {
+					if c < minimumAxisLabels || c > maxLabelCount {
+						return
+					}
+					spanCount := float64(c - 1)
+					span := spanCount * labelUnit
+
+					// Attempt in the order of preferred match method
+
+					// snapped min and max to the current label count
+					snappedMin := down(minPadded)
+					snappedMax := up(maxPadded)
+					snappedInterval := up((snappedMax - snappedMin) / spanCount)
+					flip := true // flip to alternate which boundary we expand to meet the snapped interval
+					for snappedMin+(snappedInterval*spanCount)-snappedMax > matrix.DefaultEpsilon {
+						if snappedMin-snappedInterval >= 0 && flip {
+							flip = false
+							snappedMin -= snappedInterval
+						} else {
+							flip = true
+							snappedMax += snappedInterval
+						}
+					}
+					// final max adjustment to ensure we meet the snapped interval
+					snappedMax = math.Ceil(snappedMax/snappedInterval) * snappedInterval
+					accept(c, snappedMin, snappedMax)
+
+					// shift MIN downward
+					if minCfg == nil {
+						candMax := up(maxPadded) // snapped top
+						candMin := candMax - span
+						if (minPadded < 0 || candMin >= 0.0-matrix.DefaultEpsilon) &&
+							candMin <= minPadded+matrix.DefaultEpsilon {
+							accept(c, candMin, candMax)
+						}
+					}
+
+					// split padding (both free)
+					if minCfg == nil && maxCfg == nil {
+						// center the span around the data as much as multiples allow
+						candMin := down(minPadded - (span-dataSpan)/2)
+						candMax := candMin + span
+						if (minPadded < 0 || candMin >= 0.0-matrix.DefaultEpsilon) &&
+							candMin <= minPadded+matrix.DefaultEpsilon &&
+							candMax >= maxPadded-matrix.DefaultEpsilon {
+							accept(c, candMin, candMax)
+						}
+					}
+
+					// grow the MAX upward
+					if maxCfg == nil {
+						candMin := down(minPadded) // snapped bottom
+						candMax := candMin + span
+						if candMax >= maxPadded-matrix.DefaultEpsilon {
+							accept(c, candMin, candMax)
+						}
+					}
+				}
+
+				// Try padLabelCount-delta and padLabelCount+delta in that order
+				if cand := padLabelCount - delta; cand >= minimumAxisLabels {
+					try(cand)
+				}
+				if delta != 0 {
+					if cand := padLabelCount + delta; cand <= maxLabelCount {
+						try(cand)
+					}
+				}
+
+				if bestPad < matrix.DefaultEpsilon {
+					break // perfect fit with zero extra padding
+				}
+			}
+
+			if bestCount > 0 {
+				labelCount = bestCount
+				minPadded = bestMin
+				maxPadded = bestMax
+			} // else, could not match the unit inside range, fallback to the original padLabelCount
 		}
 	}
 
