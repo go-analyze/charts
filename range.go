@@ -126,20 +126,21 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 			var bestCount int
 			bestMin, bestMax := minPadded, maxPadded
 			bestPad := math.Inf(1)
-			bestDeltaAbs := math.MaxInt
+			bestDeltaC := math.MaxInt
 
 			// Helper that records the “best so far”
 			accept := func(c int, mn, mx float64) {
 				deltaAbs := int(math.Abs(float64(padLabelCount - c)))
 				pad := (minPadded - mn) + (mx - maxPadded)
 				if pad < bestPad-matrix.DefaultEpsilon ||
-					(math.Abs(pad-bestPad) < matrix.DefaultEpsilon && deltaAbs < bestDeltaAbs) {
+					(math.Abs(pad-bestPad) < matrix.DefaultEpsilon &&
+						(deltaAbs < bestDeltaC || (deltaAbs == bestDeltaC && c > bestCount))) {
 					if bestCount == 0 || down(mn)-mn < matrix.DefaultEpsilon && mx-up(mx) < matrix.DefaultEpsilon {
 						bestPad = pad
 						bestMin = mn
 						bestMax = mx
 						bestCount = c
-						bestDeltaAbs = deltaAbs
+						bestDeltaC = deltaAbs
 					}
 				}
 			}
