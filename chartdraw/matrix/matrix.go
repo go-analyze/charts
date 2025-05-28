@@ -9,7 +9,7 @@ import (
 
 const (
 	// DefaultEpsilon represents the minimum precision for matrix math operations.
-	DefaultEpsilon = 0.000001
+	DefaultEpsilon = 0.00000001
 )
 
 var (
@@ -119,8 +119,7 @@ func (m *Matrix) WithEpsilon(epsilon float64) *Matrix {
 	return m
 }
 
-// Each applies the action to each element of the matrix in
-// rows => cols order.
+// Each applies the action to each element of the matrix in rows => cols order.
 func (m *Matrix) Each(action func(row, col int, value float64)) {
 	rows, cols := m.Size()
 	for row := 0; row < rows; row++ {

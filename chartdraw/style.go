@@ -2,17 +2,16 @@ package chartdraw
 
 import (
 	"fmt"
-	"math"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw/drawing"
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 const (
-	// Disabled indicates if the value should be interpreted as set intentionally to zero.
-	// this is because golang optionals aren't here yet.
+	// Disabled indicates if the value should be interpreted as a set intentionally to zero.
 	Disabled = -1
 )
 
@@ -71,7 +70,7 @@ type Style struct {
 	TextRotationDegrees float64 //0 is unset or normal
 }
 
-// FontStyle contains the font specific style aspects.
+// FontStyle contains the font-specific style aspects.
 type FontStyle struct {
 	FontSize  float64
 	FontColor drawing.Color
@@ -80,7 +79,7 @@ type FontStyle struct {
 
 // IsZero returns if the font style is set or not.
 func (s FontStyle) IsZero() bool {
-	return s.FontSize <= math.SmallestNonzeroFloat64 && s.Font == nil && s.FontColor.IsZero()
+	return s.FontSize <= matrix.DefaultEpsilon && s.Font == nil && s.FontColor.IsZero()
 }
 
 // IsZero returns if the object is set or not.

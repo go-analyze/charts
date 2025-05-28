@@ -7,6 +7,7 @@ import (
 	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 // ValueFormatter defines a function that can be used to format numeric values.
@@ -110,7 +111,7 @@ func PainterFontOption(font *truetype.Font) PainterOptionFunc {
 	}
 }
 
-// NewPainter creates a painter which can be used to render charts to (using for example newLineChart).
+// NewPainter creates a painter which can be used to render charts to (for example, newLineChart).
 func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) *Painter {
 	if opts.Width <= 0 {
 		opts.Width = defaultChartWidth
@@ -208,7 +209,7 @@ func (p *Painter) fill(fillColor Color) {
 	p.render.Fill()
 }
 
-// fillStroke performs a fill+stroke with the given colors and stroke width, then resets style.
+// fillStroke performs a fill+stroke with the given colors and stroke width, then resets the style.
 func (p *Painter) fillStroke(fillColor, strokeColor Color, strokeWidth float64) {
 	defer p.render.ResetStyle()
 	p.render.SetFillColor(fillColor)
@@ -303,7 +304,7 @@ func (p *Painter) LineStroke(points []Point, strokeColor Color, strokeWidth floa
 }
 
 // drawStraightPath draws a simple (non-curved) path for the given points.
-// If dotForSinglePoint is true, single points are drawn as 2px radius dots.
+// If dotForSinglePoint is true, single points are drawn as 2 px radius dots.
 func (p *Painter) drawStraightPath(points []Point, dotForSinglePoint bool) {
 	pointCount := len(points)
 	if pointCount == 0 {
@@ -406,7 +407,7 @@ func (p *Painter) FilledDiamond(cx, cy, width, height int, fillColor, strokeColo
 
 func (p *Painter) diamondMoveLine(cx, cy, width, height int) {
 	// Calculate the four corners of the diamond
-	hw, hh := width/2, height/2 // Half width and height
+	hw, hh := width/2, height/2 // Half-width and height
 	p1x, p1y := cx, cy-hh       // Top
 	p2x, p2y := cx+hw, cy       // Right
 	p3x, p3y := cx, cy+hh       // Bottom
@@ -742,7 +743,7 @@ func isTick(totalRange int, numTicks int, index int) bool {
 	predictedTickIndex := int(float64(index)/step + 0.5)
 	// actualTickIndex translates the predictedTickIndex back to the actual data index.
 	// It does this by multiplying the predictedTickIndex by the step size, effectively finding
-	// the actual position of this tick on the discrete scale of data indices, and rounds it
+	// the actual position of this tick on the discrete scale of data indices. It rounds it
 	// to ensure it aligns with an exact index in the array.
 	actualTickIndex := int(float64(predictedTickIndex)*step + 0.5)
 	return actualTickIndex == index
@@ -848,9 +849,9 @@ func (p *Painter) multiText(opt multiTextOption) {
 			}
 		} else {
 			if opt.centerLabels {
-				// graphs with limited data samples generally look better with the samples directly below the label
-				// for that reason we will exactly center these graphs, but graphs with higher sample counts will
-				// attempt to space the labels better rather than line up directly to the graph points
+				// Graphs with limited data samples generally look better with the samples directly below the label.
+				// For that reason, we will exactly center these graphs, but graphs with higher sample counts will
+				// attempt to space the labels better rather than line up directly to the graph points.
 				exactLabels := count == opt.labelCount
 				if !exactLabels && index == 0 {
 					x = start - 1 // align to the actual start (left side of tick space)
@@ -878,14 +879,14 @@ func (p *Painter) multiText(opt multiTextOption) {
 // after rotating the text around the bottom-right corner.
 //
 // The caller will then typically subtract this returned value from the existing y-position so that the text will
-// stay aligned with the bottom position.  In order to do this calculation the provided text dimensions should be
+// stay aligned with the bottom position.  To do this calculation, the provided text dimensions should be
 // WITHOUT rotation applied.
 func textRotationHeightAdjustment(textWidth, textHeight int, radians float64) int {
 	r := normalizeAngle(radians)
 
 	switch {
 	// Very close to 0 radians: no vertical adjustment needed
-	case r < math.SmallestNonzeroFloat64:
+	case r < matrix.DefaultEpsilon:
 		return 0
 	// 0 to π (0 to 180 degrees)
 	case r < math.Pi:

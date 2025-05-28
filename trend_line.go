@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 // NewTrendLine returns a trend line for the provided types, this is set on a specific instance within a Series.
@@ -120,7 +121,7 @@ func linearTrend(y []float64) ([]float64, error) {
 	}
 
 	denom := n*sumXX - sumX*sumX
-	if math.Abs(denom) < math.SmallestNonzeroFloat64 {
+	if math.Abs(denom) < matrix.DefaultEpsilon {
 		return nil, errors.New("degenerate x values for linear regression")
 	}
 	slope := (n*sumXY - sumX*sumY) / denom
@@ -230,7 +231,7 @@ func solveLinearSystem(mat [][]float64) ([]float64, error) {
 			}
 		}
 		mat[i], mat[maxRow] = mat[maxRow], mat[i]
-		if math.Abs(mat[i][i]) < math.SmallestNonzeroFloat64 {
+		if math.Abs(mat[i][i]) < matrix.DefaultEpsilon {
 			return nil, errors.New("singular matrix in cubic regression")
 		}
 		// Eliminate below

@@ -2,12 +2,14 @@ package drawing
 
 import (
 	"math"
+
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 // Matrix represents an affine transformation.
 type Matrix [6]float64
 
-// Determinant compute the determinant of the matrix.
+// Determinant computes the determinant of the matrix.
 func (tr *Matrix) Determinant() float64 {
 	return tr[0]*tr[3] - tr[1]*tr[2]
 }
@@ -212,5 +214,5 @@ func (tr *Matrix) IsTranslation() bool {
 
 // fequals compares two floats. return true if the distance between the two floats is less than epsilon, false otherwise.
 func fequals(float1, float2 float64) bool {
-	return math.Abs(float1-float2) <= math.SmallestNonzeroFloat64
+	return math.Abs(float1-float2) <= matrix.DefaultEpsilon
 }

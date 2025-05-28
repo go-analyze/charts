@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 // Basic Colors from:
@@ -128,7 +130,7 @@ func ColorFromRGBA(color string) Color {
 	c.G = uint8(gVal)
 	bVal, _ := strconv.ParseInt(strings.TrimSpace(arr[2]), 10, 16)
 	c.B = uint8(bVal)
-	if len(arr) > 3 { // if alpha channel is specified
+	if len(arr) > 3 { // if an alpha channel is specified
 		aVal, _ := strconv.ParseFloat(strings.TrimSpace(arr[3]), 64)
 		if aVal < 0 {
 			aVal = 0
@@ -361,7 +363,7 @@ func rgbToHSL(ri, gi, bi uint8) (h, s, l float64) {
 // hslToRGB converts an HSL color (H in degrees, S and L in [0,1]) back to RGB (0–255).
 func hslToRGB(h, s, l float64) (r, g, b uint8) {
 	var rf, gf, bf float64
-	if s < math.SmallestNonzeroFloat64 { // Achromatic (gray)
+	if s < matrix.DefaultEpsilon { // Achromatic (gray)
 		rf, gf, bf = l, l, l
 	} else {
 		var q float64
@@ -423,7 +425,7 @@ func (c Color) AverageWith(other Color) Color {
 	}
 }
 
-// String returns a css string representation of the color.
+// String returns a CSS string representation of the color.
 func (c Color) String() string {
 	switch c {
 	case ColorWhite:
@@ -465,14 +467,14 @@ func (c Color) String() string {
 	}
 }
 
-// StringRGB returns a css RGB string representation of the color.
+// StringRGB returns a CSS RGB string representation of the color.
 func (c Color) StringRGB() string {
 	return "rgb(" + strconv.Itoa(int(c.R)) + "," +
 		strconv.Itoa(int(c.G)) + "," +
 		strconv.Itoa(int(c.B)) + ")"
 }
 
-// StringRGBA returns a css RGBA string representation of the color.
+// StringRGBA returns a CSS RGBA string representation of the color.
 func (c Color) StringRGBA() string {
 	return fmt.Sprintf("rgba(%v,%v,%v,%.1f)", c.R, c.G, c.B, float64(c.A)/255.0)
 }
