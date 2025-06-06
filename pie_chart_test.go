@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"math"
 	"strconv"
 	"testing"
 
@@ -386,4 +387,67 @@ func TestPieChartError(t *testing.T) {
 			require.ErrorContains(t, err, tt.errorMsgContains)
 		})
 	}
+}
+
+func TestCircleChartPosition(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		width, height int
+		cx, cy        int
+		diameter      float64
+	}{
+		{200, 100, 100, 50, 100},
+		{120, 180, 60, 90, 120},
+	}
+
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			p := NewPainter(PainterOptions{Width: tt.width, Height: tt.height})
+			cx, cy, d := circleChartPosition(p)
+			assert.Equal(t, tt.cx, cx)
+			assert.Equal(t, tt.cy, cy)
+			assert.Equal(t, tt.diameter, d)
+		})
+	}
+}
+
+func TestSectorOuterLabelLines(t *testing.T) {
+	t.Parallel()
+
+	sec := sector{midAngle: 0, quadrant: 1}
+	lsX, lsY, lbX, lbY, leX, leY := sec.calculateOuterLabelLines(50, 50, 20, 30, 15)
+	assert.Equal(t, 70, lsX)
+	assert.Equal(t, 50, lsY)
+	assert.Equal(t, 80, lbX)
+	assert.Equal(t, 50, lbY)
+	assert.Equal(t, 95, leX)
+	assert.Equal(t, 50, leY)
+}
+
+func TestSectorAdjustedOuterLabelPosition(t *testing.T) {
+	t.Parallel()
+
+	secTop := sector{midAngle: 0, quadrant: 1}
+	textBox := NewBox(0, 0, 20, 10)
+	lsX, lsY, lbX, adjY, leX, leY, textX, textY := secTop.calculateAdjustedOuterLabelPosition(50, 50, 20, 30, 15, 60, 10, textBox)
+	assert.Equal(t, 70, lsX)
+	assert.Equal(t, 50, lsY)
+	assert.Equal(t, 80, lbX)
+	assert.Equal(t, 44, adjY)
+	assert.Equal(t, 95, leX)
+	assert.Equal(t, 44, leY)
+	assert.Equal(t, 98, textX)
+	assert.Equal(t, 48, textY)
+
+	secBottom := sector{midAngle: math.Pi, quadrant: 3}
+	lsX, lsY, lbX, adjY, leX, leY, textX, textY = secBottom.calculateAdjustedOuterLabelPosition(50, 50, 20, 30, 15, 40, 10, textBox)
+	assert.Equal(t, 30, lsX)
+	assert.Equal(t, 50, lsY)
+	assert.Equal(t, 20, lbX)
+	assert.Equal(t, 56, adjY)
+	assert.Equal(t, 5, leX)
+	assert.Equal(t, 56, leY)
+	assert.Equal(t, -18, textX)
+	assert.Equal(t, 60, textY)
 }
