@@ -372,6 +372,85 @@ func validateBarChartRender(t *testing.T, p *Painter, opt BarChartOption, expect
 	assertEqualSVG(t, expectedResult, data)
 }
 
+func TestCalculateBarMarginsAndSize(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		seriesCount     int
+		space           int
+		barWidth        int
+		barMargin       *float64
+		expectedMargin  int
+		expectedSpacing int
+		expectedSize    int
+	}{
+		{
+			name:            "large_space_default",
+			seriesCount:     3,
+			space:           100,
+			expectedMargin:  10,
+			expectedSpacing: 5,
+			expectedSize:    23,
+		},
+		{
+			name:            "small_space_multiple",
+			seriesCount:     2,
+			space:           18,
+			expectedMargin:  2,
+			expectedSpacing: 2,
+			expectedSize:    6,
+		},
+		{
+			name:            "custom_width_and_margin",
+			seriesCount:     2,
+			space:           90,
+			barWidth:        20,
+			barMargin:       Ptr(4.0),
+			expectedMargin:  23,
+			expectedSpacing: 4,
+			expectedSize:    20,
+		},
+		{
+			name:            "width_too_wide",
+			seriesCount:     2,
+			space:           40,
+			barWidth:        20,
+			barMargin:       Ptr(1.0),
+			expectedMargin:  5,
+			expectedSpacing: 3,
+			expectedSize:    13,
+		},
+		{
+			name:            "single_series_default",
+			seriesCount:     1,
+			space:           50,
+			expectedMargin:  10,
+			expectedSpacing: 5,
+			expectedSize:    30,
+		},
+		{
+			name:            "single_series_custom",
+			seriesCount:     1,
+			space:           50,
+			barWidth:        10,
+			barMargin:       Ptr(0.0),
+			expectedMargin:  20,
+			expectedSpacing: 0,
+			expectedSize:    10,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			margin, spacing, size := calculateBarMarginsAndSize(tt.seriesCount, tt.space, tt.barWidth, tt.barMargin)
+			assert.Equal(t, tt.expectedMargin, margin)
+			assert.Equal(t, tt.expectedSpacing, spacing)
+			assert.Equal(t, tt.expectedSize, size)
+		})
+	}
+}
+
 func TestBarChartError(t *testing.T) {
 	t.Parallel()
 
