@@ -1406,6 +1406,12 @@ func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64
 			}
 		}
 	}
+	// If min was not updated then there were no valid data points. Return
+	// zeros to avoid propagating sentinel values like math.MaxFloat64 which
+	// can corrupt downstream range calculations.
+	if min == math.MaxFloat64 && max == -math.MaxFloat64 {
+		return 0, 0, 0
+	}
 	return min, max, maxSum
 }
 

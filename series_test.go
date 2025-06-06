@@ -44,6 +44,22 @@ func TestSeriesLists(t *testing.T) {
 	}
 }
 
+func TestGetSeriesMinMaxSumMaxEmpty(t *testing.T) {
+	t.Parallel()
+
+	empty := NewSeriesListLine([][]float64{{}})
+	min, max, sum := getSeriesMinMaxSumMax(empty, 0, true)
+	assert.InDelta(t, 0.0, min, 0)
+	assert.InDelta(t, 0.0, max, 0)
+	assert.InDelta(t, 0.0, sum, 0)
+
+	nullVals := NewSeriesListLine([][]float64{{GetNullValue(), GetNullValue()}})
+	min, max, sum = getSeriesMinMaxSumMax(nullVals, 0, true)
+	assert.InDelta(t, 0.0, min, 0)
+	assert.InDelta(t, 0.0, max, 0)
+	assert.InDelta(t, 0.0, sum, 0)
+}
+
 func TestSumSeries(t *testing.T) {
 	t.Parallel()
 
