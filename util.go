@@ -237,6 +237,11 @@ func normalizeAngle(radians float64) float64 {
 // returning a human friendly number string including commas. If the value is over 1,000 it will be reduced to a
 // shorter version with the appropriate k, M, G, T suffix.
 func FormatValueHumanizeShort(value float64, decimals int, ensureTrailingZeros bool) string {
+	// Handle negative values by delegating to the positive case and then re-applying the sign
+	if value < 0 {
+		return "-" + FormatValueHumanizeShort(-value, decimals, ensureTrailingZeros)
+	}
+
 	if value >= tValue {
 		return FormatValueHumanize(value/tValue, decimals, ensureTrailingZeros) + "T"
 	} else if value >= gValue {
