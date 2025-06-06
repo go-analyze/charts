@@ -407,7 +407,7 @@ func TestCircleChartPosition(t *testing.T) {
 			cx, cy, d := circleChartPosition(p)
 			assert.Equal(t, tt.cx, cx)
 			assert.Equal(t, tt.cy, cy)
-			assert.Equal(t, tt.diameter, d)
+			assert.InDelta(t, tt.diameter, d, 0.0)
 		})
 	}
 }
