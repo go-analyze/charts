@@ -44,8 +44,6 @@ func TestFormatValueHumanizeShort(t *testing.T) {
 	assert.Equal(t, "1.2M", FormatValueHumanizeShort(1200000.121, 2, false))
 	assert.Equal(t, "1.20M", FormatValueHumanizeShort(1200000.121, 2, true))
 
-	// Verify negative number handling matches positive formatting with a
-	// leading minus sign.
 	assert.Equal(t, "-1", FormatValueHumanizeShort(-1.2, 0, false))
 	assert.Equal(t, "-1.2", FormatValueHumanizeShort(-1.2, 2, false))
 	assert.Equal(t, "-1.21", FormatValueHumanizeShort(-1.21231, 2, false))
