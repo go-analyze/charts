@@ -228,7 +228,8 @@ func (m *Matrix) SubMatrix(i, j, rows, cols int) *Matrix {
 // ScaleRow applies a scale to an entire row.
 func (m *Matrix) ScaleRow(row int, scale float64) {
 	startIndex := row * m.stride
-	for i := startIndex; i < m.stride; i++ {
+	endIndex := startIndex + m.stride
+	for i := startIndex; i < endIndex; i++ {
 		m.elements[i] *= scale
 	}
 }
