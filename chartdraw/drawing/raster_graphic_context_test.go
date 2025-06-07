@@ -13,9 +13,9 @@ func TestRasterGraphicContextBasic(t *testing.T) {
 
 	img := image.NewRGBA(image.Rect(0, 0, 3, 3))
 	rgc := NewRasterGraphicContext(img)
-	assert.Equal(t, defaultDPI, rgc.GetDPI())
+	assert.InDelta(t, defaultDPI, rgc.GetDPI(), 0.0)
 	rgc.SetDPI(72)
-	assert.InDelta(t, 72.0, rgc.GetDPI(), 0.0001)
+	assert.InDelta(t, 72.0, rgc.GetDPI(), 0.0)
 }
 
 func TestRasterFillRectAndClear(t *testing.T) {
