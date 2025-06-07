@@ -1,8 +1,14 @@
 package chartdraw
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/gofont/goregular"
+	"golang.org/x/image/math/fixed"
+
+	"github.com/go-analyze/charts/chartdraw/drawing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -52,4 +58,35 @@ func TestTextWrapRune(t *testing.T) {
 	require.Len(t, output, 2)
 	assert.Equal(t, "this is a t", output[0])
 	assert.Equal(t, "est string", output[1])
+}
+
+func TestExtents(t *testing.T) {
+	t.Parallel()
+
+	font, err := truetype.Parse(goregular.TTF)
+	require.NoError(t, err)
+
+	tests := []struct {
+		size float64
+	}{
+		{8}, {16}, {32},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("size_%g", tt.size), func(t *testing.T) {
+			got := drawing.Extents(font, tt.size)
+
+			bounds := font.Bounds(fixed.Int26_6(font.FUnitsPerEm()))
+			scale := tt.size / float64(font.FUnitsPerEm())
+			want := drawing.FontExtents{
+				Ascent:  float64(bounds.Max.Y) * scale,
+				Descent: float64(bounds.Min.Y) * scale,
+				Height:  float64(bounds.Max.Y-bounds.Min.Y) * scale,
+			}
+
+			assert.InDelta(t, want.Ascent, got.Ascent, 1e-5)
+			assert.InDelta(t, want.Descent, got.Descent, 1e-5)
+			assert.InDelta(t, want.Height, got.Height, 1e-5)
+		})
+	}
 }
