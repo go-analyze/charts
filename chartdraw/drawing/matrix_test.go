@@ -106,3 +106,73 @@ func TestMatrixGetScale(t *testing.T) {
 	m.Rotate(math.Pi / 4)
 	assert.InDelta(t, 2.0, m.GetScale(), matrix.DefaultEpsilon)
 }
+
+func TestNewMatrixFromRects(t *testing.T) {
+	t.Parallel()
+
+	r1 := [4]float64{-1, -1, 1, 1}
+	r2 := [4]float64{2, 3, 6, 7}
+
+	m := NewMatrixFromRects(r1, r2)
+	x0, y0, x1, y1 := m.TransformRectangle(r1[0], r1[1], r1[2], r1[3])
+
+	assert.InDelta(t, r2[0], x0, matrix.DefaultEpsilon)
+	assert.InDelta(t, r2[1], y0, matrix.DefaultEpsilon)
+	assert.InDelta(t, r2[2], x1, matrix.DefaultEpsilon)
+	assert.InDelta(t, r2[3], y1, matrix.DefaultEpsilon)
+}
+
+func TestMatrixDeterminant(t *testing.T) {
+	t.Parallel()
+
+	mId := NewIdentityMatrix()
+	assert.InDelta(t, 1.0, mId.Determinant(), 0)
+
+	m := Matrix{2, 0, 0, 3, 0, 0}
+	assert.InDelta(t, 6.0, m.Determinant(), 0)
+
+	m = Matrix{0, 1, 1, 0, 0, 0}
+	assert.InDelta(t, -1.0, m.Determinant(), 0)
+
+	m = Matrix{1, 2, 2, 4, 0, 0}
+	assert.Zero(t, m.Determinant())
+}
+
+func TestMinMax(t *testing.T) {
+	t.Parallel()
+
+	mn, mx := minMax(3, -1)
+	assert.InDelta(t, -1.0, mn, 0)
+	assert.InDelta(t, 3.0, mx, 0)
+
+	mn, mx = minMax(-2, -5)
+	assert.InDelta(t, -5.0, mn, 0)
+	assert.InDelta(t, -2.0, mx, 0)
+
+	mn, mx = minMax(0, 0)
+	assert.InDelta(t, 0.0, mn, 0)
+	assert.InDelta(t, 0.0, mx, 0)
+}
+
+func TestFequals(t *testing.T) {
+	t.Parallel()
+
+	eps := matrix.DefaultEpsilon
+	assert.True(t, fequals(1, 1+eps/2))
+	assert.False(t, fequals(1, 1+eps*2))
+	assert.True(t, fequals(-1, -1-eps/2))
+}
+
+func TestMatrixEquals(t *testing.T) {
+	t.Parallel()
+
+	m1 := Matrix{1, 2, 3, 4, 5, 6}
+	m2 := m1.Copy()
+	assert.True(t, m1.Equals(m2))
+
+	m2[5] += matrix.DefaultEpsilon * 0.5
+	assert.True(t, m1.Equals(m2))
+
+	m2[5] += matrix.DefaultEpsilon * 2
+	assert.False(t, m1.Equals(m2))
+}
