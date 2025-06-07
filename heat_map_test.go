@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -244,6 +245,65 @@ func TestHeatMapChartError(t *testing.T) {
 			err := p.HeatMapChart(tt.makeOptions())
 			require.Error(t, err)
 			require.Contains(t, err.Error(), tt.errorMsgContains)
+		})
+	}
+}
+
+func TestComputeMinMax(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		values      [][]float64
+		numCol      int
+		expectedMin float64
+		expectedMax float64
+	}{
+		{
+			name:        "empty",
+			values:      [][]float64{},
+			numCol:      0,
+			expectedMin: 0,
+			expectedMax: 0,
+		},
+		{
+			name: "uneven_rows",
+			values: [][]float64{
+				{1, 2, 3},
+				{4},
+			},
+			numCol:      3,
+			expectedMin: 1,
+			expectedMax: 4,
+		},
+		{
+			name: "negative_values",
+			values: [][]float64{
+				{-5, -2},
+				{-3, -1},
+			},
+			numCol:      2,
+			expectedMin: -5,
+			expectedMax: -1,
+		},
+		{
+			name: "default_column_padding",
+			values: [][]float64{
+				{-1},
+				{},
+			},
+			numCol:      1,
+			expectedMin: 0,
+			expectedMax: 0,
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+			min, max := computeMinMax(tt.values, tt.numCol)
+
+			assert.InDelta(t, tt.expectedMin, min, 0.0)
+			assert.InDelta(t, tt.expectedMax, max, 0.0)
 		})
 	}
 }

@@ -337,6 +337,147 @@ func TestParseFlexibleValue(t *testing.T) {
 	})
 }
 
+func TestPtr(t *testing.T) {
+	t.Parallel()
+
+	i := Ptr(42)
+	assert.NotNil(t, i)
+	assert.Equal(t, 42, *i)
+
+	s := Ptr("hello")
+	assert.NotNil(t, s)
+	assert.Equal(t, "hello", *s)
+}
+
+func TestFlagIs(t *testing.T) {
+	t.Run("nil", func(t *testing.T) {
+		t.Parallel()
+
+		var b *bool
+		assert.False(t, flagIs(true, b))
+		assert.False(t, flagIs(false, b))
+	})
+
+	t.Run("value", func(t *testing.T) {
+		t.Parallel()
+
+		bTrue := true
+		bFalse := false
+		assert.True(t, flagIs(true, &bTrue))
+		assert.False(t, flagIs(false, &bTrue))
+		assert.True(t, flagIs(false, &bFalse))
+		assert.False(t, flagIs(true, &bFalse))
+	})
+}
+
+func TestAutoDivideSpans(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		max   int
+		size  int
+		spans []int
+		want  []int
+	}{
+		{
+			name:  "no_spans",
+			max:   100,
+			size:  3,
+			spans: nil,
+			want:  []int{0, 33, 66, 100},
+		},
+		{
+			name:  "simple",
+			max:   100,
+			size:  3,
+			spans: []int{1, 2},
+			want:  []int{0, 33, 100},
+		},
+		{
+			name:  "multi",
+			max:   100,
+			size:  4,
+			spans: []int{1, 1, 2},
+			want:  []int{0, 25, 50, 100},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, autoDivideSpans(tt.max, tt.size, tt.spans))
+		})
+	}
+}
+
+func TestSliceConversion(t *testing.T) {
+	t.Parallel()
+
+	t.Run("int_to_string", func(t *testing.T) {
+		input := []int{1, 2, 3}
+		result := sliceConversion(input, func(i int) string { return strconv.Itoa(i) })
+		assert.Equal(t, []string{"1", "2", "3"}, result)
+	})
+
+	t.Run("float_to_int", func(t *testing.T) {
+		input := []float64{1.1, 2.2}
+		result := sliceConversion(input, func(f float64) int { return int(f) })
+		assert.Equal(t, []int{1, 2}, result)
+	})
+
+	t.Run("empty", func(t *testing.T) {
+		var input []int
+		result := sliceConversion(input, func(i int) int { return i })
+		assert.Empty(t, result)
+	})
+}
+
+func TestSliceMaxLen(t *testing.T) {
+	t.Parallel()
+
+	t.Run("mixed", func(t *testing.T) {
+		a := []int{1, 2, 3}
+		b := []int{1}
+		c := []int{}
+		d := []int{1, 2, 3, 4, 5}
+		assert.Equal(t, 5, sliceMaxLen(a, b, c, d))
+	})
+
+	t.Run("nil_slices", func(t *testing.T) {
+		var a []int
+		var b []int
+		assert.Equal(t, 0, sliceMaxLen(a, b))
+	})
+}
+
+func TestAngleHelpers(t *testing.T) {
+	t.Parallel()
+
+	assert.InDelta(t, math.Pi, DegreesToRadians(180), 1e-9)
+	assert.InDelta(t, 90.0, RadiansToDegrees(math.Pi/2), 1e-9)
+
+	assert.InDelta(t, math.Pi/2, normalizeAngle(5*math.Pi/2), 1e-9)
+	assert.InDelta(t, 3*math.Pi/2, normalizeAngle(-math.Pi/2), 1e-9)
+}
+
+func TestPolygonHelpers(t *testing.T) {
+	t.Parallel()
+
+	angles := getPolygonPointAngles(4)
+	expectedAngles := []float64{-math.Pi / 2, 0, math.Pi / 2, math.Pi}
+	for i := range expectedAngles {
+		assert.InDelta(t, expectedAngles[i], angles[i], 1e-9)
+	}
+
+	center := Point{}
+	p := getPolygonPoint(center, 1, 0)
+	assert.Equal(t, Point{X: 1, Y: 0}, p)
+
+	points := getPolygonPoints(center, 1, 4)
+	expectedPoints := []Point{{X: 0, Y: -1}, {X: 1, Y: 0}, {X: 0, Y: 1}, {X: -1, Y: 0}}
+	assert.Equal(t, expectedPoints, points)
+}
+
 func BenchmarkSliceSplit(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		for _, tc := range sliceSplitTestCases {

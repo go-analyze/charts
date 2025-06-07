@@ -60,6 +60,40 @@ func TestGetSeriesMinMaxSumMaxEmpty(t *testing.T) {
 	assert.InDelta(t, 0.0, sum, 0)
 }
 
+func TestExpandSingleValueScatterSeries(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		values []float64
+	}{
+		{
+			name:   "empty",
+			values: []float64{},
+		},
+		{
+			name:   "single",
+			values: []float64{42},
+		},
+		{
+			name:   "multiple",
+			values: []float64{1, 2, 3},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := expandSingleValueScatterSeries(tc.values)
+
+			assert.Equal(t, len(tc.values), len(got))
+			for i, v := range tc.values {
+				require.Len(t, got[i], 1)
+				assert.InDelta(t, v, got[i][0], 0.0)
+			}
+		})
+	}
+}
+
 func TestSumSeries(t *testing.T) {
 	t.Parallel()
 
