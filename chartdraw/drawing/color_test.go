@@ -126,3 +126,67 @@ func TestParseColor(t *testing.T) {
 		})
 	}
 }
+func TestColorHelperMethods(t *testing.T) {
+	t.Parallel()
+
+	chTests := []struct {
+		f      float64
+		expect uint8
+	}{
+		{-0.1, 0},
+		{0.5, 127},
+		{1.5, 255},
+	}
+	for i, tc := range chTests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			assert.Equal(t, tc.expect, ColorChannelFromFloat(tc.f))
+		})
+	}
+
+	c := Color{R: 10, G: 20, B: 30, A: 255}
+	r, g, b, a := c.RGBA()
+	assert.Equal(t, uint32(2570), r)
+	assert.Equal(t, uint32(5140), g)
+	assert.Equal(t, uint32(7710), b)
+	assert.Equal(t, uint32(65535), a)
+
+	zero := Color{}
+	assert.True(t, zero.IsZero())
+	assert.True(t, zero.IsTransparent())
+	assert.False(t, c.IsZero())
+
+	withAlpha := c.WithAlpha(128)
+	assert.Equal(t, uint8(128), withAlpha.A)
+
+	avg := ColorRed.AverageWith(ColorBlue)
+	assert.Equal(t, Color{R: 127, G: 0, B: 127, A: 255}, avg)
+
+	assert.Equal(t, "rgb(10,20,30)", c.StringRGB())
+	assert.Equal(t, "rgba(10,20,30,0.5)", c.WithAlpha(128).StringRGBA())
+}
+
+func TestColorHSLConversions(t *testing.T) {
+	t.Parallel()
+
+	h, s, l := ColorRed.HSL()
+	assert.InDelta(t, 0.0, h, 0.001)
+	assert.InDelta(t, 1.0, s, 0.001)
+	assert.InDelta(t, 0.5, l, 0.001)
+
+	r, g, b := hslToRGB(h, s, l)
+	assert.Equal(t, ColorRed.R, r)
+	assert.Equal(t, ColorRed.G, g)
+	assert.Equal(t, ColorRed.B, b)
+
+	adjusted := ColorRed.WithAdjustHSL(120, 0, 0)
+	assert.Equal(t, ColorLime.R, adjusted.R)
+	assert.Equal(t, ColorLime.G, adjusted.G)
+	assert.Equal(t, ColorLime.B, adjusted.B)
+
+	assert.InDelta(t, 0.25, clamp(0.25, 0, 1), 0.0)
+	assert.InDelta(t, 0.0, clamp(-0.5, 0, 1), 0.0)
+	assert.InDelta(t, 1.0, clamp(2, 0, 1), 0.0)
+
+	assert.InDelta(t, 0.0, hue2rgb(0, 1, 0), 0.0001)
+	assert.InDelta(t, 1.0, hue2rgb(0, 1, 1.0/6.0), 0.0001)
+}

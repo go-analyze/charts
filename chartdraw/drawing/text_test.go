@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/go-analyze/charts/chartdraw/roboto"
 	"github.com/golang/freetype/truetype"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/image/math/fixed"
 )
 
 type recordBuilder struct{ ops []string }
@@ -41,4 +44,17 @@ func TestDrawContour(t *testing.T) {
 	}
 
 	assert.Equal(t, expect, rec.ops)
+}
+
+func TestFontExtents(t *testing.T) {
+	t.Parallel()
+
+	f, err := truetype.Parse(roboto.Roboto)
+	require.NoError(t, err)
+	ext := Extents(f, 10)
+	bounds := f.Bounds(fixed.Int26_6(f.FUnitsPerEm()))
+	scale := 10 / float64(f.FUnitsPerEm())
+	assert.InDelta(t, float64(bounds.Max.Y)*scale, ext.Ascent, 0.0001)
+	assert.InDelta(t, float64(bounds.Min.Y)*scale, ext.Descent, 0.0001)
+	assert.InDelta(t, float64(bounds.Max.Y-bounds.Min.Y)*scale, ext.Height, 0.0001)
 }

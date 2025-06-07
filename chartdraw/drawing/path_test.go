@@ -108,3 +108,100 @@ func TestPathString(t *testing.T) {
 		"Close\n"
 	assert.Equal(t, expect, got)
 }
+
+func TestPathLastPointAndArc(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		ops   func(*Path)
+		x, y  float64
+		delta float64
+	}{
+		{
+			name: "line and quad",
+			ops: func(p *Path) {
+				p.MoveTo(1, 1)
+				p.LineTo(2, 2)
+				p.QuadCurveTo(3, 3, 4, 4)
+			},
+			x: 4, y: 4, delta: 0,
+		},
+		{
+			name: "arc positive",
+			ops: func(p *Path) {
+				p.ArcTo(0, 0, 1, 1, 0, math.Pi/2)
+			},
+			x: 0, y: 1, delta: 0.0001,
+		},
+		{
+			name: "arc negative",
+			ops: func(p *Path) {
+				p.ArcTo(0, 0, 1, 1, math.Pi/2, -math.Pi/2)
+			},
+			x: 1, y: 0, delta: 0.0001,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			p := &Path{}
+			tc.ops(p)
+			x, y := p.LastPoint()
+			assert.InDelta(t, tc.x, x, tc.delta)
+			assert.InDelta(t, tc.y, y, tc.delta)
+		})
+	}
+}
+
+func TestRectangleHelpers(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		build  func() *Path
+		rect   bool
+		bounds [4]int
+	}{
+		{
+			name: "rectangle",
+			build: func() *Path {
+				p := &Path{}
+				p.MoveTo(0, 0)
+				p.LineTo(2, 0)
+				p.LineTo(2, 2)
+				p.LineTo(0, 2)
+				p.LineTo(0, 0)
+				return p
+			},
+			rect:   true,
+			bounds: [4]int{0, 0, 2, 2},
+		},
+		{
+			name: "non-rectangle",
+			build: func() *Path {
+				p := &Path{}
+				p.MoveTo(0, 0)
+				p.LineTo(1, 1)
+				return p
+			},
+			rect: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			p := tc.build()
+			if tc.rect {
+				assert.True(t, isRectanglePath(p))
+				x1, y1, x2, y2 := getRectangleBounds(p)
+				assert.Equal(t, tc.bounds[0], x1)
+				assert.Equal(t, tc.bounds[1], y1)
+				assert.Equal(t, tc.bounds[2], x2)
+				assert.Equal(t, tc.bounds[3], y2)
+			} else {
+				assert.False(t, isRectanglePath(p))
+			}
+		})
+	}
+}
