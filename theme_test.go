@@ -45,7 +45,7 @@ func TestDefaultTheme(t *testing.T) {
 func TestSetDefaultThemeError(t *testing.T) {
 	t.Parallel()
 
-	assert.Error(t, SetDefaultFont("not a theme"))
+	assert.Error(t, SetDefaultTheme("not a theme"))
 }
 
 func renderTestLineChartWithThemeName(t *testing.T, fullChart bool, themeName string) []byte {
