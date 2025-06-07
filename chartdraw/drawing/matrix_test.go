@@ -13,8 +13,8 @@ func TestMatrixTransformInverse(t *testing.T) {
 
 	m := NewTranslationMatrix(5, 7)
 	x, y := m.TransformPoint(1, 2)
-	assert.Equal(t, 6.0, x)
-	assert.Equal(t, 9.0, y)
+	assert.InDelta(t, 6.0, x, 0.0)
+	assert.InDelta(t, 9.0, y, 0.0)
 
 	ix, iy := m.InverseTransformPoint(x, y)
 	assert.InDelta(t, 1.0, ix, matrix.DefaultEpsilon)
@@ -40,10 +40,10 @@ func TestMatrixTransformRectangle(t *testing.T) {
 
 	m := NewScaleMatrix(2, 3)
 	x0, y0, x1, y1 := m.TransformRectangle(1, 2, 3, 4)
-	assert.Equal(t, 2.0, x0)
-	assert.Equal(t, 6.0, y0)
-	assert.Equal(t, 6.0, x1)
-	assert.Equal(t, 12.0, y1)
+	assert.InDelta(t, 2.0, x0, 0.0)
+	assert.InDelta(t, 6.0, y0, 0.0)
+	assert.InDelta(t, 6.0, x1, 0.0)
+	assert.InDelta(t, 12.0, y1, 0.0)
 }
 
 func TestMatrixIdentityHelpers(t *testing.T) {
@@ -55,8 +55,8 @@ func TestMatrixIdentityHelpers(t *testing.T) {
 
 	tr := NewTranslationMatrix(2, 3)
 	tx, ty := tr.GetTranslation()
-	assert.Equal(t, 2.0, tx)
-	assert.Equal(t, 3.0, ty)
+	assert.InDelta(t, 2.0, tx, 0.0)
+	assert.InDelta(t, 3.0, ty, 0.0)
 }
 
 func TestMatrixTransformSlice(t *testing.T) {
@@ -86,8 +86,8 @@ func TestMatrixScaleTranslateRotate(t *testing.T) {
 	m := NewIdentityMatrix()
 	m.Scale(2, 3)
 	sx, sy := m.GetScaling()
-	assert.Equal(t, 2.0, sx)
-	assert.Equal(t, 3.0, sy)
+	assert.InDelta(t, 2.0, sx, 0.0)
+	assert.InDelta(t, 3.0, sy, 0.0)
 
 	m.Translate(4, 5)
 	assert.InDeltaSlice(t, []float64{2, 0, 0, 3, 8, 15}, m[:], matrix.DefaultEpsilon)
