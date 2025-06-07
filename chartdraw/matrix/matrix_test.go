@@ -407,3 +407,218 @@ func TestMatrixTranspose(t *testing.T) {
 	assert.InDelta(t, float64(10), m2.Get(0, 3), 0)
 	assert.InDelta(t, float64(3), m2.Get(2, 0), 0)
 }
+
+func TestMatrixMultiply(t *testing.T) {
+	t.Parallel()
+
+	m1 := NewFromArrays([][]float64{{1, 2, 3}, {4, 5, 6}})
+	m2 := NewFromArrays([][]float64{{7, 8}, {9, 10}, {11, 12}})
+
+	m3, err := m1.Multiply(m2)
+	assert.NoError(t, err)
+
+	expected := [][]float64{{58, 64}, {139, 154}}
+	for r := 0; r < 2; r++ {
+		for c := 0; c < 2; c++ {
+			assert.InDelta(t, expected[r][c], m3.Get(r, c), 0)
+		}
+	}
+}
+
+func TestMatrixMultiplyDimensionMismatch(t *testing.T) {
+	t.Parallel()
+
+	m1 := NewFromArrays([][]float64{{1, 2, 3}})
+	m2 := NewFromArrays([][]float64{{1, 2}, {3, 4}})
+
+	_, err := m1.Multiply(m2)
+	assert.ErrorIs(t, err, ErrDimensionMismatch)
+}
+
+func TestMatrixPivotize(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{
+		{2, 1, 3},
+		{4, 1, 6},
+		{3, 5, 6},
+	})
+
+	p := m.Pivotize()
+	expected := NewFromArrays([][]float64{
+		{0, 1, 0},
+		{0, 0, 1},
+		{1, 0, 0},
+	})
+	assert.True(t, expected.Equals(p))
+}
+
+func TestMatrixTimes(t *testing.T) {
+	t.Parallel()
+
+	m1 := NewFromArrays([][]float64{{1, 2, 3}, {4, 5, 6}})
+	m2 := NewFromArrays([][]float64{{7, 8}, {9, 10}, {11, 12}})
+
+	m3, err := m1.Times(m2)
+	assert.NoError(t, err)
+
+	expected := [][]float64{{58, 64}, {139, 154}}
+	for r := 0; r < 2; r++ {
+		for c := 0; c < 2; c++ {
+			assert.InDelta(t, expected[r][c], m3.Get(r, c), 0)
+		}
+	}
+}
+
+func TestMatrixTimesDimensionMismatch(t *testing.T) {
+	t.Parallel()
+
+	m1 := NewFromArrays([][]float64{{1, 2, 3}})
+	m2 := NewFromArrays([][]float64{{1, 2}, {3, 4}})
+
+	_, err := m1.Times(m2)
+	assert.Error(t, err)
+}
+
+func TestMatrixAugment(t *testing.T) {
+	t.Parallel()
+
+	m1 := NewFromArrays([][]float64{
+		{1, 2},
+		{3, 4},
+	})
+	m2 := NewFromArrays([][]float64{
+		{5},
+		{6},
+	})
+
+	m3, err := m1.Augment(m2)
+	assert.NoError(t, err)
+
+	expected := NewFromArrays([][]float64{
+		{1, 2, 5},
+		{3, 4, 6},
+	})
+	assert.True(t, expected.Equals(m3))
+}
+
+func TestMatrixAugmentDimensionMismatch(t *testing.T) {
+	t.Parallel()
+
+	m1 := NewFromArrays([][]float64{{1, 2}, {3, 4}})
+	m2 := NewFromArrays([][]float64{{5, 6}, {7, 8}, {9, 10}})
+
+	_, err := m1.Augment(m2)
+	assert.ErrorIs(t, err, ErrDimensionMismatch)
+}
+
+func TestMatrixInverse(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{{1, 2}, {2, 5}})
+	inv, err := m.Inverse()
+	assert.NoError(t, err)
+
+	expected := [][]float64{{5, -2}, {-2, 1}}
+	for r := 0; r < 2; r++ {
+		for c := 0; c < 2; c++ {
+			assert.InDelta(t, expected[r][c], inv.Get(r, c), 1e-9)
+		}
+	}
+}
+
+func TestMatrixInverseNotSymmetric(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{{1, 2, 3}, {4, 5, 6}})
+	_, err := m.Inverse()
+	assert.ErrorIs(t, err, ErrDimensionMismatch)
+}
+
+func TestMatrixInverseSingular(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{{1, 1}, {1, 1}})
+	_, err := m.Inverse()
+	assert.ErrorIs(t, err, ErrSingularValue)
+}
+
+func TestMatrixEach(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{
+		{1, 2},
+		{3, 4},
+	})
+
+	type visit struct {
+		r, c int
+		v    float64
+	}
+	var got []visit
+	m.Each(func(row, col int, value float64) {
+		got = append(got, visit{row, col, value})
+	})
+
+	want := []visit{{0, 0, 1}, {0, 1, 2}, {1, 0, 3}, {1, 1, 4}}
+	assert.Equal(t, want, got)
+}
+
+func TestMatrixRound(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{
+		{1.25, -2.5},
+		{3.75, 4.5},
+	})
+
+	same := m.Round()
+	assert.Same(t, m, same)
+	expected := NewFromArrays([][]float64{
+		{1.25, -2.5},
+		{3.75, 4.5},
+	})
+	for r := 0; r < 2; r++ {
+		for c := 0; c < 2; c++ {
+			assert.InDelta(t, expected.Get(r, c), m.Get(r, c), 0)
+		}
+	}
+}
+
+func TestMatrixSubMatrix(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{
+		{1, 2, 3},
+		{4, 5, 6},
+		{7, 8, 9},
+	})
+
+	sub := m.SubMatrix(1, 1, 2, 2)
+	assert.InDelta(t, float64(5), sub.Get(0, 0), 0)
+	assert.InDelta(t, float64(6), sub.Get(0, 1), 0)
+	assert.InDelta(t, float64(8), sub.Get(1, 0), 0)
+	assert.InDelta(t, float64(9), sub.Get(1, 1), 0)
+
+	sub.Set(0, 0, 99)
+	assert.InDelta(t, float64(99), m.Get(1, 1), 0)
+}
+
+func TestMatrixEye(t *testing.T) {
+	t.Parallel()
+
+	m := Eye(3)
+	rows, cols := m.Size()
+	assert.Equal(t, 3, rows)
+	assert.Equal(t, 3, cols)
+
+	for r := 0; r < 3; r++ {
+		for c := 0; c < 3; c++ {
+			if r == c {
+				assert.InDelta(t, float64(1), m.Get(r, c), 0)
+			} else {
+				assert.InDelta(t, float64(0), m.Get(r, c), 0)
+			}
+		}
+	}
+}
