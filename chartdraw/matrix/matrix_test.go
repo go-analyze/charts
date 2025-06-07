@@ -415,7 +415,7 @@ func TestMatrixMultiply(t *testing.T) {
 	m2 := NewFromArrays([][]float64{{7, 8}, {9, 10}, {11, 12}})
 
 	m3, err := m1.Multiply(m2)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	expected := [][]float64{{58, 64}, {139, 154}}
 	for r := 0; r < 2; r++ {
@@ -460,7 +460,7 @@ func TestMatrixTimes(t *testing.T) {
 	m2 := NewFromArrays([][]float64{{7, 8}, {9, 10}, {11, 12}})
 
 	m3, err := m1.Times(m2)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	expected := [][]float64{{58, 64}, {139, 154}}
 	for r := 0; r < 2; r++ {
@@ -493,7 +493,7 @@ func TestMatrixAugment(t *testing.T) {
 	})
 
 	m3, err := m1.Augment(m2)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	expected := NewFromArrays([][]float64{
 		{1, 2, 5},
@@ -517,7 +517,7 @@ func TestMatrixInverse(t *testing.T) {
 
 	m := NewFromArrays([][]float64{{1, 2}, {2, 5}})
 	inv, err := m.Inverse()
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	expected := [][]float64{{5, -2}, {-2, 1}}
 	for r := 0; r < 2; r++ {
