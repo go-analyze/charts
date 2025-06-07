@@ -2,7 +2,10 @@ package matrix
 
 import "testing"
 
-import "github.com/stretchr/testify/assert"
+import (
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
 
 func TestVectorDotProduct(t *testing.T) {
 	t.Parallel()
@@ -11,7 +14,7 @@ func TestVectorDotProduct(t *testing.T) {
 	v2 := Vector{4, 5, 6}
 
 	result, err := v1.DotProduct(v2)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.InDelta(t, float64(32), result, 0)
 }
 
