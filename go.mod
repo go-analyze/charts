@@ -1,12 +1,12 @@
 module github.com/go-analyze/charts
 
-go 1.18
+go 1.23.0
 
 require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/image v0.24.0
+	golang.org/x/image v0.28.0
 )
 
 require (
