@@ -612,12 +612,52 @@ func TestPainterMeasureText(t *testing.T) {
 		Font:      GetDefaultFont(),
 	}
 
-	assert.Equal(t, Box{Right: 84, Bottom: 16, IsSet: true},
-		svgP.MeasureText("Hello World!", 0, style))
-	assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
-		pngP.MeasureText("Hello World!", 0, style))
-	assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
-		jpgP.MeasureText("Hello World!", 0, style))
+	t.Run("basic", func(t *testing.T) {
+		assert.Equal(t, Box{Right: 84, Bottom: 16, IsSet: true},
+			svgP.MeasureText("Hello World!", 0, style))
+		assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
+			pngP.MeasureText("Hello World!", 0, style))
+		assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
+			jpgP.MeasureText("Hello World!", 0, style))
+	})
+
+	t.Run("rotated-90", func(t *testing.T) {
+		radians := DegreesToRadians(90)
+
+		box := svgP.MeasureText("Hello World!", radians, style)
+		assert.Equal(t, 84, box.Height())
+		assert.Equal(t, 16, box.Width())
+
+		box = pngP.MeasureText("Hello World!", radians, style)
+		assert.Equal(t, 99, box.Height())
+		assert.Equal(t, 14, box.Width())
+
+		box = jpgP.MeasureText("Hello World!", radians, style)
+		assert.Equal(t, 99, box.Height())
+		assert.Equal(t, 14, box.Width())
+	})
+
+	t.Run("rotated-270", func(t *testing.T) {
+		radians := DegreesToRadians(270)
+
+		box := svgP.MeasureText("Hello World!", radians, style)
+		assert.Equal(t, 84, box.Height())
+		assert.Equal(t, 14, box.Width())
+
+		box = pngP.MeasureText("Hello World!", radians, style)
+		assert.Equal(t, 99, box.Height())
+		assert.Equal(t, 12, box.Width())
+
+		box = jpgP.MeasureText("Hello World!", radians, style)
+		assert.Equal(t, 99, box.Height())
+		assert.Equal(t, 12, box.Width())
+	})
+
+	t.Run("empty", func(t *testing.T) {
+		assert.Equal(t, Box{IsSet: true}, svgP.MeasureText("", 0, style))
+		assert.Equal(t, Box{IsSet: true}, pngP.MeasureText("", 0, style))
+		assert.Equal(t, Box{IsSet: true}, jpgP.MeasureText("", 0, style))
+	})
 }
 
 func TestPainterTextFit(t *testing.T) {

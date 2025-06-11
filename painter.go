@@ -234,11 +234,11 @@ func (p *Painter) Height() int {
 
 // MeasureText will provide the rendered size of the text for the provided font style.
 func (p *Painter) MeasureText(text string, textRotation float64, fontStyle FontStyle) Box {
+	if text == "" || fontStyle.FontSize == 0 || fontStyle.FontColor.IsTransparent() {
+		return BoxZero
+	}
 	if fontStyle.Font == nil {
 		fontStyle.Font = getPreferredFont(p.font)
-	}
-	if fontStyle.Font == nil || fontStyle.FontSize == 0 || fontStyle.FontColor.IsTransparent() {
-		return BoxZero
 	}
 	if textRotation != 0 {
 		defer p.render.ClearTextRotation()
