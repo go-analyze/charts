@@ -4,6 +4,7 @@ import (
 	"math"
 )
 
+// XAxisOption configures the horizontal axis.
 type XAxisOption struct {
 	// Show specifies if the x-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool

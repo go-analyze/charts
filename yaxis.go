@@ -4,6 +4,7 @@ import (
 	"math"
 )
 
+// YAxisOption configures the vertical axis.
 type YAxisOption struct {
 	// Show specifies if the y-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool

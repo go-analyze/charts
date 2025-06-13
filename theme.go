@@ -138,24 +138,42 @@ func (t *themeColorPalette) GetYAxisTextColor() Color {
 	return t.yaxisTextColor
 }
 
+// ThemeOption defines color options for a theme.
 type ThemeOption struct {
-	IsDarkMode         bool
-	AxisStrokeColor    Color
-	XAxisStrokeColor   Color
-	YAxisStrokeColor   Color
+	// IsDarkMode indicates the theme uses dark colors and backgrounds.
+	IsDarkMode bool
+	// AxisStrokeColor is the default stroke color for both axes.
+	AxisStrokeColor Color
+	// XAxisStrokeColor overrides AxisStrokeColor for the x-axis.
+	XAxisStrokeColor Color
+	// YAxisStrokeColor overrides AxisStrokeColor for the y-axis.
+	YAxisStrokeColor Color
+	// AxisSplitLineColor sets the color of grid lines drawn between ticks.
 	AxisSplitLineColor Color
-	BackgroundColor    Color
-	TextColor          Color
-	TextColorTitle     Color
-	TextColorMark      Color
-	TextColorLabel     Color
-	TextColorLegend    Color
-	TextColorXAxis     Color
-	TextColorYAxis     Color
-	TitleBorderColor   Color
-	LegendBorderColor  Color
-	SeriesColors       []Color
-	SeriesTrendColors  []Color
+	// BackgroundColor sets the chart background.
+	BackgroundColor Color
+	// TextColor is the default font color applied if specific text colors are unset.
+	TextColor Color
+	// TextColorTitle sets the title text color.
+	TextColorTitle Color
+	// TextColorMark sets the color of mark line and point labels.
+	TextColorMark Color
+	// TextColorLabel defines the color of series labels.
+	TextColorLabel Color
+	// TextColorLegend defines the legend text color.
+	TextColorLegend Color
+	// TextColorXAxis defines the x-axis label text color.
+	TextColorXAxis Color
+	// TextColorYAxis defines the y-axis label text color.
+	TextColorYAxis Color
+	// TitleBorderColor draws an optional border around the title.
+	TitleBorderColor Color
+	// LegendBorderColor draws an optional border around the legend.
+	LegendBorderColor Color
+	// SeriesColors provides the color palette used for series data.
+	SeriesColors []Color
+	// SeriesTrendColors provides the palette for rendered trend lines.
+	SeriesTrendColors []Color
 }
 
 var palettes = sync.Map{}

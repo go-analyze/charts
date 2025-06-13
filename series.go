@@ -35,6 +35,7 @@ const (
 	SeriesTrendTypeAverage = "average"
 )
 
+// SeriesMark describes a single mark line or point type.
 type SeriesMark struct {
 	// Type is the mark data type, it can be "max", "min", "average". "average" is only for mark line.
 	Type string
@@ -67,6 +68,7 @@ func appendMarks(m SeriesMarkList, global bool, markTypes []string) SeriesMarkLi
 	return m
 }
 
+// SeriesMarkList is a slice of SeriesMark values.
 type SeriesMarkList []SeriesMark
 
 func (m SeriesMarkList) splitGlobal() (SeriesMarkList, SeriesMarkList) {
@@ -81,6 +83,7 @@ func (m SeriesMarkList) filterGlobal(global bool) SeriesMarkList {
 	})
 }
 
+// SeriesMarkPoint configures mark points for a series.
 type SeriesMarkPoint struct {
 	// SymbolSize is the width of symbol, default value is 28.
 	SymbolSize int
@@ -110,6 +113,7 @@ func (m *SeriesMarkPoint) AddGlobalPoints(markTypes ...string) {
 	m.Points = appendMarks(m.Points, true, markTypes)
 }
 
+// SeriesMarkLine configures mark lines for a series.
 type SeriesMarkLine struct {
 	// ValueFormatter is used to produce the label for the Mark Line.
 	ValueFormatter ValueFormatter
@@ -128,6 +132,7 @@ func (m *SeriesMarkLine) AddGlobalLines(markTypes ...string) {
 	m.Lines = appendMarks(m.Lines, true, markTypes)
 }
 
+// SeriesTrendLine describes the rendered trend line style.
 type SeriesTrendLine struct {
 	// LineStrokeWidth is the width of the rendered line.
 	LineStrokeWidth float64

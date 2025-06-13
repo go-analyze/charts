@@ -20,8 +20,10 @@ func convertToArray(data []byte) []byte {
 	return data
 }
 
+// EChartsPosition represents a CSS-like position value used by ECharts.
 type EChartsPosition string
 
+// UnmarshalJSON decodes a position JSON value that may be a string or number.
 func (p *EChartsPosition) UnmarshalJSON(data []byte) error {
 	if len(data) == 0 {
 		return nil
@@ -33,20 +35,24 @@ func (p *EChartsPosition) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, s)
 }
 
+// EChartStyle describes color and opacity for ECharts elements.
 type EChartStyle struct {
 	Color   string   `json:"color"`
 	Opacity *float64 `json:"opacity,omitempty"`
 }
 
+// EChartsSeriesDataValue holds numeric values from an ECharts data entry.
 type EChartsSeriesDataValue struct {
 	values []float64
 }
 
+// UnmarshalJSON decodes a series data value that may be a single number or array.
 func (value *EChartsSeriesDataValue) UnmarshalJSON(data []byte) error {
 	data = convertToArray(data)
 	return json.Unmarshal(data, &value.values)
 }
 
+// First returns the first value or 0 when empty.
 func (value *EChartsSeriesDataValue) First() float64 {
 	if len(value.values) == 0 {
 		return 0
@@ -54,6 +60,7 @@ func (value *EChartsSeriesDataValue) First() float64 {
 	return value.values[0]
 }
 
+// EChartsSeriesData describes a single data item from ECharts.
 type EChartsSeriesData struct {
 	Value     EChartsSeriesDataValue `json:"value"`
 	Name      string                 `json:"name"`
@@ -63,6 +70,7 @@ type _EChartsSeriesData EChartsSeriesData
 
 var numericRep = regexp.MustCompile(`^[-+]?[0-9]+(?:\.[0-9]+)?$`)
 
+// UnmarshalJSON parses a series data item that may be a number or object.
 func (es *EChartsSeriesData) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
@@ -90,6 +98,7 @@ func (es *EChartsSeriesData) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// EChartsXAxisData holds x-axis configuration extracted from ECharts JSON.
 type EChartsXAxisData struct {
 	BoundaryGap *bool            `json:"boundaryGap,omitempty"`
 	SplitNumber int              `json:"splitNumber,omitempty"`
@@ -99,6 +108,7 @@ type EChartsXAxisData struct {
 	Type        string           `json:"type"`
 }
 
+// EChartsAxisLine describes the line styling for an axis.
 type EChartsAxisLine struct {
 	Show      *bool `json:"show,omitempty"`
 	LineStyle struct {
@@ -108,10 +118,12 @@ type EChartsAxisLine struct {
 	} `json:"lineStyle,omitempty"`
 }
 
+// EChartsXAxis holds a list of x-axis options.
 type EChartsXAxis struct {
 	Data []EChartsXAxisData
 }
 
+// UnmarshalJSON decodes x-axis options that may be a single object or an array.
 func (ex *EChartsXAxis) UnmarshalJSON(data []byte) error {
 	data = convertToArray(data)
 	if len(data) == 0 {
@@ -120,6 +132,7 @@ func (ex *EChartsXAxis) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &ex.Data)
 }
 
+// EChartsAxisLabel configures axis label display for ECharts.
 type EChartsAxisLabel struct {
 	Formatter string `json:"formatter,omitempty"`
 	Show      *bool  `json:"show,omitempty"`
@@ -140,6 +153,7 @@ func (al EChartsAxisLabel) makeFontStyle() FontStyle {
 	return axisFont
 }
 
+// EChartsYAxisData holds a single y-axis configuration block.
 type EChartsYAxisData struct {
 	Min       *float64         `json:"min,omitempty"`
 	Max       *float64         `json:"max,omitempty"`
@@ -148,10 +162,12 @@ type EChartsYAxisData struct {
 	Data      []string         `json:"data"`
 }
 
+// EChartsYAxis represents a list of y-axis definitions.
 type EChartsYAxis struct {
 	Data []EChartsYAxisData `json:"data"`
 }
 
+// UnmarshalJSON decodes y-axis options that may be a single object or an array.
 func (ey *EChartsYAxis) UnmarshalJSON(data []byte) error {
 	data = convertToArray(data)
 	if len(data) == 0 {
@@ -160,10 +176,12 @@ func (ey *EChartsYAxis) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &ey.Data)
 }
 
+// EChartsPadding represents padding values around a component.
 type EChartsPadding struct {
 	Box Box
 }
 
+// UnmarshalJSON decodes a padding array into a Box.
 func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 	data = convertToArray(data)
 	if len(data) == 0 {
@@ -193,12 +211,14 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// EChartsLabelOption configures data labels.
 type EChartsLabelOption struct {
 	Show     bool   `json:"show"`
 	Distance int    `json:"distance"`
 	Color    string `json:"color"`
 }
 
+// EChartsLegend holds legend configuration from ECharts JSON.
 type EChartsLegend struct {
 	Show            *bool            `json:"show"`
 	Data            []string         `json:"data"`
@@ -212,6 +232,7 @@ type EChartsLegend struct {
 	BorderColor     string           `json:"borderColor,omitempty"`
 }
 
+// EChartsMarkData represents mark lines or points in ECharts JSON.
 type EChartsMarkData struct {
 	Type string `json:"type"`
 	// TODO - support position values below
@@ -220,6 +241,7 @@ type EChartsMarkData struct {
 }
 type _EChartsMarkData EChartsMarkData
 
+// UnmarshalJSON parses mark definitions provided as an object or array.
 func (emd *EChartsMarkData) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
@@ -238,11 +260,13 @@ func (emd *EChartsMarkData) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// EChartsMarkPoint defines mark points for a series.
 type EChartsMarkPoint struct {
 	SymbolSize int               `json:"symbolSize"`
 	Data       []EChartsMarkData `json:"data"`
 }
 
+// ToSeriesMarkPoint converts the mark point to the internal representation.
 func (emp *EChartsMarkPoint) ToSeriesMarkPoint() SeriesMarkPoint {
 	return SeriesMarkPoint{
 		SymbolSize: emp.SymbolSize,
@@ -252,10 +276,12 @@ func (emp *EChartsMarkPoint) ToSeriesMarkPoint() SeriesMarkPoint {
 	}
 }
 
+// EChartsMarkLine defines mark lines for a series.
 type EChartsMarkLine struct {
 	Data []EChartsMarkData `json:"data"`
 }
 
+// ToSeriesMarkLine converts the mark line to the internal representation.
 func (eml *EChartsMarkLine) ToSeriesMarkLine() SeriesMarkLine {
 	return SeriesMarkLine{
 		Lines: sliceConversion(eml.Data, func(i EChartsMarkData) SeriesMark {
@@ -264,6 +290,7 @@ func (eml *EChartsMarkLine) ToSeriesMarkLine() SeriesMarkLine {
 	}
 }
 
+// EChartsSeries holds data and styling for one chart series.
 type EChartsSeries struct {
 	Data       []EChartsSeriesData `json:"data"`
 	Name       string              `json:"name"`
@@ -278,6 +305,8 @@ type EChartsSeries struct {
 	Max       *float64           `json:"max"` // TODO - add support
 	Min       *float64           `json:"min"` // TODO - add support
 }
+
+// EChartsSeriesList is a list of EChartsSeries values.
 type EChartsSeriesList []EChartsSeries
 
 func (esList EChartsSeriesList) ToSeriesList() GenericSeriesList {
@@ -337,12 +366,14 @@ func (esList EChartsSeriesList) ToSeriesList() GenericSeriesList {
 	return seriesList
 }
 
+// EChartsTextStyle maps text style options from ECharts.
 type EChartsTextStyle struct {
 	Color      string  `json:"color"`
 	FontFamily string  `json:"fontFamily"`
 	FontSize   float64 `json:"fontSize"`
 }
 
+// ToFontStyle converts the text style to a FontStyle.
 func (et *EChartsTextStyle) ToFontStyle() FontStyle {
 	s := FontStyle{
 		FontSize:  et.FontSize,
@@ -354,6 +385,7 @@ func (et *EChartsTextStyle) ToFontStyle() FontStyle {
 	return s
 }
 
+// EChartsOption mirrors a basic ECharts configuration.
 type EChartsOption struct {
 	Type       string         `json:"type"`
 	Theme      string         `json:"theme"`
@@ -384,6 +416,7 @@ type EChartsOption struct {
 	Children        []EChartsOption   `json:"children"`
 }
 
+// ToOption converts the ECharts options into a ChartOption.
 func (eo *EChartsOption) ToOption() ChartOption {
 	fontFamily := eo.FontFamily
 	if len(fontFamily) == 0 {
@@ -531,14 +564,17 @@ func renderEcharts(options, outputType string) ([]byte, error) {
 	}
 }
 
+// RenderEChartsToPNG renders an ECharts option JSON string to PNG bytes.
 func RenderEChartsToPNG(options string) ([]byte, error) {
 	return renderEcharts(options, ChartOutputPNG)
 }
 
+// RenderEChartsToJPG renders an ECharts option JSON string to JPG bytes.
 func RenderEChartsToJPG(options string) ([]byte, error) {
 	return renderEcharts(options, ChartOutputJPG)
 }
 
+// RenderEChartsToSVG renders an ECharts option JSON string to SVG bytes.
 func RenderEChartsToSVG(options string) ([]byte, error) {
 	return renderEcharts(options, ChartOutputSVG)
 }

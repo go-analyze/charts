@@ -16,6 +16,7 @@ type radarChart struct {
 	opt *RadarChartOption
 }
 
+// RadarIndicator defines the dimensions of a radar chart axis.
 type RadarIndicator struct {
 	// Name specifies a name for the iIndicator.
 	Name string
