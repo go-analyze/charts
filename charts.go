@@ -319,6 +319,7 @@ func doRender(renderers ...renderer) error {
 	return nil
 }
 
+// Render creates and renders a chart based on the provided options.
 func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	for _, fn := range opts {
 		fn(&opt)

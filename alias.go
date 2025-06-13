@@ -9,11 +9,19 @@ import (
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
+// Box defines spacing boundaries around a component.
 type Box = chartdraw.Box
+
+// Point represents an X,Y coordinate pair.
 type Point = chartdraw.Point
+
+// Color describes a simple RGBA color.
 type Color = drawing.Color
+
+// FontStyle configures font size, color, and family.
 type FontStyle = chartdraw.FontStyle
 
+// BoxZero is an unset Box.
 var BoxZero = chartdraw.BoxZero
 
 // NewBox returns a new box with the provided left, top, right, and bottom sizes.
@@ -93,6 +101,7 @@ type OffsetInt struct {
 	Left int
 }
 
+// WithTop returns a copy of the offset with the Top value set.
 func (o OffsetInt) WithTop(val int) OffsetInt {
 	return OffsetInt{
 		Left: o.Left,
@@ -100,6 +109,7 @@ func (o OffsetInt) WithTop(val int) OffsetInt {
 	}
 }
 
+// WithLeft returns a copy of the offset with the Left value set.
 func (o OffsetInt) WithLeft(val int) OffsetInt {
 	return OffsetInt{
 		Left: val,
@@ -117,10 +127,16 @@ type OffsetStr struct {
 	Top string
 }
 
+// OffsetLeft positions a component on the left.
 var OffsetLeft = OffsetStr{Left: PositionLeft}
+
+// OffsetRight positions a component on the right.
 var OffsetRight = OffsetStr{Left: PositionRight}
+
+// OffsetCenter positions a component in the center.
 var OffsetCenter = OffsetStr{Left: PositionCenter}
 
+// WithTop returns a copy of the offset with the Top value set.
 func (o OffsetStr) WithTop(val string) OffsetStr {
 	return OffsetStr{
 		Left: o.Left,
@@ -128,6 +144,7 @@ func (o OffsetStr) WithTop(val string) OffsetStr {
 	}
 }
 
+// WithTopI sets Top using an integer value.
 func (o OffsetStr) WithTopI(val int) OffsetStr {
 	return OffsetStr{
 		Left: o.Left,
@@ -135,6 +152,7 @@ func (o OffsetStr) WithTopI(val int) OffsetStr {
 	}
 }
 
+// WithLeft returns a copy of the offset with the Left value set.
 func (o OffsetStr) WithLeft(val string) OffsetStr {
 	return OffsetStr{
 		Left: val,
@@ -142,6 +160,7 @@ func (o OffsetStr) WithLeft(val string) OffsetStr {
 	}
 }
 
+// WithLeftI sets Left using an integer value.
 func (o OffsetStr) WithLeftI(val int) OffsetStr {
 	return OffsetStr{
 		Left: strconv.Itoa(val),
@@ -182,6 +201,7 @@ const (
 	AlignCenter = "center"
 )
 
+// Symbol defines the shape used for data points and legends.
 type Symbol string
 
 const (

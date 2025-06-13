@@ -74,6 +74,7 @@ func newTableChart(p *Painter, opt TableChartOption) *tableChart {
 	}
 }
 
+// TableCell represents a single cell in a table.
 type TableCell struct {
 	// Text the text of table cell
 	Text string
@@ -87,6 +88,7 @@ type TableCell struct {
 	Column int
 }
 
+// TableChartOption defines options for rendering a table chart.
 type TableChartOption struct {
 	// OutputFormat specifies the output type, "svg" or "png".
 	OutputFormat string

@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// TitleOption configures rendering of a chart title.
 type TitleOption struct {
 	// Show specifies if the title should be rendered, set this to *false (through Ptr(false)) to hide the title.
 	Show *bool
