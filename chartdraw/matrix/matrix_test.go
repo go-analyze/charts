@@ -236,6 +236,16 @@ func TestMatrixScaleRow(t *testing.T) {
 	assert.Equal(t, Vector([]float64{7, 8, 9}), m.Row(2))
 }
 
+func TestMatrixScaleAddRow(t *testing.T) {
+	t.Parallel()
+
+	m := NewFromArrays([][]float64{{1, 2, 3}, {4, 5, 6}})
+	m.scaleAddRow(1, 0, 2)
+
+	assert.Equal(t, Vector([]float64{1, 2, 3}), m.Row(0))
+	assert.Equal(t, Vector([]float64{6, 9, 12}), m.Row(1))
+}
+
 func TestMatrixCopy(t *testing.T) {
 	t.Parallel()
 
@@ -620,6 +630,21 @@ func TestMatrixEye(t *testing.T) {
 			} else {
 				assert.InDelta(t, float64(0), m.Get(r, c), 0)
 			}
+		}
+	}
+}
+
+func TestMatrixZero(t *testing.T) {
+	t.Parallel()
+
+	m := Zero(2, 3)
+	rows, cols := m.Size()
+	assert.Equal(t, 2, rows)
+	assert.Equal(t, 3, cols)
+
+	for r := 0; r < 2; r++ {
+		for c := 0; c < 3; c++ {
+			assert.Zero(t, m.Get(r, c))
 		}
 	}
 }

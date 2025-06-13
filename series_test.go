@@ -258,6 +258,21 @@ func TestSumSeriesValues(t *testing.T) {
 	}
 }
 
+func TestSumSeriesDataAndMaxCount(t *testing.T) {
+	t.Parallel()
+
+	seriesList := LineSeriesList{
+		{Values: []float64{1, 2}, YAxisIndex: 0},
+		{Values: []float64{3, 4, 5}, YAxisIndex: 1},
+		{Values: []float64{6}, YAxisIndex: 0},
+	}
+
+	assert.Equal(t, []float64{10, 6, 5}, sumSeriesData(seriesList, -1))
+	assert.Equal(t, []float64{7, 2, 0}, sumSeriesData(seriesList, 0))
+	assert.Equal(t, []float64{3, 4, 5}, sumSeriesData(seriesList, 1))
+	assert.Equal(t, 3, getSeriesMaxDataCount(seriesList))
+}
+
 func TestSeriesSummary(t *testing.T) {
 	t.Parallel()
 

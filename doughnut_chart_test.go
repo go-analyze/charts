@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"math"
 	"strconv"
 	"testing"
 
@@ -261,4 +262,112 @@ func TestDoughnutChartError(t *testing.T) {
 			require.ErrorContains(t, err, tt.errorMsgContains)
 		})
 	}
+}
+
+func TestClampAngleToSector(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		angle, start, end float64
+		want              float64
+	}{
+		{0.5, 0, math.Pi / 2, 0.5},
+		{-0.1, 0, math.Pi / 2, math.Pi / 2},
+		{math.Pi, 0, math.Pi / 2, math.Pi / 2},
+		{math.Pi, 3 * math.Pi / 2, math.Pi / 2, 3 * math.Pi / 2},
+		{0, 3 * math.Pi / 2, math.Pi / 2, 0},
+	}
+	for _, tt := range cases {
+		got := clampAngleToSector(tt.angle, tt.start, tt.end)
+		assert.InDelta(t, tt.want, got, 1e-6)
+	}
+}
+
+func TestConnectionPoint(t *testing.T) {
+	t.Parallel()
+
+	s := sector{startAngle: 0, delta: math.Pi / 2}
+	x, y := s.connectionPoint(0, 0, 5, 0, 10)
+	assert.Equal(t, 0, x)
+	assert.Equal(t, 5, y)
+
+	x, y = s.connectionPoint(0, 0, 5, 5, 5)
+	assert.Equal(t, 3, x)
+	assert.Equal(t, 3, y)
+
+	x, y = s.connectionPoint(0, 0, 5, -10, 0)
+	assert.Equal(t, 0, x)
+	assert.Equal(t, 5, y)
+}
+
+func TestIsInsideCircle(t *testing.T) {
+	t.Parallel()
+
+	c := isInsideCircle(NewBox(-1, -1, 1, 1), 0, 0, 5)
+	assert.True(t, c)
+	c = isInsideCircle(NewBox(4, 4, 6, 6), 0, 0, 5)
+	assert.False(t, c)
+}
+
+func TestClampInsideCircle(t *testing.T) {
+	t.Parallel()
+
+	lp := &labelPlacement{box: NewBox(6, -1, 8, 1)}
+	clampInsideCircle(lp, 0, 0, 5)
+	assert.True(t, isInsideCircle(lp.box, 0, 0, 5))
+}
+
+func TestMinimalRadialPush(t *testing.T) {
+	t.Parallel()
+
+	p := &labelPlacement{box: NewBox(1, 0, 3, 2)}
+	q := &labelPlacement{box: NewBox(0, 0, 2, 2)}
+	dx, dy := minimalRadialPush(p, q, 0, 0)
+	assert.Equal(t, 3, dx)
+	assert.Equal(t, 2, dy)
+}
+
+func TestProjectBoxRadially(t *testing.T) {
+	t.Parallel()
+
+	b := NewBox(0, 0, 2, 2)
+	min, max := projectBoxRadially(b, 1, 0)
+	assert.InDelta(t, 0.0, min, 1e-6)
+	assert.InDelta(t, 2.0, max, 1e-6)
+
+	min, max = projectBoxRadially(b, 0, 1)
+	assert.InDelta(t, 0.0, min, 1e-6)
+	assert.InDelta(t, 2.0, max, 1e-6)
+}
+
+func TestShiftLabelHorizontallyTowardSector(t *testing.T) {
+	t.Parallel()
+
+	lp := &labelPlacement{box: NewBox(-2, -1, 0, 1)}
+	shiftLabelHorizontallyTowardSector(lp, 0, 0)
+	assert.Equal(t, NewBox(0, -1, 2, 1), lp.box)
+
+	lp = &labelPlacement{box: NewBox(2, -1, 4, 1)}
+	shiftLabelHorizontallyTowardSector(lp, 0, math.Pi)
+	assert.Equal(t, NewBox(-2, -1, 0, 1), lp.box)
+}
+
+func TestAnyLabelCollision(t *testing.T) {
+	t.Parallel()
+
+	placed := []*labelPlacement{{box: NewBox(1, 1, 3, 3)}}
+	c := anyLabelCollision(NewBox(0, 0, 2, 2), placed)
+	assert.True(t, c)
+	c = anyLabelCollision(NewBox(3, 3, 5, 5), placed)
+	assert.False(t, c)
+}
+
+func TestComputeLabelBox(t *testing.T) {
+	t.Parallel()
+
+	b := computeLabelBox(0, 0, 5, 0, NewBox(0, 0, 2, 2))
+	assert.Equal(t, NewBox(3, -2, 5, 0), b)
+
+	b = computeLabelBox(0, 0, 5, math.Pi, NewBox(0, 0, 2, 2))
+	assert.Equal(t, NewBox(-5, -2, -3, 0), b)
 }

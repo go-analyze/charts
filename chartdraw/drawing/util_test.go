@@ -86,3 +86,20 @@ func TestPointToF64Point(t *testing.T) {
 	// Y is negated inside function
 	assert.InDelta(t, 1.0, y, 0.0001)
 }
+
+func TestAbsInt(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		in, want int
+	}{
+		{5, 5},
+		{-5, 5},
+		{0, 0},
+	}
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			assert.Equal(t, tt.want, absInt(tt.in))
+		})
+	}
+}

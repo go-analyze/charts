@@ -75,3 +75,36 @@ func TestFlattenMultiMove(t *testing.T) {
 	assert.InDeltaSlice(t, expectX, rec.xs, 0.0001)
 	assert.InDeltaSlice(t, expectY, rec.ys, 0.0001)
 }
+
+func TestSegmentedPathPoints(t *testing.T) {
+	t.Parallel()
+
+	segments := []struct {
+		startX, startY float64
+		endX, endY     float64
+	}{
+		{0, 0, 1, 1},
+		{2, 2, 3, 3},
+	}
+
+	sp := &SegmentedPath{}
+	for _, seg := range segments {
+		sp.MoveTo(seg.startX, seg.startY)
+		sp.LineTo(seg.endX, seg.endY)
+		sp.End()
+	}
+	assert.InDeltaSlice(t, []float64{0, 0, 1, 1, 2, 2, 3, 3}, sp.Points, 0.0001)
+}
+
+func TestSegmentedPathEnd(t *testing.T) {
+	t.Parallel()
+
+	sp := &SegmentedPath{}
+	sp.MoveTo(1, 1)
+	sp.LineTo(2, 2)
+
+	expect := append([]float64(nil), sp.Points...)
+	sp.End()
+
+	assert.InDeltaSlice(t, expect, sp.Points, 0.0001)
+}

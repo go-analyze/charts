@@ -979,3 +979,17 @@ func TestLineChartError(t *testing.T) {
 		})
 	}
 }
+
+func TestBoundaryGapAxisPositions(t *testing.T) {
+	t.Parallel()
+
+	got := boundaryGapAxisPositions(10, false, 3)
+	assert.Equal(t, []int{0, 5, 10}, got)
+	assert.Equal(t, 0, got[0])
+	assert.Equal(t, 10, got[len(got)-1])
+
+	got = boundaryGapAxisPositions(10, true, 3)
+	assert.Equal(t, []int{1, 4, 8}, got)
+	assert.Equal(t, 1, got[0])
+	assert.Equal(t, 8, got[len(got)-1])
+}

@@ -3,6 +3,7 @@ package chartdraw
 import (
 	"bytes"
 	"fmt"
+	"math"
 	"strings"
 	"testing"
 
@@ -130,4 +131,66 @@ func TestCanvasCustomInlineStylesheetWithNonce(t *testing.T) {
 	canvas.Start(200, 200)
 
 	assert.Contains(t, b.String(), fmt.Sprintf(`<style type="text/css" nonce="%s"><![CDATA[%s]]></style>`, canvas.nonce, canvas.css))
+}
+
+func TestSVGWithCSS(t *testing.T) {
+	t.Parallel()
+
+	maker := SVGWithCSS(".cls{fill:red}", "nonce")
+	r := maker(10, 10)
+	vr, ok := r.(*vectorRenderer)
+	require.True(t, ok)
+
+	b := bytes.Buffer{}
+	require.NoError(t, vr.Save(&b))
+	out := b.String()
+	assert.Contains(t, out, "nonce=\"nonce\"")
+	assert.Contains(t, out, ".cls{fill:red}")
+}
+
+func TestCanvasBasicElements(t *testing.T) {
+	t.Parallel()
+
+	b := strings.Builder{}
+	c := &canvas{w: &b, bb: bytes.NewBuffer(make([]byte, 0, 80))}
+	c.Start(50, 50)
+
+	c.Path([]string{"M 0 0", "L 10 10"}, Style{StrokeDashArray: []float64{1, 2}, StrokeWidth: 2, StrokeColor: drawing.ColorBlack})
+	c.Text(5, 5, "hi", Style{FontStyle: FontStyle{Font: GetDefaultFont(), FontSize: 10}})
+	c.Circle(5, 5, 3, Style{FillColor: drawing.ColorRed})
+	c.End()
+
+	out := b.String()
+	assert.Contains(t, out, "stroke-dasharray=\"1.0, 2.0\"")
+	assert.Contains(t, out, "<text")
+	assert.Contains(t, out, "<circle")
+	assert.True(t, strings.HasSuffix(out, "</svg>"))
+}
+
+func TestFormatFloatMinimized(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, "1", formatFloatMinimized(1))
+	assert.Equal(t, "1.2", formatFloatMinimized(1.20))
+	assert.Equal(t, "2.5", formatFloatMinimized(2.50))
+}
+
+func TestVectorRendererTextRotation(t *testing.T) {
+	t.Parallel()
+
+	vr := SVG(20, 20).(*vectorRenderer)
+	vr.SetClassName("cls")
+	vr.SetStrokeColor(drawing.ColorBlack)
+	vr.SetFillColor(drawing.ColorRed)
+	vr.SetTextRotation(math.Pi / 2)
+	vr.Text("A", 10, 10)
+	vr.ClearTextRotation()
+	vr.Text("B", 10, 15)
+
+	buf := bytes.Buffer{}
+	require.NoError(t, vr.Save(&buf))
+	out := buf.String()
+	assert.Contains(t, out, "class=\"cls\"")
+	assert.Contains(t, out, "rotate(90.00")
+	assert.Contains(t, out, "B</text>")
 }

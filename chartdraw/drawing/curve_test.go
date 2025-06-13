@@ -2,6 +2,7 @@ package drawing
 
 import (
 	"math"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -64,4 +65,115 @@ func TestTraceCubicAndArc(t *testing.T) {
 	assert.InDelta(t, 0.0, lx, 0.0001)
 	assert.InDelta(t, 1.0, ly, 0.0001)
 	assert.NotZero(t, liner.Len())
+}
+
+func TestSubdivideQuadAndHelpers(t *testing.T) {
+	t.Parallel()
+
+	t.Run("SubdivideQuad", func(t *testing.T) {
+		tests := []struct {
+			name    string
+			quad    []float64
+			expect1 []float64
+			expect2 []float64
+		}{
+			{
+				name:    "simple",
+				quad:    []float64{0, 0, 1, 1, 2, 0},
+				expect1: []float64{0, 0, 0.5, 0.5, 1, 0.5},
+				expect2: []float64{1, 0.5, 1.5, 0.5, 2, 0},
+			},
+			{
+				name:    "offset",
+				quad:    []float64{0, 1, 1, 0, 2, 1},
+				expect1: []float64{0, 1, 0.5, 0.5, 1, 0.5},
+				expect2: []float64{1, 0.5, 1.5, 0.5, 2, 1},
+			},
+		}
+
+		for i, tt := range tests {
+			t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+				c1 := make([]float64, 6)
+				c2 := make([]float64, 6)
+				SubdivideQuad(tt.quad, c1, c2)
+				assert.InDeltaSlice(t, tt.expect1, c1, 0.0001)
+				assert.InDeltaSlice(t, tt.expect2, c2, 0.0001)
+			})
+		}
+	})
+
+	t.Run("traceWindowIndices", func(t *testing.T) {
+		tests := []struct {
+			idx        int
+			start, end int
+		}{
+			{0, 0, 6},
+			{1, 6, 12},
+			{2, 12, 18},
+		}
+
+		for i, tt := range tests {
+			t.Run(strconv.Itoa(i), func(t *testing.T) {
+				s, e := traceWindowIndices(tt.idx)
+				assert.Equal(t, tt.start, s)
+				assert.Equal(t, tt.end, e)
+			})
+		}
+	})
+
+	t.Run("traceCalcDeltas", func(t *testing.T) {
+		tests := []struct {
+			name      string
+			c         []float64
+			dx, dy, d float64
+		}{
+			{"flat", []float64{0, 0, 1, 1, 2, 0}, 2, 0, 2},
+			{"diag", []float64{0, 0, 1, 2, 2, 2}, 2, 2, 2},
+		}
+
+		for i, tt := range tests {
+			t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+				dx, dy, d := traceCalcDeltas(tt.c)
+				assert.InDelta(t, tt.dx, dx, 0.0001)
+				assert.InDelta(t, tt.dy, dy, 0.0001)
+				assert.InDelta(t, tt.d, d, 0.0001)
+			})
+		}
+	})
+
+	t.Run("traceIsFlat", func(t *testing.T) {
+		tests := []struct {
+			name                 string
+			dx, dy, d, threshold float64
+			expect               bool
+		}{
+			{"true", 2, 0, 1, 1, true},
+			{"false", 2, 0, 3, 0.5, false},
+		}
+
+		for i, tt := range tests {
+			t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {
+				got := traceIsFlat(tt.dx, tt.dy, tt.d, tt.threshold)
+				assert.Equal(t, tt.expect, got)
+			})
+		}
+	})
+
+	t.Run("traceGetWindow", func(t *testing.T) {
+		curves := []float64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
+		tests := []struct {
+			idx    int
+			expect []float64
+		}{
+			{0, []float64{0, 1, 2, 3, 4, 5}},
+			{1, []float64{6, 7, 8, 9, 10, 11}},
+		}
+
+		for i, tt := range tests {
+			t.Run(strconv.Itoa(i), func(t *testing.T) {
+				window := traceGetWindow(curves, tt.idx)
+				assert.Equal(t, tt.expect, window)
+			})
+		}
+	})
 }

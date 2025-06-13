@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -98,5 +99,66 @@ func TestTrendLine(t *testing.T) {
 			require.NoError(t, err)
 			assertEqualSVG(t, tt.result, data)
 		})
+	}
+}
+
+func TestLinearTrend(t *testing.T) {
+	t.Parallel()
+
+	input := []float64{2, 4, 6, 8}
+	expected := []float64{2, 4, 6, 8}
+
+	result, err := linearTrend(input)
+	require.NoError(t, err)
+	require.Len(t, result, len(expected))
+	for i := range expected {
+		assert.InDelta(t, expected[i], result[i], 1e-9)
+	}
+}
+
+func TestCubicTrend(t *testing.T) {
+	t.Parallel()
+
+	input := []float64{0, 1, 8, 27}
+	expected := []float64{0, 1, 8, 27}
+
+	result, err := cubicTrend(input)
+	require.NoError(t, err)
+	require.Len(t, result, len(expected))
+	for i := range expected {
+		assert.InDelta(t, expected[i], result[i], 1e-9)
+	}
+}
+
+func TestMovingAverageTrend(t *testing.T) {
+	t.Parallel()
+
+	input := []float64{1, 2, 3, 4, 5}
+	expected := []float64{1, 1.5, 2, 3, 4}
+
+	result, err := movingAverageTrend(input, 3)
+	require.NoError(t, err)
+	require.Len(t, result, len(expected))
+	for i := range expected {
+		assert.InDelta(t, expected[i], result[i], 1e-9)
+	}
+}
+
+func TestSolveLinearSystem(t *testing.T) {
+	t.Parallel()
+
+	mat := [][]float64{
+		{0, 1, 0, 0, 2},
+		{1, 0, 0, 0, 1},
+		{0, 0, 1, 0, 3},
+		{0, 0, 0, 1, 4},
+	}
+	expected := []float64{1, 2, 3, 4}
+
+	result, err := solveLinearSystem(mat)
+	require.NoError(t, err)
+	require.Len(t, result, len(expected))
+	for i := range expected {
+		assert.InDelta(t, expected[i], result[i], 1e-9)
 	}
 }
