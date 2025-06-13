@@ -26,7 +26,7 @@ func NewDoughnutChartOptionWithData(data []float64) DoughnutChartOption {
 type DoughnutChartOption struct {
 	// Theme specifies the colors used for the doughnut chart.
 	Theme ColorPalette
-	// Padding specifies the padding of doughnut chart.
+	// Padding specifies the padding around the chart.
 	Padding Box
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListDoughnut.
 	SeriesList DoughnutSeriesList
@@ -34,9 +34,10 @@ type DoughnutChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// RadiusRing default outer radius for the ring e.g.: 40%, default is "40%"
+	// RadiusRing sets the outer radius of the ring, for example "40%".
+	// Default is "40%".
 	RadiusRing string
-	// RadiusCenter is the radius for the center hold of the doughnut. Must be smaller than RadiusRing.
+	// RadiusCenter is the radius for the center hole of the doughnut and must be smaller than RadiusRing.
 	RadiusCenter string
 	// CenterValues specifies what should be rendered in the center of the doughnut,
 	// current options are "none" (default), "labels", "sum".

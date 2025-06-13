@@ -97,7 +97,7 @@ func FontOptionFunc(font *truetype.Font) OptionFunc {
 	}
 }
 
-// ThemeNameOptionFunc set them of chart by name.
+// ThemeNameOptionFunc sets the theme of the chart by name.
 func ThemeNameOptionFunc(theme string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Theme = GetTheme(theme)

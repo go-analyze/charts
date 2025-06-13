@@ -66,7 +66,7 @@ type tableChart struct {
 	opt *TableChartOption
 }
 
-// newTableChart returns a table chart render.
+// newTableChart returns a table chart renderer.
 func newTableChart(p *Painter, opt TableChartOption) *tableChart {
 	return &tableChart{
 		p:   p,

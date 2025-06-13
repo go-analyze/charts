@@ -28,16 +28,15 @@ func NewHorizontalBarChartOptionWithData(data [][]float64) HorizontalBarChartOpt
 type HorizontalBarChartOption struct {
 	// Theme specifies the colors used for the chart.
 	Theme ColorPalette
-	// Padding specifies the padding of bar chart.
+	// Padding specifies the padding around the chart.
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListHorizontalBar.
 	SeriesList HorizontalBarSeriesList
-	// StackSeries if set to *true a single bar with the colored series stacked together will be rendered.
-	// This feature will result in some options being ignored, including BarMargin and SeriesLabelPosition.
-	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
-	// base bar, other bars are influenced by prior values).
+	// StackSeries, if true, renders the series stacked within one bar. This
+	// causes some options, including BarMargin and SeriesLabelPosition, to be
+	// ignored. MarkLine only renders for the first series.
 	StackSeries *bool
 	// SeriesLabelPosition specifies the position of the label for the series. Currently supported values are
 	// "left" or "right".

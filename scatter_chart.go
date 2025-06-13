@@ -14,7 +14,7 @@ type scatterChart struct {
 	opt *ScatterChartOption
 }
 
-// newScatterChart returns a scatter chart render.
+// newScatterChart returns a scatter chart renderer.
 func newScatterChart(p *Painter, opt ScatterChartOption) *scatterChart {
 	return &scatterChart{
 		p:   p,
@@ -46,7 +46,7 @@ func NewScatterChartOptionWithSeries(sl ScatterSeriesList) ScatterChartOption {
 type ScatterChartOption struct {
 	// Theme specifies the colors used for the scatter chart.
 	Theme ColorPalette
-	// Padding specifies the padding of scatter chart.
+	// Padding specifies the padding around the chart.
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
@@ -61,8 +61,9 @@ type ScatterChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// Symbol specifies the default symbols to draw the data points with. Default is 'dot', additional options are:
-	// 'circle', 'dot', 'square', 'diamond'. This can also be set on a per-series level.
+	// Symbol specifies the default shape to draw each point with. The default
+	// is 'dot'. Valid options are 'circle', 'dot', 'square' and 'diamond'. This
+	// can also be set per-series.
 	Symbol Symbol
 	// SymbolSize specifies the size for each data point, default is 2.0.
 	SymbolSize float64

@@ -14,7 +14,7 @@ type lineChart struct {
 	opt *LineChartOption
 }
 
-// newLineChart returns a line chart render
+// newLineChart returns a line chart renderer.
 func newLineChart(p *Painter, opt LineChartOption) *lineChart {
 	return &lineChart{
 		p:   p,
@@ -46,18 +46,16 @@ func NewLineChartOptionWithSeries(sl LineSeriesList) LineChartOption {
 type LineChartOption struct {
 	// Theme specifies the colors used for the line chart.
 	Theme ColorPalette
-	// Padding specifies the padding of line chart.
+	// Padding specifies the padding around the chart.
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
 	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListLine.
 	SeriesList LineSeriesList
-	// StackSeries if set to *true the lines will be layered over each other, with the last series value representing
-	// the sum of all the values. Enabling this will also enable FillArea (which until v0.5 can't be disabled).
-	// Some options will be ignored when StackedSeries is enabled, this includes StrokeSmoothingTension.
-	// MarkLine is also interpreted differently, only the first Series will have the MarkLine rendered (as it's the
-	// base bar, other bars are influenced by prior values). Additionally only the 0 index y-axis is stacked,
-	// allowing a non-stacked line to also be included on y-axis 1.
+	// StackSeries, if true, layers each series so the last represents the
+	// cumulative sum. This forces FillArea and ignores options like
+	// StrokeSmoothingTension. MarkLine only renders for the first series, and
+	// only the 0 index y-axis is stacked so another line can use the second axis.
 	StackSeries *bool
 	// XAxis are options for the x-axis.
 	XAxis XAxisOption

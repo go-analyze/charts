@@ -31,7 +31,7 @@ func NewPieChartOptionWithData(data []float64) PieChartOption {
 type PieChartOption struct {
 	// Theme specifies the colors used for the pie chart.
 	Theme ColorPalette
-	// Padding specifies the padding of pie chart.
+	// Padding specifies the padding around the chart.
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
@@ -41,7 +41,8 @@ type PieChartOption struct {
 	Title TitleOption
 	// Legend are options for the data legend.
 	Legend LegendOption
-	// Radius default radius for pie e.g.: 40%, default is "40%"
+	// Radius sets the default pie radius, for example "40%".
+	// Default is "40%".
 	Radius string
 	// SegmentGap provides a gap between each pie slice.
 	SegmentGap float64

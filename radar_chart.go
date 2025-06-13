@@ -39,9 +39,9 @@ func NewRadarChartOptionWithData(data [][]float64, names []string, values []floa
 
 // RadarChartOption defines the options for rendering a radar chart. Render the chart using Painter.RadarChart.
 type RadarChartOption struct {
-	// Theme specifies the colors used for the pie chart.
+	// Theme specifies the colors used for the radar chart.
 	Theme ColorPalette
-	// Padding specifies the padding of pie chart.
+	// Padding specifies the padding around the chart.
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
@@ -53,7 +53,8 @@ type RadarChartOption struct {
 	Legend LegendOption
 	// RadarIndicators provides the radar indicator list.
 	RadarIndicators []RadarIndicator
-	// Radius for radar e.g.: 40%, default is "40%"
+	// Radius sets the chart radius, for example "40%".
+	// Default is "40%".
 	Radius string
 	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter

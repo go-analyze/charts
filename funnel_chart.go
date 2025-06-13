@@ -33,7 +33,7 @@ func NewFunnelChartOptionWithData(data []float64) FunnelChartOption {
 type FunnelChartOption struct {
 	// Theme specifies the colors used for the chart.
 	Theme ColorPalette
-	// Padding specifies the padding of funnel chart.
+	// Padding specifies the padding around the chart.
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
