@@ -37,7 +37,7 @@ type markPointRenderOption struct {
 	valueFormatter     ValueFormatter
 }
 
-// newMarkPointPainter returns a mark point renderer
+// newMarkPointPainter returns a mark point renderer.
 func newMarkPointPainter(p *Painter) *markPointPainter {
 	return &markPointPainter{
 		p: p,

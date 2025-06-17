@@ -57,7 +57,7 @@ type HorizontalBarChartOption struct {
 	ValueFormatter ValueFormatter
 }
 
-// newHorizontalBarChart returns a horizontal bar chart renderer
+// newHorizontalBarChart returns a horizontal bar chart renderer.
 func newHorizontalBarChart(p *Painter, opt HorizontalBarChartOption) *horizontalBarChart {
 	return &horizontalBarChart{
 		p:   p,

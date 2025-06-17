@@ -20,7 +20,7 @@ func convertToArray(data []byte) []byte {
 	return data
 }
 
-// EChartsPosition represents a CSS-like position value used by ECharts.
+// EChartsPosition represents a CSS-like position value that can be either a string (like "center", "left") or a numeric value.
 type EChartsPosition string
 
 // UnmarshalJSON decodes a position JSON value that may be a string or number.

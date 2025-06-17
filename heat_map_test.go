@@ -200,7 +200,7 @@ func TestHeatMapChartError(t *testing.T) {
 					Values: [][]float64{{}, {}},
 				}
 			},
-			errorMsgContains: "no columns in heat map values",
+			errorMsgContains: "heat map has no columns",
 		},
 		{
 			name: "insufficient_space",

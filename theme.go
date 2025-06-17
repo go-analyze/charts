@@ -140,7 +140,7 @@ func (t *themeColorPalette) GetYAxisTextColor() Color {
 
 // ThemeOption defines color options for a theme.
 type ThemeOption struct {
-	// IsDarkMode indicates the theme uses dark colors and backgrounds.
+	// IsDarkMode indicates whether the theme is designed for dark backgrounds, affecting color adjustments and text visibility.
 	IsDarkMode bool
 	// AxisStrokeColor is the default stroke color for both axes.
 	AxisStrokeColor Color

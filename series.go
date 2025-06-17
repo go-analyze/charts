@@ -20,7 +20,7 @@ type SeriesLabel struct {
 	FontStyle FontStyle
 	// Show flag for label, if unset the behavior will be defaulted based on the chart type.
 	Show *bool
-	// Distance to the host graphic element.
+	// Distance specifies the pixel distance between the label and its associated data point or chart element.
 	Distance int // TODO - do we want to replace with just Offset?
 	// Offset specifies an offset from the position.
 	Offset OffsetInt

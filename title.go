@@ -50,7 +50,7 @@ type titlePainter struct {
 	opt *TitleOption
 }
 
-// newTitlePainter returns a title renderer
+// newTitlePainter returns a title renderer.
 func newTitlePainter(p *Painter, opt TitleOption) *titlePainter {
 	return &titlePainter{
 		p:   p,

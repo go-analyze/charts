@@ -10,7 +10,7 @@ import (
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
-// ValueFormatter defines a function that can be used to format numeric values.
+// ValueFormatter defines a function that formats numeric values into string representations for display on charts.
 type ValueFormatter func(float64) string
 
 var defaultValueFormatter = func(val float64) string {

@@ -52,7 +52,7 @@ type DoughnutChartOption struct {
 	ValueFormatter ValueFormatter
 }
 
-// newDoughnutChart creates a new doughnut chart renderer.
+// newDoughnutChart returns a doughnut chart renderer.
 func newDoughnutChart(p *Painter, opt DoughnutChartOption) *doughnutChart {
 	return &doughnutChart{
 		p:   p,

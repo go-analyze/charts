@@ -27,7 +27,7 @@ type LegendOption struct {
 	Align string
 	// Vertical can be set to *true to set the legend orientation to be vertical.
 	Vertical *bool
-	// Symbol defines the icon shape next to the label. Can be 'square', 'dot', or 'diamond'.
+	// Symbol defines the icon shape next to the label. Can be 'square', 'dot', 'diamond', or 'circle'.
 	Symbol Symbol
 	// OverlayChart can be set to *true to render the legend over the chart. Ignored if Vertical is set to true (always overlapped).
 	OverlayChart *bool
@@ -47,7 +47,7 @@ func (opt *LegendOption) IsEmpty() bool {
 	return true
 }
 
-// newLegendPainter returns a legend renderer
+// newLegendPainter returns a legend renderer.
 func newLegendPainter(p *Painter, opt LegendOption) *legendPainter {
 	return &legendPainter{
 		p:   p,

@@ -8,7 +8,7 @@ import (
 type YAxisOption struct {
 	// Show specifies if the y-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
 	Show *bool
-	// Theme specifies the colors used for the x-axis.
+	// Theme specifies the colors used for the y-axis.
 	Theme ColorPalette
 	// Title specifies a name for the axis, if specified the axis name is rendered on the outside of the Y-Axis.
 	Title string

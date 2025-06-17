@@ -23,7 +23,7 @@ func (m *markLinePainter) add(opt markLineRenderOption) {
 	m.options = append(m.options, opt)
 }
 
-// newMarkLinePainter returns a mark line renderer
+// newMarkLinePainter returns a mark line renderer.
 func newMarkLinePainter(p *Painter) *markLinePainter {
 	return &markLinePainter{
 		p: p,

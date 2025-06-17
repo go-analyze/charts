@@ -12,7 +12,7 @@ type barChart struct {
 	opt *BarChartOption
 }
 
-// newBarChart returns a bar chart renderer
+// newBarChart returns a bar chart renderer.
 func newBarChart(p *Painter, opt BarChartOption) *barChart {
 	return &barChart{
 		p:   p,

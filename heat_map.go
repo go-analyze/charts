@@ -2,11 +2,13 @@ package charts
 
 import (
 	"errors"
+	"math"
 	"strconv"
 
 	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw"
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 // HeatMapOption contains configuration options for a heat map chart. Render the chart using Painter.HeatMapChart.
@@ -84,7 +86,7 @@ func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 	numRows := len(opt.Values)
 	numCols := sliceMaxLen(opt.Values...)
 	if numCols == 0 {
-		return BoxZero, errors.New("no columns in heat map values")
+		return BoxZero, errors.New("heat map has no columns")
 	}
 	seriesPainter := result.seriesPainter.Child(PainterPaddingOption(NewBoxEqual(1)))
 
@@ -96,11 +98,12 @@ func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 	if opt.ScaleMaxValue != nil {
 		maxVal = *opt.ScaleMaxValue
 	}
-	if minVal == maxVal { // ensure a non-zero range
+	valueRange := maxVal - minVal
+	if math.Abs(valueRange) <= matrix.DefaultEpsilon {
 		minVal = 0
 		maxVal = 1
+		valueRange = maxVal - minVal
 	}
-	valueRange := maxVal - minVal
 
 	baseColor := opt.Theme.GetSeriesColor(opt.BaseColorIndex)
 	cellWidth := seriesPainter.Width() / numCols
@@ -219,7 +222,7 @@ func (h *heatMap) Render() (Box, error) {
 		LabelCountAdjustment: opt.XAxis.LabelCountAdjustment,
 	}
 
-	// Ensure y-axis labels cover all columns.
+	// Ensure y-axis labels cover all rows.
 	for len(opt.YAxis.Labels) < numRows {
 		opt.YAxis.Labels = append(opt.YAxis.Labels, strconv.Itoa(len(opt.YAxis.Labels)))
 	}
