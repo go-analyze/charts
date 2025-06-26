@@ -76,14 +76,15 @@ func (rgc *RasterGraphicContext) DrawImage(img image.Image) {
 	DrawImage(img, rgc.img, rgc.current.Tr, draw.Over, BilinearFilter)
 }
 
-// FillStringAt draws the text at the specified point (x, y).
+// Deprecated: FillStringAt is deprecated, use CreateStringPath and then Fill, or open a GitHub issue requesting it to be maintained.
 func (rgc *RasterGraphicContext) FillStringAt(text string, x, y float64) (cursor float64, err error) {
 	cursor, err = rgc.CreateStringPath(text, x, y)
 	rgc.Fill()
 	return
 }
 
-// StrokeStringAt draws the contour of the text at point (x, y).
+// Deprecated: StrokeStringAt is deprecated, it's expected that most usage is through Render.Text.
+// It can be replaced with CreateStringPath and then Stroke, or open a GitHub issue requesting it to be maintained.
 func (rgc *RasterGraphicContext) StrokeStringAt(text string, x, y float64) (cursor float64, err error) {
 	cursor, err = rgc.CreateStringPath(text, x, y)
 	rgc.Stroke()
