@@ -19,12 +19,12 @@ type DashVertexConverter struct {
 	dashOffset     float64
 }
 
-// LineTo implements the pathbuilder interface.
+// LineTo adds a dashed line segment to the path (for PathBuilder interface).
 func (dasher *DashVertexConverter) LineTo(x, y float64) {
 	dasher.lineTo(x, y)
 }
 
-// MoveTo implements the pathbuilder interface.
+// MoveTo sets the starting point for the dashed path (for PathBuilder interface).
 func (dasher *DashVertexConverter) MoveTo(x, y float64) {
 	dasher.next.MoveTo(x, y)
 	dasher.x, dasher.y = x, y
@@ -32,7 +32,7 @@ func (dasher *DashVertexConverter) MoveTo(x, y float64) {
 	dasher.currentDash = 0
 }
 
-// End implements the pathbuilder interface.
+// End forwards the completed path to the next converter (for PathBuilder interface).
 func (dasher *DashVertexConverter) End() {
 	dasher.next.End()
 }

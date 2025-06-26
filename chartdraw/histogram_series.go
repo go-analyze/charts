@@ -14,12 +14,12 @@ type HistogramSeries struct {
 	InnerSeries ValuesProvider
 }
 
-// GetName implements Series.GetName.
+// GetName returns the series name (for Series interface).
 func (hs HistogramSeries) GetName() string {
 	return hs.Name
 }
 
-// GetStyle implements Series.GetStyle.
+// GetStyle returns the style used for rendering (for Series interface).
 func (hs HistogramSeries) GetStyle() Style {
 	return hs.Style
 }
@@ -29,17 +29,17 @@ func (hs HistogramSeries) GetYAxis() YAxisType {
 	return hs.YAxis
 }
 
-// Len implements BoundedValuesProvider.Len.
+// Len returns the number of values in the inner series (for BoundedValuesProvider interface).
 func (hs HistogramSeries) Len() int {
 	return hs.InnerSeries.Len()
 }
 
-// GetValues implements ValuesProvider.GetValues.
+// GetValues proxies value access to the inner series (for ValuesProvider interface).
 func (hs HistogramSeries) GetValues(index int) (x, y float64) {
 	return hs.InnerSeries.GetValues(index)
 }
 
-// GetBoundedValues implements BoundedValuesProvider.GetBoundedValue
+// GetBoundedValues returns the bounded values used for drawing bars (for BoundedValuesProvider interface).
 func (hs HistogramSeries) GetBoundedValues(index int) (x, y1, y2 float64) {
 	vx, vy := hs.InnerSeries.GetValues(index)
 
@@ -54,7 +54,7 @@ func (hs HistogramSeries) GetBoundedValues(index int) (x, y1, y2 float64) {
 	return
 }
 
-// Render implements Series.Render.
+// Render draws the histogram series using the given renderer (for Series interface).
 func (hs HistogramSeries) Render(r Renderer, canvasBox Box, xrange, yrange Range, defaults Style) {
 	style := hs.Style.InheritFrom(defaults)
 	Draw.HistogramSeries(r, canvasBox, xrange, yrange, style, hs)

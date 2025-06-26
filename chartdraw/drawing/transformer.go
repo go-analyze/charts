@@ -9,21 +9,21 @@ type Transformer struct {
 	Flattener Flattener
 }
 
-// MoveTo implements the path builder interface.
+// MoveTo transforms and passes a move command downstream (for PathBuilder interface).
 func (t Transformer) MoveTo(x, y float64) {
 	u := x*t.Tr[0] + y*t.Tr[2] + t.Tr[4]
 	v := x*t.Tr[1] + y*t.Tr[3] + t.Tr[5]
 	t.Flattener.MoveTo(u, v)
 }
 
-// LineTo implements the path builder interface.
+// LineTo transforms and forwards a line command (for PathBuilder interface).
 func (t Transformer) LineTo(x, y float64) {
 	u := x*t.Tr[0] + y*t.Tr[2] + t.Tr[4]
 	v := x*t.Tr[1] + y*t.Tr[3] + t.Tr[5]
 	t.Flattener.LineTo(u, v)
 }
 
-// End implements the path builder interface.
+// End finishes the transformed path (for PathBuilder interface).
 func (t Transformer) End() {
 	t.Flattener.End()
 }

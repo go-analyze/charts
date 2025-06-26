@@ -71,27 +71,27 @@ func (vr *vectorRenderer) GetDPI() float64 {
 	return vr.c.dpi
 }
 
-// SetDPI implements the interface method.
+// SetDPI sets the rendering DPI (for Renderer interface).
 func (vr *vectorRenderer) SetDPI(dpi float64) {
 	vr.c.dpi = dpi
 }
 
-// SetClassName implements the interface method.
+// SetClassName sets the CSS class name for the next drawing operations (for Renderer interface).
 func (vr *vectorRenderer) SetClassName(classname string) {
 	vr.s.ClassName = classname
 }
 
-// SetStrokeColor implements the interface method.
+// SetStrokeColor changes the stroke color for subsequent paths (for Renderer interface).
 func (vr *vectorRenderer) SetStrokeColor(c drawing.Color) {
 	vr.s.StrokeColor = c
 }
 
-// SetFillColor implements the interface method.
+// SetFillColor changes the fill color for subsequent paths (for Renderer interface).
 func (vr *vectorRenderer) SetFillColor(c drawing.Color) {
 	vr.s.FillColor = c
 }
 
-// SetStrokeWidth implements the interface method.
+// SetStrokeWidth sets the width of drawn lines (for Renderer interface).
 func (vr *vectorRenderer) SetStrokeWidth(width float64) {
 	vr.s.StrokeWidth = width
 }
@@ -101,12 +101,12 @@ func (vr *vectorRenderer) SetStrokeDashArray(dashArray []float64) {
 	vr.s.StrokeDashArray = dashArray
 }
 
-// MoveTo implements the interface method.
+// MoveTo starts a new path at the specified coordinates (for PathBuilder interface).
 func (vr *vectorRenderer) MoveTo(x, y int) {
 	vr.p = append(vr.p, "M "+strconv.Itoa(x)+" "+strconv.Itoa(y))
 }
 
-// LineTo implements the interface method.
+// LineTo adds a line segment to the current path (for PathBuilder interface).
 func (vr *vectorRenderer) LineTo(x, y int) {
 	vr.p = append(vr.p, "L "+strconv.Itoa(x)+" "+strconv.Itoa(y))
 }
@@ -169,27 +169,27 @@ func (vr *vectorRenderer) drawPath() {
 	vr.p = vr.p[:0] // clear the path
 }
 
-// Circle implements the interface method.
+// Circle draws a circle with the current style (for PathBuilder interface).
 func (vr *vectorRenderer) Circle(radius float64, x, y int) {
 	vr.c.Circle(x, y, int(math.Round(radius)), vr.s.GetFillAndStrokeOptions())
 }
 
-// SetFont implements the interface method.
+// SetFont specifies the font used for text operations (for Renderer interface).
 func (vr *vectorRenderer) SetFont(f *truetype.Font) {
 	vr.s.Font = f
 }
 
-// SetFontColor implements the interface method.
+// SetFontColor sets the color used to draw text (for Renderer interface).
 func (vr *vectorRenderer) SetFontColor(c drawing.Color) {
 	vr.s.FontColor = c
 }
 
-// SetFontSize implements the interface method.
+// SetFontSize sets the size of the font in points (for Renderer interface).
 func (vr *vectorRenderer) SetFontSize(size float64) {
 	vr.s.FontSize = size
 }
 
-// Text draws a text blob.
+// Text draws a text blob (for Renderer interface).
 func (vr *vectorRenderer) Text(body string, x, y int) {
 	vr.c.Text(x, y, body, vr.s.GetTextOptions())
 }

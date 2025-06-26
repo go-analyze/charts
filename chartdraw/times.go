@@ -30,12 +30,12 @@ func (t Times) GetValue(index int) float64 {
 	return ToFloat64(t[index])
 }
 
-// Swap implements sort.Interface.
+// Swap exchanges the time values at indexes i and j.
 func (t Times) Swap(i, j int) {
 	t[i], t[j] = t[j], t[i]
 }
 
-// Less implements sort.Interface.
+// Less reports whether the time at i occurs before the time at j.
 func (t Times) Less(i, j int) bool {
 	return t[i].Before(t[j])
 }

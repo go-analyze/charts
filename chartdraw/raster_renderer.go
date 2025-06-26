@@ -59,20 +59,20 @@ func (rr *rasterRenderer) GetDPI() float64 {
 	return rr.gc.GetDPI()
 }
 
-// SetDPI implements the interface method.
+// SetDPI sets the rendering DPI (for Renderer interface).
 func (rr *rasterRenderer) SetDPI(dpi float64) {
 	rr.gc.SetDPI(dpi)
 }
 
-// SetClassName implements the interface method. However, PNGs have no classes.
+// SetClassName is ignored because raster images have no class names (for Renderer interface).
 func (rr *rasterRenderer) SetClassName(_ string) {}
 
-// SetStrokeColor implements the interface method.
+// SetStrokeColor sets the stroke color for future paths (for Renderer interface).
 func (rr *rasterRenderer) SetStrokeColor(c drawing.Color) {
 	rr.s.StrokeColor = c
 }
 
-// SetStrokeWidth implements the interface method.
+// SetStrokeWidth sets the width of drawn lines (for Renderer interface).
 func (rr *rasterRenderer) SetStrokeWidth(width float64) {
 	rr.s.StrokeWidth = width
 }
@@ -82,37 +82,37 @@ func (rr *rasterRenderer) SetStrokeDashArray(dashArray []float64) {
 	rr.s.StrokeDashArray = dashArray
 }
 
-// SetFillColor implements the interface method.
+// SetFillColor sets the fill color for future paths (for Renderer interface).
 func (rr *rasterRenderer) SetFillColor(c drawing.Color) {
 	rr.s.FillColor = c
 }
 
-// MoveTo implements the interface method.
+// MoveTo moves the drawing cursor to the given position (for PathBuilder interface).
 func (rr *rasterRenderer) MoveTo(x, y int) {
 	rr.gc.MoveTo(float64(x), float64(y))
 }
 
-// LineTo implements the interface method.
+// LineTo adds a line to the current path (for PathBuilder interface).
 func (rr *rasterRenderer) LineTo(x, y int) {
 	rr.gc.LineTo(float64(x), float64(y))
 }
 
-// QuadCurveTo implements the interface method.
+// QuadCurveTo adds a quadratic curve to the current path (for PathBuilder interface).
 func (rr *rasterRenderer) QuadCurveTo(cx, cy, x, y int) {
 	rr.gc.QuadCurveTo(float64(cx), float64(cy), float64(x), float64(y))
 }
 
-// ArcTo implements the interface method.
+// ArcTo appends an elliptical arc to the current path (for PathBuilder interface).
 func (rr *rasterRenderer) ArcTo(cx, cy int, rx, ry, startAngle, delta float64) {
 	rr.gc.ArcTo(float64(cx), float64(cy), rx, ry, startAngle, delta)
 }
 
-// Close implements the interface method.
+// Close closes the current path (for PathBuilder interface).
 func (rr *rasterRenderer) Close() {
 	rr.gc.Close()
 }
 
-// Stroke implements the interface method.
+// Stroke renders the path outline without filling it (for PathBuilder interface).
 func (rr *rasterRenderer) Stroke() {
 	rr.gc.SetStrokeColor(rr.s.StrokeColor)
 	rr.gc.SetLineWidth(rr.s.StrokeWidth)
@@ -120,13 +120,13 @@ func (rr *rasterRenderer) Stroke() {
 	rr.gc.Stroke()
 }
 
-// Fill implements the interface method.
+// Fill renders the path fill without stroking it (for PathBuilder interface).
 func (rr *rasterRenderer) Fill() {
 	rr.gc.SetFillColor(rr.s.FillColor)
 	rr.gc.Fill()
 }
 
-// FillStroke implements the interface method.
+// FillStroke fills and then strokes the current path (for PathBuilder interface).
 func (rr *rasterRenderer) FillStroke() {
 	rr.gc.SetFillColor(rr.s.FillColor)
 	rr.gc.SetStrokeColor(rr.s.StrokeColor)
@@ -135,27 +135,27 @@ func (rr *rasterRenderer) FillStroke() {
 	rr.gc.FillStroke()
 }
 
-// Circle fully draws a circle at a given point but does not apply the fill or stroke.
+// Circle fully draws a circle at a given point but does not apply the fill or stroke (for PathBuilder interface).
 func (rr *rasterRenderer) Circle(radius float64, x, y int) {
 	rr.ArcTo(x, y, radius, radius, 0, _2pi)
 }
 
-// SetFont implements the interface method.
+// SetFont sets the font used for text drawing (for Renderer interface).
 func (rr *rasterRenderer) SetFont(f *truetype.Font) {
 	rr.s.Font = f
 }
 
-// SetFontSize implements the interface method.
+// SetFontSize sets the font size in points (for Renderer interface).
 func (rr *rasterRenderer) SetFontSize(size float64) {
 	rr.s.FontSize = size
 }
 
-// SetFontColor implements the interface method.
+// SetFontColor sets the color used for text drawing (for Renderer interface).
 func (rr *rasterRenderer) SetFontColor(c drawing.Color) {
 	rr.s.FontColor = c
 }
 
-// Text implements the interface method.
+// Text draws the provided string at the given coordinates (for Renderer interface).
 func (rr *rasterRenderer) Text(body string, x, y int) {
 	if body == "" {
 		return
@@ -230,7 +230,7 @@ func (rr *rasterRenderer) ClearTextRotation() {
 	rr.rotateRadians = nil
 }
 
-// Save implements the interface method.
+// Save writes the rendered image to the provided writer (for Renderer interface).
 func (rr *rasterRenderer) Save(w io.Writer) error {
 	if typed, isTyped := w.(RGBACollector); isTyped {
 		typed.SetRGBA(rr.i)

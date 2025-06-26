@@ -37,12 +37,12 @@ func (pcs PercentChangeSeries) GetStyle() Style {
 	return pcs.Style
 }
 
-// Len implements part of Series.
+// Len returns the number of elements in the inner series (for Series interface).
 func (pcs PercentChangeSeries) Len() int {
 	return pcs.InnerSeries.Len()
 }
 
-// GetFirstValues implements FirstValuesProvider.
+// GetFirstValues returns the first x and y values of the inner series (for FirstValuesProvider interface).
 func (pcs PercentChangeSeries) GetFirstValues() (x, y float64) {
 	return pcs.InnerSeries.GetFirstValues()
 }

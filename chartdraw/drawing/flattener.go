@@ -64,17 +64,17 @@ type SegmentedPath struct {
 	Points []float64
 }
 
-// MoveTo implements the path interface.
+// MoveTo records the first point of a new segment (for PathBuilder interface).
 func (p *SegmentedPath) MoveTo(x, y float64) {
 	p.Points = append(p.Points, x, y)
 }
 
-// LineTo implements the path interface.
+// LineTo appends a point to the current path segment (for PathBuilder interface).
 func (p *SegmentedPath) LineTo(x, y float64) {
 	p.Points = append(p.Points, x, y)
 }
 
-// End implements the path interface.
+// End completes the current path segment (for PathBuilder interface).
 func (p *SegmentedPath) End() {
 	// Nothing to do
 }

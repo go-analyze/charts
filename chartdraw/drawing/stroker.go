@@ -20,12 +20,12 @@ type LineStroker struct {
 	x, y, nx, ny  float64
 }
 
-// MoveTo implements the path builder interface.
+// MoveTo records the starting point for a stroked segment (for PathBuilder interface).
 func (l *LineStroker) MoveTo(x, y float64) {
 	l.x, l.y = x, y
 }
 
-// LineTo implements the path builder interface.
+// LineTo adds a stroked line to the path (for PathBuilder interface).
 func (l *LineStroker) LineTo(x, y float64) {
 	l.line(l.x, l.y, x, y)
 }
@@ -42,7 +42,7 @@ func (l *LineStroker) line(x1, y1, x2, y2 float64) {
 	}
 }
 
-// End implements the path builder interface.
+// End emits the completed stroked path to the next flattener (for PathBuilder interface).
 func (l *LineStroker) End() {
 	if len(l.vertices) > 1 {
 		l.Flattener.MoveTo(l.vertices[0], l.vertices[1])

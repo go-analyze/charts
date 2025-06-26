@@ -40,7 +40,7 @@ func NewValueBufferWithCapacity(capacity int) *ValueBuffer {
 // ValueBuffer is a fifo data structure that is backed by a pre-allocated array.
 // Instead of allocating a whole new node object for each element, array elements are re-used (which saves GC churn).
 // Enqueue can be O(n), Dequeue is generally O(1).
-// Buffer implements `seq.Provider`
+// Buffer implements `seq.Provider`.
 type ValueBuffer struct {
 	array []float64
 	head  int
@@ -54,7 +54,7 @@ func (b *ValueBuffer) Len() int {
 	return b.size
 }
 
-// GetValue implements seq provider.
+// GetValue returns the value stored at the provided index.
 func (b *ValueBuffer) GetValue(index int) float64 {
 	effectiveIndex := (b.head + index) % len(b.array)
 	return b.array[effectiveIndex]
