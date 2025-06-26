@@ -1,6 +1,7 @@
 package chartdraw
 
 import (
+	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -39,6 +40,7 @@ type rasterRenderer struct {
 	i          *image.RGBA
 	gc         *drawing.RasterGraphicContext
 	encodeFunc func(w io.Writer, i image.Image) error
+	renderErrs []error
 
 	rotateRadians *float64
 
@@ -166,8 +168,9 @@ func (rr *rasterRenderer) Text(body string, x, y int) {
 	rr.gc.SetFont(rr.s.Font)
 	rr.gc.SetFontSize(rr.s.FontSize)
 	rr.gc.SetFillColor(rr.s.FontColor)
-	// TODO - handle error?
-	_, _ = rr.gc.CreateStringPath(body, float64(xf), float64(yf))
+	if _, err := rr.gc.CreateStringPath(body, float64(xf), float64(yf)); err != nil {
+		rr.renderErrs = append(rr.renderErrs, err)
+	}
 	rr.gc.Fill()
 }
 
@@ -234,7 +237,9 @@ func (rr *rasterRenderer) ClearTextRotation() {
 
 // Save writes the rendered image to the provided writer (for Renderer interface).
 func (rr *rasterRenderer) Save(w io.Writer) error {
-	if typed, isTyped := w.(RGBACollector); isTyped {
+	if len(rr.renderErrs) > 0 {
+		return fmt.Errorf("queued rendering errors: %v", rr.renderErrs)
+	} else if typed, isTyped := w.(RGBACollector); isTyped {
 		typed.SetRGBA(rr.i)
 		return nil
 	} else if rr.encodeFunc != nil {

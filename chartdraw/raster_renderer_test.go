@@ -2,6 +2,7 @@ package chartdraw
 
 import (
 	"bytes"
+	"errors"
 	"hash/crc32"
 	"image"
 	"image/png"
@@ -158,4 +159,15 @@ func BenchmarkRaterCircle(b *testing.B) {
 		bb.Reset()
 		_ = jpg.Save(bb)
 	}
+}
+
+func TestRasterRendererSaveWithQueuedError(t *testing.T) {
+	t.Parallel()
+
+	rr := PNG(10, 10).(*rasterRenderer)
+	rr.renderErrs = append(rr.renderErrs, errors.New("boom"))
+
+	err := rr.Save(&bytes.Buffer{})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "boom")
 }
