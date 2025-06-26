@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"hash/crc32"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,6 +26,21 @@ func assertEqualSVG(t *testing.T, expected string, actual []byte) {
 			require.NoError(t, err2)
 		}
 		require.NoError(t, err1)
+	}
+}
+
+func assertEqualPNGCRC(t *testing.T, expected uint32, actual []byte) {
+	t.Helper()
+
+	hash := crc32.ChecksumIEEE(actual)
+	if expected != hash {
+		actualFile, err := writeTempFile(actual, t.Name()+"-actual", "png")
+		if expected == 0 {
+			t.Errorf("PNG CRC32 0x%x written to %s", hash, actualFile)
+		} else {
+			t.Errorf("PNG CRC32 mismatch expected: 0x%x actual: 0x%x file: %s", expected, hash, actualFile)
+		}
+		require.NoError(t, err)
 	}
 }
 
