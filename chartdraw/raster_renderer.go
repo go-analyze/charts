@@ -137,7 +137,9 @@ func (rr *rasterRenderer) FillStroke() {
 
 // Circle fully draws a circle at a given point but does not apply the fill or stroke (for PathBuilder interface).
 func (rr *rasterRenderer) Circle(radius float64, x, y int) {
-	rr.ArcTo(x, y, radius, radius, 0, _2pi)
+	xf, yf := float64(x), float64(y)
+	rr.gc.MoveTo(xf-radius, yf) // explicit MoveTo to avoid LineTo if components already on raster, see issue #78
+	rr.gc.ArcTo(xf, yf, radius, radius, 0, _2pi)
 }
 
 // SetFont sets the font used for text drawing (for Renderer interface).

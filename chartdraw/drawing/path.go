@@ -19,12 +19,12 @@ type PathBuilder interface {
 	CubicCurveTo(cx1, cy1, cx2, cy2, x, y float64)
 	// ArcTo adds an arc to the current subpath.
 	ArcTo(cx, cy, rx, ry, startAngle, angle float64)
-	// Close creates a line from the current point to the last MoveTo point (if not the same) and
+	// Close creates a line from the current point to the last MoveTo point (if different) and
 	// mark the path as closed so the first and last lines join nicely.
 	Close()
 }
 
-// PathComponent represents component of a path.
+// PathComponent represents a component of a path.
 type PathComponent int
 
 const (
@@ -53,6 +53,9 @@ type Path struct {
 }
 
 func (p *Path) appendToPath(cmd PathComponent, points ...float64) {
+	if len(points)%2 != 0 {
+		panic("bug: points must always by in x,y pairs")
+	}
 	p.Components = append(p.Components, cmd)
 	p.Points = append(p.Points, points...)
 }
@@ -64,6 +67,9 @@ func (p *Path) LastPoint() (x, y float64) {
 
 // MoveTo starts a new path at (x, y) position.
 func (p *Path) MoveTo(x, y float64) {
+	if len(p.Components) > 0 && p.x == x && p.y == y {
+		return // no-op, already at point
+	}
 	p.appendToPath(MoveToComponent, x, y)
 	p.x = x
 	p.y = y
@@ -73,6 +79,9 @@ func (p *Path) MoveTo(x, y float64) {
 func (p *Path) LineTo(x, y float64) {
 	if len(p.Components) == 0 { //special case when no move has been done
 		p.MoveTo(0, 0)
+	}
+	if p.x == x && p.y == y {
+		return // no-op, already at end point
 	}
 	p.appendToPath(LineToComponent, x, y)
 	p.x = x
