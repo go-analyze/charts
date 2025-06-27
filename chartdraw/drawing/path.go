@@ -54,7 +54,7 @@ type Path struct {
 
 func (p *Path) appendToPath(cmd PathComponent, points ...float64) {
 	if len(points)%2 != 0 {
-		panic("bug: points must always by in x,y pairs")
+		panic("bug: points must always be in x,y pairs")
 	}
 	p.Components = append(p.Components, cmd)
 	p.Points = append(p.Points, points...)
