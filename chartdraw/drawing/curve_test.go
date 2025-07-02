@@ -70,7 +70,7 @@ func TestTraceCubicAndArc(t *testing.T) {
 func TestSubdivideQuadAndHelpers(t *testing.T) {
 	t.Parallel()
 
-	t.Run("SubdivideQuad", func(t *testing.T) {
+	t.Run("subdivide_quad", func(t *testing.T) {
 		tests := []struct {
 			name    string
 			quad    []float64
@@ -102,7 +102,7 @@ func TestSubdivideQuadAndHelpers(t *testing.T) {
 		}
 	})
 
-	t.Run("traceWindowIndices", func(t *testing.T) {
+	t.Run("trace_window_indices", func(t *testing.T) {
 		tests := []struct {
 			idx        int
 			start, end int
@@ -121,7 +121,7 @@ func TestSubdivideQuadAndHelpers(t *testing.T) {
 		}
 	})
 
-	t.Run("traceCalcDeltas", func(t *testing.T) {
+	t.Run("trace_calc_deltas", func(t *testing.T) {
 		tests := []struct {
 			name      string
 			c         []float64
@@ -141,7 +141,7 @@ func TestSubdivideQuadAndHelpers(t *testing.T) {
 		}
 	})
 
-	t.Run("traceIsFlat", func(t *testing.T) {
+	t.Run("trace_is_flat", func(t *testing.T) {
 		tests := []struct {
 			name                 string
 			dx, dy, d, threshold float64
@@ -159,7 +159,7 @@ func TestSubdivideQuadAndHelpers(t *testing.T) {
 		}
 	})
 
-	t.Run("traceGetWindow", func(t *testing.T) {
+	t.Run("trace_get_window", func(t *testing.T) {
 		curves := []float64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
 		tests := []struct {
 			idx    int

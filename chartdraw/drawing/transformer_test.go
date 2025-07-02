@@ -29,7 +29,7 @@ func (m *mockFlattener) End() {
 }
 
 func TestTransformer_MoveTo(t *testing.T) {
-	t.Run("identity transform", func(t *testing.T) {
+	t.Run("identity_transform", func(t *testing.T) {
 		t.Parallel()
 
 		mock := &mockFlattener{}
@@ -45,7 +45,7 @@ func TestTransformer_MoveTo(t *testing.T) {
 		assert.Equal(t, []float64{20}, mock.ys)
 	})
 
-	t.Run("translation transform", func(t *testing.T) {
+	t.Run("translation_transform", func(t *testing.T) {
 		t.Parallel()
 
 		mock := &mockFlattener{}
@@ -61,7 +61,7 @@ func TestTransformer_MoveTo(t *testing.T) {
 		assert.Equal(t, []float64{23}, mock.ys)
 	})
 
-	t.Run("scale transform", func(t *testing.T) {
+	t.Run("scale_transform", func(t *testing.T) {
 		t.Parallel()
 
 		mock := &mockFlattener{}
@@ -81,7 +81,7 @@ func TestTransformer_MoveTo(t *testing.T) {
 func TestTransformer_LineTo(t *testing.T) {
 	t.Parallel()
 
-	t.Run("identity transform", func(t *testing.T) {
+	t.Run("identity_transform", func(t *testing.T) {
 		t.Parallel()
 
 		mock := &mockFlattener{}
@@ -97,7 +97,7 @@ func TestTransformer_LineTo(t *testing.T) {
 		assert.Equal(t, []float64{20}, mock.ys)
 	})
 
-	t.Run("translation transform", func(t *testing.T) {
+	t.Run("translation_transform", func(t *testing.T) {
 		t.Parallel()
 
 		mock := &mockFlattener{}
@@ -113,7 +113,7 @@ func TestTransformer_LineTo(t *testing.T) {
 		assert.Equal(t, []float64{23}, mock.ys)
 	})
 
-	t.Run("scale transform", func(t *testing.T) {
+	t.Run("scale_transform", func(t *testing.T) {
 		t.Parallel()
 
 		mock := &mockFlattener{}

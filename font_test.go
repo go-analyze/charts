@@ -23,7 +23,7 @@ func TestInstallGetFont(t *testing.T) {
 func TestGetPreferredFont(t *testing.T) {
 	t.Parallel()
 
-	t.Run("nill-default", func(t *testing.T) {
+	t.Run("nil_default", func(t *testing.T) {
 		require.Equal(t, GetDefaultFont(), getPreferredFont(nil))
 	})
 }

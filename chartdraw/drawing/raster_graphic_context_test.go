@@ -26,7 +26,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.InDelta(t, 72.0, rgc.GetDPI(), 0.0)
 	})
 
-	t.Run("matrix operations", func(t *testing.T) {
+	t.Run("matrix_ops", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 100, 100))
@@ -49,7 +49,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.NotEqual(t, identityMatrix, transformedMatrix)
 	})
 
-	t.Run("font operations", func(t *testing.T) {
+	t.Run("font_ops", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 100, 100))
@@ -76,7 +76,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		}
 	})
 
-	t.Run("DPI operations", func(t *testing.T) {
+	t.Run("dpi_ops", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 100, 100))
@@ -91,7 +91,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.InDelta(t, 300.0, dpi, 0.001)
 	})
 
-	t.Run("save and restore", func(t *testing.T) {
+	t.Run("save_restore", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 100, 100))
@@ -129,7 +129,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.InDelta(t, expectedFontSize, restoredFontSize, 0.001)
 	})
 
-	t.Run("text operations", func(t *testing.T) {
+	t.Run("text_ops", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 100, 100))
@@ -157,7 +157,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.GreaterOrEqual(t, cursor, 0.0)
 	})
 
-	t.Run("FillRect and Clear", func(t *testing.T) {
+	t.Run("fill_rect_clear", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 2, 2))
@@ -172,7 +172,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.Equal(t, uint32(0xffff), a)
 	})
 
-	t.Run("FillRectangle", func(t *testing.T) {
+	t.Run("fill_rectangle", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 3, 3))
@@ -189,7 +189,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.Equal(t, uint32(0xffff), a)
 	})
 
-	t.Run("DrawImage", func(t *testing.T) {
+	t.Run("draw_image", func(t *testing.T) {
 		t.Parallel()
 
 		src := image.NewRGBA(image.Rect(0, 0, 1, 1))
@@ -201,7 +201,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.Equal(t, uint32(0xffff), a)
 	})
 
-	t.Run("StrokeAndFill", func(t *testing.T) {
+	t.Run("stroke_fill", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 3, 3))
@@ -235,7 +235,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		assert.Equal(t, uint32(0xffff), a)
 	})
 
-	t.Run("Font Functions", func(t *testing.T) {
+	t.Run("font_funcs", func(t *testing.T) {
 		t.Parallel()
 
 		img := image.NewRGBA(image.Rect(0, 0, 20, 20))
