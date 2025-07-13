@@ -161,6 +161,62 @@ func TestChartGetRangesUseTicks(t *testing.T) {
 	assert.True(t, yar.IsZero(), yar.String())
 }
 
+func TestChartGetRangesSecondaryUseTicks(t *testing.T) {
+	t.Parallel()
+
+	// this test asserts that ticks for the secondary y axis are used for determining the range.
+
+	c := Chart{
+		YAxis: YAxis{
+			Ticks: []Tick{
+				{0.0, "Zero"},
+				{1.0, "1.0"},
+				{2.0, "2.0"},
+				{3.0, "3.0"},
+				{4.0, "4.0"},
+				{5.0, "Five"},
+			},
+			Range: &ContinuousRange{
+				Min: -5.0,
+				Max: 5.0,
+			},
+		},
+		YAxisSecondary: YAxis{
+			Ticks: []Tick{
+				{1.0, "One"},
+				{2.0, "2.0"},
+				{3.0, "3.0"},
+				{4.0, "4.0"},
+				{5.0, "Five"},
+				{6.0, "Six"},
+			},
+			Range: &ContinuousRange{
+				Min: -6.0,
+				Max: 6.0,
+			},
+		},
+		Series: []Series{
+			ContinuousSeries{
+				XValues: []float64{-2.0, -1.0, 0, 1.0, 2.0},
+				YValues: []float64{1.0, 2.0, 3.0, 4.0, 4.5},
+			},
+			ContinuousSeries{
+				XValues: []float64{-2.0, -1.0, 0, 1.0, 2.0},
+				YValues: []float64{1.0, 2.0, 3.0, 4.0, 4.5},
+				YAxis: YAxisSecondary,
+			},
+		},
+	}
+
+	xr, yr, yar := c.getRanges()
+	assert.InDelta(t, -2.0, xr.GetMin(), 0)
+	assert.InDelta(t, 2.0, xr.GetMax(), 0)
+	assert.InDelta(t, 0.0, yr.GetMin(), 0)
+	assert.InDelta(t, 5.0, yr.GetMax(), 0)
+	assert.InDelta(t, 1.0, yar.GetMin(), 0)
+	assert.InDelta(t, 6.0, yar.GetMax(), 0)
+}
+
 func TestChartGetRangesUseUserRanges(t *testing.T) {
 	t.Parallel()
 
