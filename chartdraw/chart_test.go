@@ -203,7 +203,7 @@ func TestChartGetRangesSecondaryUseTicks(t *testing.T) {
 			ContinuousSeries{
 				XValues: []float64{-2.0, -1.0, 0, 1.0, 2.0},
 				YValues: []float64{1.0, 2.0, 3.0, 4.0, 4.5},
-				YAxis: YAxisSecondary,
+				YAxis:   YAxisSecondary,
 			},
 		},
 	}
