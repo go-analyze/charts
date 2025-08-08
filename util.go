@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
+	"github.com/go-analyze/bulk"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -82,109 +83,12 @@ func reverseSlice[T any](s []T) {
 
 // SliceToFloat64 converts a slice of arbitrary types to float64 to be used as chart values.
 func SliceToFloat64[T any](slice []T, conversion func(T) float64) []float64 {
-	return sliceConversion(slice, conversion)
+	return bulk.SliceTransform(slice, conversion)
 }
 
 // IntSliceToFloat64 converts an int slice to a float64 slice so that it can be used for chart values.
 func IntSliceToFloat64(slice []int) []float64 {
-	return sliceConversion(slice, func(i int) float64 { return float64(i) })
-}
-
-func sliceConversion[I any, R any](input []I, conversion func(I) R) []R {
-	result := make([]R, len(input))
-	for i, v := range input {
-		result[i] = conversion(v)
-	}
-	return result
-}
-
-// sliceSplit will split a slice in half based on a conditional function passed in. The right result are true values,
-// second result being values that tested false.
-func sliceSplit[T any](slice []T, test func(v T) bool) ([]T, []T) {
-	if len(slice) == 0 {
-		return nil, nil
-	}
-
-	var splitIndex int
-	first := test(slice[0])
-	for splitIndex = 1; splitIndex < len(slice); splitIndex++ {
-		if first != test(slice[splitIndex]) {
-			break
-		}
-	}
-
-	// If all are the same, return early
-	if splitIndex == len(slice) {
-		if first {
-			return slice, nil
-		} else {
-			return nil, slice
-		}
-	}
-
-	// Allocate slices and copy first segment
-	remainingBuff := len(slice) - splitIndex
-	if remainingBuff > 2048 {
-		remainingBuff /= 2
-	}
-	var trueList, falseList []T
-	if first {
-		trueList = append(make([]T, 0, splitIndex+remainingBuff-1), slice[:splitIndex]...)
-		falseList = append(make([]T, 0, remainingBuff), slice[splitIndex])
-	} else {
-		falseList = append(make([]T, 0, splitIndex+remainingBuff-1), slice[:splitIndex]...)
-		trueList = append(make([]T, 0, remainingBuff), slice[splitIndex])
-	}
-	// Finish iterating appending remaining elements
-	for i := splitIndex + 1; i < len(slice); i++ {
-		if test(slice[i]) {
-			trueList = append(trueList, slice[i])
-		} else {
-			falseList = append(falseList, slice[i])
-		}
-	}
-
-	return trueList, falseList
-}
-
-// sliceFilter iterates over the slice, testing each element with the provided function. The returned slice are items
-// which had a true result.
-func sliceFilter[T any](slice []T, test func(v T) bool) []T {
-	for falseIndex, v := range slice {
-		if !test(v) {
-			if falseIndex == 0 {
-				// iterate until a true result is found, then start appending at that point
-				var result []T
-				for i := falseIndex + 1; i < len(slice); i++ {
-					if test(slice[i]) {
-						if result == nil {
-							remainingBuff := len(slice) - i
-							if remainingBuff > 2048 {
-								remainingBuff /= 2
-							}
-							result = make([]T, 0, remainingBuff)
-						}
-						result = append(result, slice[i])
-					}
-				}
-				return result
-			} else {
-				// copy all records that already passed, and then finish iteration to produce result
-				remainingBuff := len(slice) - falseIndex - 1
-				if remainingBuff > 2048 {
-					remainingBuff /= 2
-				}
-				result := append(make([]T, 0, falseIndex+remainingBuff), slice[:falseIndex]...)
-				for i := falseIndex + 1; i < len(slice); i++ {
-					if test(slice[i]) {
-						result = append(result, slice[i])
-					}
-				}
-				return result
-			}
-		}
-	}
-	return slice // all records tested to true
+	return bulk.SliceTransform(slice, func(i int) float64 { return float64(i) })
 }
 
 func sliceMaxLen[T any](values ...[]T) int {

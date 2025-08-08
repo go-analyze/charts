@@ -4,6 +4,8 @@ import (
 	"math"
 	"sort"
 
+	"github.com/go-analyze/bulk"
+
 	"github.com/go-analyze/charts/chartdraw"
 )
 
@@ -72,13 +74,13 @@ func appendMarks(m SeriesMarkList, global bool, markTypes []string) SeriesMarkLi
 type SeriesMarkList []SeriesMark
 
 func (m SeriesMarkList) splitGlobal() (SeriesMarkList, SeriesMarkList) {
-	return sliceSplit(m, func(v SeriesMark) bool {
+	return bulk.SliceSplit(m, func(v SeriesMark) bool {
 		return !v.Global
 	})
 }
 
 func (m SeriesMarkList) filterGlobal(global bool) SeriesMarkList {
-	return sliceFilter(m, func(v SeriesMark) bool {
+	return bulk.SliceFilter(m, func(v SeriesMark) bool {
 		return v.Global == global
 	})
 }
