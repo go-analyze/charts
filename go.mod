@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/dustin/go-humanize v1.0.1
-	github.com/go-analyze/bulk v0.0.3
+	github.com/go-analyze/bulk v0.0.4
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/image v0.24.0

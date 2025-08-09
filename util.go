@@ -83,12 +83,12 @@ func reverseSlice[T any](s []T) {
 
 // SliceToFloat64 converts a slice of arbitrary types to float64 to be used as chart values.
 func SliceToFloat64[T any](slice []T, conversion func(T) float64) []float64 {
-	return bulk.SliceTransform(slice, conversion)
+	return bulk.SliceTransform(conversion, slice)
 }
 
 // IntSliceToFloat64 converts an int slice to a float64 slice so that it can be used for chart values.
 func IntSliceToFloat64(slice []int) []float64 {
-	return bulk.SliceTransform(slice, func(i int) float64 { return float64(i) })
+	return bulk.SliceTransform(func(i int) float64 { return float64(i) }, slice)
 }
 
 func sliceMaxLen[T any](values ...[]T) int {

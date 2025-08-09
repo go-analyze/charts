@@ -272,9 +272,9 @@ type EChartsMarkPoint struct {
 func (emp *EChartsMarkPoint) ToSeriesMarkPoint() SeriesMarkPoint {
 	return SeriesMarkPoint{
 		SymbolSize: emp.SymbolSize,
-		Points: bulk.SliceTransform(emp.Data, func(i EChartsMarkData) SeriesMark {
+		Points: bulk.SliceTransform(func(i EChartsMarkData) SeriesMark {
 			return SeriesMark{Type: i.Type}
-		}),
+		}, emp.Data),
 	}
 }
 
@@ -286,9 +286,9 @@ type EChartsMarkLine struct {
 // ToSeriesMarkLine converts the mark line to the internal representation.
 func (eml *EChartsMarkLine) ToSeriesMarkLine() SeriesMarkLine {
 	return SeriesMarkLine{
-		Lines: bulk.SliceTransform(eml.Data, func(i EChartsMarkData) SeriesMark {
+		Lines: bulk.SliceTransform(func(i EChartsMarkData) SeriesMark {
 			return SeriesMark{Type: i.Type}
-		}),
+		}, eml.Data),
 	}
 }
 
@@ -349,9 +349,9 @@ func (esList EChartsSeriesList) ToSeriesList() GenericSeriesList {
 		}
 		seriesList = append(seriesList, GenericSeries{
 			Type: item.Type,
-			Values: bulk.SliceTransform(item.Data, func(dataItem EChartsSeriesData) float64 {
+			Values: bulk.SliceTransform(func(dataItem EChartsSeriesData) float64 {
 				return dataItem.Value.First()
-			}),
+			}, item.Data),
 			YAxisIndex: item.YAxisIndex,
 			Label: SeriesLabel{
 				FontStyle: FontStyle{
@@ -546,9 +546,9 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		}
 	}
 	o.YAxis = yAxisOptions
-	o.Children = bulk.SliceTransform(eo.Children, func(child EChartsOption) ChartOption {
+	o.Children = bulk.SliceTransform(func(child EChartsOption) ChartOption {
 		return child.ToOption()
-	})
+	}, eo.Children)
 	return o
 }
 
