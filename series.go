@@ -74,15 +74,15 @@ func appendMarks(m SeriesMarkList, global bool, markTypes []string) SeriesMarkLi
 type SeriesMarkList []SeriesMark
 
 func (m SeriesMarkList) splitGlobal() (SeriesMarkList, SeriesMarkList) {
-	return bulk.SliceSplit(m, func(v SeriesMark) bool {
+	return bulk.SliceSplit(func(v SeriesMark) bool {
 		return !v.Global
-	})
+	}, m)
 }
 
 func (m SeriesMarkList) filterGlobal(global bool) SeriesMarkList {
-	return bulk.SliceFilter(m, func(v SeriesMark) bool {
+	return bulk.SliceFilter(func(v SeriesMark) bool {
 		return v.Global == global
-	})
+	}, m)
 }
 
 // SeriesMarkPoint configures mark points for a series.
