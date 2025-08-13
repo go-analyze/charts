@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/go-analyze/bulk"
+
 	"github.com/go-analyze/charts"
 )
 
@@ -39,9 +41,9 @@ func main() {
 	}
 
 	renderChartGroup(allThemes, 4, "themes-all.png")
-	darkThemes, lightTheme := sliceSplit(allThemes, func(v string) bool {
+	darkThemes, lightTheme := bulk.SliceSplit(func(v string) bool {
 		return charts.GetTheme(v).IsDark()
-	})
+	}, allThemes)
 	renderChartGroup(darkThemes, 3, "themes-dark.png")
 	renderChartGroup(lightTheme, 3, "themes-light.png")
 	renderChartGroup([]string{charts.ThemeVividLight, charts.ThemeAnt, charts.ThemeRetro,
@@ -211,17 +213,4 @@ func renderMultiChart(themeName string) {
 	} else if err = writeFile(buf, filename); err != nil {
 		panic(err)
 	}
-}
-
-func sliceSplit[T any](slice []T, test func(v T) bool) ([]T, []T) {
-	trueResult := make([]T, 0, len(slice))
-	falseResult := make([]T, 0, len(slice))
-	for _, v := range slice {
-		if test(v) {
-			trueResult = append(trueResult, v)
-		} else {
-			falseResult = append(falseResult, v)
-		}
-	}
-	return trueResult, falseResult
 }

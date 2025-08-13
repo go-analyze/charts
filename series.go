@@ -384,7 +384,10 @@ func (s *ScatterSeries) getYAxisIndex() int {
 }
 
 func (s *ScatterSeries) getValues() []float64 {
-	result := make([]float64, 0, len(s.Values))
+	if len(s.Values) == 0 {
+		return nil
+	}
+	result := make([]float64, 0, len(s.Values)*len(s.Values[0]))
 	for _, v := range s.Values {
 		result = append(result, v...)
 	}

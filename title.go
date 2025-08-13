@@ -37,10 +37,9 @@ func splitTitleText(text string) []string {
 	result := make([]string, 0, len(arr))
 	for _, v := range arr {
 		v = strings.TrimSpace(v)
-		if v == "" {
-			continue
+		if v != "" {
+			result = append(result, v)
 		}
-		result = append(result, v)
 	}
 	return result
 }
