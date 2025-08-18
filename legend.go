@@ -11,25 +11,25 @@ type legendPainter struct {
 
 // LegendOption defines the configuration for rendering the chart legend.
 type LegendOption struct {
-	// Show specifies if the legend should be rendered, set this to *false (through Ptr(false)) to hide the legend.
+	// Show specifies if the legend should be rendered. Set to *false (via Ptr(false)) to hide the legend.
 	Show *bool
 	// Theme specifies the colors used for the legend.
 	Theme ColorPalette
-	// SeriesNames provides text labels for the legend.
+	// SeriesNames provides the text labels for the data series.
 	SeriesNames []string
-	// FontStyle specifies the font, size, and style for rendering the legend.
+	// FontStyle specifies the font, size, and style for legend text.
 	FontStyle FontStyle
-	// Padding specifies space padding around the legend.
+	// Padding specifies the space around the legend.
 	Padding Box
-	// Offset allows you to specify the position of the legend component relative to the left and top side.
+	// Offset specifies the position of the legend relative to the left and top sides.
 	Offset OffsetStr
-	// Align is the legend marker and text alignment, it can be 'left', 'right' or 'center', default is 'left'.
+	// Align is the legend marker and text alignment: 'left', 'right', or 'center'. Default is 'left'.
 	Align string
-	// Vertical can be set to *true to set the legend orientation to be vertical.
+	// Vertical when set to *true makes the legend orientation vertical.
 	Vertical *bool
-	// Symbol defines the icon shape next to the label. Can be 'square', 'dot', 'diamond', or 'circle'.
-	Symbol Symbol
-	// OverlayChart can be set to *true to render the legend over the chart. Ignored if Vertical is set to true (always overlapped).
+	// Symbol defines the icon shape next to each label. Options: 'square', 'dot', 'diamond', 'circle'.
+	Symbol Symbol // TODO - should Symbol configuration be changed now that we support per-series symbols
+	// OverlayChart when set to *true renders the legend over the chart. Ignored if Vertical is true (Vertical always forces overlay).
 	OverlayChart *bool
 	// BorderWidth can be set to a non-zero value to render a box around the legend.
 	BorderWidth float64
@@ -37,7 +37,7 @@ type LegendOption struct {
 	seriesSymbols []Symbol
 }
 
-// IsEmpty checks legend is empty
+// IsEmpty checks if the legend is empty.
 func (opt *LegendOption) IsEmpty() bool {
 	for _, v := range opt.SeriesNames {
 		if v != "" {

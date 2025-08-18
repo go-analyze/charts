@@ -17,7 +17,7 @@ type pieChart struct {
 	opt *PieChartOption
 }
 
-// NewPieChartOptionWithData returns an initialized PieChartOption with the SeriesList set from the provided data slice.
+// NewPieChartOptionWithData returns an initialized PieChartOption with the SeriesList set with the provided data slice.
 func NewPieChartOptionWithData(data []float64) PieChartOption {
 	return PieChartOption{
 		SeriesList: NewSeriesListPie(data),
@@ -35,18 +35,17 @@ type PieChartOption struct {
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListPie.
+	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListPie.
 	SeriesList PieSeriesList
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Radius sets the default pie radius, for example "40%".
-	// Default is "40%".
+	// Radius sets the pie radius. Default is "40%".
 	Radius string
-	// SegmentGap provides a gap between each pie slice.
+	// SegmentGap provides the gap between each pie slice.
 	SegmentGap float64
-	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
 }
 

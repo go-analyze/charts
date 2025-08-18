@@ -11,7 +11,7 @@ type horizontalBarChart struct {
 	opt *HorizontalBarChartOption
 }
 
-// NewHorizontalBarChartOptionWithData returns an initialized HorizontalBarChartOption with the SeriesList set for the provided data slice.
+// NewHorizontalBarChartOptionWithData returns an initialized HorizontalBarChartOption with the SeriesList set with the provided data slice.
 func NewHorizontalBarChartOptionWithData(data [][]float64) HorizontalBarChartOption {
 	sl := NewSeriesListHorizontalBar(data)
 	return HorizontalBarChartOption{
@@ -32,28 +32,27 @@ type HorizontalBarChartOption struct {
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListHorizontalBar.
+	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListHorizontalBar.
 	SeriesList HorizontalBarSeriesList
-	// StackSeries, if true, renders the series stacked within one bar. This
-	// causes some options, including BarMargin and SeriesLabelPosition, to be
+	// StackSeries when *true renders the series stacked within one bar.
+	// This causes some options, including BarMargin and SeriesLabelPosition, to be
 	// ignored. MarkLine only renders for the first series.
 	StackSeries *bool
-	// SeriesLabelPosition specifies the position of the label for the series. Currently supported values are
-	// "left" or "right".
+	// SeriesLabelPosition specifies the label position for the series: "left" or "right".
 	SeriesLabelPosition string
-	// XAxis are options for the x-axis.
+	// XAxis contains options for the x-axis.
 	XAxis XAxisOption
-	// YAxis are options for the y-axis.
+	// YAxis contains options for the y-axis.
 	YAxis YAxisOption
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
 	// BarHeight specifies the height of each horizontal bar. Height may be reduced to ensure all series fit on the chart.
 	BarHeight int
-	// BarMargin specifies the margin between bars grouped together. BarHeight takes priority over the margin.
+	// BarMargin specifies the margin between grouped bars. BarHeight takes priority over a set margin.
 	BarMargin *float64
-	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }
 

@@ -9,18 +9,18 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// SeriesLabel specifies if and how the specific series values should be rendered on the chart.
+// SeriesLabel specifies if and how the individual series values are rendered on the chart.
 type SeriesLabel struct {
 	// FormatTemplate is a string template for formatting the data label.
 	// {b}: the name of a data item.
 	// {c}: the value of a data item.
-	// {d}: the percent of a data item(pie chart).
+	// {d}: the percent of a data item (pie chart).
 	FormatTemplate string
-	// ValueFormatter is an alternative method of providing a format for the data label.
+	// ValueFormatter provides an alternative method for formatting data labels.
 	ValueFormatter ValueFormatter
 	// FontStyle specifies the font and style for the label.
 	FontStyle FontStyle
-	// Show flag for label, if unset the behavior will be defaulted based on the chart type.
+	// Show controls label visibility. If unset, behavior defaults based on the chart type.
 	Show *bool
 	// Distance specifies the pixel distance between the label and its associated data point or chart element.
 	Distance int // TODO - do we want to replace with just Offset?
@@ -39,10 +39,10 @@ const (
 
 // SeriesMark describes a single mark line or point type.
 type SeriesMark struct {
-	// Type is the mark data type, it can be "max", "min", "average". "average" is only for mark line.
+	// Type is the mark data type: "max", "min", "average". "average" is only for mark line.
 	Type string
-	// Global specifies the mark reference the sum of all series. This option is only
-	// used when the Series is "Stacked" and the mark is on the LAST Series of the SeriesList.
+	// Global specifies the mark references the sum of all series. Only used when
+	// the Series is "Stacked" and the mark is on the LAST Series of the SeriesList.
 	Global bool
 }
 
@@ -52,7 +52,7 @@ func NewSeriesMarkList(markTypes ...string) SeriesMarkList {
 }
 
 // NewSeriesMarkGlobalList returns a slice of SeriesMark initialized for the given types with the global flag set.
-// Global marks reference the sum of all series. This option is only used when the Series is "Stacked" and the mark is
+// Global marks reference the sum of all series. Only used when the Series is "Stacked" and the mark is
 // on the LAST Series of the SeriesList.
 func NewSeriesMarkGlobalList(markTypes ...string) SeriesMarkList {
 	return appendMarks(nil, true, markTypes)
@@ -104,12 +104,12 @@ func hasMarkType(seriesMarks []SeriesMark, global bool, typeStr string) bool {
 	return false
 }
 
-// AddPoints will add mark points for the series.
+// AddPoints adds mark points for the series.
 func (m *SeriesMarkPoint) AddPoints(markTypes ...string) {
 	m.Points = appendMarks(m.Points, false, markTypes)
 }
 
-// AddGlobalPoints will add "global" mark points, which will be referenced to the sum of all the series. These marks
+// AddGlobalPoints adds "global" mark points, which reference the sum of all series. These marks
 // are only rendered when the Series is "Stacked" and the mark point is on the LAST Series of the SeriesList.
 func (m *SeriesMarkPoint) AddGlobalPoints(markTypes ...string) {
 	m.Points = appendMarks(m.Points, true, markTypes)
@@ -123,12 +123,12 @@ type SeriesMarkLine struct {
 	Lines SeriesMarkList
 }
 
-// AddLines will add mark lines for the series.
+// AddLines adds mark lines for the series.
 func (m *SeriesMarkLine) AddLines(markTypes ...string) {
 	m.Lines = appendMarks(m.Lines, false, markTypes)
 }
 
-// AddGlobalLines will add "global" mark lines, which will be referenced to the sum of all the series. These marks
+// AddGlobalLines adds "global" mark lines, which reference the sum of all series. These marks
 // are only rendered when the Series is "Stacked" and the mark line is on the LAST Series of the SeriesList.
 func (m *SeriesMarkLine) AddGlobalLines(markTypes ...string) {
 	m.Lines = appendMarks(m.Lines, true, markTypes)
@@ -138,10 +138,9 @@ func (m *SeriesMarkLine) AddGlobalLines(markTypes ...string) {
 type SeriesTrendLine struct {
 	// LineStrokeWidth is the width of the rendered line.
 	LineStrokeWidth float64
-	// StrokeSmoothingTension should be between 0 and 1. At 0 the lines will be sharp and precise, with 1 providing
-	// smoother lines.
+	// StrokeSmoothingTension should be between 0 and 1. At 0 lines are sharp and precise, 1 provides smoother lines.
 	StrokeSmoothingTension float64
-	// LineColor provides an override of the theme color for this trend line
+	// LineColor overrides the theme color for this trend line.
 	LineColor Color
 	// Type specifies the trend line type: "linear", "cubic", "average".
 	Type string
@@ -149,26 +148,26 @@ type SeriesTrendLine struct {
 	Window int
 }
 
-// GenericSeries references a population of data for any type of charts. The chart specific fields will only be active
-// for chart types which support them.
+// GenericSeries references a population of data for any chart type. Chart-specific fields are only active
+// for chart types that support them.
 type GenericSeries struct {
-	// Type is the type of series, it can be "line", "bar" or "pie". Default value is "line".
+	// Type is the series chart type. Default is "line".
 	Type string
 	// Values provides the series data values.
 	Values []float64
-	// YAxisIndex is the index for the axis, it must be 0 or 1.
+	// YAxisIndex is the y-axis to apply the series to: must be 0 or 1.
 	YAxisIndex int
 	// Label provides the series labels.
 	Label SeriesLabel
 	// Name specifies a name for the series.
 	Name string
-	// Radius for Pie chart, e.g.: 40%, default is "40%"
+	// Radius for circular charts. Default is "40%".
 	Radius string
-	// MarkPoint provides a configuration for mark points for this series. If Label is also enabled, the MarkPoint
-	// will replace the label where rendered.
+	// MarkPoint provides a mark point configuration for this series. If Label is enabled, MarkPoint
+	// replaces the label where rendered.
 	MarkPoint SeriesMarkPoint
-	// MarkLine provides a configuration for mark lines for this series. When using a MarkLine, you will want to
-	// configure padding to the chart on the right for the values.
+	// MarkLine provides amark line configuration for this series. When using MarkLine, configure
+	// padding on the chart's right side to ensure space for the values.
 	MarkLine SeriesMarkLine
 }
 
@@ -284,12 +283,12 @@ func (l LineSeriesList) names() []string {
 	return seriesNames(l)
 }
 
-// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
+// SumSeries returns a float64 slice with the sum of each series.
 func (l LineSeriesList) SumSeries() []float64 {
 	return sumSeries(l)
 }
 
-// SumSeriesValues returns a float64 slice with each series in the list totaled for the value index.
+// SumSeriesValues returns a float64 slice with each series totaled by the value index.
 func (l LineSeriesList) SumSeriesValues() []float64 {
 	return sumSeriesData(l, -1)
 }
@@ -417,7 +416,7 @@ func (s ScatterSeriesList) names() []string {
 	return seriesNames(s)
 }
 
-// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
+// SumSeries returns a float64 slice with the sum of each series.
 func (s ScatterSeriesList) SumSeries() []float64 {
 	return sumSeries(s)
 }
@@ -516,19 +515,19 @@ func (b *BarSeries) Summary() populationSummary {
 	return summarizePopulationData(b.Values)
 }
 
-// BarSeriesList provides the data populations for line charts (BarChartOption).
+// BarSeriesList provides the data populations for bar charts (BarChartOption).
 type BarSeriesList []BarSeries
 
 func (b BarSeriesList) names() []string {
 	return seriesNames(b)
 }
 
-// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
+// SumSeries returns a float64 slice with the sum of each series.
 func (b BarSeriesList) SumSeries() []float64 {
 	return sumSeries(b)
 }
 
-// SumSeriesValues returns a float64 slice with each series in the list totaled for the value index.
+// SumSeriesValues returns a float64 slice with each series totaled by the value index.
 func (b BarSeriesList) SumSeriesValues() []float64 {
 	return sumSeriesData(b, -1)
 }
@@ -634,12 +633,12 @@ func (h HorizontalBarSeriesList) names() []string {
 	return seriesNames(h)
 }
 
-// SumSeries returns a float64 slice with the sum of each series matching in order to the series of the list.
+// SumSeries returns a float64 slice with the sum of each series.
 func (h HorizontalBarSeriesList) SumSeries() []float64 {
 	return sumSeries(h)
 }
 
-// SumSeriesValues returns a float64 slice with each series in the list totaled for the value index.
+// SumSeriesValues returns a float64 slice with each series totaled by the value index.
 func (h HorizontalBarSeriesList) SumSeriesValues() []float64 {
 	return sumSeriesData(h, -1)
 }
@@ -1037,7 +1036,7 @@ func (r *RadarSeries) getType() string {
 	return ChartTypeRadar
 }
 
-// RadarSeriesList provides the data populations for line charts (RadarChartOption).
+// RadarSeriesList provides the data populations for radar charts (RadarChartOption).
 type RadarSeriesList []RadarSeries
 
 func (r RadarSeriesList) names() []string {
@@ -1477,7 +1476,7 @@ type ScatterSeriesOption struct {
 	TrendLine []SeriesTrendLine
 }
 
-// NewSeriesListScatter builds a SeriesList for a line chart. The first dimension of the values indicates the population
+// NewSeriesListScatter builds a SeriesList for a scatter chart. The first dimension of the values indicates the population
 // of the data, while the second dimension provides the samples for the population.
 func NewSeriesListScatter(values [][]float64, opts ...ScatterSeriesOption) ScatterSeriesList {
 	var opt ScatterSeriesOption

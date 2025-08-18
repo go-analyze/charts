@@ -22,7 +22,7 @@ func newScatterChart(p *Painter, opt ScatterChartOption) *scatterChart {
 	}
 }
 
-// NewScatterChartOptionWithData returns an initialized ScatterChartOption with the SeriesList set for the provided data slice.
+// NewScatterChartOptionWithData returns an initialized ScatterChartOption with the SeriesList set with the provided data slice.
 func NewScatterChartOptionWithData(data [][]float64) ScatterChartOption {
 	return NewScatterChartOptionWithSeries(NewSeriesListScatter(data))
 }
@@ -50,24 +50,23 @@ type ScatterChartOption struct {
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListScatter or
-	// NewSeriesListScatterMultiValue.
+	// SeriesList provides the data population for the chart. Typically constructed using
+	// NewSeriesListScatter or NewSeriesListScatterMultiValue.
 	SeriesList ScatterSeriesList
-	// XAxis are options for the x-axis.
+	// XAxis contains options for the x-axis.
 	XAxis XAxisOption
-	// YAxis are options for the y-axis (at most two).
+	// YAxis contains options for the y-axis. At most two y-axes are supported.
 	YAxis []YAxisOption
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Symbol specifies the default shape to draw each point with. The default
-	// is 'dot'. Valid options are 'circle', 'dot', 'square' and 'diamond'. This
-	// can also be set per-series.
+	// Symbol specifies the default shape for each data point. Default is 'dot'.
+	// Options: 'circle', 'dot', 'square', 'diamond'. Can be overridden per series.
 	Symbol Symbol
-	// SymbolSize specifies the size for each data point, default is 2.0.
+	// SymbolSize specifies the size for each data point. Default is 2.0.
 	SymbolSize float64
-	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }
 

@@ -15,16 +15,16 @@ type Box = chartdraw.Box
 // Point represents an X,Y coordinate pair.
 type Point = chartdraw.Point
 
-// Color describes a simple RGBA color.
+// Color represents an RGBA color.
 type Color = drawing.Color
 
-// FontStyle configures font size, color, and family.
+// FontStyle configures font properties including size, color, and family.
 type FontStyle = chartdraw.FontStyle
 
-// BoxZero is an unset Box.
+// BoxZero is an unset Box with no dimensions.
 var BoxZero = chartdraw.BoxZero
 
-// NewBox returns a new box with the provided left, top, right, and bottom sizes.
+// NewBox returns a new Box with the specified left, top, right, and bottom values to define the position and dimensions.
 func NewBox(left, top, right, bottom int) Box {
 	return Box{
 		IsSet:  true,
@@ -63,7 +63,7 @@ func fillFontStyleDefaults(fs FontStyle, defaultSize float64, defaultColor Color
 	return fs
 }
 
-// mergeFontStyles will set from the default FontStyles the size, color, and font as
+// mergeFontStyles sets from the default FontStyles the size, color, and font as
 // provided by the default styles (in order).
 func mergeFontStyles(primary FontStyle, defaultFs ...FontStyle) FontStyle {
 	if primary.FontSize == 0 {

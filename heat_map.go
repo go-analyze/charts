@@ -21,39 +21,40 @@ type HeatMapOption struct {
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// Title options for rendering the chart title, including text and font styling.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Values provides the 2D slice of float64 values representing the data for the heat map.
-	// The outer slice represents the rows (Y-axis) and the inner slice represents the columns (X-axis).
+	// Values provides the 2D data for the heat map.
+	// The outer slice represents the rows (y-axis) and the inner slice represents the columns (x-axis).
 	Values [][]float64
-	// XAxis specifies the configuration options for the X-axis.
+	// XAxis contains configuration options for the X-axis.
 	XAxis HeatMapAxis
-	// YAxis specifies the configuration options for the Y-axis.
+	// YAxis contains configuration options for the Y-axis.
 	YAxis HeatMapAxis
-	// ScaleMinValue overrides the minimum value used for color gradient calculation. If nil, calculated from data.
+	// ScaleMinValue overrides the minimum value for color gradient calculation. If nil, calculated from the data.
 	ScaleMinValue *float64
-	// ScaleMaxValue overrides the maximum value used for color gradient calculation. If nil, calculated from data.
+	// ScaleMaxValue overrides the maximum value for color gradient calculation. If nil, calculated from the data.
 	ScaleMaxValue *float64
-	// ValuesLabel configuration for displaying numeric values on top of heat map cells.
+	// ValuesLabel contains configuration for displaying numeric values on heat map cells.
 	ValuesLabel SeriesLabel
 }
 
 // HeatMapAxis contains configuration options for an axis on a heat map chart.
 type HeatMapAxis struct {
-	// Title specifies the title to display next to the axis, if any.
+	// Title specifies the title to display next to the axis.
 	Title string
 	// TitleFontStyle specifies the font style for the axis title.
 	TitleFontStyle FontStyle
-	// Labels specifies custom labels to display along the axis. If empty or nil, numeric indices are used. Must match the size of Values for the given axis.
+	// Labels specifies custom labels for the axis. If empty, numeric indices are used.
+	// Must match the data size for the corresponding axis.
 	Labels []string
 	// LabelFontStyle specifies the font style for the axis labels.
 	LabelFontStyle FontStyle
-	// LabelRotation are the radians for rotating the label. Convert from degrees using DegreesToRadians(float64).
+	// LabelRotation is the rotation angle in radians for labels. Use DegreesToRadians(float64) to convert from degrees.
 	LabelRotation float64
-	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions.
+	// LabelCount is the number of labels to show on the axis. Use a smaller count to reduce text collisions.
 	LabelCount int
-	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
-	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.
+	// LabelCountAdjustment specifies relative influence on label count.
+	// Negative values result in cleaner graphs; positive values may cause text collisions.
 	LabelCountAdjustment int
 }
 

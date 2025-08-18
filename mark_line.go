@@ -4,7 +4,7 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
-// NewMarkLine returns a mark line for the provided types, this is set on a specific instance within a Series.
+// NewMarkLine returns a mark line for the provided types. Set on a specific Series instance.
 func NewMarkLine(markLineTypes ...string) SeriesMarkLine {
 	return SeriesMarkLine{
 		Lines: NewSeriesMarkList(markLineTypes...),
@@ -37,7 +37,7 @@ type markLineRenderOption struct {
 	font           *truetype.Font
 	seriesValues   []float64
 	marklines      []SeriesMark
-	axisRange      axisRange // For vertical bar charts this is y-axis range; for horizontal bar charts this is the x-axis range
+	axisRange      axisRange // For vertical bar charts: y-axis range; for horizontal bar charts: x-axis range
 	valueFormatter ValueFormatter
 	verticalLine   bool
 }

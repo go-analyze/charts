@@ -6,17 +6,17 @@ import (
 
 // XAxisOption configures the horizontal axis.
 type XAxisOption struct {
-	// Show specifies if the x-axis should be rendered, set this to *false (through Ptr(false)) to hide the axis.
+	// Show specifies if the x-axis should be rendered. Set to *false (via Ptr(false)) to hide the axis.
 	Show *bool
 	// Theme specifies the colors used for the x-axis.
 	Theme ColorPalette
-	// Title specifies a name for the axis, if specified the axis name is rendered below the X-Axis.
+	// Title specifies a name for the axis. If set, the title is rendered below the x-axis.
 	Title string
-	// TitleFontStyle provides the font, size, and color for the axis title.
+	// TitleFontStyle specifies the font, size, and color for the axis title.
 	TitleFontStyle FontStyle
-	// Labels provides labels for each value on the x-axis (index matching to the series index).
+	// Labels provides labels for each value on the x-axis. Indices must match series data indices.
 	Labels []string
-	// DataStartIndex specifies what index the Data values should start from.
+	// DataStartIndex specifies the starting index for data values.
 	DataStartIndex int
 	// Deprecated: Position is deprecated. Currently, when set to `bottom` and the labels would render on the top
 	// side of the axis line. However, the line would remain at the bottom of the chart. This seems confusing, and
@@ -31,15 +31,15 @@ type XAxisOption struct {
 	FontStyle FontStyle
 	// LabelFontStyle specifies the font configuration for each label.
 	LabelFontStyle FontStyle
-	// LabelRotation are the radians for rotating the label. Convert from degrees using DegreesToRadians(float64).
+	// LabelRotation is the rotation angle in radians for labels. Use DegreesToRadians(float64) to convert from degrees.
 	LabelRotation float64
-	// LabelOffset is the offset of each label.
+	// LabelOffset is the position offset for each label.
 	LabelOffset OffsetInt
-	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
-	// Unit is a suggestion for how large the axis step is, this is a recommendation only. Larger numbers result in fewer labels.
+	// Unit suggests the axis step size (recommendation only). Larger values result in fewer labels.
 	Unit float64
-	// LabelCount is the number of labels to show on the axis. Specify a smaller number to reduce writing collisions.
+	// LabelCount is the number of labels to show on the axis. Use a smaller count to reduce text collisions.
 	LabelCount int
 	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
 	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.

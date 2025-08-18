@@ -21,7 +21,7 @@ type axisOption struct {
 	aRange         axisRange
 	title          string
 	titleFontStyle FontStyle
-	// position describes the position of axis, it can be 'left', 'top', 'right' or 'bottom'.
+	// position describes the axis position: 'left', 'top', 'right', or 'bottom'.
 	position string
 	// boundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read

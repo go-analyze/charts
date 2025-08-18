@@ -6,9 +6,9 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// TableOptionRenderDirect table render with the provided options directly to an image. Table options are different
-// from other charts as they include the state for initializing the Painter, where other charts accept the Painter. If
-// you want to write a Table on an existing Painter use TableOptionRender
+// TableOptionRenderDirect renders a table directly to an image with the provided options.
+// Table options differ from other charts as they include Painter initialization state.
+// To render a table on an existing Painter, use TableOptionRender.
 func TableOptionRenderDirect(opt TableChartOption) (*Painter, error) {
 	if opt.OutputFormat == "" {
 		opt.OutputFormat = chartDefaultOutputFormat
@@ -40,7 +40,7 @@ func TableOptionRenderDirect(opt TableChartOption) (*Painter, error) {
 	return p, nil
 }
 
-// TableRenderValues renders a table chart with the simple header and data values provided.
+// TableRenderValues renders a table chart with the provided header and data values.
 func TableRenderValues(header []string, data [][]string, spanMaps ...map[int]int) (*Painter, error) {
 	opt := TableChartOption{
 		Header: header,
@@ -76,25 +76,25 @@ func newTableChart(p *Painter, opt TableChartOption) *tableChart {
 
 // TableCell represents a single cell in a table.
 type TableCell struct {
-	// Text the text of table cell
+	// Text is the text content of the table cell.
 	Text string
-	// FontStyle contains the configuration for the cell text font.
+	// FontStyle contains the font configuration for the cell text.
 	FontStyle FontStyle
-	// FillColor sets a color for this table cell.
+	// FillColor sets the background color for this table cell.
 	FillColor Color
-	// Row the row index of table cell.
+	// Row is the row index of the table cell.
 	Row int
-	// Column the column index of table cell.
+	// Column is the column index of the table cell.
 	Column int
 }
 
 // TableChartOption defines options for rendering a table chart.
 type TableChartOption struct {
-	// OutputFormat specifies the output type, "svg" or "png".
+	// OutputFormat specifies the output type: "svg", "png", "jpg".
 	OutputFormat string
 	// Theme specifies the colors used for the table.
 	Theme ColorPalette
-	// Padding specifies the padding of table.
+	// Padding specifies the padding around the table.
 	Padding Box
 	// Width specifies the width of the table.
 	Width int
@@ -102,21 +102,21 @@ type TableChartOption struct {
 	Header []string
 	// Data provides the row and column data for the table.
 	Data [][]string
-	// Spans provide the span for each column on the table.
+	// Spans provides the column span for each column.
 	Spans []int
-	// TextAligns specifies the text alignment for each cell on the table.
+	// TextAligns specifies the text alignment for each cell.
 	TextAligns []string
-	// FontStyle contains the configuration for the table text font.
+	// FontStyle contains the font configuration for table text.
 	FontStyle FontStyle
-	// HeaderBackgroundColor provides a background color of header row.
+	// HeaderBackgroundColor provides the background color for the header row.
 	HeaderBackgroundColor Color
-	// HeaderFontColor specifies a text color for the header text.
+	// HeaderFontColor specifies the text color for header text.
 	HeaderFontColor Color
-	// RowBackgroundColors specifies an array of colors for each row.
+	// RowBackgroundColors specifies the background colors for each row.
 	RowBackgroundColors []Color
-	// BackgroundColor specifies a general background color.
+	// BackgroundColor specifies the general background color.
 	BackgroundColor Color
-	// CellModifier is an optional function to modify the style or content of a specific TableCell before they are rendered.
+	// CellModifier is an optional function to modify TableCell style or content before rendering.
 	CellModifier func(TableCell) TableCell
 }
 

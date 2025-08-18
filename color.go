@@ -138,8 +138,8 @@ func isLightColor(c Color) bool {
 	return math.Sqrt(r+g+b) > 127.5
 }
 
-// ParseColor parses a color from a string. The color can be specified in hex with a `#` prefix (for example '#313233'),
-// in rgb(i,i,i) or rgba(i,i,i,f) format, or as a common name (for example 'red').
+// ParseColor parses a color from a string. Supports hex with '#' prefix (e.g. '#313233'),
+// rgb(i,i,i) or rgba(i,i,i,f) format, or common names (e.g. 'red').
 func ParseColor(rawColor string) Color {
 	if strings.HasPrefix(rawColor, "#") {
 		return ColorFromHex(rawColor)
@@ -154,25 +154,24 @@ func ColorFromKnown(known string) Color {
 	return drawing.ColorFromKnown(known)
 }
 
-// ColorFromHex returns a color from a css hex code.
-//
-// NOTE: it will trim a leading '#' character if present.
+// ColorFromHex returns a color from a CSS hex code.
+// Trims a leading '#' character if present.
 func ColorFromHex(hex string) Color {
 	return drawing.ColorFromHex(hex)
 }
 
-// ColorFromRGBA returns a color from a `rgb(i,i,i)` or `rgba(i,i,i,f)` css function.
+// ColorFromRGBA returns a color from CSS 'rgb(i,i,i)' or 'rgba(i,i,i,f)' format.
 func ColorFromRGBA(color string) Color {
 	return drawing.ColorFromRGBA(color)
 }
 
-// ColorRGB constructs a fully opaque color with the color specified.
+// ColorRGB constructs a fully opaque color with the specified RGB values.
 func ColorRGB(r, g, b uint8) Color {
 	return Color{R: r, G: g, B: b, A: 255}
 }
 
-// ColorConvertGo converts go's built in colors to our Color struct.
-// This allows easy use of colors defined in image/colornames.
+// ColorConvertGo converts Go's built-in colors to our Color struct.
+// Allows easy use of colors defined in image/colornames.
 func ColorConvertGo(c color.RGBA) Color {
 	return Color{R: c.R, G: c.G, B: c.B, A: c.A}
 }

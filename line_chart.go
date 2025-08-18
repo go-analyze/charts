@@ -22,7 +22,7 @@ func newLineChart(p *Painter, opt LineChartOption) *lineChart {
 	}
 }
 
-// NewLineChartOptionWithData returns an initialized LineChartOption with the SeriesList set for the provided data slice.
+// NewLineChartOptionWithData returns an initialized LineChartOption with the SeriesList set with the provided data slice.
 func NewLineChartOptionWithData(data [][]float64) LineChartOption {
 	return NewLineChartOptionWithSeries(NewSeriesListLine(data))
 }
@@ -50,36 +50,34 @@ type LineChartOption struct {
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListLine.
+	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListLine.
 	SeriesList LineSeriesList
-	// StackSeries, if true, layers each series so the last represents the
-	// cumulative sum. This forces FillArea and ignores options like
-	// StrokeSmoothingTension. MarkLine only renders for the first series, and
-	// only the 0 index y-axis is stacked so another line can use the second axis.
+	// StackSeries when true layers each series so the last represents the cumulative sum.
+	// This forces FillArea and ignores options like StrokeSmoothingTension.
+	// MarkLine only renders for the first series, and only the first y-axis is stacked.
 	StackSeries *bool
-	// XAxis are options for the x-axis.
+	// XAxis contains options for the x-axis.
 	XAxis XAxisOption
-	// YAxis are options for the y-axis (at most two).
+	// YAxis contains options for the y-axis. At most two y-axes are supported.
 	YAxis []YAxisOption
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
-	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'. This can
-	// also be set on each series specifically.
+	// Symbol specifies the symbol to draw at data points. Empty (default) varies by dataset.
+	// Options: 'none', 'circle', 'dot', 'square', 'diamond'. Can be overridden per series.
 	Symbol Symbol
 	// LineStrokeWidth is the width of the rendered line.
 	LineStrokeWidth float64
-	// StrokeSmoothingTension should be between 0 and 1. At 0 perfectly straight lines will be used with 1 providing
-	// smoother lines. Because the tension smooths out the line, the line will no longer hit the data points exactly.
-	// The more variable the points, and the higher the tension, the more the line will be moved from the points.
+	// StrokeSmoothingTension controls line smoothing (0-1). 0 creates straight lines, 1 creates heavily smoothed curves.
+	// Smoothing the line may move it from hitting points exactly.
+	// Higher tension values move the line further from exact data points.
 	StrokeSmoothingTension float64
-	// FillArea set this to true to fill the area below the line.
+	// FillArea when set to *true fills the area below the line.
 	FillArea *bool
-	// FillOpacity is the opacity (alpha) of the area fill.
+	// FillOpacity is the opacity/alpha (0-255) of the area fill.
 	FillOpacity uint8
-	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }
 

@@ -19,7 +19,7 @@ var defaultChartWidth = 600
 var defaultChartHeight = 400
 var defaultPadding = NewBoxEqual(20)
 
-// SetDefaultChartDimensions sets default width and height of charts if not otherwise specified in their configuration.
+// SetDefaultChartDimensions sets the default chart width and height when not otherwise specified in their configuration.
 func SetDefaultChartDimensions(width, height int) {
 	if width > 0 {
 		defaultChartWidth = width
@@ -29,7 +29,7 @@ func SetDefaultChartDimensions(width, height int) {
 	}
 }
 
-// GetNullValue gets the null value, allowing you to set a series point with "no" value.
+// GetNullValue returns the null value for setting series points with "no" or "unknown" value.
 func GetNullValue() float64 {
 	return math.MaxFloat64
 }
@@ -58,25 +58,25 @@ func (rh *renderHandler) Do() error {
 type defaultRenderOption struct {
 	// theme specifies the colors used for the chart.
 	theme ColorPalette
-	// padding specifies the padding of chart.
+	// padding specifies the chart padding.
 	padding Box
 	// seriesList provides the data series.
 	seriesList seriesList
-	// stackSeries can be set to true if the series data will be stacked (summed).
+	// stackSeries when true causes series data to be stacked (summed).
 	stackSeries bool
-	// xAxis are options for the x-axis.
+	// xAxis contains options for the x-axis.
 	xAxis *XAxisOption
-	// yAxis are options for the y-axis (at most two).
+	// yAxis contains options for the y-axis. At most two y-axes are supported.
 	yAxis []YAxisOption
-	// title are options for rendering the title.
+	// title contains options for rendering the chart title.
 	title TitleOption
-	// legend are options for the data legend.
+	// legend contains options for the data legend.
 	legend *LegendOption
 	// backgroundIsFilled is true if the background is filled.
 	backgroundIsFilled bool
-	// axisReversed is true if the x y-axis is reversed.
+	// axisReversed is true if the x-axis and y-axis are reversed.
 	axisReversed bool
-	// valueFormatter to format numeric values into labels.
+	// valueFormatter formats numeric values into labels.
 	valueFormatter ValueFormatter
 }
 

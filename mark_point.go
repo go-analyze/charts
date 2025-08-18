@@ -4,7 +4,7 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
-// NewMarkPoint returns a mark point for the provided types, this is set on a specific instance within a Series.
+// NewMarkPoint returns a mark point for the provided types. Set on a specific Series instance.
 func NewMarkPoint(markPointTypes ...string) SeriesMarkPoint {
 	return SeriesMarkPoint{
 		Points: NewSeriesMarkList(markPointTypes...),

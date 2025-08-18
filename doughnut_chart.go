@@ -13,7 +13,7 @@ type doughnutChart struct {
 	opt *DoughnutChartOption
 }
 
-// NewDoughnutChartOptionWithData returns an initialized DoughnutChartOption with the SeriesList set from the provided data slice.
+// NewDoughnutChartOptionWithData returns an initialized DoughnutChartOption with the SeriesList set with the provided data slice.
 func NewDoughnutChartOptionWithData(data []float64) DoughnutChartOption {
 	return DoughnutChartOption{
 		SeriesList: NewSeriesListDoughnut(data),
@@ -28,11 +28,11 @@ type DoughnutChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListDoughnut.
+	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListDoughnut.
 	SeriesList DoughnutSeriesList
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
 	// RadiusRing sets the outer radius of the ring, for example "40%".
 	// Default is "40%".
@@ -48,7 +48,7 @@ type DoughnutChartOption struct {
 	CenterValuesFontStyle FontStyle
 	// SegmentGap provides a margin between each series section.
 	SegmentGap float64
-	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
 }
 

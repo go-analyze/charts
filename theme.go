@@ -61,37 +61,36 @@ type ColorPalette interface {
 	GetYAxisTextColor() Color
 	GetTitleBorderColor() Color
 	GetLegendBorderColor() Color
-	// WithXAxisColor will provide a new ColorPalette that uses the specified color for X axis. To adjust the text
-	// color invoke WithXAxisTextColor following this.
+	// WithXAxisColor returns a new ColorPalette with the specified X-axis color.
+	// Use WithXAxisTextColor to adjust the text color.
 	WithXAxisColor(Color) ColorPalette
-	// WithYAxisColor will provide a new ColorPalette that uses the specified color for Y axis. To adjust the text
-	// color invoke WithYAxisTextColor following this.
+	// WithYAxisColor returns a new ColorPalette with the specified Y-axis color.
+	// Use WithYAxisTextColor to adjust the text color.
 	WithYAxisColor(Color) ColorPalette
-	// WithYAxisSeriesColor will provide a new ColorPalette that uses the specified series index color for Y axis and values.
+	// WithYAxisSeriesColor returns a new ColorPalette using the specified series color for Y-axis and values.
 	WithYAxisSeriesColor(int) ColorPalette
-	// WithTitleTextColor will provide a new ColorPalette that uses the specified color for the title text.
+	// WithTitleTextColor returns a new ColorPalette with the specified title text color.
 	WithTitleTextColor(Color) ColorPalette
-	// WithMarkTextColor will provide a new ColorPalette that uses the specified color for mark point and mark line labels.
+	// WithMarkTextColor returns a new ColorPalette with the specified mark point and line label color.
 	WithMarkTextColor(Color) ColorPalette
-	// WithLabelTextColor will provide a new ColorPalette that uses the specified color for value labels.
+	// WithLabelTextColor returns a new ColorPalette with the specified value label color.
 	WithLabelTextColor(Color) ColorPalette
-	// WithLegendTextColor will provide a new ColorPalette that uses the specified color for the legend labels
+	// WithLegendTextColor returns a new ColorPalette with the specified legend text color.
 	WithLegendTextColor(Color) ColorPalette
-	// WithXAxisTextColor will provide a new ColorPalette that uses the specified color for the x-axis labels.
+	// WithXAxisTextColor returns a new ColorPalette with the specified x-axis label color.
 	WithXAxisTextColor(Color) ColorPalette
-	// WithYAxisTextColor will provide a new ColorPalette that uses the specified color for the y-axis labels.
+	// WithYAxisTextColor returns a new ColorPalette with the specified y-axis label color.
 	WithYAxisTextColor(Color) ColorPalette
-	// WithSeriesColors will provide a new ColorPalette that uses the specified series colors. This will default the
-	// trend line colors to be related to the series colors provided. If you want to customize them further use
-	// WithSeriesTrendColors.
+	// WithSeriesColors returns a new ColorPalette with the specified series colors.
+	// Trend line colors default to match series colors. Use WithSeriesTrendColors for further customization.
 	WithSeriesColors([]Color) ColorPalette
-	// WithSeriesTrendColors will provide a new ColorPalette that uses the specified series trend line colors.
+	// WithSeriesTrendColors returns a new ColorPalette with the specified trend line colors.
 	WithSeriesTrendColors([]Color) ColorPalette
-	// WithBackgroundColor will provide a new ColorPalette that uses the specified color for the background.
+	// WithBackgroundColor returns a new ColorPalette with the specified background color.
 	WithBackgroundColor(Color) ColorPalette
-	// WithTitleBorderColor will provide a new ColorPalette that uses the specified color for the title border.
+	// WithTitleBorderColor returns a new ColorPalette with the specified title border color.
 	WithTitleBorderColor(Color) ColorPalette
-	// WithLegendBorderColor will provide a new ColorPalette that uses the specified color for the legend border.
+	// WithLegendBorderColor returns a new ColorPalette with the specified legend border color.
 	WithLegendBorderColor(Color) ColorPalette
 }
 
@@ -656,7 +655,7 @@ func init() {
 	}
 }
 
-// SetDefaultTheme sets default theme by name.
+// SetDefaultTheme sets the default theme by name.
 func SetDefaultTheme(name string) error {
 	if value, ok := palettes.Load(name); ok {
 		palettes.Store(defaultTheme, value)
@@ -679,14 +678,14 @@ func GetDefaultTheme() ColorPalette {
 	return GetTheme(defaultTheme)
 }
 
-// MakeTheme constructs a one-off theme without installing it into the catalog.
+// MakeTheme constructs a theme without installing it into the catalog.
 func MakeTheme(opt ThemeOption) ColorPalette {
 	cp := makeColorPalette(opt)
 	cp.name = fmt.Sprintf("custom-%x", crc32.ChecksumIEEE([]byte(fmt.Sprintf("%v", opt))))
 	return cp
 }
 
-// InstallTheme adds a theme to the catalog which can later be retrieved using GetTheme.
+// InstallTheme adds a theme to the catalog for later retrieval using GetTheme.
 func InstallTheme(name string, opt ThemeOption) {
 	cp := makeColorPalette(opt)
 	cp.name = name
@@ -760,7 +759,7 @@ func autoSeriesTrendColor(color Color) Color {
 	return c
 }
 
-// GetTheme returns an installed theme by name, or the default if the theme is not installed.
+// GetTheme returns an installed theme by name, or the default if not found.
 func GetTheme(name string) ColorPalette {
 	if value, ok := palettes.Load(name); ok {
 		if cp, ok := value.(ColorPalette); ok {

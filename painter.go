@@ -37,15 +37,15 @@ type Painter struct {
 
 // PainterOptions contains parameters for creating a new Painter.
 type PainterOptions struct {
-	// OutputFormat specifies the output type, "svg" or "png", default is "png".
+	// OutputFormat specifies the output type: "svg", "png", "jpg". Default is "png".
 	OutputFormat string
-	// Width is the width of the draw painter.
+	// Width is the width of the painter canvas.
 	Width int
-	// Height is the height of the draw painter.
+	// Height is the height of the painter canvas.
 	Height int
-	// Font is the default font used for rendering text.
+	// Font is the default font for rendering text.
 	Font *truetype.Font
-	// Theme is the default theme to be used if the chart does not specify a theme.
+	// Theme is the default theme used when charts don't specify one.
 	Theme ColorPalette
 }
 
@@ -75,7 +75,7 @@ type multiTextOption struct {
 	labelSkipCount int
 }
 
-// PainterPaddingOption sets the padding of the draw painter.
+// PainterPaddingOption sets the padding within the painter canvas.
 func PainterPaddingOption(padding Box) PainterOptionFunc {
 	return func(p *Painter) {
 		p.box.Left += padding.Left
@@ -85,7 +85,7 @@ func PainterPaddingOption(padding Box) PainterOptionFunc {
 	}
 }
 
-// PainterBoxOption sets a specific box for the Painter to draw within.
+// PainterBoxOption sets a specific drawing area for the Painter.
 func PainterBoxOption(box Box) PainterOptionFunc {
 	return func(p *Painter) {
 		if box.IsZero() {
@@ -95,8 +95,8 @@ func PainterBoxOption(box Box) PainterOptionFunc {
 	}
 }
 
-// PainterThemeOption sets a color palette theme default for the Painter.
-// This theme is used if the specific chart options don't have a theme set.
+// PainterThemeOption sets the default theme for the Painter.
+// Used when specific chart options don't have a theme set.
 func PainterThemeOption(theme ColorPalette) PainterOptionFunc {
 	return func(p *Painter) {
 		p.theme = getPreferredTheme(theme)
@@ -104,14 +104,14 @@ func PainterThemeOption(theme ColorPalette) PainterOptionFunc {
 }
 
 // PainterFontOption sets the default font face for the Painter.
-// This font is used if the FontStyle specified in chart configs does not specify another face.
+// Used when FontStyle in chart configs doesn't specify a font.
 func PainterFontOption(font *truetype.Font) PainterOptionFunc {
 	return func(p *Painter) {
 		p.font = getPreferredFont(font)
 	}
 }
 
-// NewPainter creates a painter which can be used to render charts to (for example, newLineChart).
+// NewPainter creates a painter for rendering charts.
 func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) *Painter {
 	if opts.Width <= 0 {
 		opts.Width = defaultChartWidth
@@ -147,7 +147,7 @@ func (p *Painter) setOptions(opts ...PainterOptionFunc) {
 	}
 }
 
-// Child returns a painter with the passed-in options applied to it. Useful when you want to render relative to only a portion of the canvas via PainterBoxOption.
+// Child returns a painter with the provided options applied. Useful for rendering relative to a portion of the canvas via PainterBoxOption.
 func (p *Painter) Child(opt ...PainterOptionFunc) *Painter {
 	child := &Painter{
 		outputFormat: p.outputFormat,
@@ -232,7 +232,7 @@ func (p *Painter) Height() int {
 	return p.box.Height()
 }
 
-// MeasureText will provide the rendered size of the text for the provided font style.
+// MeasureText returns the rendered size of the text for the provided font style.
 func (p *Painter) MeasureText(text string, textRotation float64, fontStyle FontStyle) Box {
 	if text == "" || fontStyle.FontSize == 0 || fontStyle.FontColor.IsTransparent() {
 		return BoxZero
@@ -282,8 +282,8 @@ func (p *Painter) Circle(radius float64, x, y int, fillColor, strokeColor Color,
 }
 
 // LineStroke draws a line in the graph from point to point with the specified stroke color/width.
-// Points with values of math.MaxInt32 will be skipped, resulting in a gap.
-// Single or isolated points will result in just a dot being drawn at the point.
+// Points with values of math.MaxInt32 are skipped, resulting in a gap.
+// Single or isolated points result in just a dot being drawn at the point.
 func (p *Painter) LineStroke(points []Point, strokeColor Color, strokeWidth float64) {
 	valid := make([]Point, 0, len(points))
 	for _, pt := range points {
@@ -322,9 +322,9 @@ func (p *Painter) drawStraightPath(points []Point, dotForSinglePoint bool) {
 }
 
 // SmoothLineStroke draws a smooth curve through the given points using Quadratic Bézier segments and a
-// `tension` parameter in [0..1] with 0 providing straight lines between midpoints and 1 providing a smoother line.
-// Because the tension smooths out the line, the line will no longer hit the provided points exactly. The more variable
-// the points, and the higher the tension, the more the line will be.
+// tension parameter in [0..1] with 0 providing straight lines between midpoints and 1 providing a smoother line.
+// Because tension smooths out the line, the line no longer hits the provided points exactly. The more variable
+// the points and the higher the tension, the more the line deviates.
 func (p *Painter) SmoothLineStroke(points []Point, tension float64, strokeColor Color, strokeWidth float64) {
 	if tension <= 0 {
 		p.LineStroke(points, strokeColor, strokeWidth)
@@ -385,7 +385,7 @@ func (p *Painter) drawBackground(color Color) {
 	p.FilledRect(0, 0, p.Width(), p.Height(), color, color, 0.0)
 }
 
-// FilledRect will draw a filled box with the given coordinates.
+// FilledRect draws a filled box with the given coordinates.
 func (p *Painter) FilledRect(x1, y1, x2, y2 int, fillColor, strokeColor Color, strokeWidth float64) {
 	p.rectMoveLine(x1, y1, x2, y2)
 	p.fillStroke(fillColor, strokeColor, strokeWidth)
@@ -399,7 +399,7 @@ func (p *Painter) rectMoveLine(x1, y1, x2, y2 int) {
 	p.lineTo(x1, y1)
 }
 
-// FilledDiamond will draw a filled diamond centered at (cx, cy) with the given width and height.
+// FilledDiamond draws a filled diamond centered at (cx, cy) with the given width and height.
 func (p *Painter) FilledDiamond(cx, cy, width, height int, fillColor, strokeColor Color, strokeWidth float64) {
 	p.diamondMoveLine(cx, cy, width, height)
 	p.fillStroke(fillColor, strokeColor, strokeWidth)
@@ -663,8 +663,8 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64, fillColor
 	p.fill(fillColor)
 }
 
-// Text draws the given string at the position specified, using the given font style. Specifying radians will rotate
-// the text.
+// Text draws the given string at the specified position using the given font style.
+// Specifying radians rotates the text.
 func (p *Painter) Text(body string, x, y int, radians float64, fontStyle FontStyle) {
 	if fontStyle.Font == nil {
 		fontStyle.Font = getPreferredFont(p.font)
@@ -878,8 +878,8 @@ func (p *Painter) multiText(opt multiTextOption) {
 // textRotationHeightAdjustment calculates how much vertical adjustment is needed
 // after rotating the text around the bottom-right corner.
 //
-// The caller will then typically subtract this returned value from the existing y-position so that the text will
-// stay aligned with the bottom position.  To do this calculation, the provided text dimensions should be
+// The caller typically subtracts this returned value from the existing y-position so that the text
+// stays aligned with the bottom position. For this calculation, the provided text dimensions should be
 // WITHOUT rotation applied.
 func textRotationHeightAdjustment(textWidth, textHeight int, radians float64) int {
 	r := normalizeAngle(radians)
@@ -944,7 +944,7 @@ func (p *Painter) diamonds(points []Point, fillColor, strokeColor Color, strokeW
 	p.render.FillStroke()
 }
 
-// roundedRect is similar to filledRect except the top and bottom will be rounded.
+// roundedRect is similar to filledRect except the top and bottom are rounded.
 func (p *Painter) roundedRect(box Box, radius int, roundTop, roundBottom bool,
 	fillColor, strokeColor Color, strokeWidth float64) {
 	r := (box.Right - box.Left) / 2

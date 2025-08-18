@@ -11,7 +11,7 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// Ptr is a helper function to help build config options which reference pointers.
+// Ptr is a helper function for building config options that reference pointers.
 func Ptr[T any](val T) *T {
 	return &val
 }
@@ -81,12 +81,12 @@ func reverseSlice[T any](s []T) {
 	}
 }
 
-// SliceToFloat64 converts a slice of arbitrary types to float64 to be used as chart values.
+// SliceToFloat64 converts a slice of arbitrary types to float64 using the provided conversion function.
 func SliceToFloat64[T any](slice []T, conversion func(T) float64) []float64 {
 	return bulk.SliceTransform(conversion, slice)
 }
 
-// IntSliceToFloat64 converts an int slice to a float64 slice so that it can be used for chart values.
+// IntSliceToFloat64 converts an int slice to a float64 slice for use in charts.
 func IntSliceToFloat64(slice []int) []float64 {
 	return bulk.SliceTransform(func(i int) float64 { return float64(i) }, slice)
 }
@@ -137,9 +137,8 @@ func normalizeAngle(radians float64) float64 {
 	return radians
 }
 
-// FormatValueHumanizeShort takes in a value and a specified precision, rounding to the specified precision and
-// returning a human friendly number string including commas. If the value is over 1,000 it will be reduced to a
-// shorter version with the appropriate k, M, G, T suffix.
+// FormatValueHumanizeShort formats a value with specified precision and comma separators.
+// Values over 1,000 are shortened with k, M, G, T suffixes.
 func FormatValueHumanizeShort(value float64, decimals int, ensureTrailingZeros bool) string {
 	// Handle negative values by delegating to the positive case and then re-applying the sign
 	if value < 0 {
@@ -159,8 +158,7 @@ func FormatValueHumanizeShort(value float64, decimals int, ensureTrailingZeros b
 	}
 }
 
-// FormatValueHumanize takes in a value and a specified precision, rounding to the specified precision and returning a
-// human friendly number string including commas.
+// FormatValueHumanize formats a value with specified precision and comma separators.
 func FormatValueHumanize(value float64, decimals int, ensureTrailingZeros bool) string {
 	if decimals < 0 {
 		decimals = 0

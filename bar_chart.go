@@ -20,7 +20,7 @@ func newBarChart(p *Painter, opt BarChartOption) *barChart {
 	}
 }
 
-// NewBarChartOptionWithData returns an initialized BarChartOption with the SeriesList set for the provided data slice.
+// NewBarChartOptionWithData returns an initialized BarChartOption with the SeriesList set with the provided data slice.
 func NewBarChartOptionWithData(data [][]float64) BarChartOption {
 	return NewBarChartOptionWithSeries(NewSeriesListBar(data))
 }
@@ -45,31 +45,29 @@ type BarChartOption struct {
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListBar.
+	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListBar.
 	SeriesList BarSeriesList
-	// StackSeries, if true, renders the series stacked within one bar. This causes
-	// some options, including BarMargin and SeriesLabelPosition, to be ignored.
-	// MarkLine only renders for the first series and stacking only applies to the
-	// first YAxis (index 0).
+	// StackSeries when *true renders series stacked within one bar.
+	// This ignores some options including BarMargin and SeriesLabelPosition.
+	// MarkLine only renders for the first series and stacking only applies to the first y-axis.
 	StackSeries *bool
-	// SeriesLabelPosition specifies the position of the label for the series. Currently supported values are
-	// "top" or "bottom".
+	// SeriesLabelPosition specifies the label position for the series: "top" or "bottom".
 	SeriesLabelPosition string
-	// XAxis are options for the x-axis.
+	// XAxis contains options for the x-axis.
 	XAxis XAxisOption
-	// YAxis are options for the y-axis (at most two).
+	// YAxis contains options for the y-axis. At most two y-axes are supported.
 	YAxis []YAxisOption
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
-	// BarWidth specifies the width of each bar. Width may be reduced to ensure all series fit on the chart.
+	// BarWidth specifies the width of each bar. May be reduced to fit all series on the chart.
 	BarWidth int
-	// BarMargin specifies the margin between bars grouped together. BarWidth takes priority over the margin.
+	// BarMargin specifies the margin between grouped bars. BarWidth takes priority over a set margin.
 	BarMargin *float64
-	// RoundedBarCaps, if true, draws bars with rounded top corners.
+	// RoundedBarCaps when *true draws bars with rounded top corners.
 	RoundedBarCaps *bool
-	// ValueFormatter defines how float values should be rendered to strings, notably for numeric axis labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }
 

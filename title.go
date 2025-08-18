@@ -7,19 +7,19 @@ import (
 
 // TitleOption configures rendering of a chart title.
 type TitleOption struct {
-	// Show specifies if the title should be rendered, set this to *false (through Ptr(false)) to hide the title.
+	// Show specifies if the title should be rendered. Set to *false (via Ptr(false)) to hide the title.
 	Show *bool
 	// Theme specifies the colors used for the title.
 	Theme ColorPalette
-	// Text specifies the title text, supporting '\n' for new lines.
+	// Text is the title text. Supports '\n' for line breaks.
 	Text string
-	// Subtext to the title, supporting '\n' for new lines.
+	// Subtext is additional text below the title. Supports '\n' for line breaks.
 	Subtext string
-	// Offset allows you to specify the position of the title component relative to the left and top side.
+	// Offset specifies the position of the title relative to the left and top sides.
 	Offset OffsetStr
-	// FontStyle specifies the font, size, and style for rendering the title.
+	// FontStyle specifies the font, size, and style for the title text.
 	FontStyle FontStyle
-	// SubtextFontStyle specifies the font, size, and style for rendering the subtext.
+	// SubtextFontStyle specifies the font, size, and style for the subtext.
 	SubtextFontStyle FontStyle
 	// BorderWidth can be set to a non-zero value to render a box around the title.
 	BorderWidth float64

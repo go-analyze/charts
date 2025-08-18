@@ -8,7 +8,7 @@ import (
 
 const defaultFontSize = 12.0
 
-// InstallFont installs the font for charts
+// InstallFont installs a font for chart rendering.
 func InstallFont(fontFamily string, data []byte) error {
 	return chartdraw.InstallFont(fontFamily, data)
 }
@@ -22,17 +22,17 @@ func getPreferredFont(fonts ...*truetype.Font) *truetype.Font {
 	return GetDefaultFont()
 }
 
-// GetDefaultFont get default font.
+// GetDefaultFont returns the default font.
 func GetDefaultFont() *truetype.Font {
 	return chartdraw.GetDefaultFont()
 }
 
-// SetDefaultFont set default font by name.
+// SetDefaultFont sets the default font by name.
 func SetDefaultFont(fontFamily string) error {
 	return chartdraw.SetDefaultFont(fontFamily)
 }
 
-// GetFont get the font by font family or the default if the family is not installed.
+// GetFont returns the font by family name, or the default if the family is not installed.
 func GetFont(fontFamily string) *truetype.Font {
 	return chartdraw.GetFont(fontFamily)
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
-// NewTrendLine returns a trend line for the provided types, this is set on a specific instance within a Series.
+// NewTrendLine returns a trend line for the provided type. Set on a specific Series instance.
 func NewTrendLine(trendType string) []SeriesTrendLine {
 	return []SeriesTrendLine{
 		{

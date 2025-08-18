@@ -9,81 +9,81 @@ import (
 // ChartOption represents a generic method of representing a chart. This can be useful when you want to render
 // different chart types with the same data and configuration.
 type ChartOption struct {
-	// OutputFormat specifies the output type of chart, "svg", "png" or "jpg", default value is "png".
+	// OutputFormat specifies the output type of chart: "svg", "png", or "jpg". Default is "png".
 	OutputFormat string
-	// Width is the width of chart.
+	// Width is the width of the chart.
 	Width int
-	// Height is the height of chart.
+	// Height is the height of the chart.
 	Height int
 	// Theme specifies the colors used for the chart. Built in themes can be loaded using GetTheme with
 	// "light", "dark", "vivid-light", "vivid-dark", "ant" or "grafana".
 	Theme ColorPalette
-	// Padding specifies the padding for chart, default padding is [20, 20, 20, 20].
+	// Padding specifies the padding for the chart. Default is [20, 20, 20, 20].
 	Padding Box
-	// XAxis are options for the x-axis.
+	// XAxis contains options for the x-axis.
 	XAxis XAxisOption
-	// YAxis are options for the y-axis (at most two).
+	// YAxis contains options for the y-axis. At most two y-axes are supported.
 	YAxis []YAxisOption
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// Box specifies the canvas box for the chart.
+	// Box specifies the drawing area for the chart.
 	Box Box
-	// SeriesList provides the population data for the charts, constructed through NewSeriesListGeneric.
+	// SeriesList provides the population data for the chart, constructed through NewSeriesListGeneric.
 	SeriesList GenericSeriesList
-	// StackSeries if set to *true the lines will be layered or stacked. This option significantly changes the chart
-	// visualization, please see the specific chart docs for full details.
+	// StackSeries when set to *true causes series to be layered or stacked.
+	// This significantly changes chart visualization; see specific chart godocs for details.
 	StackSeries *bool
-	// RadarIndicators are radar indicator list for radar charts.
+	// RadarIndicators is the list of radar indicators for radar charts.
 	RadarIndicators []RadarIndicator
-	// Symbol specifies the symbols to draw at the data points. Empty (default) will vary based on the dataset.
+	// Symbol specifies the symbol to draw at data points. Empty (default) varies by chart type.
 	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
 	Symbol Symbol
 	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
-	// FillArea set to *true to fill the area under the line in line charts
+	// FillArea when set to *true fills the area under the line in line charts.
 	FillArea *bool
-	// FillOpacity is the opacity (alpha) of the area fill in line charts.
+	// FillOpacity is the opacity or alpha channel (0-255) of the area fill in line charts.
 	FillOpacity uint8
 	// Deprecated: BarWidth is deprecated, instead use BarSize.
 	BarWidth int
 	// Deprecated: BarHeight is deprecated, instead use BarSize.
 	BarHeight int
-	// BarSize represents the width of the bar, or if a horizontal bar chart the height.
+	// BarSize represents the width of bars, or height for horizontal bar charts.
 	BarSize int
-	// BarMargin specifies the margin between bars grouped together. BarWidth or BarHeight takes priority over the margin.
+	// BarMargin specifies the margin between grouped bars. BarSize takes priority over margin.
 	BarMargin *float64
-	// Radius default radius for pie and radar charts e.g.: 40%, default is "40%"
+	// Radius is the target radius for pie and radar charts. Default is "40%".
 	Radius string
-	// Children are Child charts to render together.
+	// Children are child charts to render together.
 	Children []ChartOption
 	parent   *Painter
-	// ValueFormatter to format numeric values into labels.
+	// ValueFormatter formats numeric values into labels.
 	ValueFormatter ValueFormatter
 }
 
-// OptionFunc option function.
+// OptionFunc is a function that modifies ChartOption.
 type OptionFunc func(opt *ChartOption)
 
-// SVGOutputOptionFunc sets svg as the image type for the chart's output.
+// SVGOutputOptionFunc sets SVG as the image output format for the chart.
 func SVGOutputOptionFunc() OptionFunc {
 	return outputFormatOptionFunc(ChartOutputSVG)
 }
 
-// PNGOutputOptionFunc sets png as the image type for the chart's output.
+// PNGOutputOptionFunc sets PNG as the image output format for the chart.
 func PNGOutputOptionFunc() OptionFunc {
 	return outputFormatOptionFunc(ChartOutputPNG)
 }
 
-// JPGOutputOptionFunc sets jpg as the image type for the chart's output.
+// JPGOutputOptionFunc sets JPG as the image output format for the chart.
 func JPGOutputOptionFunc() OptionFunc {
 	return outputFormatOptionFunc(ChartOutputJPG)
 }
 
-// outputFormatOptionFunc set type of chart's output.
+// outputFormatOptionFunc sets the output format type for the chart.
 func outputFormatOptionFunc(t string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.OutputFormat = t
@@ -97,7 +97,7 @@ func FontOptionFunc(font *truetype.Font) OptionFunc {
 	}
 }
 
-// ThemeNameOptionFunc sets the theme of the chart by name.
+// ThemeNameOptionFunc sets the chart theme by name.
 func ThemeNameOptionFunc(theme string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.Theme = GetTheme(theme)

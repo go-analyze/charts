@@ -19,7 +19,7 @@ func newFunnelChart(p *Painter, opt FunnelChartOption) *funnelChart {
 	}
 }
 
-// NewFunnelChartOptionWithData returns an initialized FunnelChartOption with the SeriesList set for the provided data slice.
+// NewFunnelChartOptionWithData returns an initialized FunnelChartOption with the SeriesList set with the provided data slice.
 func NewFunnelChartOptionWithData(data []float64) FunnelChartOption {
 	return FunnelChartOption{
 		SeriesList: NewSeriesListFunnel(data),
@@ -37,13 +37,13 @@ type FunnelChartOption struct {
 	Padding Box
 	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListFunnel.
+	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListFunnel.
 	SeriesList FunnelSeriesList
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
-	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
 }
 

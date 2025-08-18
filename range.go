@@ -17,9 +17,9 @@ const zeroSpanAdjustment = 1
 // axisRange represents the calculated range for the axis, as well as values for fitting labels on the range.
 type axisRange struct {
 	isCategory bool
-	// labels are the rendered labels, 1:1 for categories or the range value labels to render
+	// labels are the rendered labels: 1:1 for categories or range value labels to render.
 	labels []string
-	// dataStartIndex specifies what index the label values should start from.
+	// dataStartIndex specifies the starting index for label values.
 	dataStartIndex int
 	tickCount      int
 	divideCount    int
@@ -32,7 +32,7 @@ type axisRange struct {
 	labelFontStyle FontStyle
 }
 
-// calculateValueAxisRange centralizes the logic for numeric axes, picking a scale and label count that is human friendly.
+// calculateValueAxisRange centralizes numeric axis logic, selecting human-friendly scale and label count.
 func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	minCfg, maxCfg, rangeValuePaddingScale *float64,
 	labelsCfg []string, dataStartIndex int,

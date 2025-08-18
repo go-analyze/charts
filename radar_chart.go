@@ -18,7 +18,7 @@ type radarChart struct {
 
 // RadarIndicator defines the dimensions of a radar chart axis.
 type RadarIndicator struct {
-	// Name specifies a name for the iIndicator.
+	// Name specifies a name for the indicator.
 	Name string
 	// Max is the maximum value of indicator.
 	Max float64
@@ -26,7 +26,7 @@ type RadarIndicator struct {
 	Min float64
 }
 
-// NewRadarChartOptionWithData returns an initialized RadarChartOption with the SeriesList set for the provided data slice.
+// NewRadarChartOptionWithData returns an initialized RadarChartOption with the SeriesList set with the provided data slice.
 func NewRadarChartOptionWithData(data [][]float64, names []string, values []float64) RadarChartOption {
 	return RadarChartOption{
 		SeriesList:      NewSeriesListRadar(data),
@@ -45,22 +45,22 @@ type RadarChartOption struct {
 	Padding Box
 	// Font is the font used to render the chart.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart, typically constructed using NewSeriesListRadar.
+	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListRadar.
 	SeriesList RadarSeriesList
-	// Title are options for rendering the title.
+	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Legend are options for the data legend.
+	// Legend contains options for the data legend.
 	Legend LegendOption
 	// RadarIndicators provides the radar indicator list.
 	RadarIndicators []RadarIndicator
 	// Radius sets the chart radius, for example "40%".
 	// Default is "40%".
 	Radius string
-	// ValueFormatter defines how float values should be rendered to strings, notably for series labels.
+	// ValueFormatter defines how float values are rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
 }
 
-// NewRadarIndicators returns a radar indicator list
+// NewRadarIndicators returns a radar indicator list.
 func NewRadarIndicators(names []string, values []float64) []RadarIndicator {
 	if len(names) != len(values) {
 		return nil
