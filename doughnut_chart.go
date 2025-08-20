@@ -176,12 +176,12 @@ func (d *doughnutChart) renderChart(result *defaultRenderResult) (Box, error) {
 
 			// finally, render the label text at its resolved position
 			fontStyle := fillFontStyleDefaults(mergeFontStyles(s.seriesLabel.FontStyle, opt.CenterValuesFontStyle),
-				defaultLabelFontSize, opt.Theme.GetLabelTextColor())
+				defaultLabelFontSize, opt.Theme.GetLabelTextColor(), seriesPainter.font)
 			seriesPainter.Text(s.label, lp.box.Left, lp.box.Bottom, 0, fontStyle)
 		}
 	} else if strings.EqualFold(opt.CenterValues, "sum") {
 		opt.CenterValuesFontStyle = fillFontStyleDefaults(opt.CenterValuesFontStyle,
-			defaultLabelFontSize, opt.Theme.GetLabelTextColor())
+			defaultLabelFontSize, opt.Theme.GetLabelTextColor(), seriesPainter.font)
 		valueFormatter := getPreferredValueFormatter(opt.ValueFormatter)
 		sumStr := valueFormatter(total)
 		centerTextBox := d.p.MeasureText(sumStr, 0, opt.CenterValuesFontStyle)
@@ -220,7 +220,7 @@ func placeCenterLabelsWithCollisionResolution(p *Painter, opt *DoughnutChartOpti
 			continue
 		}
 		fontStyle := fillFontStyleDefaults(mergeFontStyles(s.seriesLabel.FontStyle, opt.CenterValuesFontStyle),
-			defaultLabelFontSize, opt.Theme.GetLabelTextColor())
+			defaultLabelFontSize, opt.Theme.GetLabelTextColor(), p.font)
 		measured := p.MeasureText(s.label, 0, fontStyle)
 		midAngle := s.midAngle
 

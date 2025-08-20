@@ -71,7 +71,7 @@ func (t *titlePainter) Render() (Box, error) {
 		theme = getPreferredTheme(p.theme)
 	}
 
-	fontStyle := fillFontStyleDefaults(opt.FontStyle, defaultFontSize, theme.GetTitleTextColor())
+	fontStyle := fillFontStyleDefaults(opt.FontStyle, defaultFontSize, theme.GetTitleTextColor(), p.font)
 	subtextFontStyle := fillFontStyleDefaults(opt.SubtextFontStyle,
 		fontStyle.FontSize, fontStyle.FontColor, fontStyle.Font)
 

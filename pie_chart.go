@@ -286,7 +286,7 @@ func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabel
 			}
 		}
 		fontStyle := fillFontStyleDefaults(s.seriesLabel.FontStyle,
-			defaultLabelFontSize, theme.GetLabelTextColor(), fallbackFont)
+			defaultLabelFontSize, theme.GetLabelTextColor(), fallbackFont, p.font)
 		textBox := p.MeasureText(s.label, 0, fontStyle)
 		// for outer labels use the adjusted positions
 		lsX, lsY, lbX, lbY, leX, leY, textX, textY :=

@@ -24,6 +24,8 @@ type RadarIndicator struct {
 	Max float64
 	// Min is the minimum value of indicator.
 	Min float64
+	// FontStyle provides the font configuration for the indicator.
+	FontStyle FontStyle
 }
 
 // NewRadarChartOptionWithData returns an initialized RadarChartOption with the SeriesList set with the provided data slice.
@@ -43,9 +45,9 @@ type RadarChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Font is the font used to render the chart.
+	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
 	Font *truetype.Font
-	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListRadar.
+	// SeriesList provides the data population for the chart. Constructed using NewSeriesListRadar.
 	SeriesList RadarSeriesList
 	// Title contains options for rendering the chart title.
 	Title TitleOption
@@ -53,8 +55,7 @@ type RadarChartOption struct {
 	Legend LegendOption
 	// RadarIndicators provides the radar indicator list.
 	RadarIndicators []RadarIndicator
-	// Radius sets the chart radius, for example "40%".
-	// Default is "40%".
+	// Radius sets the chart radius. Default is "40%".
 	Radius string
 	// ValueFormatter defines how float values are rendered to strings, notably for series labels.
 	ValueFormatter ValueFormatter
@@ -126,15 +127,13 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 		seriesPainter.lineTo(p.X, p.Y)
 		seriesPainter.stroke(theme.GetAxisSplitLineColor(), 1)
 	}
-	fontStyle := FontStyle{
-		FontColor: theme.GetLabelTextColor(),
-		FontSize:  defaultLabelFontSize,
-		Font:      opt.Font,
-	}
+
 	offset := 5
 	// text generation
 	for index, p := range points {
 		name := indicators[index].Name
+		fontStyle := fillFontStyleDefaults(indicators[index].FontStyle,
+			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font, seriesPainter.font)
 		b := seriesPainter.MeasureText(name, 0, fontStyle)
 		isXCenter := p.X == center.X
 		isYCenter := p.Y == center.Y
@@ -203,6 +202,8 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 		for index, point := range linePoints {
 			seriesPainter.Circle(dotWith, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
 			if flagIs(true, series.Label.Show) && index < len(series.Values) {
+				fontStyle := fillFontStyleDefaults(series.Label.FontStyle,
+					defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font, seriesPainter.font)
 				valueStr := valueFormatter(series.Values[index])
 				b := seriesPainter.MeasureText(valueStr, 0, fontStyle)
 				seriesPainter.Text(valueStr, point.X-b.Width()/2, point.Y, 0, fontStyle)

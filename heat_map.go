@@ -139,7 +139,8 @@ func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 
 	if flagIs(true, opt.ValuesLabel.Show) {
 		opt.ValuesLabel.FontStyle =
-			fillFontStyleDefaults(opt.ValuesLabel.FontStyle, defaultLabelFontSize, opt.Theme.GetLabelTextColor(), opt.Font)
+			fillFontStyleDefaults(opt.ValuesLabel.FontStyle, defaultLabelFontSize, opt.Theme.GetLabelTextColor(),
+				opt.Font, seriesPainter.font)
 
 		labelPainter := newSeriesLabelPainter(seriesPainter, []string{""}, opt.ValuesLabel, opt.Theme)
 		for y := range opt.Values {

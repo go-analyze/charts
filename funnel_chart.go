@@ -131,7 +131,7 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 
 		text := textList[index]
 		fontStyle := fillFontStyleDefaults(opt.SeriesList[index].Label.FontStyle,
-			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font)
+			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font, seriesPainter.font)
 		textBox := seriesPainter.MeasureText(text, 0, fontStyle)
 		textX := width>>1 - textBox.Width()>>1
 		textY := y + h>>1
