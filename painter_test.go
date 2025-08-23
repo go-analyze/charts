@@ -671,7 +671,7 @@ func TestPainterMeasureText(t *testing.T) {
 	styleLarge := FontStyle{
 		FontSize:  28,
 		FontColor: ColorBlue,
-		Font:      GetFont("notosans"),
+		Font:      GetFont(FontFamilyNotoSans),
 	}
 
 	t.Run("basic", func(t *testing.T) {
@@ -681,6 +681,15 @@ func TestPainterMeasureText(t *testing.T) {
 			pngP.MeasureText("Hello World!", 0, style))
 		assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true},
 			jpgP.MeasureText("Hello World!", 0, style))
+	})
+
+	t.Run("basic_large", func(t *testing.T) {
+		assert.Equal(t, Box{Right: 200, Bottom: 36, IsSet: true},
+			svgP.MeasureText("Hello World!", 0, styleLarge))
+		assert.Equal(t, Box{Right: 235, Bottom: 33, IsSet: true},
+			pngP.MeasureText("Hello World!", 0, styleLarge))
+		assert.Equal(t, Box{Right: 235, Bottom: 33, IsSet: true},
+			jpgP.MeasureText("Hello World!", 0, styleLarge))
 	})
 
 	t.Run("rotated-90", func(t *testing.T) {
@@ -721,6 +730,126 @@ func TestPainterMeasureText(t *testing.T) {
 		assert.Equal(t, Box{IsSet: true}, jpgP.MeasureText("", 0, style))
 	})
 
+	t.Run("green_circle_emoji", func(t *testing.T) {
+		text := "🟢"
+
+		assert.Equal(t, Box{Right: 12, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 28, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("star_emoji", func(t *testing.T) {
+		text := "⭐"
+
+		assert.Equal(t, Box{Right: 12, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 28, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("question_emoji", func(t *testing.T) {
+		text := "❓"
+
+		assert.Equal(t, Box{Right: 12, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 28, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("money_emoji", func(t *testing.T) {
+		text := "💰"
+
+		assert.Equal(t, Box{Right: 12, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 28, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("multiple_emojis", func(t *testing.T) {
+		text := "🟢⭐❓💰"
+
+		assert.Equal(t, Box{Right: 48, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 32, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 32, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 112, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 95, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 95, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("mixed_text_emoji", func(t *testing.T) {
+		text := "Status: 🟢 OK"
+
+		assert.Equal(t, Box{Right: 89, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 99, Bottom: 14, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 205, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 233, Bottom: 32, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 233, Bottom: 32, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("transport_symbols", func(t *testing.T) {
+		text := "🚗🚕"
+
+		assert.Equal(t, Box{Right: 24, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 56, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("geometric_shapes", func(t *testing.T) {
+		text := "▪▫"
+
+		assert.Equal(t, Box{Right: 24, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 56, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("wave_dash_and_part_alternation_mark", func(t *testing.T) {
+		text := "〰〽"
+
+		assert.Equal(t, Box{Right: 24, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 56, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
+	t.Run("playing_cards", func(t *testing.T) {
+		text := "🂡🂢"
+
+		assert.Equal(t, Box{Right: 24, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+
+		assert.Equal(t, Box{Right: 56, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLarge))
+		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLarge))
+	})
+
 	t.Run("rendered", func(t *testing.T) {
 		tests := []struct {
 			name        string
@@ -731,8 +860,32 @@ func TestPainterMeasureText(t *testing.T) {
 			{
 				name:        "basic",
 				input:       "Hello World!",
-				expectedSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><text x=\"100\" y=\"200\" style=\"stroke:none;fill:blue;font-size:35.8px;font-family:'Noto Sans Display Medium',sans-serif\">Hello World!</text><path  d=\"M 100 164\nL 300 164\nL 300 200\nL 100 200\nL 100 164\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
-				expectedCRC: 0x6d4ee60c,
+				expectedSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><text x=\"50\" y=\"200\" style=\"stroke:none;fill:blue;font-size:35.8px;font-family:'Noto Sans Display Medium',sans-serif\">Hello World!</text><path  d=\"M 50 164\nL 250 164\nL 250 200\nL 50 200\nL 50 164\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+				expectedCRC: 0x33a4ceca,
+			},
+			{
+				name:        "emojis",
+				input:       "🟢⭐❓💰",
+				expectedSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><text x=\"50\" y=\"200\" style=\"stroke:none;fill:blue;font-size:35.8px;font-family:'Noto Sans Display Medium',sans-serif\">🟢⭐❓💰</text><path  d=\"M 50 164\nL 162 164\nL 162 200\nL 50 200\nL 50 164\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+				expectedCRC: 0xe21e4310,
+			},
+			{
+				name:        "shapes",
+				input:       "▫●□▲▼◇★",
+				expectedSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><text x=\"50\" y=\"200\" style=\"stroke:none;fill:blue;font-size:35.8px;font-family:'Noto Sans Display Medium',sans-serif\">▫●□▲▼◇★</text><path  d=\"M 50 164\nL 246 164\nL 246 200\nL 50 200\nL 50 164\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+				expectedCRC: 0xf945f527,
+			},
+			{
+				name:        "playing_cards",
+				input:       "🂡🂢🂫🃄🃍🃘🃞🃟",
+				expectedSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><text x=\"50\" y=\"200\" style=\"stroke:none;fill:blue;font-size:35.8px;font-family:'Noto Sans Display Medium',sans-serif\">🂡🂢🂫🃄🃍🃘🃞🃟</text><path  d=\"M 50 164\nL 274 164\nL 274 200\nL 50 200\nL 50 164\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+				expectedCRC: 0x82b0c13e,
+			},
+			{
+				name:        "faces",
+				input:       "😂😍🤣😊🥺😭😘",
+				expectedSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><text x=\"50\" y=\"200\" style=\"stroke:none;fill:blue;font-size:35.8px;font-family:'Noto Sans Display Medium',sans-serif\">😂😍🤣😊🥺😭😘</text><path  d=\"M 50 164\nL 246 164\nL 246 200\nL 50 200\nL 50 164\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+				expectedCRC: 0xf945f527,
 			},
 		}
 
@@ -745,9 +898,11 @@ func TestPainterMeasureText(t *testing.T) {
 						Height:       400,
 					})
 
+					const xShift = 50
 					textBox := svgP.MeasureText(tc.input, 0, styleLarge)
-					svgP.Text(tc.input, 100, 200, 0, styleLarge)
-					svgP.FilledRect(100, 200-textBox.Height(), 100+textBox.Width(), 200, ColorTransparent, ColorRed, 1.0)
+					svgP.Text(tc.input, xShift, 200, 0, styleLarge)
+					svgP.FilledRect(xShift, 200-textBox.Height(), xShift+textBox.Width(), 200,
+						ColorTransparent, ColorRed, 1.0)
 
 					data, err := svgP.Bytes()
 					require.NoError(t, err)
@@ -759,14 +914,15 @@ func TestPainterMeasureText(t *testing.T) {
 			for _, tc := range tests {
 				t.Run(tc.name, func(t *testing.T) {
 					pngP := NewPainter(PainterOptions{
-						OutputFormat: ChartOutputSVG,
+						OutputFormat: ChartOutputPNG,
 						Width:        400,
 						Height:       400,
 					})
 
+					const xShift = 50
 					textBox := pngP.MeasureText(tc.input, 0, styleLarge)
-					pngP.Text(tc.input, 100, 200, 0, styleLarge)
-					pngP.FilledRect(100, 200-textBox.Height(), 100+textBox.Width(), 200, ColorTransparent, ColorRed, 1.0)
+					pngP.Text(tc.input, xShift, 200, 0, styleLarge)
+					pngP.FilledRect(xShift, 200-textBox.Height(), xShift+textBox.Width(), 200, ColorTransparent, ColorRed, 1.0)
 
 					data, err := pngP.Bytes()
 					require.NoError(t, err)

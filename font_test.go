@@ -118,7 +118,7 @@ func TestGetFont(t *testing.T) {
 	})
 
 	t.Run("embedded_font_lazy_loading", func(t *testing.T) {
-		font := GetFont("notosans")
+		font := GetFont(FontFamilyNotoSans)
 		assert.NotNil(t, font)
 	})
 }
@@ -133,9 +133,9 @@ func TestGetDefaultFont(t *testing.T) {
 func TestSetDefaultFont(t *testing.T) {
 	t.Run("set_existing_font", func(t *testing.T) {
 		t.Cleanup(func() {
-			_ = SetDefaultFont("roboto")
+			_ = SetDefaultFont(FontFamilyRoboto)
 		})
-		err := SetDefaultFont("notosans") // loading with the same roboto will lead to assertNotEqual failing
+		err := SetDefaultFont(FontFamilyNotoSans) // loading with the same roboto will lead to assertNotEqual failing
 		require.NoError(t, err)
 		origDefault := GetDefaultFont()
 
@@ -154,12 +154,12 @@ func TestSetDefaultFont(t *testing.T) {
 
 	t.Run("set_embedded_font", func(t *testing.T) {
 		t.Cleanup(func() {
-			_ = SetDefaultFont("roboto")
+			_ = SetDefaultFont(FontFamilyRoboto)
 		})
 		origDefault := GetDefaultFont()
 
 		// Should work with embedded fonts that aren't loaded yet
-		err := SetDefaultFont("notosans")
+		err := SetDefaultFont(FontFamilyNotoSans)
 		require.NoError(t, err)
 
 		defaultFont := GetDefaultFont()
