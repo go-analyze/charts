@@ -1,15 +1,41 @@
 package drawing
 
 import (
+	"bytes"
+	"compress/gzip"
+	"embed"
 	"fmt"
+	"io"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/roboto"
 	"github.com/golang/freetype/truetype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/image/math/fixed"
 )
+
+//go:embed fonts/Roboto-Medium.ttf.gz
+var testRobotoFont embed.FS
+
+// getTestFont loads and parses Roboto font for testing
+func getTestFont(t *testing.T) *truetype.Font {
+	t.Helper()
+
+	compressed, err := testRobotoFont.ReadFile("fonts/Roboto-Medium.ttf.gz")
+	require.NoError(t, err)
+
+	r, err := gzip.NewReader(bytes.NewReader(compressed))
+	require.NoError(t, err)
+	defer r.Close()
+
+	decompressed, err := io.ReadAll(r)
+	require.NoError(t, err)
+
+	font, err := truetype.Parse(decompressed)
+	require.NoError(t, err)
+
+	return font
+}
 
 type recordBuilder struct{ ops []string }
 
@@ -49,8 +75,7 @@ func TestDrawContour(t *testing.T) {
 func TestFontExtents(t *testing.T) {
 	t.Parallel()
 
-	f, err := truetype.Parse(roboto.Roboto)
-	require.NoError(t, err)
+	f := getTestFont(t)
 	ext := Extents(f, 10)
 	bounds := f.Bounds(fixed.Int26_6(f.FUnitsPerEm()))
 	scale := 10 / float64(f.FUnitsPerEm())

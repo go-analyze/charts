@@ -7,12 +7,9 @@ import (
 	"testing"
 
 	"github.com/golang/freetype/raster"
-	"github.com/golang/freetype/truetype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/image/math/fixed"
-
-	"github.com/go-analyze/charts/chartdraw/roboto"
 )
 
 func TestRasterGraphicContext(t *testing.T) {
@@ -134,8 +131,7 @@ func TestRasterGraphicContext(t *testing.T) {
 
 		img := image.NewRGBA(image.Rect(0, 0, 100, 100))
 		ctx := NewRasterGraphicContext(img)
-		font, err := truetype.Parse(roboto.Roboto)
-		require.NoError(t, err)
+		font := getTestFont(t)
 		ctx.SetFont(font)
 		ctx.SetFontSize(12)
 
@@ -241,8 +237,7 @@ func TestRasterGraphicContext(t *testing.T) {
 		img := image.NewRGBA(image.Rect(0, 0, 20, 20))
 		rgc := NewRasterGraphicContext(img)
 
-		f, err := truetype.Parse(roboto.Roboto)
-		require.NoError(t, err)
+		f := getTestFont(t)
 		rgc.SetFont(f)
 		assert.Equal(t, f, rgc.GetFont())
 
@@ -265,8 +260,7 @@ func TestRasterCreateStringPathAndBounds(t *testing.T) {
 
 	img := image.NewRGBA(image.Rect(0, 0, 50, 50))
 	rgc := NewRasterGraphicContext(img)
-	f, err := truetype.Parse(roboto.Roboto)
-	require.NoError(t, err)
+	f := getTestFont(t)
 	rgc.SetFont(f)
 	rgc.SetFontSize(10)
 
@@ -291,8 +285,7 @@ func TestRasterCreateStringPathAndBounds(t *testing.T) {
 func TestRasterFillAndStrokeStringAt(t *testing.T) {
 	t.Parallel()
 
-	f, err := truetype.Parse(roboto.Roboto)
-	require.NoError(t, err)
+	f := getTestFont(t)
 
 	img := image.NewRGBA(image.Rect(0, 0, 50, 50))
 	rgc := NewRasterGraphicContext(img)

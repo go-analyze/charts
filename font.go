@@ -6,6 +6,16 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
+// FontFamilyRoboto is the default chart font (Roboto Medium), it provides a well spaced Sans style font with good latin character support.
+const FontFamilyRoboto = "roboto"
+
+// FontFamilyNotoSans provides Noto Sans Display Medium, a slightly more condensed Sans variant compared to FontFamilyRoboto.
+// This font offers better internal character and some symbol and emoji support.
+const FontFamilyNotoSans = "notosans"
+
+// FontFamilyNotoSansBold provides Noto Sans Display Extra Bold, a bold version of FontFamilyNotoSans.
+const FontFamilyNotoSansBold = "notosans-bold"
+
 const defaultFontSize = 12.0
 
 // InstallFont installs a font for chart rendering.

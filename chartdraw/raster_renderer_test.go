@@ -125,7 +125,7 @@ func TestRasterRendererTextHash(t *testing.T) {
 	rr.Text("hi", 2, 12)
 
 	h := hashImage(t, rr)
-	assert.Equal(t, uint32(0x41d7b6c8), h)
+	assert.Equal(t, uint32(0x18c6f94a), h)
 }
 
 func BenchmarkRaterCircle(b *testing.B) {

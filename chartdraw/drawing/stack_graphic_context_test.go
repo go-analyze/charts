@@ -4,11 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/golang/freetype/truetype"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-analyze/charts/chartdraw/roboto"
 )
 
 func TestStackGraphicContextSaveRestore(t *testing.T) {
@@ -90,8 +87,7 @@ func TestStackLineDash(t *testing.T) {
 func TestStackFontRoundTrip(t *testing.T) {
 	t.Parallel()
 
-	f, err := truetype.Parse(roboto.Roboto)
-	require.NoError(t, err)
+	f := getTestFont(t)
 
 	gc := NewStackGraphicContext()
 	gc.SetFont(f)

@@ -215,7 +215,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			inputLabels, 0, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs)
 
-		assert.Equal(t, 811, ar.textMaxWidth)
+		assert.Equal(t, 810, ar.textMaxWidth)
 		assert.Equal(t, 41, ar.textMaxHeight)
 		assert.Equal(t, 2, ar.labelCount)
 	})
