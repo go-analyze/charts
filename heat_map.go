@@ -26,9 +26,9 @@ type HeatMapOption struct {
 	// Values provides the 2D data for the heat map.
 	// The outer slice represents the rows (y-axis) and the inner slice represents the columns (x-axis).
 	Values [][]float64
-	// XAxis contains configuration options for the X-axis.
+	// XAxis contains configuration options for the x-axis.
 	XAxis HeatMapAxis
-	// YAxis contains configuration options for the Y-axis.
+	// YAxis contains configuration options for the y-axis.
 	YAxis HeatMapAxis
 	// ScaleMinValue overrides the minimum value for color gradient calculation. If nil, calculated from the data.
 	ScaleMinValue *float64
@@ -209,7 +209,7 @@ func (h *heatMap) Render() (Box, error) {
 	numRows := len(opt.Values)
 	numCols := sliceMaxLen(opt.Values...)
 
-	// Ensure X-axis labels cover all columns.
+	// Ensure x-axis labels cover all columns.
 	for len(opt.XAxis.Labels) < numCols {
 		opt.XAxis.Labels = append(opt.XAxis.Labels, strconv.Itoa(len(opt.XAxis.Labels)))
 	}

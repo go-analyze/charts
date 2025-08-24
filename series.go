@@ -9,24 +9,61 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// SeriesLabel specifies if and how the individual series values are rendered on the chart.
+// SeriesLabel configures how individual data point labels are rendered on charts.
 type SeriesLabel struct {
-	// FormatTemplate is a string template for formatting the data label.
-	// {b}: the name of a data item.
-	// {c}: the value of a data item.
-	// {d}: the percent of a data item (pie chart).
-	FormatTemplate string
-	// ValueFormatter provides an alternative method for formatting data labels.
-	ValueFormatter ValueFormatter
-	// FontStyle specifies the font and style for the label.
-	FontStyle FontStyle
-	// Show controls label visibility. If unset, behavior defaults based on the chart type.
+	// Show controls whether data labels are displayed for this series.
+	// Use Ptr(true) to show labels, Ptr(false) to hide them, or nil for chart-specific defaults.
 	Show *bool
+	// LabelFormatter provides complete control over label content and per-point styling.
+	// When set, this takes precedence for label production.
+	LabelFormatter SeriesLabelFormatter
+	// Deprecated: FormatTemplate is deprecated, use LabelFormatter instead for better control.
+	// Template string for formatting data labels with placeholders:
+	//   {b}: the name of the data item
+	//   {c}: the value of the data item
+	//   {d}: the percentage of the data item (pie/doughnut charts only)
+	// Example: "{b}: {c} ({d})" produces "Sales: 150 (25%)"
+	FormatTemplate string
+	// ValueFormatter functions as the simplest method of number formatting or customization.
+	// Only utilized when other methods are not set.
+	ValueFormatter ValueFormatter
+	// FontStyle specifies the default font styling for labels in this series.
+	// Individual labels can override this via LabelFormatter's LabelStyle return value.
+	FontStyle FontStyle
 	// Distance specifies the pixel distance between the label and its associated data point or chart element.
 	Distance int // TODO - do we want to replace with just Offset?
 	// Offset specifies an offset from the position.
 	Offset OffsetInt
 }
+
+// LabelStyle contains optional styling overrides for individual label rendering.
+// All fields are optional - zero values mean "use default styling from series or theme".
+type LabelStyle struct {
+	// FontStyle overrides font properties (color, size, family) for this specific label.
+	FontStyle FontStyle
+	// BackgroundColor provides a background color behind the label text.
+	BackgroundColor Color
+	// CornerRadius sets the radius for rounded corners on the background rectangle.
+	CornerRadius int
+	// BorderColor sets the border color around the label background.
+	BorderColor Color
+	// BorderWidth sets the width of the border around the label background.
+	BorderWidth float64
+}
+
+// SeriesLabelFormatter is a function that generates custom labels with optional per-point styling.
+// This provides full control over label content and appearance for each data point.
+//
+// Parameters:
+//   - index: The data point index within the series
+//   - name: The series name for this data point
+//   - val: The numeric value for this data point
+//
+// Returns:
+//   - string: The label text to display. Return "" to hide the label for this point
+//   - *LabelStyle: Optional styling override for this specific label. Return nil
+//     to use default series/theme styling.
+type SeriesLabelFormatter func(index int, name string, val float64) (string, *LabelStyle)
 
 const (
 	SeriesMarkTypeMax      = "max"

@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/dustin/go-humanize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -92,6 +93,9 @@ func TestPieChart(t *testing.T) {
 						Label: SeriesLabel{
 							Show:           Ptr(true),
 							FormatTemplate: "{b} ({c} ≅ {d})",
+							ValueFormatter: func(f float64) string {
+								return humanize.FtoaWithDigits(f, 2)
+							},
 						},
 					}),
 					Radius:  "200",
@@ -150,6 +154,9 @@ func TestPieChart(t *testing.T) {
 						Label: SeriesLabel{
 							Show:           Ptr(true),
 							FormatTemplate: "{b} ({c} ≅ {d})",
+							ValueFormatter: func(f float64) string {
+								return humanize.FtoaWithDigits(f, 2)
+							},
 						},
 					}),
 					Radius:  "200",
@@ -233,6 +240,9 @@ func TestPieChart(t *testing.T) {
 						Label: SeriesLabel{
 							Show:           Ptr(true),
 							FormatTemplate: "{b} ({c} ≅ {d})",
+							ValueFormatter: func(f float64) string {
+								return humanize.FtoaWithDigits(f, 2)
+							},
 						},
 					}),
 					Radius: "150",
@@ -255,6 +265,49 @@ func TestPieChart(t *testing.T) {
 			},
 			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 1150 550\"><path  d=\"M 20 20\nL 1130 20\nL 1130 530\nL 20 530\nL 20 20\" style=\"stroke:none;fill:white\"/><text x=\"981\" y=\"56\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Fix label K (72586)</text><path  d=\"M 575 290\nL 717 241\nA 150 150 18.17 0 1 725 288\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 722 265\nL 737 262\nM 737 262\nL 752 262\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><text x=\"755\" y=\"267\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">C (149086 ≅ 5.04%)</text><path  d=\"M 575 290\nL 687 191\nA 150 150 22.62 0 1 717 241\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 704 215\nL 717 207\nM 717 207\nL 732 207\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><text x=\"735\" y=\"212\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">B (185596 ≅ 6.28%)</text><path  d=\"M 575 290\nL 575 140\nA 150 150 48.45 0 1 687 191\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 636 154\nL 642 140\nM 642 140\nL 657 140\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><text x=\"660\" y=\"145\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">A (397594 ≅ 13.45%)</text><path  d=\"M 575 290\nL 725 288\nA 150 150 17.58 0 1 719 333\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(238,102,102)\"/><path  d=\"M 723 310\nL 738 313\nM 738 313\nL 753 313\" style=\"stroke-width:1;stroke:rgb(238,102,102);fill:none\"/><text x=\"756\" y=\"318\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">D (144258 ≅ 4.88%)</text><path  d=\"M 575 290\nL 719 333\nA 150 150 14.65 0 1 703 368\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(115,192,222)\"/><path  d=\"M 711 351\nL 725 357\nM 725 357\nL 740 357\" style=\"stroke-width:1;stroke:rgb(115,192,222);fill:none\"/><text x=\"743\" y=\"362\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">E (120194 ≅ 4.06%)</text><path  d=\"M 575 290\nL 703 368\nA 150 150 14.32 0 1 680 398\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(59,162,114)\"/><path  d=\"M 692 383\nL 703 393\nM 703 393\nL 718 393\" style=\"stroke-width:1;stroke:rgb(59,162,114);fill:none\"/><text x=\"721\" y=\"398\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">F (117514 ≅ 3.97%)</text><path  d=\"M 575 290\nL 680 398\nA 150 150 12.12 0 1 655 417\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(252,132,82)\"/><path  d=\"M 667 407\nL 676 419\nM 676 419\nL 691 419\" style=\"stroke-width:1;stroke:rgb(252,132,82);fill:none\"/><text x=\"694\" y=\"424\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">G (99412 ≅ 3.36%)</text><path  d=\"M 575 290\nL 655 417\nA 150 150 11.11 0 1 629 430\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(154,96,180)\"/><path  d=\"M 642 424\nL 648 437\nM 648 437\nL 663 437\" style=\"stroke-width:1;stroke:rgb(154,96,180);fill:none\"/><text x=\"666\" y=\"442\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">H (91135 ≅ 3.08%)</text><path  d=\"M 575 290\nL 629 430\nA 150 150 10.64 0 1 602 438\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(234,124,204)\"/><path  d=\"M 615 434\nL 619 453\nM 619 453\nL 634 453\" style=\"stroke-width:1;stroke:rgb(234,124,204);fill:none\"/><text x=\"637\" y=\"458\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">I (87282 ≅ 2.95%)</text><path  d=\"M 575 290\nL 602 438\nA 150 150 9.36 0 1 578 440\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(123,142,198)\"/><path  d=\"M 589 439\nL 591 469\nM 591 469\nL 606 469\" style=\"stroke-width:1;stroke:rgb(123,142,198);fill:none\"/><text x=\"609\" y=\"474\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">J (76790 ≅ 2.59%)</text><path  d=\"M 575 290\nL 425 300\nA 150 150 3.61 0 1 425 291\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(183,166,190)\"/><path  d=\"M 426 295\nL 411 295\nM 411 295\nL 396 295\" style=\"stroke-width:1;stroke:rgb(183,166,190);fill:none\"/><text x=\"308\" y=\"300\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Z (29608 ≅ 1%)</text><path  d=\"M 575 290\nL 426 310\nA 150 150 3.97 0 1 425 300\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(243,192,171)\"/><path  d=\"M 426 305\nL 411 311\nM 411 311\nL 396 311\" style=\"stroke-width:1;stroke:rgb(243,192,171);fill:none\"/><text x=\"297\" y=\"316\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Y (32566 ≅ 1.1%)</text><path  d=\"M 575 290\nL 428 321\nA 150 150 4.00 0 1 426 310\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(123,178,153)\"/><path  d=\"M 428 315\nL 413 327\nM 413 327\nL 398 327\" style=\"stroke-width:1;stroke:rgb(123,178,153);fill:none\"/><text x=\"299\" y=\"332\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">X (32788 ≅ 1.1%)</text><path  d=\"M 575 290\nL 431 331\nA 150 150 4.12 0 1 428 321\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(190,217,228)\"/><path  d=\"M 430 325\nL 415 343\nM 415 343\nL 400 343\" style=\"stroke-width:1;stroke:rgb(190,217,228);fill:none\"/><text x=\"290\" y=\"348\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">W (33784 ≅ 1.14%)</text><path  d=\"M 575 290\nL 434 342\nA 150 150 4.47 0 1 431 331\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(237,184,184)\"/><path  d=\"M 433 336\nL 419 359\nM 419 359\nL 404 359\" style=\"stroke-width:1;stroke:rgb(237,184,184);fill:none\"/><text x=\"297\" y=\"364\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">V (36644 ≅ 1.24%)</text><path  d=\"M 575 290\nL 439 353\nA 150 150 4.56 0 1 434 342\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(243,222,176)\"/><path  d=\"M 437 347\nL 423 375\nM 423 375\nL 408 375\" style=\"stroke-width:1;stroke:rgb(243,222,176);fill:none\"/><text x=\"301\" y=\"380\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">U (37414 ≅ 1.26%)</text><path  d=\"M 575 290\nL 445 364\nA 150 150 4.81 0 1 439 353\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(196,215,187)\"/><path  d=\"M 442 358\nL 429 391\nM 429 391\nL 414 391\" style=\"stroke-width:1;stroke:rgb(196,215,187);fill:none\"/><text x=\"308\" y=\"396\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">T (39476 ≅ 1.33%)</text><path  d=\"M 575 290\nL 452 376\nA 150 150 5.03 0 1 445 364\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(159,170,203)\"/><path  d=\"M 449 370\nL 436 407\nM 436 407\nL 421 407\" style=\"stroke-width:1;stroke:rgb(159,170,203);fill:none\"/><text x=\"315\" y=\"412\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">S (41242 ≅ 1.39%)</text><path  d=\"M 575 290\nL 462 388\nA 150 150 6.27 0 1 452 376\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(234,164,215)\"/><path  d=\"M 457 382\nL 445 423\nM 445 423\nL 430 423\" style=\"stroke-width:1;stroke:rgb(234,164,215);fill:none\"/><text x=\"323\" y=\"428\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">R (51460 ≅ 1.74%)</text><path  d=\"M 575 290\nL 474 401\nA 150 150 6.55 0 1 462 388\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(167,133,183)\"/><path  d=\"M 468 394\nL 457 439\nM 457 439\nL 442 439\" style=\"stroke-width:1;stroke:rgb(167,133,183);fill:none\"/><text x=\"335\" y=\"444\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Q (53746 ≅ 1.81%)</text><path  d=\"M 575 290\nL 487 412\nA 150 150 6.68 0 1 474 401\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(245,163,128)\"/><path  d=\"M 481 406\nL 471 455\nM 471 455\nL 456 455\" style=\"stroke-width:1;stroke:rgb(245,163,128);fill:none\"/><text x=\"349\" y=\"460\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">P (54792 ≅ 1.85%)</text><path  d=\"M 575 290\nL 502 421\nA 150 150 6.76 0 1 487 412\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(85,176,133)\"/><path  d=\"M 495 416\nL 487 471\nM 487 471\nL 472 471\" style=\"stroke-width:1;stroke:rgb(85,176,133);fill:none\"/><text x=\"365\" y=\"476\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">O (55486 ≅ 1.87%)</text><path  d=\"M 575 290\nL 519 429\nA 150 150 6.86 0 1 502 421\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(154,203,223)\"/><path  d=\"M 511 425\nL 504 487\nM 504 487\nL 489 487\" style=\"stroke-width:1;stroke:rgb(154,203,223);fill:none\"/><text x=\"389\" y=\"492\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">N (56306 ≅ 1.9%)</text><path  d=\"M 575 290\nL 536 435\nA 150 150 7.10 0 1 519 429\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(235,145,145)\"/><path  d=\"M 528 432\nL 523 503\nM 523 503\nL 508 503\" style=\"stroke-width:1;stroke:rgb(235,145,145);fill:none\"/><text x=\"398\" y=\"508\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">M (58270 ≅ 1.97%)</text><path  d=\"M 575 290\nL 555 439\nA 150 150 7.17 0 1 536 435\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(244,210,134)\"/><path  d=\"M 546 437\nL 543 519\nM 543 519\nL 528 519\" style=\"stroke-width:1;stroke:rgb(244,210,134);fill:none\"/><text x=\"422\" y=\"524\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">L (58818 ≅ 1.99%)</text><path  d=\"M 575 290\nL 578 440\nA 150 150 8.85 0 1 555 439\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(171,207,154)\"/><path  d=\"M 567 439\nL 566 535\nM 566 535\nL 551 535\" style=\"stroke-width:1;stroke:rgb(171,207,154);fill:none\"/><text x=\"444\" y=\"540\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">K (72586 ≅ 2.45%)</text><path  d=\"M 575 290\nL 425 291\nA 150 150 3.60 0 1 425 281\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(238,201,228)\"/><path  d=\"M 426 286\nL 411 279\nM 411 279\nL 396 279\" style=\"stroke-width:1;stroke:rgb(238,201,228);fill:none\"/><text x=\"298\" y=\"284\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AA (29558 ≅ 1%)</text><path  d=\"M 575 290\nL 425 281\nA 150 150 3.58 0 1 426 272\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(191,196,212)\"/><path  d=\"M 426 277\nL 411 263\nM 411 263\nL 396 263\" style=\"stroke-width:1;stroke:rgb(191,196,212);fill:none\"/><text x=\"281\" y=\"268\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AB (29384 ≅ 0.99%)</text><path  d=\"M 575 290\nL 426 272\nA 150 150 3.43 0 1 427 263\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(219,227,216)\"/><path  d=\"M 427 268\nL 412 247\nM 412 247\nL 397 247\" style=\"stroke-width:1;stroke:rgb(219,227,216);fill:none\"/><text x=\"282\" y=\"252\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AC (28166 ≅ 0.95%)</text><path  d=\"M 575 290\nL 427 263\nA 150 150 3.29 0 1 429 254\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(246,236,214)\"/><path  d=\"M 429 259\nL 414 231\nM 414 231\nL 399 231\" style=\"stroke-width:1;stroke:rgb(246,236,214);fill:none\"/><text x=\"284\" y=\"236\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AD (26998 ≅ 0.91%)</text><path  d=\"M 575 290\nL 429 254\nA 150 150 3.28 0 1 432 246\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(243,219,219)\"/><path  d=\"M 431 251\nL 416 215\nM 416 215\nL 401 215\" style=\"stroke-width:1;stroke:rgb(243,219,219);fill:none\"/><text x=\"287\" y=\"220\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AE (26948 ≅ 0.91%)</text><path  d=\"M 575 290\nL 432 246\nA 150 150 3.18 0 1 434 238\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(221,233,237)\"/><path  d=\"M 433 243\nL 419 199\nM 419 199\nL 404 199\" style=\"stroke-width:1;stroke:rgb(221,233,237);fill:none\"/><text x=\"290\" y=\"204\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AF (26054 ≅ 0.88%)</text><path  d=\"M 575 290\nL 434 238\nA 150 150 3.14 0 1 437 231\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(157,185,172)\"/><path  d=\"M 436 235\nL 422 183\nM 422 183\nL 407 183\" style=\"stroke-width:1;stroke:rgb(157,185,172);fill:none\"/><text x=\"291\" y=\"188\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AG (25804 ≅ 0.87%)</text><path  d=\"M 575 290\nL 437 231\nA 150 150 3.14 0 1 441 223\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(246,220,210)\"/><path  d=\"M 439 227\nL 426 167\nM 426 167\nL 411 167\" style=\"stroke-width:1;stroke:rgb(246,220,210);fill:none\"/><text x=\"295\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AH (25730 ≅ 0.87%)</text><path  d=\"M 575 290\nL 441 223\nA 150 150 2.98 0 1 444 216\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(200,195,202)\"/><path  d=\"M 443 220\nL 430 151\nM 430 151\nL 415 151\" style=\"stroke-width:1;stroke:rgb(200,195,202);fill:none\"/><text x=\"304\" y=\"156\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AI (24438 ≅ 0.82%)</text><path  d=\"M 575 290\nL 444 216\nA 150 150 2.90 0 1 448 210\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(246,233,243)\"/><path  d=\"M 447 214\nL 434 135\nM 434 135\nL 419 135\" style=\"stroke-width:1;stroke:rgb(246,233,243);fill:none\"/><text x=\"312\" y=\"140\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AJ (23782 ≅ 0.8%)</text><path  d=\"M 575 290\nL 448 210\nA 150 150 2.79 0 1 452 204\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(123,142,198)\"/><path  d=\"M 451 207\nL 438 119\nM 438 119\nL 423 119\" style=\"stroke-width:1;stroke:rgb(123,142,198);fill:none\"/><text x=\"308\" y=\"124\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AK (22896 ≅ 0.77%)</text><path  d=\"M 575 290\nL 452 204\nA 150 150 2.61 0 1 456 198\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(171,207,154)\"/><path  d=\"M 455 201\nL 443 103\nM 443 103\nL 428 103\" style=\"stroke-width:1;stroke:rgb(171,207,154);fill:none\"/><text x=\"314\" y=\"108\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AL (21404 ≅ 0.72%)</text><path  d=\"M 575 290\nL 456 198\nA 150 150 52.28 0 1 575 140\nL 575 290\nZ\" style=\"stroke:none;fill:rgb(244,210,134)\"/><path  d=\"M 509 156\nL 503 87\nM 503 87\nL 488 87\" style=\"stroke-width:1;stroke:rgb(244,210,134);fill:none\"/><text x=\"355\" y=\"92\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">AM (428978 ≅ 14.52%)</text></svg>",
 			pngCRC: 0x14b2e7e0,
+		},
+		{
+			name: "pie_chart_with_value_formatter",
+			makeOptions: func() PieChartOption {
+				return PieChartOption{
+					SeriesList: NewSeriesListPie([]float64{
+						1048, 735, 580,
+					}, PieSeriesOption{
+						Names: []string{"A", "B", "C"},
+						Label: SeriesLabel{
+							Show: Ptr(true),
+							ValueFormatter: func(f float64) string {
+								return "ValueFormatter: " + humanize.FtoaWithDigits(f, 0)
+							},
+						},
+					}),
+				}
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 217 23\nL 247 23\nL 247 36\nL 217 36\nL 217 23\" style=\"stroke:none;fill:rgb(84,112,198)\"/><text x=\"249\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><path  d=\"M 280 23\nL 310 23\nL 310 36\nL 280 36\nL 280 23\" style=\"stroke:none;fill:rgb(145,204,117)\"/><text x=\"312\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><path  d=\"M 342 23\nL 372 23\nL 372 36\nL 342 36\nL 342 23\" style=\"stroke:none;fill:rgb(250,200,88)\"/><text x=\"374\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><path  d=\"M 300 218\nL 300 88\nA 130 130 159.66 0 1 345 340\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 427 196\nL 442 193\nM 442 193\nL 457 193\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><text x=\"460\" y=\"198\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">ValueFormatter: 1048</text><path  d=\"M 300 218\nL 345 340\nA 130 130 111.98 0 1 170 214\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 225 323\nL 216 335\nM 216 335\nL 201 335\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><text x=\"80\" y=\"340\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">ValueFormatter: 735</text><path  d=\"M 300 218\nL 170 214\nA 130 130 88.36 0 1 300 88\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 210 126\nL 200 115\nM 200 115\nL 185 115\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><text x=\"64\" y=\"120\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">ValueFormatter: 580</text></svg>",
+			pngCRC: 0x87b1a253,
+		},
+		{
+			name: "pie_chart_with_label_formatter_precedence",
+			makeOptions: func() PieChartOption {
+				return PieChartOption{
+					SeriesList: NewSeriesListPie([]float64{
+						1048, 735, 580,
+					}, PieSeriesOption{
+						Names: []string{"A", "B", "C"},
+						Label: SeriesLabel{
+							Show: Ptr(true),
+							ValueFormatter: func(f float64) string {
+								return "ValueFormatter: " + humanize.FtoaWithDigits(f, 0)
+							},
+							LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+								return "LabelFormatter: " + name + "=" + humanize.FtoaWithDigits(val, 0), nil
+							},
+						},
+					}),
+				}
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 217 23\nL 247 23\nL 247 36\nL 217 36\nL 217 23\" style=\"stroke:none;fill:rgb(84,112,198)\"/><text x=\"249\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><path  d=\"M 280 23\nL 310 23\nL 310 36\nL 280 36\nL 280 23\" style=\"stroke:none;fill:rgb(145,204,117)\"/><text x=\"312\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><path  d=\"M 342 23\nL 372 23\nL 372 36\nL 342 36\nL 342 23\" style=\"stroke:none;fill:rgb(250,200,88)\"/><text x=\"374\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><path  d=\"M 300 218\nL 300 88\nA 130 130 159.66 0 1 345 340\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 427 196\nL 442 193\nM 442 193\nL 457 193\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><text x=\"460\" y=\"198\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">LabelFormatter: A=1048</text><path  d=\"M 300 218\nL 345 340\nA 130 130 111.98 0 1 170 214\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 225 323\nL 216 335\nM 216 335\nL 201 335\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><text x=\"66\" y=\"340\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">LabelFormatter: B=735</text><path  d=\"M 300 218\nL 170 214\nA 130 130 88.36 0 1 300 88\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 210 126\nL 200 115\nM 200 115\nL 185 115\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><text x=\"50\" y=\"120\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">LabelFormatter: C=580</text></svg>",
+			pngCRC: 0xea07ff5b,
 		},
 		{
 			name: "custom_fonts",
@@ -312,6 +365,77 @@ func TestPieChart(t *testing.T) {
 			},
 			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 300 200\nL 300 72\nA 128 128 119.89 0 1 411 264\nL 300 200\nZ\" style=\"stroke-width:4;stroke:white;fill:rgb(84,112,198)\"/><path  d=\"M 300 200\nL 411 264\nA 128 128 84.08 0 1 248 317\nL 300 200\nZ\" style=\"stroke-width:4;stroke:white;fill:rgb(145,204,117)\"/><path  d=\"M 300 200\nL 248 317\nA 128 128 66.35 0 1 172 199\nL 300 200\nZ\" style=\"stroke-width:4;stroke:white;fill:rgb(250,200,88)\"/><path  d=\"M 300 200\nL 172 199\nA 128 128 55.37 0 1 228 94\nL 300 200\nZ\" style=\"stroke-width:4;stroke:white;fill:rgb(238,102,102)\"/><path  d=\"M 300 200\nL 228 94\nA 128 128 34.32 0 1 300 72\nL 300 200\nZ\" style=\"stroke-width:4;stroke:white;fill:rgb(115,192,222)\"/></svg>",
 			pngCRC: 0xde32ca61,
+		},
+		{
+			name: "mixed_label_style",
+			makeOptions: func() PieChartOption {
+				return PieChartOption{
+					SeriesList: NewSeriesListPie([]float64{
+						1048, 735, 580, 484, 300,
+					}, PieSeriesOption{
+						Names: []string{"Visible", "Hidden", "Styled", "Hidden", "Custom"},
+						Label: SeriesLabel{
+							Show: Ptr(true),
+							LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+								switch index {
+								case 0: // first - simple visible
+									return name + ": " + strconv.FormatFloat(val, 'f', 0, 64), nil
+								case 1, 3: // second and fourth - hidden
+									return "", nil
+								case 2: // third - styled with background
+									return "📊 " + name, &LabelStyle{
+										FontStyle:       FontStyle{FontColor: ColorWhite, FontSize: 13},
+										BackgroundColor: ColorPurple,
+										CornerRadius:    4,
+									}
+								default: // last - custom color only
+									return name + " ★", &LabelStyle{
+										FontStyle: FontStyle{FontColor: ColorGreen, FontSize: 14},
+									}
+								}
+							},
+						},
+					}),
+					Title: TitleOption{
+						Show: Ptr(false),
+					},
+					Legend: LegendOption{
+						Show: Ptr(false),
+					},
+				}
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 300 200\nL 300 56\nA 144 144 119.89 0 1 425 272\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 424 128\nL 437 121\nM 437 121\nL 452 121\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><text x=\"455\" y=\"126\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Visible: 1048</text><path  d=\"M 300 200\nL 425 272\nA 144 144 84.08 0 1 242 332\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 300 200\nL 242 332\nA 144 144 66.35 0 1 156 199\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 180 278\nL 167 286\nM 167 286\nL 152 286\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><path  d=\"M 100 270\nL 164 270\nL 164 270\nA 4 4 90.00 0 1 168 274\nL 168 291\nL 168 291\nA 4 4 90.00 0 1 164 295\nL 100 295\nL 100 295\nA 4 4 90.00 0 1 96 291\nL 96 274\nL 96 274\nA 4 4 90.00 0 1 100 270\nZ\" style=\"stroke:none;fill:purple\"/><text x=\"100\" y=\"291\" style=\"stroke:none;fill:white;font-size:16.6px;font-family:'Roboto Medium',sans-serif\">📊 Styled</text><path  d=\"M 300 200\nL 156 199\nA 144 144 55.37 0 1 219 81\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(238,102,102)\"/><path  d=\"M 300 200\nL 219 81\nA 144 144 34.32 0 1 300 56\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(115,192,222)\"/><path  d=\"M 258 63\nL 254 49\nM 254 49\nL 239 49\" style=\"stroke-width:1;stroke:rgb(115,192,222);fill:none\"/><text x=\"178\" y=\"54\" style=\"stroke:none;fill:green;font-size:17.9px;font-family:'Roboto Medium',sans-serif\">Custom ★</text></svg>",
+			pngCRC: 0x816bb9bd,
+		},
+		{
+			name: "border_styling",
+			makeOptions: func() PieChartOption {
+				values := []float64{100, 200, 150}
+				opt := NewPieChartOptionWithData(values)
+				opt.SeriesList[0].Label = SeriesLabel{
+					Show: Ptr(true),
+					LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+						return "background", &LabelStyle{
+							BackgroundColor: ColorBlue,
+							BorderColor:     ColorRed,
+							BorderWidth:     2,
+							CornerRadius:    5,
+						}
+					},
+				}
+				opt.SeriesList[1].Label = SeriesLabel{
+					Show: Ptr(true),
+					LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+						return "transparent", &LabelStyle{
+							BorderColor: ColorGreen,
+							BorderWidth: 1.5,
+						}
+					},
+				}
+				return opt
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 300 200\nL 300 72\nA 128 128 80.00 0 1 426 178\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 382 102\nL 391 91\nM 391 91\nL 406 91\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 410 79\nL 476 79\nL 476 79\nA 5 5 90.00 0 1 481 84\nL 481 95\nL 481 95\nA 5 5 90.00 0 1 476 100\nL 410 100\nL 410 100\nA 5 5 90.00 0 1 405 95\nL 405 84\nL 405 84\nA 5 5 90.00 0 1 410 79\nZ\" style=\"stroke-width:2;stroke:red;fill:blue\"/><text x=\"409\" y=\"96\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">background</text><path  d=\"M 300 200\nL 426 178\nA 128 128 160.00 0 1 189 264\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 343 320\nL 348 334\nM 348 334\nL 363 334\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><path  d=\"M 362 322\nL 437 322\nL 437 343\nL 362 343\nL 362 322\" style=\"stroke-width:1.5;stroke:green;fill:none\"/><text x=\"366\" y=\"339\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">transparent</text><path  d=\"M 300 200\nL 189 264\nA 128 128 120.00 0 1 300 72\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 190 137\nL 177 75\nM 177 75\nL 162 75\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><text x=\"110\" y=\"80\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">: 33.33%</text></svg>",
+			pngCRC: 0x69eb0e9d,
 		},
 	}
 

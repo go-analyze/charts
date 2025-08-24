@@ -21,7 +21,7 @@ type XAxisOption struct {
 	// Deprecated: Position is deprecated. Currently, when set to `bottom` and the labels would render on the top
 	// side of the axis line. However, the line would remain at the bottom of the chart. This seems confusing, and
 	// attempts to actually move the axis line to the top of the chart are currently very messy looking. For that
-	// reason this is currently deprecated. If a top X-Axis is valuable to you, please open a feature request.
+	// reason this is currently deprecated. If a top x-Axis is valuable to you, please open a feature request.
 	Position string
 	// BoundaryGap specifies that the chart should have additional space on the left and right, with data points being
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/dustin/go-humanize"
 	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw"
@@ -45,7 +46,7 @@ type PieChartOption struct {
 	Radius string
 	// SegmentGap provides the gap between each pie slice.
 	SegmentGap float64
-	// ValueFormatter defines how float values are rendered to strings, notably for series labels.
+	// Deprecated: ValueFormatter is deprecated, instead set the ValueFormatter at `SeriesList[*].Label.ValueFormatter`.
 	ValueFormatter ValueFormatter
 }
 
@@ -59,7 +60,6 @@ func newPieChart(p *Painter, opt PieChartOption) *pieChart {
 
 type sector struct {
 	value       float64
-	percent     float64
 	radius      float64
 	startAngle  float64 // starting angle (radians)
 	delta       float64 // sweep angle (radians)
@@ -67,15 +67,15 @@ type sector struct {
 	quadrant    int  // 1: top-right, 2: top-left, 3: bottom-left, 4: bottom-right
 	yCenter     bool // set to true if close to center in the y-axis
 	label       string
+	labelStyle  *LabelStyle
 	seriesLabel SeriesLabel
 	color       Color
 }
 
-func newSector(radius float64, value, currentValue, totalValue float64,
+func newSector(radius float64, index int, value, currentValue, totalValue float64,
 	label string, seriesLabel SeriesLabel, altFormatter ValueFormatter, color Color) sector {
 	s := sector{
 		value:       value,
-		percent:     value / totalValue,
 		radius:      radius,
 		startAngle:  chartdraw.PercentToRadians(currentValue/totalValue) - math.Pi/2,
 		delta:       chartdraw.PercentToRadians(value / totalValue),
@@ -98,15 +98,19 @@ func newSector(radius float64, value, currentValue, totalValue float64,
 	s.yCenter = (p > .15 && p < .35) || (p > .65 && p < .85)
 
 	if !flagIs(false, seriesLabel.Show) { // only set the label if it's being rendered
-		valueFormatter := seriesLabel.ValueFormatter
-		if valueFormatter == nil {
-			valueFormatter = altFormatter
-		}
-		if valueFormatter != nil && seriesLabel.FormatTemplate == "" {
-			s.label = valueFormatter(s.value)
-		} else {
-			s.label = labelFormatPie([]string{label}, seriesLabel.FormatTemplate, seriesLabel.ValueFormatter,
-				0, s.value, s.percent)
+		percent := value / totalValue
+		if seriesLabel.LabelFormatter != nil {
+			s.label, s.labelStyle = seriesLabel.LabelFormatter(index, label, s.value)
+		} else if seriesLabel.FormatTemplate != "" {
+			valueFormatter := seriesLabel.ValueFormatter
+			if valueFormatter == nil {
+				valueFormatter = altFormatter
+			}
+			s.label = labelFormatPie(label, seriesLabel.FormatTemplate, valueFormatter, s.value, percent)
+		} else if seriesLabel.ValueFormatter != nil {
+			s.label = seriesLabel.ValueFormatter(s.value)
+		} else { // default label
+			s.label = label + ": " + humanize.FtoaWithDigits(percent*100, 2) + "%"
 		}
 	}
 	return s
@@ -131,7 +135,7 @@ func (s *sector) calculateOuterLabelLines(cx, cy int, outerRadius, labelRadius f
 func (s *sector) calculateAdjustedOuterLabelPosition(cx, cy int, outerRadius, labelRadius float64, labelLineLength, prevY int,
 	labelFontSize float64, textBox Box) (lineStartX, lineStartY, lineBranchX, lineBranchY, lineEndX, lineEndY, textX, textY int) {
 	lsX, lsY, lbX, lbY, leX, _ := s.calculateOuterLabelLines(cx, cy, outerRadius, labelRadius, labelLineLength)
-	// adjust Y to avoid collisions
+	// adjust y to avoid collisions
 	threshold := ceilFloatToInt(labelFontSize) + 5
 	adjustedBranchY := lbY
 	if s.quadrant <= 2 {
@@ -230,7 +234,7 @@ func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabel
 			seriesRadius = getFlexibleRadius(space, defaultRadiusFactor, series.Radius)
 		}
 		color := theme.GetSeriesColor(index)
-		s := newSector(seriesRadius, series.Value, currentSum, total,
+		s := newSector(seriesRadius, index, series.Value, currentSum, total,
 			seriesNames[index], series.Label, valueFormatter, color)
 
 		switch s.quadrant {
@@ -303,7 +307,21 @@ func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabel
 		p.moveTo(lbX, lbY)
 		p.lineTo(leX, leY)
 		p.stroke(s.color, 1)
-		p.Text(s.label, textX, textY, 0, fontStyle)
+
+		// Apply label style overrides if present
+		var backgroundColor Color
+		var cornerRadius int
+		var borderColor Color
+		var borderWidth float64
+		if s.labelStyle != nil {
+			fontStyle = mergeFontStyles(s.labelStyle.FontStyle, fontStyle)
+			backgroundColor = s.labelStyle.BackgroundColor
+			cornerRadius = s.labelStyle.CornerRadius
+			borderColor = s.labelStyle.BorderColor
+			borderWidth = s.labelStyle.BorderWidth
+		}
+
+		drawLabelWithBackground(p, s.label, textX, textY, 0, fontStyle, backgroundColor, cornerRadius, borderColor, borderWidth)
 	}
 	return sectors, nil
 }

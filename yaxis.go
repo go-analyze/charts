@@ -10,7 +10,7 @@ type YAxisOption struct {
 	Show *bool
 	// Theme specifies the colors used for the y-axis.
 	Theme ColorPalette
-	// Title specifies a name for the axis. If set, the axis name is rendered on the outside of the Y-Axis.
+	// Title specifies a name for the axis. If set, the axis name is rendered on the outside of the y-Axis.
 	Title string
 	// TitleFontStyle specifies the font, size, and color for the axis title.
 	TitleFontStyle FontStyle

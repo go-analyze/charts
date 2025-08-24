@@ -73,7 +73,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			if opt.seriesLabelPainter != nil {
 				// the series label has been replaced by our MarkPoint
 				// This is why MarkPoints must be rendered BEFORE series labels
-				opt.seriesLabelPainter.values[index].Text = ""
+				opt.seriesLabelPainter.values[index].text = ""
 			}
 
 			painter.Pin(p.X, p.Y-opt.symbolSize>>1, opt.symbolSize, opt.fillColor, opt.fillColor, 0.0)

@@ -194,6 +194,59 @@ func TestDoughnutChart(t *testing.T) {
 			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 300 200\nL 440 87\nA 180 180 26.62 0 1 476 162\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 300 200\nL 369 34\nA 180 180 28.90 0 1 440 87\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 300 200\nL 300 20\nA 180 180 22.39 0 1 369 34\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 300 200\nL 476 162\nA 180 180 25.56 0 1 475 242\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(238,102,102)\"/><path  d=\"M 300 200\nL 475 242\nA 180 180 23.60 0 1 444 308\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(115,192,222)\"/><path  d=\"M 300 200\nL 444 308\nA 180 180 44.13 0 1 328 378\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(59,162,114)\"/><path  d=\"M 300 200\nL 328 378\nA 180 180 90.37 0 1 122 226\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(252,132,82)\"/><path  d=\"M 300 200\nL 122 226\nA 180 180 25.74 0 1 128 147\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(154,96,180)\"/><path  d=\"M 300 200\nL 128 147\nA 180 180 46.84 0 1 221 38\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(234,124,204)\"/><path  d=\"M 300 200\nL 221 38\nA 180 180 25.87 0 1 300 20\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(123,142,198)\"/><circle cx=\"300\" cy=\"200\" r=\"108\" style=\"stroke:none;fill:white\"/><path  d=\"M 341 101\nL 342 106\" style=\"stroke-width:2;stroke:rgb(84,112,198);fill:none\"/><text x=\"260\" y=\"119\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Cyprus: 6.21%</text><path  d=\"M 359 111\nL 354 119\" style=\"stroke-width:2;stroke:rgb(145,204,117);fill:none\"/><text x=\"261\" y=\"132\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Denmark: 8.02%</text><path  d=\"M 393 147\nL 378 155\" style=\"stroke-width:2;stroke:rgb(250,200,88);fill:none\"/><text x=\"294\" y=\"162\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Estonia: 7.39%</text><path  d=\"M 407 193\nL 386 194\" style=\"stroke-width:2;stroke:rgb(238,102,102);fill:none\"/><text x=\"302\" y=\"201\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Finland: 7.09%</text><path  d=\"M 401 237\nL 378 229\" style=\"stroke-width:2;stroke:rgb(115,192,222);fill:none\"/><text x=\"297\" y=\"236\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">France: 6.55%</text><path  d=\"M 362 288\nL 352 274\" style=\"stroke-width:2;stroke:rgb(59,162,114);fill:none\"/><text x=\"251\" y=\"274\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Germany: 12.25%</text><path  d=\"M 224 276\nL 239 261\" style=\"stroke-width:2;stroke:rgb(252,132,82);fill:none\"/><text x=\"239\" y=\"261\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Greece: 25.1%</text><path  d=\"M 195 177\nL 214 181\" style=\"stroke-width:2;stroke:rgb(154,96,180);fill:none\"/><text x=\"214\" y=\"188\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Hungary: 7.14%</text><path  d=\"M 224 125\nL 232 133\" style=\"stroke-width:2;stroke:rgb(234,124,204);fill:none\"/><text x=\"232\" y=\"146\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Ireland: 13.01%</text><path  d=\"M 266 98\nL 266 98\" style=\"stroke-width:2;stroke:rgb(123,142,198);fill:none\"/><text x=\"266\" y=\"111\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Italy: 7.18%</text></svg>",
 			pngCRC: 0x8673bb08,
 		},
+		{
+			name: "styled_custom_labels",
+			makeOptions: func() DoughnutChartOption {
+				return DoughnutChartOption{
+					SeriesList: NewSeriesListDoughnut([]float64{
+						1048, 735, 580, 484, 300,
+					}, DoughnutSeriesOption{
+						Names: []string{"Analytics", "Marketing", "Sales", "Support", "Development"},
+						Label: SeriesLabel{
+							Show: Ptr(true),
+							LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+								switch index {
+								case 0: // analytics - data icon with blue background
+									return "📊 " + name, &LabelStyle{
+										FontStyle:       FontStyle{FontColor: ColorWhite, FontSize: 12},
+										BackgroundColor: ColorBlue,
+										CornerRadius:    4,
+									}
+								case 1: // marketing - no icon with red background
+									return name, &LabelStyle{
+										FontStyle:       FontStyle{FontColor: ColorWhite, FontSize: 12},
+										BackgroundColor: ColorRed,
+										CornerRadius:    6,
+									}
+								case 2: // sales - money icon with green background
+									return "💰 " + name, &LabelStyle{
+										FontStyle:       FontStyle{FontColor: ColorBlack, FontSize: 11},
+										BackgroundColor: ColorLime,
+										CornerRadius:    3,
+										BorderColor:     ColorRed,
+										BorderWidth:     2,
+									}
+								case 3: // support - help icon with orange color
+									return "❓ " + name, &LabelStyle{
+										FontStyle: FontStyle{FontColor: ColorOrange, FontSize: 13},
+									}
+								default: // development, no label
+									return "", nil
+								}
+							},
+						},
+					}),
+					Title: TitleOption{
+						Show: Ptr(false),
+					},
+					Legend: LegendOption{
+						Show: Ptr(false),
+					},
+				}
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 300 200\nL 300 56\nA 144 144 119.89 0 1 425 272\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 424 128\nL 437 121\nM 437 121\nL 452 121\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 455 106\nL 535 106\nL 535 106\nA 4 4 90.00 0 1 539 110\nL 539 126\nL 539 126\nA 4 4 90.00 0 1 535 130\nL 455 130\nL 455 130\nA 4 4 90.00 0 1 451 126\nL 451 110\nL 451 110\nA 4 4 90.00 0 1 455 106\nZ\" style=\"stroke:none;fill:blue\"/><text x=\"455\" y=\"126\" style=\"stroke:none;fill:white;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">📊 Analytics</text><path  d=\"M 300 200\nL 425 272\nA 144 144 84.08 0 1 242 332\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 344 336\nL 349 351\nM 349 351\nL 364 351\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><path  d=\"M 369 336\nL 435 336\nL 435 336\nA 6 6 90.00 0 1 441 342\nL 441 354\nL 441 354\nA 6 6 90.00 0 1 435 360\nL 369 360\nL 369 360\nA 6 6 90.00 0 1 363 354\nL 363 342\nL 363 342\nA 6 6 90.00 0 1 369 336\nZ\" style=\"stroke:none;fill:red\"/><text x=\"367\" y=\"356\" style=\"stroke:none;fill:white;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Marketing</text><path  d=\"M 300 200\nL 242 332\nA 144 144 66.35 0 1 156 199\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 180 278\nL 167 286\nM 167 286\nL 152 286\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><path  d=\"M 103 272\nL 154 272\nL 154 272\nA 3 3 90.00 0 1 157 275\nL 157 292\nL 157 292\nA 3 3 90.00 0 1 154 295\nL 103 295\nL 103 295\nA 3 3 90.00 0 1 100 292\nL 100 275\nL 100 275\nA 3 3 90.00 0 1 103 272\nZ\" style=\"stroke-width:2;stroke:red;fill:lime\"/><text x=\"104\" y=\"291\" style=\"stroke:none;fill:black;font-size:14.1px;font-family:'Roboto Medium',sans-serif\">💰 Sales</text><path  d=\"M 300 200\nL 156 199\nA 144 144 55.37 0 1 219 81\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(238,102,102)\"/><path  d=\"M 173 133\nL 160 126\nM 160 126\nL 145 126\" style=\"stroke-width:1;stroke:rgb(238,102,102);fill:none\"/><text x=\"83\" y=\"131\" style=\"stroke:none;fill:rgb(255,165,0);font-size:16.6px;font-family:'Roboto Medium',sans-serif\">❓ Support</text><path  d=\"M 300 200\nL 219 81\nA 144 144 34.32 0 1 300 56\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(115,192,222)\"/><circle cx=\"300\" cy=\"200\" r=\"86\" style=\"stroke:none;fill:white\"/></svg>",
+			pngCRC: 0xc83980e4,
+		},
 	}
 
 	for i, tt := range tests {

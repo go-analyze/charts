@@ -129,11 +129,10 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 				}
 				if labelPainter != nil {
 					labelPainter.Add(labelValue{
-						index:     index,
-						value:     item,
-						x:         p.X,
-						y:         p.Y,
-						fontStyle: series.Label.FontStyle,
+						index: index,
+						value: item,
+						x:     p.X,
+						y:     p.Y,
 					})
 				}
 			}

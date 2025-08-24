@@ -253,7 +253,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	}
 }
 
-// calculateCategoryAxisRange does the same for category axes (common for X-axis in line/bar charts).
+// calculateCategoryAxisRange does the same for category axes (common for x-axis in line/bar charts).
 func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extraSpace bool,
 	labels []string, dataStartIndex int,
 	labelCountCfg int, labelCountAdjustment int, labelUnit float64,

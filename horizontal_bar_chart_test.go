@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/dustin/go-humanize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -121,6 +122,9 @@ func TestHorizontalBarChart(t *testing.T) {
 				series := opt.SeriesList
 				for i := range series {
 					series[i].Label.Show = Ptr(true)
+					series[i].Label.ValueFormatter = func(f float64) string {
+						return humanize.FtoaWithDigits(f, 2)
+					}
 				}
 				return opt
 			},

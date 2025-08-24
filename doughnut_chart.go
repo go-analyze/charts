@@ -177,7 +177,21 @@ func (d *doughnutChart) renderChart(result *defaultRenderResult) (Box, error) {
 			// finally, render the label text at its resolved position
 			fontStyle := fillFontStyleDefaults(mergeFontStyles(s.seriesLabel.FontStyle, opt.CenterValuesFontStyle),
 				defaultLabelFontSize, opt.Theme.GetLabelTextColor(), seriesPainter.font)
-			seriesPainter.Text(s.label, lp.box.Left, lp.box.Bottom, 0, fontStyle)
+
+			// Apply label style overrides if present
+			var backgroundColor Color
+			var cornerRadius int
+			var borderColor Color
+			var borderWidth float64
+			if s.labelStyle != nil {
+				fontStyle = mergeFontStyles(s.labelStyle.FontStyle, fontStyle)
+				backgroundColor = s.labelStyle.BackgroundColor
+				cornerRadius = s.labelStyle.CornerRadius
+				borderColor = s.labelStyle.BorderColor
+				borderWidth = s.labelStyle.BorderWidth
+			}
+
+			drawLabelWithBackground(seriesPainter, s.label, lp.box.Left, lp.box.Bottom, 0, fontStyle, backgroundColor, cornerRadius, borderColor, borderWidth)
 		}
 	} else if strings.EqualFold(opt.CenterValues, "sum") {
 		opt.CenterValuesFontStyle = fillFontStyleDefaults(opt.CenterValuesFontStyle,

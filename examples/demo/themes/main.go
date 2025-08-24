@@ -154,8 +154,10 @@ func renderMultiChart(themeName string) {
 		Theme: theme.WithBackgroundColor(charts.ColorTransparent),
 		SeriesList: charts.NewSeriesListPie(pieValues, charts.PieSeriesOption{
 			Label: charts.SeriesLabel{
-				Show:           charts.Ptr(true),
-				FormatTemplate: "{b} ({d})",
+				Show: charts.Ptr(true),
+				LabelFormatter: func(index int, name string, val float64) (string, *charts.LabelStyle) {
+					return name + "(" + charts.FormatValueHumanizeShort(val, 2, false) + ")", nil
+				},
 			},
 		}),
 		Radius:  "64",

@@ -61,13 +61,13 @@ type ColorPalette interface {
 	GetYAxisTextColor() Color
 	GetTitleBorderColor() Color
 	GetLegendBorderColor() Color
-	// WithXAxisColor returns a new ColorPalette with the specified X-axis color.
+	// WithXAxisColor returns a new ColorPalette with the specified x-axis color.
 	// Use WithXAxisTextColor to adjust the text color.
 	WithXAxisColor(Color) ColorPalette
-	// WithYAxisColor returns a new ColorPalette with the specified Y-axis color.
+	// WithYAxisColor returns a new ColorPalette with the specified y-axis color.
 	// Use WithYAxisTextColor to adjust the text color.
 	WithYAxisColor(Color) ColorPalette
-	// WithYAxisSeriesColor returns a new ColorPalette using the specified series color for Y-axis and values.
+	// WithYAxisSeriesColor returns a new ColorPalette using the specified series color for y-axis and values.
 	WithYAxisSeriesColor(int) ColorPalette
 	// WithTitleTextColor returns a new ColorPalette with the specified title text color.
 	WithTitleTextColor(Color) ColorPalette

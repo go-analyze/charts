@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 
+	"github.com/dustin/go-humanize"
 	"github.com/golang/freetype/truetype"
 )
 
@@ -43,7 +44,7 @@ type FunnelChartOption struct {
 	Title TitleOption
 	// Legend contains options for the data legend.
 	Legend LegendOption
-	// ValueFormatter defines how float values are rendered to strings, notably for series labels.
+	// Deprecated: ValueFormatter is deprecated, instead set the ValueFormatter at `SeriesList[*].Label.ValueFormatter`.
 	ValueFormatter ValueFormatter
 }
 
@@ -66,6 +67,7 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 	var y int
 	widthList := make([]int, seriesCount)
 	textList := make([]string, seriesCount)
+	labelStyleList := make([]*LabelStyle, seriesCount)
 	seriesNames := opt.SeriesList.names()
 	offset := max - min
 	for index, item := range opt.SeriesList {
@@ -82,15 +84,19 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 			percent = item.Value / max
 		}
 		if !flagIs(false, item.Label.Show) {
-			valueFormatter := item.Label.ValueFormatter
-			if valueFormatter == nil {
-				valueFormatter = opt.ValueFormatter
-			}
-			if valueFormatter != nil && item.Label.FormatTemplate == "" {
-				textList[index] = valueFormatter(item.Value)
-			} else {
-				textList[index] = labelFormatFunnel(seriesNames, item.Label.FormatTemplate, item.Label.ValueFormatter,
-					index, item.Value, percent)
+			if item.Label.LabelFormatter != nil {
+				textList[index], labelStyleList[index] = item.Label.LabelFormatter(index, seriesNames[index], item.Value)
+			} else if item.Label.FormatTemplate != "" {
+				valueFormatter := item.Label.ValueFormatter
+				if valueFormatter == nil {
+					valueFormatter = opt.ValueFormatter
+				}
+				textList[index] = labelFormatFunnel(seriesNames[index], item.Label.FormatTemplate, valueFormatter,
+					item.Value, percent)
+			} else if item.Label.ValueFormatter != nil {
+				textList[index] = item.Label.ValueFormatter(item.Value)
+			} else { // default label
+				textList[index] = seriesNames[index] + "(" + humanize.FtoaWithDigits(percent*100, 2) + "%)"
 			}
 		}
 	}
@@ -132,10 +138,24 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 		text := textList[index]
 		fontStyle := fillFontStyleDefaults(opt.SeriesList[index].Label.FontStyle,
 			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font, seriesPainter.font)
+
+		// Apply label style overrides if present
+		var backgroundColor Color
+		var cornerRadius int
+		var borderColor Color
+		var borderWidth float64
+		if labelStyleList[index] != nil {
+			fontStyle = mergeFontStyles(labelStyleList[index].FontStyle, fontStyle)
+			backgroundColor = labelStyleList[index].BackgroundColor
+			cornerRadius = labelStyleList[index].CornerRadius
+			borderColor = labelStyleList[index].BorderColor
+			borderWidth = labelStyleList[index].BorderWidth
+		}
+
 		textBox := seriesPainter.MeasureText(text, 0, fontStyle)
 		textX := width>>1 - textBox.Width()>>1
 		textY := y + h>>1
-		seriesPainter.Text(text, textX, textY, 0, fontStyle)
+		drawLabelWithBackground(seriesPainter, text, textX, textY, 0, fontStyle, backgroundColor, cornerRadius, borderColor, borderWidth)
 		y += h + gap
 	}
 
