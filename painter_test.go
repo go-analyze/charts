@@ -990,3 +990,211 @@ func TestMultipleChartsOnPainter(t *testing.T) {
 	require.NoError(t, err)
 	assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 800 600\"><path  d=\"M 0 0\nL 800 0\nL 800 600\nL 0 600\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 0 300\nL 400 300\nL 400 600\nL 0 600\nL 0 300\" style=\"stroke:none;fill:white\"/><text x=\"185\" y=\"336\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Title</text><text x=\"187\" y=\"352\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Sub</text><path  d=\"M 200 473\nL 200 388\nA 85 85 119.89 0 1 274 515\nL 200 473\nZ\" style=\"stroke:none;fill:rgb(91,143,249)\"/><path  d=\"M 273 431\nL 286 423\nM 286 423\nL 301 423\" style=\"stroke-width:1;stroke:rgb(91,143,249);fill:none\"/><text x=\"304\" y=\"428\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Series-A: 33.3%</text><path  d=\"M 200 473\nL 274 515\nA 85 85 84.08 0 1 165 551\nL 200 473\nZ\" style=\"stroke:none;fill:rgb(90,216,166)\"/><path  d=\"M 226 553\nL 231 568\nM 231 568\nL 246 568\" style=\"stroke-width:1;stroke:rgb(90,216,166);fill:none\"/><text x=\"249\" y=\"573\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Series-B: 23.35%</text><path  d=\"M 200 473\nL 165 551\nA 85 85 66.35 0 1 115 473\nL 200 473\nZ\" style=\"stroke:none;fill:rgb(93,112,146)\"/><path  d=\"M 129 519\nL 116 527\nM 116 527\nL 101 527\" style=\"stroke-width:1;stroke:rgb(93,112,146);fill:none\"/><text x=\"0\" y=\"532\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Series-C: 18.43%</text><path  d=\"M 200 473\nL 115 473\nA 85 85 55.37 0 1 152 403\nL 200 473\nZ\" style=\"stroke:none;fill:rgb(246,189,22)\"/><path  d=\"M 125 434\nL 112 426\nM 112 426\nL 97 426\" style=\"stroke-width:1;stroke:rgb(246,189,22);fill:none\"/><text x=\"-4\" y=\"431\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Series-D: 15.37%</text><path  d=\"M 200 473\nL 152 403\nA 85 85 34.32 0 1 200 388\nL 200 473\nZ\" style=\"stroke:none;fill:rgb(111,94,249)\"/><path  d=\"M 175 392\nL 171 378\nM 171 378\nL 156 378\" style=\"stroke-width:1;stroke:rgb(111,94,249);fill:none\"/><text x=\"64\" y=\"383\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Series-E: 9.53%</text><path  d=\"M 400 300\nL 800 300\nL 800 600\nL 400 600\nL 400 300\" style=\"stroke:none;fill:white\"/><text x=\"409\" y=\"316\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">189</text><text x=\"409\" y=\"344\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">168</text><text x=\"409\" y=\"372\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">147</text><text x=\"409\" y=\"400\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">126</text><text x=\"409\" y=\"428\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">105</text><text x=\"418\" y=\"456\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">84</text><text x=\"418\" y=\"484\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">63</text><text x=\"418\" y=\"512\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">42</text><text x=\"418\" y=\"540\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">21</text><text x=\"427\" y=\"568\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 442 310\nL 790 310\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 338\nL 790 338\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 366\nL 790 366\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 394\nL 790 394\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 422\nL 790 422\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 451\nL 790 451\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 479\nL 790 479\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 507\nL 790 507\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 442 535\nL 790 535\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 446 564\nL 790 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 446 569\nL 446 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 477 569\nL 477 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 508 569\nL 508 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 539 569\nL 539 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 571 569\nL 571 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 602 569\nL 602 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 633 569\nL 633 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 664 569\nL 664 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 696 569\nL 696 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 727 569\nL 727 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 758 569\nL 758 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 790 569\nL 790 564\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"445\" y=\"590\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Jan</text><text x=\"507\" y=\"590\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Mar</text><text x=\"570\" y=\"590\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">May</text><text x=\"632\" y=\"590\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Jul</text><text x=\"663\" y=\"590\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Aug</text><text x=\"726\" y=\"590\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Oct</text><text x=\"763\" y=\"590\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Dec</text><path  d=\"M 451 562\nL 458 562\nL 458 563\nL 451 563\nL 451 562\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 479 558\nL 486 558\nL 486 563\nL 479 563\nL 479 558\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 508 555\nL 515 555\nL 515 563\nL 508 563\nL 508 555\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 537 533\nL 544 533\nL 544 563\nL 537 563\nL 537 533\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 565 530\nL 572 530\nL 572 563\nL 565 563\nL 565 530\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 594 461\nL 601 461\nL 601 563\nL 594 563\nL 594 461\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 623 382\nL 630 382\nL 630 563\nL 623 563\nL 623 382\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 651 347\nL 658 347\nL 658 563\nL 651 563\nL 651 347\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 680 521\nL 687 521\nL 687 563\nL 680 563\nL 680 521\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 709 538\nL 716 538\nL 716 563\nL 709 563\nL 709 538\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 737 556\nL 744 556\nL 744 563\nL 737 563\nL 737 556\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 766 560\nL 773 560\nL 773 563\nL 766 563\nL 766 560\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 461 561\nL 468 561\nL 468 563\nL 461 563\nL 461 561\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 489 557\nL 496 557\nL 496 563\nL 489 563\nL 489 557\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 518 552\nL 525 552\nL 525 563\nL 518 563\nL 518 552\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 547 529\nL 554 529\nL 554 563\nL 547 563\nL 547 529\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 575 526\nL 582 526\nL 582 563\nL 575 563\nL 575 526\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 604 469\nL 611 469\nL 611 563\nL 604 563\nL 604 469\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 633 329\nL 640 329\nL 640 563\nL 633 563\nL 633 329\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 661 320\nL 668 320\nL 668 563\nL 661 563\nL 661 320\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 690 499\nL 697 499\nL 697 563\nL 690 563\nL 690 499\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 719 539\nL 726 539\nL 726 563\nL 719 563\nL 719 539\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 747 556\nL 754 556\nL 754 563\nL 747 563\nL 747 556\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 776 561\nL 783 561\nL 783 563\nL 776 563\nL 776 561\" style=\"stroke:none;fill:rgb(145,204,117)\"/><text x=\"450\" y=\"557\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">2</text><text x=\"473\" y=\"553\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">4.9</text><text x=\"507\" y=\"550\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">7</text><text x=\"527\" y=\"528\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">23.2</text><text x=\"555\" y=\"525\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">25.6</text><text x=\"584\" y=\"456\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">76.7</text><text x=\"610\" y=\"377\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">135.6</text><text x=\"638\" y=\"342\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">162.2</text><text x=\"670\" y=\"516\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">32.6</text><text x=\"705\" y=\"533\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">20</text><text x=\"731\" y=\"551\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">6.4</text><text x=\"760\" y=\"555\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">3.3</text><text x=\"455\" y=\"556\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">2.6</text><text x=\"483\" y=\"552\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">5.9</text><text x=\"517\" y=\"547\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">9</text><text x=\"537\" y=\"524\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">26.4</text><text x=\"565\" y=\"521\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">28.7</text><text x=\"594\" y=\"464\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">70.7</text><text x=\"620\" y=\"324\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">175.6</text><text x=\"648\" y=\"315\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">182.2</text><text x=\"680\" y=\"494\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">48.7</text><text x=\"709\" y=\"534\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">18.8</text><text x=\"746\" y=\"551\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">6</text><text x=\"770\" y=\"556\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">2.3</text><path  d=\"M 0 0\nL 800 0\nL 800 300\nL 0 300\nL 0 0\" style=\"stroke:none;fill:white\"/><path  d=\"M 350 19\nL 380 19\" style=\"stroke-width:3;stroke:rgb(255,100,100);fill:none\"/><circle cx=\"365\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(255,100,100);fill:rgb(255,100,100)\"/><text x=\"382\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1</text><path  d=\"M 411 19\nL 441 19\" style=\"stroke-width:3;stroke:rgb(255,210,100);fill:none\"/><circle cx=\"426\" cy=\"19\" r=\"5\" style=\"stroke-width:3;stroke:rgb(255,210,100);fill:rgb(255,210,100)\"/><text x=\"443\" y=\"25\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">2</text><text x=\"10\" y=\"26\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Line</text><text x=\"9\" y=\"52\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.44k</text><text x=\"9\" y=\"76\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.28k</text><text x=\"9\" y=\"100\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1.12k</text><text x=\"21\" y=\"124\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">960</text><text x=\"21\" y=\"148\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">800</text><text x=\"21\" y=\"172\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">640</text><text x=\"21\" y=\"196\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">480</text><text x=\"21\" y=\"220\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">320</text><text x=\"21\" y=\"244\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">160</text><text x=\"39\" y=\"268\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">0</text><path  d=\"M 54 46\nL 790 46\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 70\nL 790 70\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 94\nL 790 94\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 118\nL 790 118\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 142\nL 790 142\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 167\nL 790 167\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 191\nL 790 191\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 215\nL 790 215\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 54 239\nL 790 239\" style=\"stroke-width:1;stroke:rgb(224,230,242);fill:none\"/><path  d=\"M 58 264\nL 790 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 58 269\nL 58 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 162 269\nL 162 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 267 269\nL 267 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 371 269\nL 371 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 476 269\nL 476 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 580 269\nL 580 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 685 269\nL 685 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><path  d=\"M 790 269\nL 790 264\" style=\"stroke-width:1;stroke:rgb(110,112,121);fill:none\"/><text x=\"105\" y=\"290\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><text x=\"209\" y=\"290\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><text x=\"314\" y=\"290\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">C</text><text x=\"418\" y=\"290\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">D</text><text x=\"524\" y=\"290\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">E</text><text x=\"628\" y=\"290\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">F</text><text x=\"732\" y=\"290\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">G</text><path  d=\"M 110 246\nL 214 245\nL 319 249\nL 423 244\nL 528 251\nL 632 230\nL 737 233\" style=\"stroke-width:2;stroke:rgb(255,100,100);fill:none\"/><circle cx=\"110\" cy=\"246\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,100,100);fill:white\"/><circle cx=\"214\" cy=\"245\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,100,100);fill:white\"/><circle cx=\"319\" cy=\"249\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,100,100);fill:white\"/><circle cx=\"423\" cy=\"244\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,100,100);fill:white\"/><circle cx=\"528\" cy=\"251\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,100,100);fill:white\"/><circle cx=\"632\" cy=\"230\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,100,100);fill:white\"/><circle cx=\"737\" cy=\"233\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,100,100);fill:white\"/><path  d=\"M 110 140\nL 214 123\nL 319 128\nL 423 123\nL 528 69\nL 632 63\nL 737 65\" style=\"stroke-width:2;stroke:rgb(255,210,100);fill:none\"/><circle cx=\"110\" cy=\"140\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,210,100);fill:white\"/><circle cx=\"214\" cy=\"123\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,210,100);fill:white\"/><circle cx=\"319\" cy=\"128\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,210,100);fill:white\"/><circle cx=\"423\" cy=\"123\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,210,100);fill:white\"/><circle cx=\"528\" cy=\"69\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,210,100);fill:white\"/><circle cx=\"632\" cy=\"63\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,210,100);fill:white\"/><circle cx=\"737\" cy=\"65\" r=\"2\" style=\"stroke-width:1;stroke:rgb(255,210,100);fill:white\"/></svg>", buf)
 }
+
+func TestDashedLineStroke(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		fn     func(*Painter)
+		svg    string
+		pngCRC uint32
+	}{
+		{
+			name: "simple_dashed",
+			fn: func(p *Painter) {
+				p.DashedLineStroke([]Point{
+					{X: 10, Y: 20},
+					{X: 30, Y: 40},
+					{X: 50, Y: 20},
+				}, ColorBlack, 1, []float64{5, 3})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"5.0, 3.0\" d=\"M 10 20\nL 30 40\nL 50 20\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+			pngCRC: 0xfb96dbae,
+		},
+		{
+			name: "thick_dashed",
+			fn: func(p *Painter) {
+				p.DashedLineStroke([]Point{
+					{X: 10, Y: 50},
+					{X: 100, Y: 50},
+					{X: 100, Y: 150},
+					{X: 200, Y: 150},
+				}, ColorRed, 3, []float64{8, 4})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"8.0, 4.0\" d=\"M 10 50\nL 100 50\nL 100 150\nL 200 150\" style=\"stroke-width:3;stroke:red;fill:none\"/></svg>",
+			pngCRC: 0x5a3cb7f6,
+		},
+		{
+			name: "short_dash_pattern",
+			fn: func(p *Painter) {
+				p.DashedLineStroke([]Point{
+					{X: 50, Y: 100},
+					{X: 350, Y: 100},
+				}, ColorBlue, 2, []float64{2, 2})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"2.0, 2.0\" d=\"M 50 100\nL 350 100\" style=\"stroke-width:2;stroke:blue;fill:none\"/></svg>",
+			pngCRC: 0xd1da5da7,
+		},
+		{
+			name: "long_dash_pattern",
+			fn: func(p *Painter) {
+				p.DashedLineStroke([]Point{
+					{X: 50, Y: 150},
+					{X: 350, Y: 150},
+				}, ColorGreen, 2, []float64{15, 10})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"15.0, 10.0\" d=\"M 50 150\nL 350 150\" style=\"stroke-width:2;stroke:green;fill:none\"/></svg>",
+			pngCRC: 0xa031e6a2,
+		},
+		{
+			name: "complex_path",
+			fn: func(p *Painter) {
+				p.DashedLineStroke([]Point{
+					{X: 50, Y: 200},
+					{X: 100, Y: 180},
+					{X: 150, Y: 220},
+					{X: 200, Y: 160},
+					{X: 250, Y: 240},
+					{X: 300, Y: 180},
+				}, ColorFromHex("#FF6B35"), 2, []float64{6, 4})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"6.0, 4.0\" d=\"M 50 200\nL 100 180\nL 150 220\nL 200 160\nL 250 240\nL 300 180\" style=\"stroke-width:2;stroke:rgb(255,107,53);fill:none\"/></svg>",
+			pngCRC: 0x193a9802,
+		},
+	}
+
+	for i, tc := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
+			svgP := NewPainter(PainterOptions{
+				Width:        400,
+				Height:       300,
+				OutputFormat: ChartOutputSVG,
+			})
+			tc.fn(svgP)
+			buf, err := svgP.Bytes()
+			require.NoError(t, err)
+			assertEqualSVG(t, tc.svg, buf)
+
+			pngP := NewPainter(PainterOptions{
+				OutputFormat: ChartOutputPNG,
+				Width:        400,
+				Height:       300,
+			})
+			tc.fn(pngP)
+			data, err := pngP.Bytes()
+			require.NoError(t, err)
+			assertEqualPNGCRC(t, tc.pngCRC, data)
+		})
+	}
+}
+
+func TestSmoothDashedLineStroke(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		fn     func(*Painter)
+		svg    string
+		pngCRC uint32
+	}{
+		{
+			name: "smooth_dashed_basic",
+			fn: func(p *Painter) {
+				p.SmoothDashedLineStroke([]Point{
+					{X: 10, Y: 20},
+					{X: 20, Y: 40},
+					{X: 30, Y: 60},
+					{X: 40, Y: 50},
+					{X: 50, Y: 40},
+				}, 0.5, ColorBlack, 1, []float64{4, 2})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"4.0, 2.0\" d=\"M 10 20\nQ20,40 22,45\nQ30,60 32,57\nQ40,50 42,47\nQ40,50 50,40\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+			pngCRC: 0x13085dce,
+		},
+		{
+			name: "smooth_dashed_high_tension",
+			fn: func(p *Painter) {
+				p.SmoothDashedLineStroke([]Point{
+					{X: 50, Y: 50},
+					{X: 100, Y: 100},
+					{X: 150, Y: 60},
+					{X: 200, Y: 120},
+					{X: 250, Y: 80},
+				}, 0.8, ColorRed, 2, []float64{8, 4})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"8.0, 4.0\" d=\"M 50 50\nQ100,100 120,84\nQ150,60 170,84\nQ200,120 220,104\nQ200,120 250,80\" style=\"stroke-width:2;stroke:red;fill:none\"/></svg>",
+			pngCRC: 0x31c46648,
+		},
+		{
+			name: "smooth_dashed_low_tension",
+			fn: func(p *Painter) {
+				p.SmoothDashedLineStroke([]Point{
+					{X: 50, Y: 150},
+					{X: 100, Y: 180},
+					{X: 150, Y: 140},
+					{X: 200, Y: 200},
+					{X: 250, Y: 160},
+				}, 0.2, ColorBlue, 1.5, []float64{6, 3})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"6.0, 3.0\" d=\"M 50 150\nQ100,180 105,176\nQ150,140 155,146\nQ200,200 205,196\nQ200,200 250,160\" style=\"stroke-width:1.5;stroke:blue;fill:none\"/></svg>",
+			pngCRC: 0xb7a95b2c,
+		},
+		{
+			name: "smooth_dashed_complex",
+			fn: func(p *Painter) {
+				points := []Point{
+					{X: 30, Y: 220},
+					{X: 60, Y: 200},
+					{X: 90, Y: 240},
+					{X: 120, Y: 180},
+					{X: 150, Y: 260},
+					{X: 180, Y: 200},
+					{X: 210, Y: 220},
+					{X: 240, Y: 180},
+				}
+				p.SmoothDashedLineStroke(points, 0.6, ColorFromHex("#9932CC"), 2, []float64{10, 5})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"10.0, 5.0\" d=\"M 30 220\nQ60,200 69,212\nQ90,240 99,222\nQ120,180 129,204\nQ150,260 159,242\nQ180,200 189,206\nQ210,220 219,208\nQ210,220 240,180\" style=\"stroke-width:2;stroke:rgb(153,50,204);fill:none\"/></svg>",
+			pngCRC: 0x50be7e30,
+		},
+		{
+			name: "smooth_dashed_dotted",
+			fn: func(p *Painter) {
+				p.SmoothDashedLineStroke([]Point{
+					{X: 300, Y: 50},
+					{X: 320, Y: 80},
+					{X: 340, Y: 40},
+					{X: 360, Y: 90},
+					{X: 380, Y: 60},
+				}, 0.7, ColorGreen, 3, []float64{1, 3})
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 300\"><path stroke-dasharray=\"1.0, 3.0\" d=\"M 300 50\nQ320,80 327,66\nQ340,40 347,57\nQ360,90 367,79\nQ360,90 380,60\" style=\"stroke-width:3;stroke:green;fill:none\"/></svg>",
+			pngCRC: 0xd1b5c8bf,
+		},
+	}
+
+	for i, tc := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
+			svgP := NewPainter(PainterOptions{
+				Width:        400,
+				Height:       300,
+				OutputFormat: ChartOutputSVG,
+			})
+			tc.fn(svgP)
+			buf, err := svgP.Bytes()
+			require.NoError(t, err)
+			assertEqualSVG(t, tc.svg, buf)
+
+			pngP := NewPainter(PainterOptions{
+				OutputFormat: ChartOutputPNG,
+				Width:        400,
+				Height:       300,
+			})
+			tc.fn(pngP)
+			data, err := pngP.Bytes()
+			require.NoError(t, err)
+			assertEqualPNGCRC(t, tc.pngCRC, data)
+		})
+	}
+}

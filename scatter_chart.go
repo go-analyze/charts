@@ -173,6 +173,7 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 				seriesValues:       series.avgValues(),
 				axisRange:          yRange,
 				trends:             series.TrendLine,
+				dashed:             false, // Default for scatter charts
 			})
 		}
 	}

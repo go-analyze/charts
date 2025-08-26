@@ -153,7 +153,8 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
 	markPointPainter := newMarkPointPainter(seriesPainter)
 	markLinePainter := newMarkLinePainter(seriesPainter)
-	rendererList := []renderer{markPointPainter, markLinePainter}
+	trendLinePainter := newTrendLinePainter(seriesPainter)
+	rendererList := []renderer{markPointPainter, markLinePainter, trendLinePainter}
 
 	seriesNames := opt.SeriesList.names()
 	var priorSeriesPoints []Point
@@ -355,6 +356,16 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 					seriesLabelPainter: labelPainter,
 				})
 			}
+		}
+		if len(series.TrendLine) > 0 {
+			trendLinePainter.add(trendLineRenderOption{
+				defaultStrokeColor: opt.Theme.GetSeriesTrendColor(index),
+				xValues:            xValues,
+				seriesValues:       series.Values,
+				axisRange:          yRange,
+				trends:             series.TrendLine,
+				dashed:             true, // Default for line charts
+			})
 		}
 
 		// Save these points as "priorSeriesPoints" for the next series to stack onto (if needed)

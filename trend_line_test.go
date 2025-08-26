@@ -142,6 +142,20 @@ func TestMovingAverageTrend(t *testing.T) {
 	for i := range expected {
 		assert.InDelta(t, expected[i], result[i], 1e-9)
 	}
+
+	t.Run("window_larger_than_data", func(t *testing.T) {
+		input := []float64{1, 2, 3, 4}
+		result, err := movingAverageTrend(input, 10) // window > len(input)
+		require.NoError(t, err)
+		assert.Len(t, result, len(input))
+	})
+
+	t.Run("massive_window", func(t *testing.T) {
+		input := []float64{1, 2, 3, 4, 5}
+		result, err := movingAverageTrend(input, 1000)
+		require.NoError(t, err)
+		assert.Len(t, result, len(input))
+	})
 }
 
 func TestSolveLinearSystem(t *testing.T) {

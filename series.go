@@ -66,11 +66,14 @@ type LabelStyle struct {
 type SeriesLabelFormatter func(index int, name string, val float64) (string, *LabelStyle)
 
 const (
-	SeriesMarkTypeMax      = "max"
-	SeriesMarkTypeMin      = "min"
-	SeriesMarkTypeAverage  = "average"
-	SeriesTrendTypeLinear  = "linear"
-	SeriesTrendTypeCubic   = "cubic"
+	SeriesMarkTypeMax     = "max"
+	SeriesMarkTypeMin     = "min"
+	SeriesMarkTypeAverage = "average"
+	// SeriesTrendTypeLinear represents a linear regression trend line that fits a straight line through the data points.
+	SeriesTrendTypeLinear = "linear"
+	// SeriesTrendTypeCubic represents a cubic polynomial (degree 3) regression trend line that fits a curved line through the data points.
+	SeriesTrendTypeCubic = "cubic"
+	// SeriesTrendTypeAverage represents a moving average trend line that smooths data using a sliding window average.
 	SeriesTrendTypeAverage = "average"
 )
 
@@ -179,6 +182,8 @@ type SeriesTrendLine struct {
 	StrokeSmoothingTension float64
 	// LineColor overrides the theme color for this trend line.
 	LineColor Color
+	// DashedLine indicates if the trend line will be a dashed line. Default depends on chart type.
+	DashedLine *bool
 	// Type specifies the trend line type: "linear", "cubic", "average".
 	Type string
 	// Window is only used for average, defining how many points to consider.
@@ -293,6 +298,8 @@ type LineSeries struct {
 	// MarkLine provides a configuration for mark lines for this series. When using a MarkLine, you will want to
 	// configure padding to the chart on the right for the values.
 	MarkLine SeriesMarkLine
+	// TrendLine provides configurations for trend lines for this series.
+	TrendLine []SeriesTrendLine
 	// Symbol specifies a custom symbol for the series.
 	Symbol Symbol
 }
@@ -1479,6 +1486,7 @@ type LineSeriesOption struct {
 	Names     []string
 	MarkPoint SeriesMarkPoint
 	MarkLine  SeriesMarkLine
+	TrendLine []SeriesTrendLine
 }
 
 // NewSeriesListLine builds a SeriesList for a line chart. The first dimension of the values indicates the population
@@ -1496,6 +1504,7 @@ func NewSeriesListLine(values [][]float64, opts ...LineSeriesOption) LineSeriesL
 			Label:     opt.Label,
 			MarkPoint: opt.MarkPoint,
 			MarkLine:  opt.MarkLine,
+			TrendLine: opt.TrendLine,
 		}
 		if index < len(opt.Names) {
 			s.Name = opt.Names[index]

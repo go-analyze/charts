@@ -46,6 +46,8 @@ type trendLineRenderOption struct {
 	axisRange axisRange
 	// trends are the list of trend lines to render for this series.
 	trends []SeriesTrendLine
+	// dashed indicates if the trend line will be a dashed line.
+	dashed bool
 }
 
 // Render computes and draws all configured trend lines.
@@ -94,10 +96,29 @@ func (t *trendLinePainter) Render() (Box, error) {
 				}
 			}
 
-			if trend.StrokeSmoothingTension > 0 {
-				painter.SmoothLineStroke(points, trend.StrokeSmoothingTension, color, strokeWidth)
+			// Determine if this trend line should be dashed
+			isDashed := opt.dashed // start with chart default
+			if trend.DashedLine != nil {
+				isDashed = *trend.DashedLine
+			}
+
+			if isDashed {
+				// Calculate dash size based on painter dimensions for better visibility
+				avgDimension := float64(t.p.box.Width()+t.p.box.Height()) / 2
+				dashLength := math.Max(avgDimension*0.02, 4.0) // Minimum 4px, scale with size
+				gapLength := dashLength * 0.8
+				dashArray := []float64{dashLength, gapLength}
+				if trend.StrokeSmoothingTension > 0 {
+					painter.SmoothDashedLineStroke(points, trend.StrokeSmoothingTension, color, strokeWidth, dashArray)
+				} else {
+					painter.DashedLineStroke(points, color, strokeWidth, dashArray)
+				}
 			} else {
-				painter.LineStroke(points, color, strokeWidth)
+				if trend.StrokeSmoothingTension > 0 {
+					painter.SmoothLineStroke(points, trend.StrokeSmoothingTension, color, strokeWidth)
+				} else {
+					painter.LineStroke(points, color, strokeWidth)
+				}
 			}
 		}
 	}

@@ -298,7 +298,6 @@ func (p *Painter) LineStroke(points []Point, strokeColor Color, strokeWidth floa
 		}
 		valid = append(valid, pt)
 	}
-	// Draw the last segment
 	p.drawStraightPath(valid, true)
 	p.stroke(strokeColor, strokeWidth)
 }
@@ -378,6 +377,61 @@ func (p *Painter) drawSmoothCurve(points []Point, tension float64, dotForSingleP
 	// Connect the second-to-last point to the last point
 	n := len(points)
 	p.quadCurveTo(points[n-2].X, points[n-2].Y, points[n-1].X, points[n-1].Y)
+}
+
+// DashedLineStroke draws line segments through the provided points with dashed strokes.
+// Points with values of math.MaxInt32 are skipped, resulting in a gap.
+func (p *Painter) DashedLineStroke(points []Point, strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
+	valid := make([]Point, 0, len(points))
+	for _, pt := range points {
+		if pt.Y == math.MaxInt32 {
+			// If we encounter a break, draw the accumulated segment
+			if len(valid) > 0 {
+				p.drawStraightPath(valid, true)
+				p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+				valid = valid[:0] // reset
+			}
+			continue
+		}
+		valid = append(valid, pt)
+	}
+	p.drawStraightPath(valid, true)
+	p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+}
+
+// SmoothDashedLineStroke draws a smooth dashed curve through the given points.
+func (p *Painter) SmoothDashedLineStroke(points []Point, tension float64, strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
+	if tension <= 0 {
+		p.DashedLineStroke(points, strokeColor, strokeWidth, strokeDashArray)
+		return
+	} else if tension > 1 {
+		tension = 1
+	}
+
+	valid := make([]Point, 0, len(points))
+	for _, pt := range points {
+		if pt.Y == math.MaxInt32 {
+			// If we encounter a break, draw the accumulated segment
+			if len(valid) > 0 {
+				p.drawSmoothCurve(valid, tension, true)
+				p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+				valid = valid[:0] // reset
+			}
+			continue
+		}
+		valid = append(valid, pt)
+	}
+	p.drawSmoothCurve(valid, tension, true)
+	p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+}
+
+// dashedStroke applies the stroke with the given dash array.
+func (p *Painter) dashedStroke(strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
+	defer p.render.ResetStyle()
+	p.render.SetStrokeColor(strokeColor)
+	p.render.SetStrokeWidth(strokeWidth)
+	p.render.SetStrokeDashArray(strokeDashArray)
+	p.render.Stroke()
 }
 
 // drawBackground fills the entire painter area with the given color.
