@@ -145,7 +145,7 @@ func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
-			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme)
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Padding.Right)
 			rendererList = append(rendererList, labelPainter)
 		}
 

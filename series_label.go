@@ -7,6 +7,19 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
+// splitLabelText splits text by newlines and returns non-empty lines
+func splitLabelText(text string) []string {
+	arr := strings.Split(text, "\n")
+	result := make([]string, 0, len(arr))
+	for _, v := range arr {
+		v = strings.TrimSpace(v)
+		if v != "" {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
 var (
 	// LabelFormatterValueShort provides a short value with at most 2 decimal places.
 	LabelFormatterValueShort = func(index int, name string, val float64) (string, *LabelStyle) {
@@ -204,20 +217,22 @@ type labelValue struct {
 }
 
 type seriesLabelPainter struct {
-	p           *Painter
-	seriesNames []string
-	label       *SeriesLabel
-	theme       ColorPalette
-	values      []labelRenderValue
+	p            *Painter
+	seriesNames  []string
+	label        *SeriesLabel
+	theme        ColorPalette
+	rightPadding int
+	values       []labelRenderValue
 }
 
 func newSeriesLabelPainter(p *Painter, seriesNames []string, label SeriesLabel,
-	theme ColorPalette) *seriesLabelPainter {
+	theme ColorPalette, rightPadding int) *seriesLabelPainter {
 	return &seriesLabelPainter{
-		p:           p,
-		seriesNames: seriesNames,
-		label:       &label,
-		theme:       theme,
+		p:            p,
+		seriesNames:  seriesNames,
+		label:        &label,
+		theme:        theme,
+		rightPadding: rightPadding,
 	}
 }
 
@@ -249,6 +264,7 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 			text = label.ValueFormatter(value.value)
 		}
 	}
+	text = strings.TrimSpace(text)
 	if text == "" {
 		return // nothing to render
 	}
@@ -262,7 +278,25 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 		labelFontStyle = mergeFontStyles(labelStyleOverride.FontStyle, labelFontStyle)
 	}
 
-	textBox := o.p.MeasureText(text, value.radians, labelFontStyle)
+	// Measure text accounting for potential multi-line content
+	lines := splitLabelText(text)
+	var textBox Box
+	if len(lines) <= 1 {
+		textBox = o.p.MeasureText(text, value.radians, labelFontStyle)
+	} else {
+		// For multi-line text, calculate total dimensions
+		var maxWidth, totalHeight int
+		for _, line := range lines {
+			lineBox := o.p.MeasureText(line, value.radians, labelFontStyle)
+			w := lineBox.Width()
+			h := lineBox.Height()
+			if w > maxWidth {
+				maxWidth = w
+			}
+			totalHeight += h
+		}
+		textBox = Box{Left: 0, Top: 0, Right: maxWidth, Bottom: totalHeight, IsSet: true}
+	}
 	renderValue := labelRenderValue{
 		text:      text,
 		fontStyle: labelFontStyle,
@@ -282,7 +316,19 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 		renderValue.x -= textBox.Width() >> 1
 		renderValue.y -= distance
 	} else {
+		// Start with default positioning
 		renderValue.x += distance
+
+		// Check if label would extend beyond painter width boundary and adjust if needed
+		// Allow labels to extend into the right padding space if configured
+		maxAllowedX := o.p.Width() + o.rightPadding
+		labelEndX := renderValue.x + textBox.Width()
+		if labelEndX > maxAllowedX {
+			// Slide label left just enough to keep it within bounds (including padding)
+			overhang := labelEndX - maxAllowedX
+			renderValue.x -= overhang
+		}
+
 		renderValue.y += textBox.Height() >> 1
 		renderValue.y -= 2
 	}
@@ -296,10 +342,11 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 
 // drawLabelWithBackground draws a text label with optional background styling.
 // This helper function can be used by various chart types to render labels with custom styling.
+// Supports multi-line text separated by '\n' characters.
 //
 // Parameters:
 //   - p: The painter instance to draw on
-//   - text: The text to render (empty strings are ignored)
+//   - text: The text to render (empty strings are ignored, supports '\n' for line breaks)
 //   - x, y: Text position coordinates
 //   - radians: Text rotation angle in radians
 //   - fontStyle: Font styling for the text
@@ -317,14 +364,35 @@ func drawLabelWithBackground(p *Painter, text string, x, y int, radians float64,
 		cornerRadius = 0
 	}
 
-	if !backgroundColor.IsTransparent() || (!borderColor.IsTransparent() && borderWidth > 0) {
-		textBox := p.MeasureText(text, radians, fontStyle)
+	// Split text into lines
+	lines := splitLabelText(text)
+	if len(lines) == 0 {
+		return
+	}
 
+	// Measure all lines to determine total dimensions
+	var textMaxWidth, textTotalHeight int
+	lineHeights := make([]int, len(lines))
+	lineWidths := make([]int, len(lines))
+
+	for i, line := range lines {
+		lineBox := p.MeasureText(line, radians, fontStyle)
+		w := lineBox.Width()
+		h := lineBox.Height()
+		if w > textMaxWidth {
+			textMaxWidth = w
+		}
+		textTotalHeight += h
+		lineHeights[i] = h
+		lineWidths[i] = w
+	}
+
+	if !backgroundColor.IsTransparent() || (!borderColor.IsTransparent() && borderWidth > 0) {
 		const padding = 4
 		bgBox := Box{
 			Left:   x - padding,
-			Top:    y - textBox.Height() - padding,
-			Right:  x + textBox.Width() + padding,
+			Top:    y - textTotalHeight - padding,
+			Right:  x + textMaxWidth + padding,
 			Bottom: y + padding,
 		}
 
@@ -345,7 +413,14 @@ func drawLabelWithBackground(p *Painter, text string, x, y int, radians float64,
 		}
 	}
 
-	p.Text(text, x, y, radians, fontStyle)
+	// Render each line
+	currentY := y - textTotalHeight
+	for i, line := range lines {
+		// Center each line horizontally within the total width
+		lineX := x + (textMaxWidth-lineWidths[i])>>1
+		currentY += lineHeights[i]
+		p.Text(line, lineX, currentY, radians, fontStyle)
+	}
 }
 
 func (o *seriesLabelPainter) Render() (Box, error) {

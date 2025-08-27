@@ -102,7 +102,7 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 		yRange := result.yaxisRanges[series.YAxisIndex]
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
-			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme)
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Padding.Right)
 			rendererList = append(rendererList, labelPainter)
 		}
 

@@ -157,7 +157,7 @@ func TestSeriesLabelFormatter(t *testing.T) {
 				seriesNames[i] = "series" + strconv.Itoa(i)
 			}
 
-			painter := newSeriesLabelPainter(p, seriesNames, tt.label, GetTheme(ThemeLight))
+			painter := newSeriesLabelPainter(p, seriesNames, tt.label, GetTheme(ThemeLight), 0)
 
 			// Add all values to the painter
 			for _, value := range tt.values {
@@ -196,7 +196,7 @@ func TestSeriesLabelFormatter(t *testing.T) {
 			},
 		}
 
-		painter := newSeriesLabelPainter(p, []string{}, label, GetTheme(ThemeLight))
+		painter := newSeriesLabelPainter(p, []string{}, label, GetTheme(ThemeLight), 0)
 		painter.Add(labelValue{index: 0, value: 42.5})
 
 		// Should handle empty series names gracefully
@@ -218,7 +218,7 @@ func TestSeriesLabelFormatter(t *testing.T) {
 			},
 		}
 
-		painter := newSeriesLabelPainter(p, []string{"Series0"}, label, GetTheme(ThemeLight))
+		painter := newSeriesLabelPainter(p, []string{"Series0"}, label, GetTheme(ThemeLight), 0)
 		painter.Add(labelValue{index: 5, value: 42.5}) // Index beyond series names
 
 		// Should handle out of bounds gracefully with empty name
@@ -240,7 +240,7 @@ func TestSeriesLabelFormatter(t *testing.T) {
 			},
 		}
 
-		painter := newSeriesLabelPainter(p, []string{"Test"}, label, GetTheme(ThemeLight))
+		painter := newSeriesLabelPainter(p, []string{"Test"}, label, GetTheme(ThemeLight), 0)
 		painter.Add(labelValue{index: 0, value: 42.5})
 
 		// Should not add any values when Show is false
@@ -259,7 +259,7 @@ func TestSeriesLabelFormatter(t *testing.T) {
 			// No LabelFormatter, should fall back to defaultValueFormatter
 		}
 
-		painter := newSeriesLabelPainter(p, []string{"Test"}, label, GetTheme(ThemeLight))
+		painter := newSeriesLabelPainter(p, []string{"Test"}, label, GetTheme(ThemeLight), 0)
 		painter.Add(labelValue{index: 0, value: 123.456})
 
 		// Should use defaultValueFormatter
@@ -462,7 +462,7 @@ func TestLabelStyleOverrides(t *testing.T) {
 				seriesNames[i] = "series" + strconv.Itoa(i)
 			}
 
-			painter := newSeriesLabelPainter(p, seriesNames, tt.label, GetTheme(ThemeLight))
+			painter := newSeriesLabelPainter(p, seriesNames, tt.label, GetTheme(ThemeLight), 0)
 
 			// Add all values to the painter
 			for _, value := range tt.values {
@@ -1190,5 +1190,451 @@ func TestDrawLabelWithBackgroundBorders(t *testing.T) {
 		data, err := p.Bytes()
 		require.NoError(t, err)
 		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path  d=\"M 54 30\nL 73 30\nL 73 30\nA 8 8 90.00 0 1 81 38\nL 81 46\nL 81 46\nA 8 8 90.00 0 1 73 54\nL 54 54\nL 54 54\nA 8 8 90.00 0 1 46 46\nL 46 38\nL 46 38\nA 8 8 90.00 0 1 54 30\nZ\" style=\"stroke-width:3;stroke:blue;fill:yellow\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
+	})
+}
+
+func TestSplitLabelText(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		text     string
+		expected []string
+	}{
+		{
+			name:     "single_line",
+			text:     "Hello World",
+			expected: []string{"Hello World"},
+		},
+		{
+			name:     "two_lines",
+			text:     "Line 1\nLine 2",
+			expected: []string{"Line 1", "Line 2"},
+		},
+		{
+			name:     "three_lines",
+			text:     "First\nSecond\nThird",
+			expected: []string{"First", "Second", "Third"},
+		},
+		{
+			name:     "empty_lines_filtered",
+			text:     "Start\n\nEnd",
+			expected: []string{"Start", "End"},
+		},
+		{
+			name:     "whitespace_lines_filtered",
+			text:     "Start\n   \n\t\nEnd",
+			expected: []string{"Start", "End"},
+		},
+		{
+			name:     "leading_trailing_whitespace_trimmed",
+			text:     "  Start  \n  End  ",
+			expected: []string{"Start", "End"},
+		},
+		{
+			name:     "empty_string",
+			text:     "",
+			expected: []string{},
+		},
+		{
+			name:     "only_newlines",
+			text:     "\n\n\n",
+			expected: []string{},
+		},
+		{
+			name:     "mixed_empty_lines",
+			text:     "\nFirst\n\n\nSecond\n\n",
+			expected: []string{"First", "Second"},
+		},
+		{
+			name:     "windows_newlines",
+			text:     "Line1\r\nLine2\r\nLine3",
+			expected: []string{"Line1", "Line2", "Line3"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := splitLabelText(tt.text)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestMultilineTextHandling(t *testing.T) {
+	t.Parallel()
+
+	t.Run("multiline_text_in_add_method", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       300,
+		}, PainterThemeOption(GetTheme(ThemeLight)))
+
+		label := SeriesLabel{
+			Show: Ptr(true),
+			LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+				return "Line 1\nLine 2\nLine 3", nil
+			},
+		}
+
+		painter := newSeriesLabelPainter(p, []string{"test"}, label, GetTheme(ThemeLight), 0)
+		painter.Add(labelValue{
+			index:   0,
+			value:   100,
+			x:       50,
+			y:       50,
+			radians: 0,
+		})
+
+		assert.Len(t, painter.values, 1)
+		assert.Equal(t, "Line 1\nLine 2\nLine 3", painter.values[0].text)
+	})
+
+	t.Run("position_adjustment_for_label_extending_beyond_boundary", func(t *testing.T) {
+		// Small width to force position adjustment
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        100,
+			Height:       100,
+		}, PainterThemeOption(GetTheme(ThemeLight)))
+
+		label := SeriesLabel{
+			Show: Ptr(true),
+			LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+				return "Very Long Label Text That Will Extend", nil
+			},
+			Distance: 10,
+		}
+
+		painter := newSeriesLabelPainter(p, []string{"test"}, label, GetTheme(ThemeLight), 0)
+
+		// Position near the right edge where label would extend beyond boundary
+		painter.Add(labelValue{
+			index:   0,
+			value:   100,
+			x:       80, // Near right edge of 100px wide canvas
+			y:       50,
+			radians: 0,
+		})
+
+		assert.Len(t, painter.values, 1)
+		renderValue := painter.values[0]
+
+		// The x position should be adjusted to keep the label within bounds
+		// Original x would be 80 + distance (90), but text width would extend beyond 100px
+		// So x should be adjusted leftward
+		assert.Less(t, renderValue.x, 80+10)
+	})
+
+	t.Run("no_position_adjustment_when_label_fits", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       300,
+		}, PainterThemeOption(GetTheme(ThemeLight)))
+
+		label := SeriesLabel{
+			Show: Ptr(true),
+			LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+				return "Short", nil
+			},
+			Distance: 10,
+		}
+
+		painter := newSeriesLabelPainter(p, []string{"test"}, label, GetTheme(ThemeLight), 0)
+		painter.Add(labelValue{
+			index:   0,
+			value:   100,
+			x:       50,
+			y:       50,
+			radians: 0,
+		})
+
+		assert.Len(t, painter.values, 1)
+		renderValue := painter.values[0]
+
+		// For non-left/right positioned labels, x should be original x + distance
+		assert.Equal(t, 60, renderValue.x)
+	})
+
+	t.Run("multiline_text_with_position_adjustment", func(t *testing.T) {
+		// Test combination of multiline text and position adjustment
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        120,
+			Height:       100,
+		}, PainterThemeOption(GetTheme(ThemeLight)))
+
+		label := SeriesLabel{
+			Show: Ptr(true),
+			LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+				return "Long Line 1\nLong Line 2", nil
+			},
+			Distance: 5,
+		}
+
+		painter := newSeriesLabelPainter(p, []string{"test"}, label, GetTheme(ThemeLight), 0)
+		painter.Add(labelValue{
+			index:   0,
+			value:   100,
+			x:       90,
+			y:       50,
+			radians: 0,
+		})
+
+		assert.Len(t, painter.values, 1)
+		renderValue := painter.values[0]
+		assert.Equal(t, "Long Line 1\nLong Line 2", renderValue.text)
+
+		// Position should be adjusted for the multiline text width
+		assert.Less(t, renderValue.x, 95)
+	})
+
+	t.Run("position_adjustment_with_padding", func(t *testing.T) {
+		// Test position adjustment with chart padding/margins
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        200,
+			Height:       100,
+		}, PainterThemeOption(GetTheme(ThemeLight)), PainterPaddingOption(Box{
+			Left:   20,
+			Top:    10,
+			Right:  30,
+			Bottom: 15,
+		}))
+
+		// After padding: effective canvas is 150px wide (200 - 20 - 30)
+		effectiveWidth := p.Width() // Should be 150px
+		assert.Equal(t, 150, effectiveWidth)
+
+		label := SeriesLabel{
+			Show: Ptr(true),
+			LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+				return "Very Long Label That Should Be Adjusted", nil
+			},
+			Distance: 10,
+		}
+
+		painter := newSeriesLabelPainter(p, []string{"test"}, label, GetTheme(ThemeLight), 0)
+
+		// Position near the effective right edge
+		painter.Add(labelValue{
+			index:   0,
+			value:   100,
+			x:       120, // Near right edge of 150px effective width
+			y:       50,
+			radians: 0,
+		})
+
+		assert.Len(t, painter.values, 1)
+		renderValue := painter.values[0]
+
+		// Check that position adjustment uses effective canvas width, not total width
+		textBox := p.MeasureText(renderValue.text, 0, renderValue.fontStyle)
+		expectedMaxX := 120 + 10 // original x + distance
+		labelEndX := renderValue.x + textBox.Width()
+
+		// The label should be adjusted to fit within the effective canvas width
+		assert.LessOrEqual(t, labelEndX, effectiveWidth)
+		assert.Less(t, renderValue.x, expectedMaxX)
+	})
+
+	t.Run("labels_can_extend_into_right_padding", func(t *testing.T) {
+		// Test that labels can extend into right padding when rightPadding > 0
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        150,
+			Height:       100,
+		}, PainterThemeOption(GetTheme(ThemeLight)))
+
+		label := SeriesLabel{
+			Show: Ptr(true),
+			LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+				return "Long Label", nil
+			},
+			Distance: 5,
+		}
+
+		// Test with rightPadding = 40, so labels can extend beyond canvas width into padding
+		rightPadding := 40
+		painter := newSeriesLabelPainter(p, []string{"test"}, label, GetTheme(ThemeLight), rightPadding)
+
+		// Position near the right edge where label would normally be adjusted
+		painter.Add(labelValue{
+			index:   0,
+			value:   100,
+			x:       130, // Near right edge of 150px canvas
+			y:       50,
+			radians: 0,
+		})
+
+		assert.Len(t, painter.values, 1)
+		renderValue := painter.values[0]
+		textBox := p.MeasureText(renderValue.text, 0, renderValue.fontStyle)
+
+		// The label should be allowed to extend beyond canvas width into padding
+		maxAllowedEndX := p.Width() + rightPadding // 150 + 40 = 190
+		actualEndX := renderValue.x + textBox.Width()
+		// Label should not be adjusted as aggressively, allowing it to extend into padding space
+		assert.LessOrEqual(t, actualEndX, maxAllowedEndX)
+		// Verify the label position is not as constrained as without padding
+		expectedXWithoutPadding := 130 + 5 // original position + distance
+		assert.GreaterOrEqual(t, renderValue.x, expectedXWithoutPadding-textBox.Width())
+	})
+
+	t.Run("labels_still_adjusted_when_exceeding_total_space", func(t *testing.T) {
+		// Test that labels are still adjusted when they exceed canvas + padding
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        100,
+			Height:       100,
+		}, PainterThemeOption(GetTheme(ThemeLight)))
+
+		label := SeriesLabel{
+			Show: Ptr(true),
+			LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+				return "Very Very Long Label That Exceeds Everything", nil
+			},
+			Distance: 5,
+		}
+
+		// Small padding that won't accommodate the full label
+		rightPadding := 10
+		painter := newSeriesLabelPainter(p, []string{"test"}, label, GetTheme(ThemeLight), rightPadding)
+
+		painter.Add(labelValue{
+			index:   0,
+			value:   100,
+			x:       85, // Close to right edge
+			y:       50,
+			radians: 0,
+		})
+
+		assert.Len(t, painter.values, 1)
+		renderValue := painter.values[0]
+		textBox := p.MeasureText(renderValue.text, 0, renderValue.fontStyle)
+		// Label should still be adjusted to fit within canvas + padding
+		maxAllowedEndX := p.Width() + rightPadding // 100 + 10 = 110
+		actualEndX := renderValue.x + textBox.Width()
+		assert.LessOrEqual(t, actualEndX, maxAllowedEndX)
+	})
+}
+
+func TestDrawLabelWithBackgroundMultiline(t *testing.T) {
+	t.Parallel()
+
+	t.Run("multiline_text_transparent_background", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       400,
+		})
+
+		fontStyle := FontStyle{FontColor: ColorBlack, FontSize: 12}
+		drawLabelWithBackground(p, "Line 1\nLine 2", 50, 50, 0, fontStyle, ColorTransparent, 0, ColorTransparent, 0)
+
+		data, err := p.Bytes()
+		require.NoError(t, err)
+
+		// Should contain two separate text elements for the two lines
+		svg := string(data)
+		assert.Contains(t, svg, "Line 1")
+		assert.Contains(t, svg, "Line 2")
+	})
+
+	t.Run("multiline_text_with_background", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       400,
+		})
+
+		fontStyle := FontStyle{FontColor: ColorBlack, FontSize: 12}
+		drawLabelWithBackground(p, "Short\nLonger Line", 50, 80, 0, fontStyle, ColorBlue, 0, ColorTransparent, 0)
+
+		data, err := p.Bytes()
+		require.NoError(t, err)
+
+		svg := string(data)
+		// Should have background box sized for the multiline text
+		assert.Contains(t, svg, "fill:blue")
+		assert.Contains(t, svg, "Short")
+		assert.Contains(t, svg, "Longer Line")
+	})
+
+	t.Run("empty_lines_filtered_in_multiline", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       400,
+		})
+
+		fontStyle := FontStyle{FontColor: ColorBlack, FontSize: 12}
+		drawLabelWithBackground(p, "First\n\nSecond", 50, 50, 0, fontStyle, ColorTransparent, 0, ColorTransparent, 0)
+
+		data, err := p.Bytes()
+		require.NoError(t, err)
+
+		svg := string(data)
+		assert.Contains(t, svg, "First")
+		assert.Contains(t, svg, "Second")
+
+		// Should only have two text elements, not three (empty line filtered)
+		textCount := 0
+		for i := 0; i < len(svg); i++ {
+			if i+5 < len(svg) && svg[i:i+5] == "<text" {
+				textCount++
+			}
+		}
+		assert.Equal(t, 2, textCount)
+	})
+
+	t.Run("single_line_still_works", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       400,
+		})
+
+		fontStyle := FontStyle{FontColor: ColorBlack, FontSize: 12}
+		drawLabelWithBackground(p, "Single Line", 50, 50, 0, fontStyle, ColorGreen, 5, ColorTransparent, 0)
+
+		data, err := p.Bytes()
+		require.NoError(t, err)
+
+		svg := string(data)
+		assert.Contains(t, svg, "Single Line")
+		assert.Contains(t, svg, "fill:green")
+	})
+
+	t.Run("empty_string_returns_early", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       400,
+		})
+
+		fontStyle := FontStyle{FontColor: ColorBlack, FontSize: 12}
+		drawLabelWithBackground(p, "", 50, 50, 0, fontStyle, ColorRed, 5, ColorTransparent, 0)
+
+		data, err := p.Bytes()
+		require.NoError(t, err)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"></svg>", data)
+	})
+
+	t.Run("only_whitespace_and_newlines_returns_early", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        400,
+			Height:       400,
+		})
+
+		fontStyle := FontStyle{FontColor: ColorBlack, FontSize: 12}
+		drawLabelWithBackground(p, "\n  \n\t\n", 50, 50, 0, fontStyle, ColorRed, 5, ColorTransparent, 0)
+
+		data, err := p.Bytes()
+		require.NoError(t, err)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"></svg>", data)
 	})
 }

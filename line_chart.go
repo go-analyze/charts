@@ -165,7 +165,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 		points := make([]Point, len(series.Values))
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
-			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme)
+			labelPainter = newSeriesLabelPainter(seriesPainter, seriesNames, series.Label, opt.Theme, opt.Padding.Right)
 			rendererList = append(rendererList, labelPainter)
 		}
 
