@@ -105,6 +105,34 @@ func BenchmarkChartOptionMultiChartSVGRender(b *testing.B) {
 	}
 }
 
+func BenchmarkPainterMeasureTextSVG(b *testing.B) {
+	svg := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputSVG,
+	})
+	font := FontStyle{
+		FontSize:  12,
+		FontColor: ColorBlack,
+		Font:      GetDefaultFont(),
+	}
+	for i := 0; i < b.N; i++ {
+		_ = svg.MeasureText("The quick brown fox jumped over the lazy dog.", 0, font)
+	}
+}
+
+func BenchmarkPainterMeasureTextPNG(b *testing.B) {
+	png := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputPNG,
+	})
+	font := FontStyle{
+		FontSize:  12,
+		FontColor: ColorBlack,
+		Font:      GetDefaultFont(),
+	}
+	for i := 0; i < b.N; i++ {
+		_ = png.MeasureText("The quick brown fox jumped over the lazy dog.", 0, font)
+	}
+}
+
 func BenchmarkPainterFunnelChartPNGRender(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		painter := NewPainter(PainterOptions{

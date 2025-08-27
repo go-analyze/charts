@@ -95,12 +95,38 @@ func (rgc *RasterGraphicContext) drawGlyph(glyph truetype.Index, dx, dy float64)
 	if err := rgc.glyphBuf.Load(rgc.current.Font, fixed.Int26_6(rgc.current.Scale), glyph, font.HintingNone); err != nil {
 		return err
 	}
-	e0 := 0
+	var e0 int
 	for _, e1 := range rgc.glyphBuf.Ends {
 		DrawContour(rgc, rgc.glyphBuf.Points[e0:e1], dx, dy)
 		e0 = e1
 	}
 	return nil
+}
+
+// findFontForRune finds the best font for rendering a rune, trying fallback fonts if needed.
+// Returns the font to use and the glyph index within that font.
+func findFontForRune(primaryFont *truetype.Font, r rune) (*truetype.Font, truetype.Index) {
+	if index := primaryFont.Index(r); index != 0 {
+		return primaryFont, index
+	}
+
+	// Try fallback fonts for special symbols
+	for _, fallbackName := range FallbackFonts {
+		fallbackFont := GetFont(fallbackName)
+		if fallbackFont == nil {
+			continue // fallback not loaded
+		} else if primaryFont.Name(0) == fallbackFont.Name(0) {
+			continue // Skip if it's the same as primary font
+		}
+
+		fallbackIndex := fallbackFont.Index(r)
+		if fallbackIndex != 0 {
+			return fallbackFont, fallbackIndex
+		}
+	}
+
+	// No font has this character, return primary font with 0 index
+	return primaryFont, 0
 }
 
 // CreateStringPath creates a path from the string s at x, y, and returns the string width.
@@ -118,18 +144,33 @@ func (rgc *RasterGraphicContext) CreateStringPath(s string, x, y float64) (curso
 	rgc.recalc()
 
 	startx := x
-	prev, hasPrev := truetype.Index(0), false
+	var prevFont *truetype.Font
+	var prevIndex truetype.Index
 	for _, rc := range s {
-		index := f.Index(rc)
-		if hasPrev {
-			x += fUnitsToFloat64(f.Kern(fixed.Int26_6(rgc.current.Scale), prev, index))
+		currentFont, index := findFontForRune(f, rc)
+
+		if prevFont != nil { // Apply kerning from whichever font provided the previous character
+			nextIndex := index
+			if prevFont != currentFont {
+				nextIndex = prevFont.Index(rc)
+			}
+			x += fUnitsToFloat64(prevFont.Kern(fixed.Int26_6(rgc.current.Scale), prevIndex, nextIndex))
 		}
-		if err = rgc.drawGlyph(index, x, y); err != nil {
+
+		if currentFont != f {
+			rgc.SetFont(currentFont) // Temporarily switch to fallback font for this glyph
+			err = rgc.drawGlyph(index, x, y)
+			rgc.SetFont(f)
+		} else {
+			err = rgc.drawGlyph(index, x, y)
+		}
+		if err != nil {
 			cursor = x - startx
 			return
 		}
-		x += fUnitsToFloat64(f.HMetric(fixed.Int26_6(rgc.current.Scale), index).AdvanceWidth)
-		prev, hasPrev = index, true
+
+		x += fUnitsToFloat64(currentFont.HMetric(fixed.Int26_6(rgc.current.Scale), index).AdvanceWidth)
+		prevFont, prevIndex = currentFont, index
 	}
 	cursor = x - startx
 	return
@@ -147,18 +188,25 @@ func (rgc *RasterGraphicContext) GetStringBounds(s string) (left, top, right, bo
 	left = math.MaxFloat64
 	top = math.MaxFloat64
 
-	cursor := 0.0
-	prev, hasPrev := truetype.Index(0), false
+	var cursor float64
+	var prevFont *truetype.Font
+	var prevIndex truetype.Index
 	for _, rc := range s {
-		index := f.Index(rc)
-		if hasPrev {
-			cursor += fUnitsToFloat64(f.Kern(fixed.Int26_6(rgc.current.Scale), prev, index))
+		currentFont, index := findFontForRune(f, rc)
+
+		if prevFont != nil { // Apply kerning from whichever font provided the previous character
+			nextIndex := index
+			if prevFont != currentFont {
+				nextIndex = prevFont.Index(rc)
+			}
+			cursor += fUnitsToFloat64(prevFont.Kern(fixed.Int26_6(rgc.current.Scale), prevIndex, nextIndex))
 		}
 
-		if err = rgc.glyphBuf.Load(rgc.current.Font, fixed.Int26_6(rgc.current.Scale), index, font.HintingNone); err != nil {
+		if err = rgc.glyphBuf.Load(currentFont, fixed.Int26_6(rgc.current.Scale), index, font.HintingNone); err != nil {
 			return
 		}
-		e0 := 0
+
+		var e0 int
 		for _, e1 := range rgc.glyphBuf.Ends {
 			ps := rgc.glyphBuf.Points[e0:e1]
 			for _, p := range ps {
@@ -170,8 +218,8 @@ func (rgc *RasterGraphicContext) GetStringBounds(s string) (left, top, right, bo
 			}
 			e0 = e1
 		}
-		cursor += fUnitsToFloat64(f.HMetric(fixed.Int26_6(rgc.current.Scale), index).AdvanceWidth)
-		prev, hasPrev = index, true
+		cursor += fUnitsToFloat64(currentFont.HMetric(fixed.Int26_6(rgc.current.Scale), index).AdvanceWidth)
+		prevFont, prevIndex = currentFont, index
 	}
 	return
 }

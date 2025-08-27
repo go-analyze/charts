@@ -47,19 +47,65 @@ func SVGWithCSS(css string, nonce string) func(width, height int) Renderer {
 	}
 }
 
-// vectorRenderer renders chart commands to a bitmap.
-type vectorRenderer struct {
-	b        *bytes.Buffer
-	c        *canvas
-	s        *Style
-	p        []string
-	face     font.Face
-	faceFont *truetype.Font
-	faceDPI  float64
-	faceSize float64
+// fontFaceKey is the key for caching font faces
+type fontFaceKey struct {
+	font *truetype.Font
+	dpi  float64
+	size float64
 }
 
-// isEmojiOrSymbol checks if a rune is likely an emoji or symbol that might not be in the font.
+// vectorRenderer renders chart commands to a bitmap.
+type vectorRenderer struct {
+	b         *bytes.Buffer
+	c         *canvas
+	s         *Style
+	p         []string
+	faceCache map[fontFaceKey]font.Face
+}
+
+// measureStringWithFallback is a custom MeasureString that provides estimated sizes for missing glyphs.
+func (vr *vectorRenderer) measureStringWithFallback(face font.Face, s string, fontSize, dpi float64) fixed.Int26_6 {
+	var advance fixed.Int26_6
+	prevC := rune(-1)
+	for _, c := range s {
+		if prevC >= 0 {
+			advance += face.Kern(prevC, c)
+		}
+
+		glyphAdvance, ok := face.GlyphAdvance(c)
+
+		// emoji's may be filled in by other fonts, if glyph is missing or has very small advance, try fallback fonts
+		if (!ok || glyphAdvance/64 <= fixed.Int26_6(fontSize*0.75)) && isEmojiOrSymbol(c) {
+			var foundInFallback bool
+			for _, fallbackName := range drawing.FallbackFonts {
+				if fallbackFont := drawing.GetFont(fallbackName); fallbackFont != nil {
+					// Check if fallback font has this character
+					if fallbackIndex := fallbackFont.Index(c); fallbackIndex != 0 {
+						fallbackFace := vr.cachedFontFace(fallbackFont, dpi, fontSize)
+						if fallbackAdvance, fallbackOk := fallbackFace.GlyphAdvance(c); fallbackOk {
+							if fallbackAdvance > glyphAdvance || !ok {
+								glyphAdvance = fallbackAdvance
+							}
+							foundInFallback = true
+							break
+						}
+					}
+				}
+			}
+
+			if !foundInFallback { // If no fallback font has the character, estimate symbol width
+				glyphAdvance = fixed.Int26_6(fontSize * 64)
+			}
+		}
+
+		advance += glyphAdvance
+		prevC = c
+	}
+
+	return advance
+}
+
+// isEmojiOrSymbol checks if a rune is likely a symbol, emoji, or special character.
 func isEmojiOrSymbol(r rune) bool {
 	return (r >= 0x1F600 && r <= 0x1F64F) || // Emoticons
 		(r >= 0x1F300 && r <= 0x1F5FF) || // Misc Symbols and Pictographs
@@ -84,32 +130,43 @@ func isEmojiOrSymbol(r rune) bool {
 		(r >= 0x2B1B && r <= 0x2B1C) || // Square symbols
 		(r >= 0x2B50 && r <= 0x2B55) || // Star symbols
 		(r == 0x3030) || (r == 0x303D) || // Wave dash, Part alternation mark
-		(r >= 0x3297 && r <= 0x3299) // Circled ideographs
+		(r >= 0x3297 && r <= 0x3299) || // Circled ideographs
+		// Mathematical operators
+		(r >= 0x2200 && r <= 0x22FF) || // Mathematical Operators
+		(r >= 0x2A00 && r <= 0x2AFF) || // Supplemental Mathematical Operators
+		(r >= 0x27C0 && r <= 0x27EF) || // Miscellaneous Mathematical Symbols-A
+		(r >= 0x2980 && r <= 0x29FF) || // Miscellaneous Mathematical Symbols-B
+		(r >= 0x2100 && r <= 0x214F) || // Letterlike Symbols (includes √, ∞, etc.)
+		// Currency symbols
+		(r >= 0x20A0 && r <= 0x20CF) || // Currency Symbols
+		// Box drawing and block elements
+		(r >= 0x2500 && r <= 0x257F) || // Box Drawing
+		(r >= 0x2580 && r <= 0x259F) || // Block Elements
+		// Arrows
+		(r >= 0x2190 && r <= 0x21FF) || // Arrows
+		(r >= 0x27F0 && r <= 0x27FF) || // Supplemental Arrows-A
+		(r >= 0x2900 && r <= 0x297F) || // Supplemental Arrows-B
+		// Additional useful ranges
+		(r >= 0x2000 && r <= 0x206F) // General Punctuation (includes em dash, etc.)
 }
 
-// measureStringWithFallback is a custom MeasureString that provides estimated sizes for missing glyphs.
-func measureStringWithFallback(face font.Face, s string, fontSize float64) fixed.Int26_6 {
-	var advance fixed.Int26_6
-	prevC := rune(-1)
-
-	for _, c := range s {
-		if prevC >= 0 {
-			advance += face.Kern(prevC, c)
-		}
-
-		glyphAdvance, ok := face.GlyphAdvance(c)
-
-		// If glyph is missing or has very small advance, estimate size
-		if (!ok || glyphAdvance/64 <= fixed.Int26_6(fontSize*0.75)) && isEmojiOrSymbol(c) {
-			// Estimate emoji width as approximately equal to the font size
-			glyphAdvance = fixed.Int26_6(fontSize * 64)
-		}
-
-		advance += glyphAdvance
-		prevC = c
+// cachedFontFace gets a cached font face or creates and caches a new one.
+func (vr *vectorRenderer) cachedFontFace(f *truetype.Font, dpi, size float64) font.Face {
+	if vr.faceCache == nil {
+		vr.faceCache = make(map[fontFaceKey]font.Face)
 	}
 
-	return advance
+	key := fontFaceKey{font: f, dpi: dpi, size: size}
+	if face, exists := vr.faceCache[key]; exists {
+		return face
+	}
+
+	face := truetype.NewFace(f, &truetype.Options{
+		DPI:  dpi,
+		Size: size,
+	})
+	vr.faceCache[key] = face
+	return face
 }
 
 func (vr *vectorRenderer) ResetStyle() {
@@ -252,19 +309,8 @@ func (vr *vectorRenderer) Text(body string, x, y int) {
 func (vr *vectorRenderer) MeasureText(body string) (box Box) {
 	textFont := vr.s.GetFont()
 	if textFont != nil {
-		// Only create a new font face if needed due to overhead in construction
-		if vr.face == nil || vr.faceDPI != vr.c.dpi || vr.faceSize != vr.s.FontSize || vr.faceFont != textFont {
-			vr.face = truetype.NewFace(textFont, &truetype.Options{
-				DPI:  vr.c.dpi,
-				Size: vr.s.FontSize,
-			})
-			// Update the stored values to reflect the new settings.
-			vr.faceFont = textFont
-			vr.faceDPI = vr.c.dpi
-			vr.faceSize = vr.s.FontSize
-		}
-
-		box.Right = measureStringWithFallback(vr.face, body, vr.s.FontSize).Ceil()
+		face := vr.cachedFontFace(textFont, vr.c.dpi, vr.s.FontSize)
+		box.Right = vr.measureStringWithFallback(face, body, vr.s.FontSize, vr.c.dpi).Ceil()
 		box.Bottom = int(math.Ceil(drawing.PointsToPixels(vr.c.dpi, vr.s.FontSize)))
 		box.IsSet = true
 		if vr.c.textTheta == nil {
@@ -292,6 +338,12 @@ func (vr *vectorRenderer) ClearTextRotation() {
 // Save saves the renderer's contents to a writer.
 func (vr *vectorRenderer) Save(w io.Writer) error {
 	vr.c.End()
+	for _, face := range vr.faceCache {
+		if err := face.Close(); err != nil {
+			return err
+		}
+	}
+	vr.faceCache = nil
 	_, err := w.Write(vr.b.Bytes())
 	return err
 }
