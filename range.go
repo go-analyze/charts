@@ -486,7 +486,14 @@ func (r axisRange) getHeight(value float64) int {
 		return 0
 	}
 	v := (value - r.min) / (r.max - r.min)
-	return int(v * float64(r.size))
+	// Clamp the result to valid range to prevent infinite loops with extreme values
+	result := int(v * float64(r.size))
+	if result < 0 {
+		return 0
+	} else if result > r.size {
+		return r.size
+	}
+	return result
 }
 
 func (r axisRange) getRestHeight(value float64) int {
