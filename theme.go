@@ -185,29 +185,15 @@ var defaultGlobalMarkFillColor = ColorLightGray
 
 func init() {
 	echartSeriesColors := []Color{
-		{ // blue
-			R: 84, G: 112, B: 198, A: 255,
-		},
-		{ // green
-			R: 145, G: 204, B: 117, A: 255,
-		},
+		ColorBlueAlt3,
+		ColorGreenAlt6,
 		ColorOrangeAlt2,
-		{ // red
-			R: 238, G: 102, B: 102, A: 255,
-		},
-		{ // aqua
-			R: 115, G: 192, B: 222, A: 255,
-		},
+		ColorRedAlt4,
+		ColorAquaAlt2,
 		ColorGreenAlt3,
-		{ // dark orange
-			R: 252, G: 132, B: 82, A: 255,
-		},
-		{ // dark purple
-			R: 154, G: 96, B: 180, A: 255,
-		},
-		{ // light purple
-			R: 234, G: 124, B: 204, A: 255,
-		},
+		ColorOrangeAlt4,
+		ColorPurpleAlt1,
+		ColorPurpleAlt2,
 	}
 	InstallTheme(
 		ThemeLight,
@@ -244,9 +230,7 @@ func init() {
 		{ // green
 			R: 64, G: 160, B: 110, A: 255,
 		},
-		{ // purple
-			R: 154, G: 100, B: 180, A: 255,
-		},
+		ColorPurpleAlt1,
 		{ // light red
 			R: 250, G: 128, B: 80, A: 255,
 		},
@@ -356,9 +340,7 @@ func init() {
 		{ // Sky blue alt
 			R: 130, G: 175, B: 222, A: 255,
 		},
-		{ // Moss green
-			R: 121, G: 191, B: 127, A: 255,
-		},
+		ColorGreenAlt7,
 		{ // Light Forest brown
 			R: 171, G: 136, B: 100, A: 255,
 		},
@@ -729,6 +711,7 @@ func makeColorPalette(o ThemeOption) *themeColorPalette {
 	for i := len(o.SeriesTrendColors); i < len(o.SeriesColors); i++ {
 		o.SeriesTrendColors = append(o.SeriesTrendColors, autoSeriesTrendColor(o.SeriesColors[i]))
 	}
+
 	return &themeColorPalette{
 		isDarkMode:         o.IsDarkMode,
 		xaxisStrokeColor:   o.XAxisStrokeColor,

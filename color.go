@@ -101,8 +101,12 @@ var (
 	ColorBlueAlt1 = chartdraw.ColorBlue
 	// ColorBlueAlt2 is a sea blue: R: 106, G: 195, B: 203.
 	ColorBlueAlt2 = chartdraw.ColorAlternateBlue
+	// ColorBlueAlt3 is the echarts shade of blue: R: 84, G: 112, B: 198.
+	ColorBlueAlt3 = Color{R: 84, G: 112, B: 198, A: 255}
 	// ColorAquaAlt1 is a lighter aqua: R: 0, G: 217, B: 210.
 	ColorAquaAlt1 = chartdraw.ColorCyan
+	// ColorAquaAlt2 is the echarts shade of aqua: R: 115, G: 192, B: 222.
+	ColorAquaAlt2 = Color{R: 115, G: 192, B: 222, A: 255}
 	// ColorSageGreen is a more neutral green, R: 158, G: 188, B: 169.
 	ColorSageGreen = Color{R: 156, G: 175, B: 136, A: 255}
 	// ColorGreenAlt1 is lighter green: R: 0, G: 217, B: 101.
@@ -113,16 +117,32 @@ var (
 	ColorGreenAlt3 = Color{R: 59, G: 162, B: 114, A: 255}
 	// ColorGreenAlt4 is darker green: R: 80, G: 134, B: 66.
 	ColorGreenAlt4 = Color{R: 80, G: 143, B: 66, A: 255}
+	// ColorGreenAlt5 is a brighter green: R: 34, G: 197, B: 94.
+	ColorGreenAlt5 = Color{R: 34, G: 197, B: 94, A: 255}
+	// ColorGreenAlt6 is the echarts shade of green: R: 145, G: 204, B: 117.
+	ColorGreenAlt6 = Color{R: 145, G: 204, B: 117, A: 255}
+	// ColorGreenAlt7 is natural pale moss green: R: 121, G: 191, B: 127.
+	ColorGreenAlt7 = Color{R: 121, G: 191, B: 127, A: 255}
+	// ColorPurpleAlt1 is echarts shade of dark purple: R: 154, G: 96, B: 180.
+	ColorPurpleAlt1 = Color{R: 154, G: 96, B: 180, A: 255}
+	// ColorPurpleAlt2 is echarts shade of light purple: R: 234, G: 124, B: 204.
+	ColorPurpleAlt2 = Color{R: 234, G: 124, B: 204, A: 255}
 	// ColorRedAlt1 is slightly purple red: R: 217, G: 0, B: 116.
 	ColorRedAlt1 = chartdraw.ColorRed
 	// ColorRedAlt2 is darker purple red: R: 226, G: 77, B: 66.
 	ColorRedAlt2 = Color{R: 226, G: 77, B: 66, A: 255}
+	// ColorRedAlt3 is a brighter red: R: 239, G: 68, B: 68.
+	ColorRedAlt3 = Color{R: 239, G: 68, B: 68, A: 255}
+	// ColorRedAlt4 is the echarts shade of red: R: 238, G: 102, B: 102.
+	ColorRedAlt4 = Color{R: 238, G: 102, B: 102, A: 255}
 	// ColorOrangeAlt1 is more typical orange: R: 217, G: 101, B: 0.
 	ColorOrangeAlt1 = chartdraw.ColorOrange
 	// ColorOrangeAlt2 is a lighter orange: R: 250, G: 200, B: 88.
 	ColorOrangeAlt2 = Color{R: 250, G: 200, B: 88, A: 255}
 	// ColorOrangeAlt3 is a lighter orange: R: 255, G: 152, B: 69.
 	ColorOrangeAlt3 = Color{R: 255, G: 152, B: 69, A: 255}
+	// ColorOrangeAlt4 is echarts shade of orange: R: 252, G: 132, B: 82.
+	ColorOrangeAlt4 = Color{R: 252, G: 132, B: 82, A: 255}
 	// ColorYellowAlt1 is a slightly darker yellow: R: 217, G: 210, B: 0.
 	ColorYellowAlt1 = chartdraw.ColorYellow
 	// ColorMustardYellow is a dark yellow, R: 200, G: 160, B: 60.

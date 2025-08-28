@@ -59,25 +59,25 @@ func TestGrayColors(t *testing.T) {
 }
 
 func TestBlueColors(t *testing.T) {
-	testColorShades(t, ColorSkyBlue, ColorBlue, ColorNavy, ColorBlueAlt1, ColorBlueAlt2, ColorLightSlateGray)
+	testColorShades(t, ColorSkyBlue, ColorBlue, ColorNavy, ColorBlueAlt1, ColorBlueAlt2, ColorBlueAlt3, ColorLightSlateGray)
 }
 
 func TestGreenColors(t *testing.T) {
 	testColorShades(t, ColorGreen, ColorOlive, ColorLime, ColorSageGreen,
-		ColorGreenAlt1, ColorGreenAlt2, ColorGreenAlt3, ColorGreenAlt4)
+		ColorGreenAlt1, ColorGreenAlt2, ColorGreenAlt3, ColorGreenAlt4, ColorGreenAlt5, ColorGreenAlt6, ColorGreenAlt7)
 }
 
 func TestRedColors(t *testing.T) {
 	testColorShades(t, ColorLightCoral, ColorCoral, ColorRed, ColorPink, ColorSalmon, ColorMaroon, ColorBrown, ColorChocolate,
-		ColorRedAlt1, ColorRedAlt2)
+		ColorRedAlt1, ColorRedAlt2, ColorRedAlt3, ColorRedAlt4)
 }
 
 func TestOrangeColors(t *testing.T) {
-	testColorShades(t, ColorOrange, ColorOrangeAlt1, ColorOrangeAlt2, ColorOrangeAlt3)
+	testColorShades(t, ColorOrange, ColorOrangeAlt1, ColorOrangeAlt2, ColorOrangeAlt3, ColorOrangeAlt4)
 }
 
 func TestAquaColors(t *testing.T) {
-	testColorShades(t, ColorAqua, ColorTeal, ColorTurquoise, ColorAquaAlt1)
+	testColorShades(t, ColorAqua, ColorTeal, ColorTurquoise, ColorAquaAlt1, ColorAquaAlt2)
 }
 
 func TestYellowColors(t *testing.T) {
@@ -89,7 +89,8 @@ func TestTanColors(t *testing.T) {
 }
 
 func TestPurpleColors(t *testing.T) {
-	testColorShades(t, ColorLavender, ColorThistle, ColorPurple, ColorViolet, ColorIndigo, ColorPlum, ColorFuchsia)
+	testColorShades(t, ColorLavender, ColorThistle, ColorPurple, ColorViolet, ColorIndigo, ColorPlum, ColorFuchsia,
+		ColorPurpleAlt1, ColorPurpleAlt2)
 }
 
 func TestIsLightColor(t *testing.T) {
