@@ -69,8 +69,7 @@ func (t *trendLinePainter) Render() (Box, error) {
 			case SeriesTrendTypeAverage:
 				fitted, err = movingAverageTrend(opt.seriesValues, trend.Window)
 			default:
-				// Unknown trend type; skip.
-				continue
+				err = errors.New("unknown trend type: " + trend.Type)
 			}
 			if err != nil {
 				return BoxZero, err
@@ -87,12 +86,13 @@ func (t *trendLinePainter) Render() (Box, error) {
 				strokeWidth = defaultStrokeWidth
 			}
 
-			// Convert fitted data to screen points.
+			// Convert fitted data to screen points, break where fitted is null.
 			points := make([]Point, len(fitted))
 			for i, val := range fitted {
-				points[i] = Point{
-					X: opt.xValues[i],
-					Y: opt.axisRange.getRestHeight(val),
+				if val == GetNullValue() {
+					points[i] = Point{X: opt.xValues[i], Y: math.MaxInt32}
+				} else {
+					points[i] = Point{X: opt.xValues[i], Y: opt.axisRange.getRestHeight(val)}
 				}
 			}
 
@@ -125,16 +125,48 @@ func (t *trendLinePainter) Render() (Box, error) {
 	return BoxZero, nil
 }
 
-// linearTrend computes a linear regression over the provided data.
+// extractNonNullData extracts non-null values and their indices from the input.
+func extractNonNullData(y []float64) ([]float64, []int) {
+	nv := GetNullValue()
+	var cleanData []float64
+	var cleanIndices []int
+	for i, v := range y {
+		if v != nv {
+			cleanData = append(cleanData, v)
+			cleanIndices = append(cleanIndices, i)
+		}
+	}
+	return cleanData, cleanIndices
+}
+
+// linearTrend computes a linear trend over the data, preserving null positions.
 func linearTrend(y []float64) ([]float64, error) {
-	n := float64(len(y))
-	if n < 2 {
-		return nil, errors.New("not enough data points for linear trend")
+	nv := GetNullValue()
+	cleanData, cleanIndices := extractNonNullData(y)
+
+	// Initialize result preserving nulls
+	result := make([]float64, len(y))
+	for i, v := range y {
+		if v == nv {
+			result[i] = nv
+		}
 	}
 
+	// Handle edge cases
+	if len(cleanData) == 0 {
+		return result, nil // All nulls
+	}
+	if len(cleanData) == 1 {
+		// Single point - just preserve it
+		result[cleanIndices[0]] = cleanData[0]
+		return result, nil
+	}
+
+	// Compute linear regression
+	n := float64(len(cleanData))
 	var sumX, sumY, sumXY, sumXX float64
-	for i, v := range y {
-		x := float64(i)
+	for i, v := range cleanData {
+		x := float64(cleanIndices[i])
 		sumX += x
 		sumY += v
 		sumXY += x * v
@@ -142,33 +174,54 @@ func linearTrend(y []float64) ([]float64, error) {
 	}
 
 	denom := n*sumXX - sumX*sumX
-	if math.Abs(denom) < matrix.DefaultEpsilon {
-		return nil, errors.New("degenerate x values for linear regression")
+	if math.Abs(denom) < 1e-10 {
+		return nil, errors.New("singular matrix in linear regression")
 	}
 	slope := (n*sumXY - sumX*sumY) / denom
 	intercept := (sumY - slope*sumX) / n
 
-	fitted := make([]float64, len(y))
-	for i := range y {
-		fitted[i] = intercept + slope*float64(i)
+	// Apply trend to non-null positions only
+	for i, v := range y {
+		if v != nv {
+			result[i] = intercept + slope*float64(i)
+		}
 	}
-	return fitted, nil
+
+	return result, nil
 }
 
-// cubicTrend computes a cubic (degree 3) polynomial regression over the data.
-// If there are fewer than 4 points, it falls back to a linear trend.
+// cubicTrend computes a cubic polynomial trend over the data, preserving null positions.
 func cubicTrend(y []float64) ([]float64, error) {
-	n := len(y)
-	if n < 2 {
-		return nil, errors.New("not enough data points for cubic trend")
-	} else if n < 4 {
+	nv := GetNullValue()
+	cleanData, cleanIndices := extractNonNullData(y)
+	n := len(cleanData)
+
+	// Initialize result preserving nulls
+	result := make([]float64, len(y))
+	for i, v := range y {
+		if v == nv {
+			result[i] = nv
+		}
+	}
+
+	// Handle edge cases
+	if n == 0 {
+		return result, nil // All nulls
+	}
+	if n == 1 {
+		// Single point - just preserve it
+		result[cleanIndices[0]] = cleanData[0]
+		return result, nil
+	}
+	if n < 4 {
+		// Fall back to linear for less than 4 points
 		return linearTrend(y)
 	}
 
-	// Compute sums of powers of x.
-	var S [7]float64 // S[k] = Σ x^k for k = 0..6.
+	// Compute sums of powers of x using original indices
+	var S [7]float64
 	for i := 0; i < n; i++ {
-		x := float64(i)
+		x := float64(cleanIndices[i])
 		xp := 1.0
 		for k := 0; k <= 6; k++ {
 			S[k] += xp
@@ -176,18 +229,18 @@ func cubicTrend(y []float64) ([]float64, error) {
 		}
 	}
 
-	// Compute the right-hand side vector B.
+	// Compute the right-hand side vector B
 	var B [4]float64
 	for i := 0; i < n; i++ {
-		x := float64(i)
+		x := float64(cleanIndices[i])
 		xp := 1.0
 		for j := 0; j < 4; j++ {
-			B[j] += y[i] * xp
+			B[j] += cleanData[i] * xp
 			xp *= x
 		}
 	}
 
-	// Build the augmented matrix for the normal equations.
+	// Build the augmented matrix
 	M := make([][]float64, 4)
 	for j := 0; j < 4; j++ {
 		M[j] = make([]float64, 5)
@@ -199,43 +252,19 @@ func cubicTrend(y []float64) ([]float64, error) {
 
 	coeffs, err := solveLinearSystem(M)
 	if err != nil {
-		// fallback to linear
+		// Fall back to linear
 		return linearTrend(y)
 	}
 
-	fitted := make([]float64, n)
-	for i := 0; i < n; i++ {
-		x := float64(i)
-		fitted[i] = coeffs[0] + coeffs[1]*x + coeffs[2]*x*x + coeffs[3]*x*x*x
-	}
-	return fitted, nil
-}
-
-// movingAverageTrend computes a moving average over the data using the given window size.
-// If window is <= 0, a default based on the data size is used.
-func movingAverageTrend(y []float64, window int) ([]float64, error) {
-	n := len(y)
-	if n < 2 {
-		return nil, errors.New("not enough data points for average trend")
-	} else if n < 4 {
-		return linearTrend(y)
-	}
-	if window <= 0 {
-		window = chartdraw.MaxInt(2, n/5)
-	}
-
-	fitted := make([]float64, n)
-	var sum float64
-	for i := 0; i < n; i++ {
-		sum += y[i]
-		if i >= window {
-			sum -= y[i-window]
-			fitted[i] = sum / float64(window)
-		} else {
-			fitted[i] = sum / float64(i+1)
+	// Apply cubic polynomial to non-null positions only
+	for i, v := range y {
+		if v != nv {
+			x := float64(i)
+			result[i] = coeffs[0] + coeffs[1]*x + coeffs[2]*x*x + coeffs[3]*x*x*x
 		}
 	}
-	return fitted, nil
+
+	return result, nil
 }
 
 // solveLinearSystem solves a 4x4 linear system represented as an augmented matrix.
@@ -273,4 +302,66 @@ func solveLinearSystem(mat [][]float64) ([]float64, error) {
 		sol[i] /= mat[i][i]
 	}
 	return sol, nil
+}
+
+// movingAverageTrend computes a moving average over the data, preserving null positions.
+func movingAverageTrend(y []float64, window int) ([]float64, error) {
+	nv := GetNullValue()
+	cleanData, cleanIndices := extractNonNullData(y)
+	nonNullCount := len(cleanData)
+
+	// Initialize result preserving nulls
+	n := len(y)
+	result := make([]float64, n)
+	for i, v := range y {
+		if v == nv {
+			result[i] = nv
+		}
+	}
+
+	// Handle edge cases
+	if nonNullCount == 0 {
+		return result, nil // All nulls
+	}
+	if nonNullCount == 1 {
+		// Single point - just preserve it
+		result[cleanIndices[0]] = cleanData[0]
+		return result, nil
+	}
+	if nonNullCount < 4 {
+		// Fall back to linear for less than 4 points
+		return linearTrend(y)
+	}
+
+	if window <= 0 {
+		window = chartdraw.MaxInt(2, nonNullCount/5)
+	}
+
+	// Compute moving average for non-null positions
+	halfWindow := window / 2
+	for i, v := range y {
+		if v == nv {
+			continue
+		}
+
+		// Calculate average of surrounding non-null values within window
+		var sum float64
+		var count int
+		start := chartdraw.MaxInt(0, i-halfWindow)
+		end := chartdraw.MinInt(n-1, i+halfWindow)
+		for j := start; j <= end; j++ {
+			if y[j] != nv {
+				sum += y[j]
+				count++
+			}
+		}
+
+		if count > 0 {
+			result[i] = sum / float64(count)
+		} else {
+			// Shouldn't happen
+		}
+	}
+
+	return result, nil
 }
