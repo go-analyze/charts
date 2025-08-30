@@ -87,6 +87,126 @@ func TestTrendLine(t *testing.T) {
 			},
 			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 290\nL 170 260\nL 270 200\nL 370 140\nL 470 80\nL 570 50\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
+		{
+			name: "sma",
+			render: func(p *Painter) ([]byte, error) {
+				trendLine := newTrendLinePainter(p)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 6.0, 0.0, 0.0)
+				xValues := []int{50, 150, 250, 350, 450, 550}
+				trend := SeriesTrendLine{
+					Type:   SeriesTrendTypeSMA,
+					Period: 3,
+				}
+				trendLine.add(trendLineRenderOption{
+					defaultStrokeColor: ColorBlack,
+					xValues:            xValues,
+					seriesValues:       []float64{1, 2, 3, 4, 5, 6},
+					axisRange:          axisRange,
+					trends:             []SeriesTrendLine{trend},
+				})
+				if _, err := trendLine.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 290\nL 170 260\nL 270 200\nL 370 140\nL 470 80\nL 570 50\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "ema",
+			render: func(p *Painter) ([]byte, error) {
+				trendLine := newTrendLinePainter(p)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 5.0, 0.0, 0.0)
+				xValues := []int{50, 150, 250, 350, 450, 550}
+				trend := SeriesTrendLine{
+					Type:   SeriesTrendTypeEMA,
+					Period: 3,
+				}
+				trendLine.add(trendLineRenderOption{
+					defaultStrokeColor: ColorBlack,
+					xValues:            xValues,
+					seriesValues:       []float64{1, 2, 3, 4, 5, 6},
+					axisRange:          axisRange,
+					trends:             []SeriesTrendLine{trend},
+				})
+				if _, err := trendLine.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 308\nL 170 272\nL 270 218\nL 370 155\nL 470 88\nL 570 20\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "bollinger_upper",
+			render: func(p *Painter) ([]byte, error) {
+				trendLine := newTrendLinePainter(p)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 10.0, 0.0, 0.0)
+				xValues := []int{50, 150, 250, 350, 450, 550}
+				trend := SeriesTrendLine{
+					Type:   SeriesTrendTypeBollingerUpper,
+					Period: 3,
+				}
+				trendLine.add(trendLineRenderOption{
+					defaultStrokeColor: ColorBlack,
+					xValues:            xValues,
+					seriesValues:       []float64{1, 2, 3, 4, 5, 6},
+					axisRange:          axisRange,
+					trends:             []SeriesTrendLine{trend},
+				})
+				if _, err := trendLine.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 290\nL 170 250\nL 270 214\nL 370 178\nL 470 142\nL 570 146\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "bollinger_lower",
+			render: func(p *Painter) ([]byte, error) {
+				trendLine := newTrendLinePainter(p)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 10.0, 0.0, 0.0)
+				xValues := []int{50, 150, 250, 350, 450, 550}
+				trend := SeriesTrendLine{
+					Type:   SeriesTrendTypeBollingerLower,
+					Period: 3,
+				}
+				trendLine.add(trendLineRenderOption{
+					defaultStrokeColor: ColorBlack,
+					xValues:            xValues,
+					seriesValues:       []float64{1, 2, 3, 4, 5, 6},
+					axisRange:          axisRange,
+					trends:             []SeriesTrendLine{trend},
+				})
+				if _, err := trendLine.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 362\nL 170 367\nL 270 331\nL 370 295\nL 470 259\nL 570 218\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "rsi",
+			render: func(p *Painter) ([]byte, error) {
+				trendLine := newTrendLinePainter(p)
+				axisRange := newTestRange(p.Height(), 6, 0.0, 100.0, 0.0, 0.0)
+				xValues := []int{50, 150, 250, 350, 450, 550}
+				trend := SeriesTrendLine{
+					Type:   SeriesTrendTypeRSI,
+					Period: 3,
+				}
+				trendLine.add(trendLineRenderOption{
+					defaultStrokeColor: ColorBlack,
+					xValues:            xValues,
+					seriesValues:       []float64{44, 44.5, 43.8, 44.2, 44.5, 43.9},
+					axisRange:          axisRange,
+					trends:             []SeriesTrendLine{trend},
+				})
+				if _, err := trendLine.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 370 178\nL 470 143\nL 570 238\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+		},
 	}
 
 	for i, tt := range tests {
@@ -220,6 +340,112 @@ func TestTrendLine_WithNullValues(t *testing.T) {
 			if v != nv {
 				assert.False(t, math.IsNaN(v) || math.IsInf(v, 0),
 					"movingAverageTrend produced NaN/Inf at index %d", i)
+			}
+		}
+	})
+
+	t.Run("ema_with_nulls", func(t *testing.T) {
+		input := []float64{1, 2, nv, 4, 5}
+		result, err := exponentialMovingAverageTrend(input, 3)
+		require.NoError(t, err)
+
+		// Verify nulls preserved
+		assert.InDelta(t, nv, result[2], 0)
+
+		// Verify non-null values are calculated and no NaN
+		for i, v := range result {
+			if v != nv {
+				assert.False(t, math.IsNaN(v), "EMA produced NaN at index %d", i)
+				assert.False(t, math.IsInf(v, 0), "EMA produced Inf at index %d", i)
+			}
+		}
+	})
+
+	t.Run("bollinger_upper_with_nulls", func(t *testing.T) {
+		input := []float64{10, 20, nv, 30, 40, 50}
+		result, err := bollingerUpperTrend(input, 3)
+		require.NoError(t, err)
+
+		// Verify nulls preserved
+		assert.InDelta(t, nv, result[2], 0)
+
+		// Verify non-null values and upper band > SMA
+		sma, _ := movingAverageTrend(input, 3)
+		for i, v := range result {
+			if v != nv && sma[i] != nv {
+				assert.False(t, math.IsNaN(v), "Bollinger upper produced NaN at index %d", i)
+				assert.GreaterOrEqual(t, v, sma[i], "Upper band should be >= SMA at index %d", i)
+			}
+		}
+	})
+
+	t.Run("bollinger_lower_with_nulls", func(t *testing.T) {
+		input := []float64{10, 20, nv, 30, 40, 50}
+		result, err := bollingerLowerTrend(input, 3)
+		require.NoError(t, err)
+
+		// Verify nulls preserved
+		assert.InDelta(t, nv, result[2], 0)
+
+		// Verify non-null values and lower band < SMA
+		sma, _ := movingAverageTrend(input, 3)
+		for i, v := range result {
+			if v != nv && sma[i] != nv {
+				assert.False(t, math.IsNaN(v), "Bollinger lower produced NaN at index %d", i)
+				assert.LessOrEqual(t, v, sma[i], "Lower band should be <= SMA at index %d", i)
+			}
+		}
+	})
+
+	t.Run("rsi_with_nulls", func(t *testing.T) {
+		input := []float64{44, 44.5, nv, 44.2, 44.5, 43.9, 44.5, 44.9}
+		result, err := rsiTrend(input, 3)
+		require.NoError(t, err)
+
+		// All values should be null or valid RSI (0-100)
+		for i, v := range result {
+			if v != nv {
+				assert.False(t, math.IsNaN(v), "RSI produced NaN at index %d", i)
+				assert.GreaterOrEqual(t, v, 0.0, "RSI should be >= 0 at index %d", i)
+				assert.LessOrEqual(t, v, 100.0, "RSI should be <= 100 at index %d", i)
+			}
+		}
+	})
+
+	t.Run("all_indicators_with_sparse_nulls", func(t *testing.T) {
+		// Test with many nulls
+		input := []float64{nv, 10, nv, nv, 20, 30, nv, 40, nv}
+
+		// All functions should handle this gracefully
+		ema, err := exponentialMovingAverageTrend(input, 2)
+		require.NoError(t, err)
+		assert.Len(t, ema, len(input))
+
+		upper, err := bollingerUpperTrend(input, 2)
+		require.NoError(t, err)
+		assert.Len(t, upper, len(input))
+
+		lower, err := bollingerLowerTrend(input, 2)
+		require.NoError(t, err)
+		assert.Len(t, lower, len(input))
+
+		rsi, err := rsiTrend(input, 2)
+		require.NoError(t, err)
+		assert.Len(t, rsi, len(input))
+
+		// Verify no NaN/Inf in any results
+		for i := range input {
+			if ema[i] != nv {
+				assert.False(t, math.IsNaN(ema[i]) || math.IsInf(ema[i], 0), "EMA has NaN/Inf at %d", i)
+			}
+			if upper[i] != nv {
+				assert.False(t, math.IsNaN(upper[i]) || math.IsInf(upper[i], 0), "Upper has NaN/Inf at %d", i)
+			}
+			if lower[i] != nv {
+				assert.False(t, math.IsNaN(lower[i]) || math.IsInf(lower[i], 0), "Lower has NaN/Inf at %d", i)
+			}
+			if rsi[i] != nv {
+				assert.False(t, math.IsNaN(rsi[i]) || math.IsInf(rsi[i], 0), "RSI has NaN/Inf at %d", i)
 			}
 		}
 	})
@@ -357,6 +583,24 @@ func TestMovingAverageTrend(t *testing.T) {
 	})
 }
 
+func TestExponentialMovingAverageTrend(t *testing.T) {
+	t.Parallel()
+
+	values := []float64{1, 2, 3, 4, 5}
+	result, err := exponentialMovingAverageTrend(values, 3)
+
+	require.NoError(t, err)
+	require.Len(t, result, 5)
+
+	// First value should equal input
+	assert.InDelta(t, 1.0, result[0], 0.001)
+
+	// EMA should be calculated with smoothing factor 2/(3+1) = 0.5
+	multiplier := 2.0 / 4.0
+	expected := (2.0 * multiplier) + (1.0 * (1 - multiplier))
+	assert.InDelta(t, expected, result[1], 0.001)
+}
+
 func TestLinearTrendWithNulls(t *testing.T) {
 	t.Parallel()
 
@@ -377,4 +621,68 @@ func TestLinearTrendWithNulls(t *testing.T) {
 	assert.False(t, math.IsNaN(got[1]), "Index 1 should not be NaN")
 	assert.False(t, math.IsNaN(got[3]), "Index 3 should not be NaN")
 	assert.False(t, math.IsNaN(got[4]), "Index 4 should not be NaN")
+}
+
+func TestBollingerUpperTrend(t *testing.T) {
+	t.Parallel()
+
+	values := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	result, err := bollingerUpperTrend(values, 3)
+
+	require.NoError(t, err)
+	require.Len(t, result, 10)
+
+	// With centered window, all values should be calculated
+	// Upper band should be greater than or equal to SMA
+	sma, err := movingAverageTrend(values, 3)
+	require.NoError(t, err)
+	nv := GetNullValue()
+	for i := 0; i < len(result); i++ {
+		if result[i] != nv && sma[i] != nv {
+			assert.GreaterOrEqual(t, result[i], sma[i])
+		}
+	}
+}
+
+func TestBollingerLowerTrend(t *testing.T) {
+	t.Parallel()
+
+	values := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	result, err := bollingerLowerTrend(values, 3)
+
+	require.NoError(t, err)
+	require.Len(t, result, 10)
+
+	// With centered window, all values should be calculated
+	// Lower band should be less than or equal to SMA
+	sma, err := movingAverageTrend(values, 3)
+	require.NoError(t, err)
+	nv := GetNullValue()
+	for i := 0; i < len(result); i++ {
+		if result[i] != nv && sma[i] != nv {
+			assert.LessOrEqual(t, result[i], sma[i])
+		}
+	}
+}
+
+func TestRsiTrend(t *testing.T) {
+	t.Parallel()
+
+	// Create test data with known gains/losses
+	values := []float64{44, 44.5, 43.8, 44.2, 44.5, 43.9, 44.5, 44.9, 44.5, 44.8}
+	result, err := rsiTrend(values, 3)
+
+	require.NoError(t, err)
+	require.Len(t, result, 10)
+
+	// First three values should be null
+	for i := 0; i < 3; i++ {
+		assert.InDelta(t, GetNullValue(), result[i], 0.001)
+	}
+
+	// RSI values should be between 0 and 100
+	for i := 3; i < len(result); i++ {
+		assert.GreaterOrEqual(t, result[i], 0.0)
+		assert.LessOrEqual(t, result[i], 100.0)
+	}
 }

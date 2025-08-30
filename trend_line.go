@@ -59,6 +59,9 @@ func (t *trendLinePainter) Render() (Box, error) {
 		}
 
 		for _, trend := range opt.trends {
+			if trend.Window != 0 && trend.Period == 0 {
+				trend.Period = trend.Window
+			}
 			var fitted []float64
 			var err error
 			switch trend.Type {
@@ -66,8 +69,16 @@ func (t *trendLinePainter) Render() (Box, error) {
 				fitted, err = linearTrend(opt.seriesValues)
 			case SeriesTrendTypeCubic:
 				fitted, err = cubicTrend(opt.seriesValues)
-			case SeriesTrendTypeAverage:
-				fitted, err = movingAverageTrend(opt.seriesValues, trend.Window)
+			case SeriesTrendTypeSMA, "average" /* long term backwards compatibility */ :
+				fitted, err = movingAverageTrend(opt.seriesValues, trend.Period)
+			case SeriesTrendTypeEMA:
+				fitted, err = exponentialMovingAverageTrend(opt.seriesValues, trend.Period)
+			case SeriesTrendTypeBollingerUpper:
+				fitted, err = bollingerUpperTrend(opt.seriesValues, trend.Period)
+			case SeriesTrendTypeBollingerLower:
+				fitted, err = bollingerLowerTrend(opt.seriesValues, trend.Period)
+			case SeriesTrendTypeRSI:
+				fitted, err = rsiTrend(opt.seriesValues, trend.Period)
 			default:
 				err = errors.New("unknown trend type: " + trend.Type)
 			}
@@ -127,11 +138,10 @@ func (t *trendLinePainter) Render() (Box, error) {
 
 // extractNonNullData extracts non-null values and their indices from the input.
 func extractNonNullData(y []float64) ([]float64, []int) {
-	nv := GetNullValue()
 	var cleanData []float64
 	var cleanIndices []int
 	for i, v := range y {
-		if v != nv {
+		if v != GetNullValue() {
 			cleanData = append(cleanData, v)
 			cleanIndices = append(cleanIndices, i)
 		}
@@ -139,26 +149,26 @@ func extractNonNullData(y []float64) ([]float64, []int) {
 	return cleanData, cleanIndices
 }
 
-// linearTrend computes a linear trend over the data, preserving null positions.
-func linearTrend(y []float64) ([]float64, error) {
-	nv := GetNullValue()
-	cleanData, cleanIndices := extractNonNullData(y)
-
-	// Initialize result preserving nulls
+// initResultWithNulls creates a result array preserving null positions from the input.
+func initResultWithNulls(y []float64) []float64 {
 	result := make([]float64, len(y))
 	for i, v := range y {
-		if v == nv {
-			result[i] = nv
+		if v == GetNullValue() {
+			result[i] = GetNullValue()
 		}
 	}
+	return result
+}
 
-	// Handle edge cases
+// linearTrend computes a linear trend over the data, preserving null positions.
+func linearTrend(y []float64) ([]float64, error) {
+	cleanData, cleanIndices := extractNonNullData(y)
+	result := initResultWithNulls(y)
+
 	if len(cleanData) == 0 {
 		return result, nil // All nulls
-	}
-	if len(cleanData) == 1 {
-		// Single point - just preserve it
-		result[cleanIndices[0]] = cleanData[0]
+	} else if len(cleanData) == 1 {
+		result[cleanIndices[0]] = cleanData[0] // Single point - just preserve it
 		return result, nil
 	}
 
@@ -182,7 +192,7 @@ func linearTrend(y []float64) ([]float64, error) {
 
 	// Apply trend to non-null positions only
 	for i, v := range y {
-		if v != nv {
+		if v != GetNullValue() {
 			result[i] = intercept + slope*float64(i)
 		}
 	}
@@ -192,30 +202,17 @@ func linearTrend(y []float64) ([]float64, error) {
 
 // cubicTrend computes a cubic polynomial trend over the data, preserving null positions.
 func cubicTrend(y []float64) ([]float64, error) {
-	nv := GetNullValue()
 	cleanData, cleanIndices := extractNonNullData(y)
 	n := len(cleanData)
+	result := initResultWithNulls(y)
 
-	// Initialize result preserving nulls
-	result := make([]float64, len(y))
-	for i, v := range y {
-		if v == nv {
-			result[i] = nv
-		}
-	}
-
-	// Handle edge cases
 	if n == 0 {
 		return result, nil // All nulls
-	}
-	if n == 1 {
-		// Single point - just preserve it
-		result[cleanIndices[0]] = cleanData[0]
+	} else if n == 1 {
+		result[cleanIndices[0]] = cleanData[0] // Single point - just preserve it
 		return result, nil
-	}
-	if n < 4 {
-		// Fall back to linear for less than 4 points
-		return linearTrend(y)
+	} else if n < 4 {
+		return linearTrend(y) // Fall back to linear for less than 4 points
 	}
 
 	// Compute sums of powers of x using original indices
@@ -252,15 +249,59 @@ func cubicTrend(y []float64) ([]float64, error) {
 
 	coeffs, err := solveLinearSystem(M)
 	if err != nil {
-		// Fall back to linear
-		return linearTrend(y)
+		return linearTrend(y) // Fall back to linear
 	}
 
 	// Apply cubic polynomial to non-null positions only
 	for i, v := range y {
-		if v != nv {
+		if v != GetNullValue() {
 			x := float64(i)
 			result[i] = coeffs[0] + coeffs[1]*x + coeffs[2]*x*x + coeffs[3]*x*x*x
+		}
+	}
+
+	return result, nil
+}
+
+// exponentialMovingAverageTrend computes an exponential moving average over the data, preserving null positions.
+// If window is <= 0, a default based on the data size is used.
+func exponentialMovingAverageTrend(y []float64, window int) ([]float64, error) {
+	cleanData, cleanIndices := extractNonNullData(y)
+	nonNullCount := len(cleanData)
+	result := initResultWithNulls(y)
+
+	if nonNullCount == 0 {
+		return result, nil // All nulls
+	} else if nonNullCount == 1 {
+		result[cleanIndices[0]] = cleanData[0] // Single point - just preserve it
+		return result, nil
+	} else if nonNullCount < 4 {
+		return linearTrend(y) // Fall back to linear for less than 4 points
+	}
+
+	if window <= 0 {
+		window = chartdraw.MaxInt(2, nonNullCount/5)
+	}
+
+	multiplier := 2.0 / (float64(window) + 1.0)
+
+	// Calculate EMA only for non-null positions
+	var ema float64
+	isFirst := true
+	for i, v := range y {
+		if v == GetNullValue() {
+			continue
+		}
+
+		if isFirst {
+			// First non-null value initializes EMA
+			ema = v
+			result[i] = ema
+			isFirst = false
+		} else {
+			// Update EMA with current value
+			ema = (v * multiplier) + (ema * (1 - multiplier))
+			result[i] = ema
 		}
 	}
 
@@ -306,31 +347,17 @@ func solveLinearSystem(mat [][]float64) ([]float64, error) {
 
 // movingAverageTrend computes a moving average over the data, preserving null positions.
 func movingAverageTrend(y []float64, window int) ([]float64, error) {
-	nv := GetNullValue()
 	cleanData, cleanIndices := extractNonNullData(y)
 	nonNullCount := len(cleanData)
+	result := initResultWithNulls(y)
 
-	// Initialize result preserving nulls
-	n := len(y)
-	result := make([]float64, n)
-	for i, v := range y {
-		if v == nv {
-			result[i] = nv
-		}
-	}
-
-	// Handle edge cases
 	if nonNullCount == 0 {
 		return result, nil // All nulls
-	}
-	if nonNullCount == 1 {
-		// Single point - just preserve it
-		result[cleanIndices[0]] = cleanData[0]
+	} else if nonNullCount == 1 {
+		result[cleanIndices[0]] = cleanData[0] // Single point - just preserve it
 		return result, nil
-	}
-	if nonNullCount < 4 {
-		// Fall back to linear for less than 4 points
-		return linearTrend(y)
+	} else if nonNullCount < 4 {
+		return linearTrend(y) // Fall back to linear for less than 4 points
 	}
 
 	if window <= 0 {
@@ -340,7 +367,7 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 	// Compute moving average for non-null positions
 	halfWindow := window / 2
 	for i, v := range y {
-		if v == nv {
+		if v == GetNullValue() {
 			continue
 		}
 
@@ -348,9 +375,9 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 		var sum float64
 		var count int
 		start := chartdraw.MaxInt(0, i-halfWindow)
-		end := chartdraw.MinInt(n-1, i+halfWindow)
+		end := chartdraw.MinInt(len(y)-1, i+halfWindow)
 		for j := start; j <= end; j++ {
-			if y[j] != nv {
+			if y[j] != GetNullValue() {
 				sum += y[j]
 				count++
 			}
@@ -358,8 +385,131 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 
 		if count > 0 {
 			result[i] = sum / float64(count)
+		} // else, Shouldn't happen
+	}
+
+	return result, nil
+}
+
+// bollingerBand computes a Bollinger Band (SMA ± multiplier * standard deviation).
+func bollingerBand(y []float64, period int, multiplier float64) ([]float64, error) {
+	cleanData, _ := extractNonNullData(y)
+	nonNullCount := len(cleanData)
+	result := initResultWithNulls(y)
+
+	if nonNullCount < 2 {
+		return result, nil // Not enough data
+	}
+	if period <= 0 {
+		period = chartdraw.MaxInt(2, nonNullCount/5)
+	}
+	if period > nonNullCount {
+		return result, nil // Period too large
+	}
+
+	// Calculate SMA first (already handles nulls)
+	sma, err := movingAverageTrend(y, period)
+	if err != nil {
+		return nil, err
+	}
+
+	// Compute Bollinger bands with centered window
+	halfWindow := period / 2
+	for i, v := range y {
+		if v == GetNullValue() || sma[i] == GetNullValue() {
+			continue
+		}
+
+		// Calculate standard deviation for centered window
+		mean := sma[i]
+		var variance float64
+		var count int
+		start := chartdraw.MaxInt(0, i-halfWindow)
+		end := chartdraw.MinInt(len(y)-1, i+halfWindow)
+
+		for j := start; j <= end; j++ {
+			if y[j] != GetNullValue() {
+				diff := y[j] - mean
+				variance += diff * diff
+				count++
+			}
+		}
+
+		if count > 0 {
+			stddev := math.Sqrt(variance / float64(count))
+			result[i] = mean + (stddev * multiplier)
+		}
+	}
+
+	return result, nil
+}
+
+// bollingerUpperTrend computes the upper Bollinger Band (SMA + 2 * standard deviation), preserving null positions.
+func bollingerUpperTrend(y []float64, period int) ([]float64, error) {
+	return bollingerBand(y, period, 2.0)
+}
+
+// bollingerLowerTrend computes the lower Bollinger Band (SMA - 2 * standard deviation), preserving null positions.
+func bollingerLowerTrend(y []float64, period int) ([]float64, error) {
+	return bollingerBand(y, period, -2.0)
+}
+
+// rsiTrend computes the Relative Strength Index momentum oscillator, preserving null positions.
+func rsiTrend(y []float64, period int) ([]float64, error) {
+	cleanData, cleanIndices := extractNonNullData(y)
+	result := initResultWithNulls(y)
+	for i := 0; i < period && i < len(result); i++ {
+		result[i] = GetNullValue() // set start up to period as null since it can't be calculated
+	}
+
+	if len(cleanData) < 2 {
+		return result, nil // Not enough non-null data
+	}
+	if period <= 0 {
+		period = chartdraw.MaxInt(2, len(cleanData)/5)
+	}
+	if len(cleanData) < period+1 {
+		return result, nil // Insufficient data for RSI
+	}
+
+	// Calculate price changes between consecutive non-null values
+	gains := make([]float64, len(cleanData)-1)
+	losses := make([]float64, len(cleanData)-1)
+
+	for i := 1; i < len(cleanData); i++ {
+		change := cleanData[i] - cleanData[i-1]
+		if change > 0 {
+			gains[i-1] = change
+			losses[i-1] = 0
 		} else {
-			// Shouldn't happen
+			gains[i-1] = 0
+			losses[i-1] = -change
+		}
+	}
+
+	// Calculate initial averages
+	var avgGain, avgLoss float64
+	for i := 0; i < period && i < len(gains); i++ {
+		avgGain += gains[i]
+		avgLoss += losses[i]
+	}
+	avgGain /= float64(period)
+	avgLoss /= float64(period)
+
+	// Calculate RSI for non-null positions
+	for i := period; i < len(cleanData); i++ {
+		idx := cleanIndices[i]
+		if avgLoss == 0 {
+			result[idx] = 100
+		} else {
+			rs := avgGain / avgLoss
+			result[idx] = 100 - (100 / (1 + rs))
+		}
+
+		// Update averages for next iteration
+		if i < len(gains) {
+			avgGain = ((avgGain * float64(period-1)) + gains[i]) / float64(period)
+			avgLoss = ((avgLoss * float64(period-1)) + losses[i]) / float64(period)
 		}
 	}
 
