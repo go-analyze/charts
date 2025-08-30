@@ -138,8 +138,8 @@ func (t *trendLinePainter) Render() (Box, error) {
 
 // extractNonNullData extracts non-null values and their indices from the input.
 func extractNonNullData(y []float64) ([]float64, []int) {
-	var cleanData []float64
-	var cleanIndices []int
+	cleanData := make([]float64, 0, len(y))
+	cleanIndices := make([]int, 0, len(y))
 	for i, v := range y {
 		if v != GetNullValue() {
 			cleanData = append(cleanData, v)
@@ -172,7 +172,10 @@ func linearTrend(y []float64) ([]float64, error) {
 		return result, nil
 	}
 
-	// Compute linear regression
+	return computeLinearTrend(result, y, cleanData, cleanIndices)
+}
+
+func computeLinearTrend(result, data, cleanData []float64, cleanIndices []int) ([]float64, error) {
 	n := float64(len(cleanData))
 	var sumX, sumY, sumXY, sumXX float64
 	for i, v := range cleanData {
@@ -190,9 +193,8 @@ func linearTrend(y []float64) ([]float64, error) {
 	slope := (n*sumXY - sumX*sumY) / denom
 	intercept := (sumY - slope*sumX) / n
 
-	// Apply trend to non-null positions only
-	for i, v := range y {
-		if v != GetNullValue() {
+	for i, v := range data {
+		if v != GetNullValue() { // Apply trend to non-null positions only
 			result[i] = intercept + slope*float64(i)
 		}
 	}
@@ -212,7 +214,7 @@ func cubicTrend(y []float64) ([]float64, error) {
 		result[cleanIndices[0]] = cleanData[0] // Single point - just preserve it
 		return result, nil
 	} else if n < 4 {
-		return linearTrend(y) // Fall back to linear for less than 4 points
+		return computeLinearTrend(result, y, cleanData, cleanIndices) // Fall back to linear for less than 4 points
 	}
 
 	// Compute sums of powers of x using original indices
@@ -276,7 +278,7 @@ func exponentialMovingAverageTrend(y []float64, window int) ([]float64, error) {
 		result[cleanIndices[0]] = cleanData[0] // Single point - just preserve it
 		return result, nil
 	} else if nonNullCount < 4 {
-		return linearTrend(y) // Fall back to linear for less than 4 points
+		return computeLinearTrend(result, y, cleanData, cleanIndices) // Fall back to linear for less than 4 points
 	}
 
 	if window <= 0 {
@@ -357,7 +359,7 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 		result[cleanIndices[0]] = cleanData[0] // Single point - just preserve it
 		return result, nil
 	} else if nonNullCount < 4 {
-		return linearTrend(y) // Fall back to linear for less than 4 points
+		return computeLinearTrend(result, y, cleanData, cleanIndices) // Fall back to linear for less than 4 points
 	}
 
 	if window <= 0 {
@@ -385,7 +387,7 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 
 		if count > 0 {
 			result[i] = sum / float64(count)
-		} // else, Shouldn't happen
+		} // else, shouldn't happen
 	}
 
 	return result, nil
@@ -475,7 +477,6 @@ func rsiTrend(y []float64, period int) ([]float64, error) {
 	// Calculate price changes between consecutive non-null values
 	gains := make([]float64, len(cleanData)-1)
 	losses := make([]float64, len(cleanData)-1)
-
 	for i := 1; i < len(cleanData); i++ {
 		change := cleanData[i] - cleanData[i-1]
 		if change > 0 {
