@@ -45,14 +45,14 @@ func main() {
 	}
 	barSizePainter := p.Child(charts.PainterBoxOption(charts.NewBox(400, 0, 800, 400)))
 	opt.Title.Text = "Small Bar"
-	opt.BarHeight = 4
+	opt.BarHeight = 4 // TODO - v0.6 - Update to percentage (e.g., 0.3)
 	if err := barSizePainter.HorizontalBarChart(opt); err != nil {
 		panic(err)
 	}
 	marginPainter := p.Child(charts.PainterBoxOption(charts.NewBox(800, 0, 1200, 400)))
 	opt.Title.Text = "No Margin"
-	opt.BarMargin = charts.Ptr(0.0)
-	opt.BarHeight = 0 // reset to default size
+	opt.BarMargin = charts.Ptr(0.0) // TODO - v0.6 - Update to percentage
+	opt.BarHeight = 0               // reset to default size
 	if err := marginPainter.HorizontalBarChart(opt); err != nil {
 		panic(err)
 	}

@@ -62,15 +62,16 @@ type BarChartOption struct {
 	// Legend contains options for the data legend.
 	Legend LegendOption
 	// BarWidth specifies the width of each bar. May be reduced to fit all series on the chart.
-	BarWidth int
+	BarWidth int // TODO - v0.6 - Update to float64 to represent a precent
 	// BarMargin specifies the margin between grouped bars. BarWidth takes priority over a set margin.
-	BarMargin *float64
+	BarMargin *float64 // TODO - v0.6 - Update to be percent based
 	// RoundedBarCaps when *true draws bars with rounded top corners.
 	RoundedBarCaps *bool
 	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }
 
+// TODO - v0.6 - calculateBarMarginsAndSize should handle percents and maybe de-duplicate with calculateCandleMarginsAndSize
 func calculateBarMarginsAndSize(seriesCount, space int, configuredBarSize int, configuredBarMargin *float64) (int, int, int) {
 	// default margins, adjusted below with config and series count
 	margin := 10   // margin between each series block

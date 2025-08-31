@@ -44,6 +44,21 @@ func TestSeriesLists(t *testing.T) {
 	}
 }
 
+func TestFilterSeriesListCandlestick(t *testing.T) {
+	t.Parallel()
+
+	generic := GenericSeriesList{
+		{Values: []float64{1, 2}, Type: ChartTypeCandlestick},
+		{Values: []float64{3, 4}, Type: ChartTypeLine},
+	}
+
+	filtered := filterSeriesList[CandlestickSeriesList](generic, ChartTypeCandlestick)
+	assert.Len(t, filtered, 1)
+	require.Len(t, filtered[0].Data, 2)
+	assert.InDelta(t, 1.0, filtered[0].Data[0].Open, 0)
+	assert.InDelta(t, 2.0, filtered[0].Data[1].Close, 0)
+}
+
 func TestGetSeriesMinMaxSumMaxEmpty(t *testing.T) {
 	t.Parallel()
 
@@ -503,5 +518,105 @@ func BenchmarkSeriesMarkListFilterGlobal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = pure.filterGlobal(false)
 		_ = mixed.filterGlobal(false)
+	}
+}
+
+func TestCandlestickGenericBidirectionalConversion(t *testing.T) {
+	t.Parallel()
+
+	// Create original candlestick data with varied OHLC values
+	originalData := []OHLCData{
+		{Open: 100, High: 110, Low: 95, Close: 105},
+		{Open: 105, High: 115, Low: 98, Close: 108},
+		{Open: 108, High: 120, Low: 102, Close: 112},
+		// Include invalid data to test null value handling
+		{Open: GetNullValue(), High: GetNullValue(), Low: GetNullValue(), Close: GetNullValue()},
+		{Open: GetNullValue(), High: 100, Low: 80, Close: GetNullValue()},
+	}
+
+	original := CandlestickSeries{
+		Data:       originalData,
+		YAxisIndex: 1,
+		Label:      SeriesLabel{Show: Ptr(true)},
+		Name:       "Test Series",
+	}
+
+	// Convert CandlestickSeries to GenericSeries
+	genericList := CandlestickSeriesList{original}.ToGenericSeriesList()
+	require.Len(t, genericList, 1)
+	generic := genericList[0]
+
+	// Verify the generic series has correct structure
+	assert.Equal(t, ChartTypeCandlestick, generic.Type)
+	assert.Equal(t, 1, generic.YAxisIndex)
+	assert.Equal(t, "Test Series", generic.Name)
+	assert.True(t, *generic.Label.Show)
+
+	// Verify OHLC encoding: 4 values per candlestick
+	expectedLen := len(originalData) * 4
+	require.Len(t, generic.Values, expectedLen)
+
+	// Check encoded values
+	assert.InDelta(t, 100.0, generic.Values[0], 0) // First candle Open
+	assert.InDelta(t, 110.0, generic.Values[1], 0) // First candle High
+	assert.InDelta(t, 95.0, generic.Values[2], 0)  // First candle Low
+	assert.InDelta(t, 105.0, generic.Values[3], 0) // First candle Close
+
+	assert.InDelta(t, 105.0, generic.Values[4], 0) // Second candle Open
+	assert.InDelta(t, 115.0, generic.Values[5], 0) // Second candle High
+	assert.InDelta(t, 98.0, generic.Values[6], 0)  // Second candle Low
+	assert.InDelta(t, 108.0, generic.Values[7], 0) // Second candle Close
+
+	// Check null values are preserved
+	assert.InDelta(t, GetNullValue(), generic.Values[12], 0) // Fourth candle Open
+	assert.InDelta(t, GetNullValue(), generic.Values[13], 0) // Fourth candle High
+	assert.InDelta(t, GetNullValue(), generic.Values[14], 0) // Fourth candle Low
+	assert.InDelta(t, GetNullValue(), generic.Values[15], 0) // Fourth candle Close
+
+	// Convert GenericSeries back to CandlestickSeries
+	reconstructed := filterSeriesList[CandlestickSeriesList](GenericSeriesList{generic}, ChartTypeCandlestick)
+	require.Len(t, reconstructed, 1)
+	result := reconstructed[0]
+
+	// Verify the result is equivalent to the original
+	assert.Equal(t, original.YAxisIndex, result.YAxisIndex)
+	assert.Equal(t, original.Name, result.Name)
+	assert.Equal(t, original.Label.Show, result.Label.Show)
+	require.Len(t, result.Data, len(original.Data))
+
+	// Check each OHLC data point
+	for i, expectedOHLC := range original.Data {
+		actualOHLC := result.Data[i]
+		assert.InDelta(t, expectedOHLC.Open, actualOHLC.Open, 0)
+		assert.InDelta(t, expectedOHLC.High, actualOHLC.High, 0)
+		assert.InDelta(t, expectedOHLC.Low, actualOHLC.Low, 0)
+		assert.InDelta(t, expectedOHLC.Close, actualOHLC.Close, 0)
+	}
+}
+
+func TestCandlestickGenericConversionFallback(t *testing.T) {
+	t.Parallel()
+
+	// Test fallback behavior when GenericSeries doesn't have OHLC-encoded data
+	generic := GenericSeries{
+		Values:     []float64{100, 105, 110}, // Not divisible by 4
+		YAxisIndex: 0,
+		Name:       "Test Fallback",
+		Type:       ChartTypeCandlestick,
+	}
+
+	// Convert to CandlestickSeries
+	reconstructed := filterSeriesList[CandlestickSeriesList](GenericSeriesList{generic}, ChartTypeCandlestick)
+	require.Len(t, reconstructed, 1)
+	result := reconstructed[0]
+
+	// Should create flat OHLC data where O=H=L=C
+	require.Len(t, result.Data, 3)
+	for i, expectedValue := range generic.Values {
+		ohlc := result.Data[i]
+		assert.InDelta(t, expectedValue, ohlc.Open, 0)
+		assert.InDelta(t, expectedValue, ohlc.High, 0)
+		assert.InDelta(t, expectedValue, ohlc.Low, 0)
+		assert.InDelta(t, expectedValue, ohlc.Close, 0)
 	}
 }

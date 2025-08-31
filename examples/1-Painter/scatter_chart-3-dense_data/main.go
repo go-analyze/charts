@@ -29,8 +29,8 @@ func main() {
 	values := generateRandomData(3, dataPointCount, 10)
 	xAxisLabels := generateLabels(dataPointCount, "foo ")
 	axisFont := charts.NewFontStyleWithSize(6.0)
-	trend := charts.NewTrendLine(charts.SeriesTrendTypeAverage)
-	trend[0].Window = 100
+	trend := charts.NewTrendLine(charts.SeriesTrendTypeSMA)
+	trend[0].Period = 100
 	series := charts.NewSeriesListScatterMultiValue(values, charts.ScatterSeriesOption{
 		TrendLine: trend,
 		Label: charts.SeriesLabel{

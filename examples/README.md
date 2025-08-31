@@ -15,10 +15,15 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [bar_chart-3-label_position-round_caps](./1-Painter/bar_chart-3-label_position-round_caps) - Showing the different label positions and rounded caps.
 * [bar_chart-4-mark](./1-Painter/bar_chart-4-mark) - Bar chart with included mark points and mark lines.
 * [bar_chart-5-stacked](./1-Painter/bar_chart-5-stacked) - A bar chart with "Stacked" series enabled, collapsing the bars into a single layered bar.
+* [candlestick_chart-1-basic](./1-Painter/candlestick_chart-1-basic) - Basic candlestick chart.
+* [candlestick_chart-2-multiple_series](./1-Painter/candlestick_chart-2-multiple_series) - Candlestick chart with multiple series and varied candle styles.
+* [candlestick_chart-3-bollinger_bands](./1-Painter/candlestick_chart-3-bollinger_bands) - Candlestick chart with Bollinger Bands overlaid.
+* [candlestick_chart-4-patterns](./1-Painter/candlestick_chart-4-patterns) - Candlestick chart highlighting core and custom candlestick patterns.
+* [candlestick_chart-5-aggregation](./1-Painter/candlestick_chart-5-aggregation) - Candlestick data aggregation: 1-minute vs 5-minute with two stacked charts.
 * [doughnut_chart-1-basic](./1-Painter/doughnut_chart-1-basic) - Basic doughnut chart, a variation on a pie chart with the center opened up, allowing labels or other values to be put in the middle to save space.
 * [doughnut_chart-2-styles](./1-Painter/doughnut_chart-2-styles) - A variety of styles for doughnut charts shown.
 * [funnel_chart-1-basic](./1-Painter/funnel_chart-1-basic) - Basic funnel chart.
-* [heat_map_chart-1-basic](./1-Painter/heat_map_chart-1-basic) - Basic heat map chart.
+* [heat_map-1-basic](./1-Painter/heat_map-1-basic) - Basic heat map chart.
 * [horizontal_bar_chart-1-basic](./1-Painter/horizontal_bar_chart-1-basic) - Basic horizontal bar chart.
 * [horizontal_bar_chart-2-size_margin](./1-Painter/horizontal_bar_chart-2-size_margin) - Showing the visual impact of different bar sizes and margins.
 * [horizontal_bar_chart-3-mark](./1-Painter/horizontal_bar_chart-3-mark) - Horizontal bar chart with included mark lines.
@@ -35,8 +40,8 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [multiple_charts-1](./1-Painter/multiple_charts-1) - Example of manually building a painter so that you can render 4 charts on the same image.
 * [multiple_charts-2](./1-Painter/multiple_charts-2) - Shows how to use a single set of data and demonstrate it with multiple chart types.
 * [pie_chart-1-basic](./1-Painter/pie_chart-1-basic) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
-* [pie_chart-2-radius](./1-Painter/pie_chart-2-radius) - Pie chart which varies the series radius by the percentage of the series.
-* [pie_chart-2-gap](./1-Painter/pie_chart-2-gap) - Pie chart with segment gaps between each slice.
+* [pie_chart-2-series_radius](./1-Painter/pie_chart-2-series_radius) - Pie chart which varies the series radius by the percentage of the series.
+* [pie_chart-3-gap](./1-Painter/pie_chart-3-gap) - Pie chart with segment gaps between each slice.
 * [radar_chart-1-basic](./1-Painter/radar_chart-1-basic) - Basic radar chart.
 * [scatter_chart-1-basic](./1-Painter/scatter_chart-1-basic) - Basic scatter chart with some simple styling changes and a demonstration of `null` values.
 * [scatter_chart-2-symbols](./1-Painter/scatter_chart-2-symbols) - Basic scatter chart showing per-series symbols.
@@ -46,6 +51,7 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 ## `ChartOption` / `OptionFunc` Example List
 
 * [bar_chart-1-basic](./2-OptionFunc/bar_chart-1-basic) - Bar chart with included mark points and mark lines.
+* [candlestick_chart-1-basic](./2-OptionFunc/candlestick_chart-1-basic) - Basic candlestick chart using `ChartOption`.
 * [doughnut_chart-1-basic](./2-OptionFunc/doughnut_chart-1-basic) - Doughnut chart, a variation on a pie chart with the center opened up, allowing labels or other values to be put in the middle to save space.
 * [chinese](./2-OptionFunc/chinese) - Line chart with chinese characters that uses a custom font (must be downloaded by user, see comment in code).
 * [funnel_chart-1-basic](./2-OptionFunc/funnel_chart-1-basic) - Basic funnel chart.

@@ -354,6 +354,7 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	doughnutSeriesList := filterSeriesList[DoughnutSeriesList](opt.SeriesList, ChartTypeDoughnut)
 	radarSeriesList := filterSeriesList[RadarSeriesList](opt.SeriesList, ChartTypeRadar)
 	funnelSeriesList := filterSeriesList[FunnelSeriesList](opt.SeriesList, ChartTypeFunnel)
+	candlestickSeries := filterSeriesList[CandlestickSeriesList](opt.SeriesList, ChartTypeCandlestick)
 
 	seriesCount := len(seriesList)
 	if len(horizontalBarSeriesList) != 0 && len(horizontalBarSeriesList) != seriesCount {
@@ -366,6 +367,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		return nil, errors.New("radar can not mix other charts")
 	} else if len(funnelSeriesList) != 0 && len(funnelSeriesList) != seriesCount {
 		return nil, errors.New("funnel can not mix other charts")
+	} else if len(candlestickSeries) != 0 && len(candlestickSeries) != seriesCount {
+		return nil, errors.New("candlestick can not mix other charts")
 	}
 
 	axisReversed := len(horizontalBarSeriesList) != 0
@@ -531,6 +534,22 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Theme:      opt.Theme,
 				Font:       opt.Font,
 				SeriesList: funnelSeriesList,
+			}).renderChart(renderResult)
+			return err
+		})
+	}
+
+	// candlestick chart
+	if len(candlestickSeries) != 0 {
+		handler.Add(func() error {
+			_, err := newCandlestickChart(p, CandlestickChartOption{
+				Theme:          opt.Theme,
+				XAxis:          opt.XAxis,
+				YAxis:          opt.YAxis,
+				SeriesList:     candlestickSeries,
+				CandleWidth:    0.8, // TODO - v0.6 - Use BarSize when it represents a percentage
+				WickWidth:      1.0,
+				ValueFormatter: opt.ValueFormatter,
 			}).renderChart(renderResult)
 			return err
 		})

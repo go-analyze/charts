@@ -165,28 +165,58 @@ func (l *legendPainter) Render() (Box, error) {
 		if index < len(opt.seriesSymbols) && opt.seriesSymbols[index] != "" {
 			seriesSymbol = opt.seriesSymbols[index]
 		}
-		var drawIcon func(top, left int, color Color) int
+		var drawIcon func(top, left int) int
 		switch seriesSymbol {
 		case SymbolSquare:
-			drawIcon = func(top, left int, color Color) int {
+			drawIcon = func(top, left int) int {
+				color := theme.GetSeriesColor(index)
+
 				p.FilledRect(left, top-legendHeight+8, left+legendWidth, top+1, color, color, 0)
 				return left + legendWidth
 			}
 		case SymbolDiamond:
-			drawIcon = func(top, left int, color Color) int {
+			drawIcon = func(top, left int) int {
+				color := theme.GetSeriesColor(index)
+
 				p.FilledDiamond(left+5, top-5, 15, 20, color, color, 0)
 				return left + legendHeight
 			}
 		case SymbolNone:
-			drawIcon = func(top, left int, color Color) int {
-				return left
+			drawIcon = func(top, left int) int { return left }
+		case symbolCandlestick:
+			drawIcon = func(top, left int) int {
+				upColor, downColor := theme.GetSeriesUpDownColors(index)
+
+				rectTop := top - legendHeight + 8
+				rectBottom := top + 1
+				midX := left + (legendWidth / 2)
+
+				// Draw up arrow (left half) - triangle pointing up
+				upArrowTip := left + (legendWidth / 4)
+				p.moveTo(left, rectBottom)    // bottom left
+				p.lineTo(midX, rectBottom)    // bottom right of up triangle
+				p.lineTo(upArrowTip, rectTop) // tip of up arrow
+				p.lineTo(left, rectBottom)    // back to bottom left
+				p.fillStroke(upColor, upColor, 0)
+
+				// Draw down arrow (right half) - triangle pointing down
+				downArrowTip := left + (3 * legendWidth / 4)
+				p.moveTo(midX, rectTop)             // top left of down triangle
+				p.lineTo(left+legendWidth, rectTop) // top right
+				p.lineTo(downArrowTip, rectBottom)  // tip of down arrow
+				p.lineTo(midX, rectTop)             // back to top left
+				p.fillStroke(downColor, downColor, 0)
+
+				return left + legendWidth
 			}
 		default:
 			centerColor := ColorTransparent
 			if seriesSymbol == SymbolCircle {
 				centerColor = opt.Theme.GetBackgroundColor()
 			}
-			drawIcon = func(top, left int, color Color) int {
+			drawIcon = func(top, left int) int {
+				color := theme.GetSeriesColor(index)
+
 				p.legendLineDot(Box{
 					Top:    top + 1,
 					Left:   left,
@@ -198,7 +228,6 @@ func (l *legendPainter) Render() (Box, error) {
 			}
 		}
 
-		color := theme.GetSeriesColor(index)
 		if vertical {
 			if opt.Align == AlignRight {
 				// adjust x0 so that the text will start with a right alignment to the longest line
@@ -235,14 +264,14 @@ func (l *legendPainter) Render() (Box, error) {
 		}
 
 		if opt.Align != AlignRight {
-			x0 = drawIcon(y0, x0, color)
+			x0 = drawIcon(y0, x0)
 			x0 += textOffset
 		}
 		p.Text(text, x0, y0, 0, fontStyle)
 		x0 += measureList[index].Width()
 		if opt.Align == AlignRight {
 			x0 += textOffset
-			x0 = drawIcon(y0, x0, color)
+			x0 = drawIcon(y0, x0)
 		}
 
 		if vertical {

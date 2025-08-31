@@ -337,3 +337,10 @@ func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 		SeriesList: NewSeriesListFunnel(values).ToGenericSeriesList(),
 	}, opts...)
 }
+
+// CandleStickRender renders a candlestick chart.
+func CandleStickRender(values [][]OHLCData, opts ...OptionFunc) (*Painter, error) {
+	return Render(ChartOption{
+		SeriesList: NewSeriesListCandlestick(values).ToGenericSeriesList(),
+	}, opts...)
+}

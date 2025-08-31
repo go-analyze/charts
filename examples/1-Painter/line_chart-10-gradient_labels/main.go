@@ -44,6 +44,7 @@ func main() {
 		Text:    "Sales Performance with Gradient Label Colors",
 		Subtext: "(Green = Low Values, Red = High Values)",
 	}
+	opt.Legend.Show = charts.Ptr(false)
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,

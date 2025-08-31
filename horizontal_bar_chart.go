@@ -49,9 +49,9 @@ type HorizontalBarChartOption struct {
 	// Legend contains options for the data legend.
 	Legend LegendOption
 	// BarHeight specifies the height of each horizontal bar. Height may be reduced to ensure all series fit on the chart.
-	BarHeight int
+	BarHeight int // TODO - v0.6 - Update to float64 to represent a precent
 	// BarMargin specifies the margin between grouped bars. BarHeight takes priority over a set margin.
-	BarMargin *float64
+	BarMargin *float64 // TODO - v0.6 - Update to be percent based
 	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }

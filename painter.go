@@ -1133,3 +1133,9 @@ func (p *Painter) TableChart(opt TableChartOption) error {
 	_, err := newTableChart(p, opt).Render()
 	return err
 }
+
+// CandlestickChart renders a candlestick chart with the provided configuration to the painter.
+func (p *Painter) CandlestickChart(opt CandlestickChartOption) error {
+	_, err := newCandlestickChart(p, opt).Render()
+	return err
+}
