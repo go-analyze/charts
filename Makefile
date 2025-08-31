@@ -2,9 +2,12 @@ export GO111MODULE = on
 
 .PHONY: default test test-cover bench lint
 
+# Packages to test (exclude example packages)
+CODE_PKGS := $(shell go list ./... | grep -v '/examples')
+
 
 test:
-	go test -race -cover ./...
+	go test -race -cover $(CODE_PKGS)
 
 test-cover:
 	go test -race -coverprofile=test.out ./... && go tool cover --html=test.out
