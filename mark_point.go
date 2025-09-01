@@ -4,6 +4,27 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
+// SeriesMarkPoint configures mark points for a series.
+type SeriesMarkPoint struct {
+	// SymbolSize is the width of symbol, default value is 28.
+	SymbolSize int
+	// ValueFormatter is used to produce the label for the Mark Point.
+	ValueFormatter ValueFormatter
+	// Points are the mark points for the series.
+	Points SeriesMarkList
+}
+
+// AddPoints adds mark points for the series.
+func (m *SeriesMarkPoint) AddPoints(markTypes ...string) {
+	m.Points = appendMarks(m.Points, false, markTypes)
+}
+
+// AddGlobalPoints adds "global" mark points, which reference the sum of all series. These marks
+// are only rendered when the Series is "Stacked" and the mark point is on the LAST Series of the SeriesList.
+func (m *SeriesMarkPoint) AddGlobalPoints(markTypes ...string) {
+	m.Points = appendMarks(m.Points, true, markTypes)
+}
+
 // NewMarkPoint returns a mark point for the provided types. Set on a specific Series instance.
 func NewMarkPoint(markPointTypes ...string) SeriesMarkPoint {
 	return SeriesMarkPoint{

@@ -4,6 +4,25 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
+// SeriesMarkLine configures mark lines for a series.
+type SeriesMarkLine struct {
+	// ValueFormatter is used to produce the label for the Mark Line.
+	ValueFormatter ValueFormatter
+	// Lines are the mark lines for the series.
+	Lines SeriesMarkList
+}
+
+// AddLines adds mark lines for the series.
+func (m *SeriesMarkLine) AddLines(markTypes ...string) {
+	m.Lines = appendMarks(m.Lines, false, markTypes)
+}
+
+// AddGlobalLines adds "global" mark lines, which reference the sum of all series. These marks
+// are only rendered when the Series is "Stacked" and the mark line is on the LAST Series of the SeriesList.
+func (m *SeriesMarkLine) AddGlobalLines(markTypes ...string) {
+	m.Lines = appendMarks(m.Lines, true, markTypes)
+}
+
 // NewMarkLine returns a mark line for the provided types. Set on a specific Series instance.
 func NewMarkLine(markLineTypes ...string) SeriesMarkLine {
 	return SeriesMarkLine{

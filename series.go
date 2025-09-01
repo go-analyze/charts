@@ -9,88 +9,12 @@ import (
 	"github.com/go-analyze/charts/chartdraw"
 )
 
-// SeriesLabel configures how individual data point labels are rendered on charts.
-type SeriesLabel struct {
-	// Show controls whether data labels are displayed for this series.
-	// Use Ptr(true) to show labels, Ptr(false) to hide them, or nil for chart-specific defaults.
-	Show *bool
-	// LabelFormatter provides complete control over label content and per-point styling.
-	// When set, this takes precedence for label production.
-	LabelFormatter SeriesLabelFormatter
-	// Deprecated: FormatTemplate is deprecated, use LabelFormatter instead for better control.
-	// Template string for formatting data labels with placeholders:
-	//   {b}: the name of the data item
-	//   {c}: the value of the data item
-	//   {d}: the percentage of the data item (pie/doughnut charts only)
-	// Example: "{b}: {c} ({d})" produces "Sales: 150 (25%)"
-	FormatTemplate string
-	// ValueFormatter functions as the simplest method of number formatting or customization.
-	// Only utilized when other methods are not set.
-	ValueFormatter ValueFormatter
-	// FontStyle specifies the default font styling for labels in this series.
-	// Individual labels can override this via LabelFormatter's LabelStyle return value.
-	FontStyle FontStyle
-	// Distance specifies the pixel distance between the label and its associated data point or chart element.
-	Distance int // TODO - do we want to replace with just Offset?
-	// Offset specifies an offset from the position.
-	Offset OffsetInt
-}
-
-// LabelStyle contains optional styling overrides for individual label rendering.
-// All fields are optional - zero values mean "use default styling from series or theme".
-type LabelStyle struct {
-	// FontStyle overrides font properties (color, size, family) for this specific label.
-	FontStyle FontStyle
-	// BackgroundColor provides a background color behind the label text.
-	BackgroundColor Color
-	// CornerRadius sets the radius for rounded corners on the background rectangle.
-	CornerRadius int
-	// BorderColor sets the border color around the label background.
-	BorderColor Color
-	// BorderWidth sets the width of the border around the label background.
-	BorderWidth float64
-}
-
-// SeriesLabelFormatter is a function that generates custom labels with optional per-point styling.
-// This provides full control over label content and appearance for each data point.
-//
-// Parameters:
-//   - index: The data point index within the series
-//   - name: The series name for this data point
-//   - val: The numeric value for this data point
-//
-// Returns:
-//   - string: The label text to display. Return "" to hide the label for this point
-//   - *LabelStyle: Optional styling override for this specific label. Return nil
-//     to use default series/theme styling.
-type SeriesLabelFormatter func(index int, name string, val float64) (string, *LabelStyle)
-
 const (
 	// TODO - v0.6 - Move these constants to types, or builder pattern on structs similar to CandlestickPatternConfig
 
 	SeriesMarkTypeMax     = "max"
 	SeriesMarkTypeMin     = "min"
 	SeriesMarkTypeAverage = "average"
-
-	// SeriesTrendTypeLinear represents a linear regression trend line that fits a straight line through the data points.
-	SeriesTrendTypeLinear = "linear"
-	// SeriesTrendTypeCubic represents a cubic polynomial (degree 3) regression trend line that fits a curved line through the data points.
-	SeriesTrendTypeCubic = "cubic"
-	// Deprecated: SeriesTrendTypeAverage is deprecated, use SeriesTrendTypeSMA instead.
-	SeriesTrendTypeAverage = "average"
-	// SeriesTrendTypeSMA represents a Simple Moving Average trend line that smooths data using a sliding window average.
-	SeriesTrendTypeSMA = "sma"
-	// SeriesTrendTypeEMA represents an Exponential Moving Average trend line that gives more weight to recent data points.
-	SeriesTrendTypeEMA = "ema"
-	// SeriesTrendTypeBollingerUpper represents the upper Bollinger Band (SMA + 2 * standard deviation).
-	// Designed for financial time-series analysis to identify volatility boundaries around price movements.
-	SeriesTrendTypeBollingerUpper = "bollinger_upper"
-	// SeriesTrendTypeBollingerLower represents the lower Bollinger Band (SMA - 2 * standard deviation).
-	// Designed for financial time-series analysis to identify volatility boundaries around price movements.
-	SeriesTrendTypeBollingerLower = "bollinger_lower"
-	// SeriesTrendTypeRSI represents the Relative Strength Index momentum oscillator (0-100 scale).
-	// Measures momentum by analyzing sequential price changes, designed for financial time-series analysis.
-	SeriesTrendTypeRSI = "rsi"
 )
 
 // SeriesMark describes a single mark line or point type.
@@ -141,16 +65,6 @@ func (m SeriesMarkList) filterGlobal(global bool) SeriesMarkList {
 	}, m)
 }
 
-// SeriesMarkPoint configures mark points for a series.
-type SeriesMarkPoint struct {
-	// SymbolSize is the width of symbol, default value is 28.
-	SymbolSize int
-	// ValueFormatter is used to produce the label for the Mark Point.
-	ValueFormatter ValueFormatter
-	// Points are the mark points for the series.
-	Points SeriesMarkList
-}
-
 func hasMarkType(seriesMarks []SeriesMark, global bool, typeStr string) bool {
 	for _, sm := range seriesMarks {
 		if sm.Global == global && sm.Type == typeStr {
@@ -158,56 +72,6 @@ func hasMarkType(seriesMarks []SeriesMark, global bool, typeStr string) bool {
 		}
 	}
 	return false
-}
-
-// AddPoints adds mark points for the series.
-func (m *SeriesMarkPoint) AddPoints(markTypes ...string) {
-	m.Points = appendMarks(m.Points, false, markTypes)
-}
-
-// AddGlobalPoints adds "global" mark points, which reference the sum of all series. These marks
-// are only rendered when the Series is "Stacked" and the mark point is on the LAST Series of the SeriesList.
-func (m *SeriesMarkPoint) AddGlobalPoints(markTypes ...string) {
-	m.Points = appendMarks(m.Points, true, markTypes)
-}
-
-// SeriesMarkLine configures mark lines for a series.
-type SeriesMarkLine struct {
-	// ValueFormatter is used to produce the label for the Mark Line.
-	ValueFormatter ValueFormatter
-	// Lines are the mark lines for the series.
-	Lines SeriesMarkList
-}
-
-// AddLines adds mark lines for the series.
-func (m *SeriesMarkLine) AddLines(markTypes ...string) {
-	m.Lines = appendMarks(m.Lines, false, markTypes)
-}
-
-// AddGlobalLines adds "global" mark lines, which reference the sum of all series. These marks
-// are only rendered when the Series is "Stacked" and the mark line is on the LAST Series of the SeriesList.
-func (m *SeriesMarkLine) AddGlobalLines(markTypes ...string) {
-	m.Lines = appendMarks(m.Lines, true, markTypes)
-}
-
-// SeriesTrendLine describes the rendered trend line style.
-type SeriesTrendLine struct {
-	// LineStrokeWidth is the width of the rendered line.
-	LineStrokeWidth float64
-	// StrokeSmoothingTension should be between 0 and 1. At 0 lines are sharp and precise, 1 provides smoother lines.
-	StrokeSmoothingTension float64
-	// LineColor overrides the theme color for this trend line.
-	LineColor Color
-	// DashedLine indicates if the trend line will be a dashed line. Default depends on chart type.
-	DashedLine *bool
-	// Type specifies the trend line type: "linear", "cubic", "sma", "ema", "rsi".
-	Type string
-	// Deprecated: Window is deprecated, use Period instead.
-	Window int
-	// Period specifies the number of data points to consider for trend calculations.
-	// Used by moving averages (SMA, EMA), Bollinger Bands, RSI, and other indicators.
-	// For example, Period=20 calculates a 20-period moving average.
-	Period int
 }
 
 // GenericSeries references a population of data for any chart type. Chart-specific fields are only active
@@ -1930,8 +1794,6 @@ func (k *CandlestickSeries) Summary() populationSummary {
 	return summarizePopulationData(k.getValues())
 }
 
-// TODO - validateOHLCData is called frequently during rendering and pattern detection.
-// Consider memoization or caching validation results for performance optimization.
 // validateOHLCData ensures OHLC data follows financial market rules.
 func validateOHLCData(ohlc OHLCData) bool {
 	return validateOHLCOpen(ohlc) && validateOHLCClose(ohlc)
@@ -2186,7 +2048,6 @@ func AggregateCandlestick(data CandlestickSeries, factor int) CandlestickSeries 
 	}
 
 	aggregated := make([]OHLCData, 0, len(data.Data)/factor)
-
 	for i := 0; i < len(data.Data); i += factor {
 		end := i + factor
 		if end > len(data.Data) {
@@ -2220,7 +2081,7 @@ func AggregateCandlestick(data CandlestickSeries, factor int) CandlestickSeries 
 		Data:           aggregated,
 		YAxisIndex:     data.YAxisIndex,
 		Label:          data.Label,
-		Name:           data.Name + " (Aggregated)",
+		Name:           data.Name,
 		CloseMarkPoint: data.CloseMarkPoint,
 		CloseMarkLine:  data.CloseMarkLine,
 		CandleStyle:    data.CandleStyle,
@@ -2410,13 +2271,12 @@ func sumSeriesData(sl seriesList, yaxisIndex int) []float64 {
 	return sumValues
 }
 
-func getSeriesMaxDataCount(sl seriesList) int {
-	result := 0
+func getSeriesMaxDataCount(sl seriesList) (result int) {
 	for i := 0; i < sl.len(); i++ {
 		count := sl.getSeriesLen(i)
 		if count > result {
 			result = count
 		}
 	}
-	return result
+	return
 }
