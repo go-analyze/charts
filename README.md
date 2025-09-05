@@ -7,7 +7,7 @@ Our library focuses on generating beautiful charts and graphs within Go. Graphs 
 
 ## Functionality
 
-Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `doughnut`, `radar`, `funnel` and `table`.
+Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `doughnut`, `radar`, `candlestick`, `funnel` and `table`.
 
 New users should check out the [Features Overview](https://github.com/go-analyze/charts/wiki/Feature-Overview) on our Wiki to see commonly used features for each chart type, as well as linking to specific examples for the feature.
 
@@ -258,6 +258,46 @@ Table Feature List: https://github.com/go-analyze/charts/wiki/Feature-Overview#t
 
 Top Table Examples:
 * [table-1](./examples/1-Painter/table-1) - Table with a variety of table specific configuration and styling demonstrated.
+
+### Candlestick Chart
+
+<img src="./assets/chart-candlestick.png" alt="Candlestick Chart">
+
+Candlestick Chart Feature List: https://github.com/go-analyze/charts/wiki/Feature-Overview#candlestick-charts
+
+```go
+import (
+	"github.com/go-analyze/charts"
+)
+
+func main() {
+	ohlcData := []charts.OHLCData{
+		{Open: 100.0, High: 110.0, Low: 95.0, Close: 105.0},
+		{Open: 105.0, High: 115.0, Low: 100.0, Close: 112.0},
+		{Open: 112.0, High: 118.0, Low: 108.0, Close: 115.0},
+		// ... more OHLC data
+	}
+
+	opt := charts.NewCandlestickOptionWithData(ohlcData)
+	opt.Title.Text = "Candlestick Chart"
+	opt.XAxis.Labels = []string{
+		"Day 1", "Day 2", "Day 3", // ... matching data points
+	}
+
+	p := charts.NewPainter(charts.PainterOptions{
+		Width:  800,
+		Height: 600,
+	})
+	err := p.CandlestickChart(opt)
+	// ... err check
+	buf, err := p.Bytes()
+	// ...
+```
+
+Top Candlestick Chart Examples:
+* [candlestick_chart-1-basic](./examples/1-Painter/candlestick_chart-1-basic) - Basic OHLC data visualization with a candlestick chart.
+* [candlestick_chart-4-patterns](./examples/1-Painter/candlestick_chart-4-patterns) - Automatic pattern detection.
+* [candlestick_chart-5-aggregation](./examples/1-Painter/candlestick_chart-5-aggregation) - Time-based aggregation of candlestick data.
 
 ### Funnel Chart
 
