@@ -10,8 +10,6 @@ import (
 )
 
 const (
-	// TODO - v0.6 - Move these constants to types, or builder pattern on structs similar to CandlestickPatternConfig
-
 	SeriesMarkTypeMax     = "max"
 	SeriesMarkTypeMin     = "min"
 	SeriesMarkTypeAverage = "average"
@@ -1713,16 +1711,13 @@ type OHLCData struct {
 	Close float64
 }
 
-// CandleStyle controls candlestick body rendering: "filled", "traditional" (hollow bullish), or "outline".
-type CandleStyle string
-
 const (
 	// CandleStyleFilled always fills bodies.
-	CandleStyleFilled CandleStyle = "filled"
+	CandleStyleFilled = "filled"
 	// CandleStyleTraditional uses hollow bullish, filled bearish.
-	CandleStyleTraditional CandleStyle = "traditional"
+	CandleStyleTraditional = "traditional"
 	// CandleStyleOutline always outlines only.
-	CandleStyleOutline CandleStyle = "outline"
+	CandleStyleOutline = "outline"
 )
 
 // CandlestickSeries references OHLC data for candlestick charts.
@@ -1763,8 +1758,8 @@ type CandlestickSeries struct {
 
 	// ShowWicks hides wicks when false (body only). Overrides chart-level setting.
 	ShowWicks *bool
-	// CandleStyle specifies the visual style: "filled", "traditional", "outline".
-	CandleStyle CandleStyle
+	// CandleStyle specifies the visual style: CandleStyleFilled, CandleStyleTraditional, or CandleStyleOutline.
+	CandleStyle string
 	// PatternConfig configures automatic pattern detection and labeling.
 	PatternConfig *CandlestickPatternConfig
 }
@@ -1949,7 +1944,7 @@ type CandlestickSeriesOption struct {
 	// CloseTrendLine adds trend lines based on closes.
 	CloseTrendLine []SeriesTrendLine
 	// CandleStyle sets the drawing style for candles.
-	CandleStyle CandleStyle
+	CandleStyle string
 	// PatternConfig configures candlestick pattern detection.
 	PatternConfig *CandlestickPatternConfig
 }
