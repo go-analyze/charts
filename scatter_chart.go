@@ -98,7 +98,11 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 		if seriesSymbol == "" {
 			seriesSymbol = opt.Symbol
 		}
-		seriesColor := opt.Theme.GetSeriesColor(index)
+		seriesThemeIndex := index
+		if series.absThemeIndex != nil {
+			seriesThemeIndex = *series.absThemeIndex
+		}
+		seriesColor := opt.Theme.GetSeriesColor(seriesThemeIndex)
 		yRange := result.yaxisRanges[series.YAxisIndex]
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {
@@ -168,7 +172,7 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 		if len(series.TrendLine) > 0 {
 			trendLinePainter.add(trendLineRenderOption{
-				defaultStrokeColor: opt.Theme.GetSeriesTrendColor(index),
+				defaultStrokeColor: opt.Theme.GetSeriesTrendColor(seriesThemeIndex),
 				xValues:            xValues,
 				seriesValues:       series.avgValues(),
 				axisRange:          yRange,

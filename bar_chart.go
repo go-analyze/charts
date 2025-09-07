@@ -142,7 +142,11 @@ func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 	for index, series := range opt.SeriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
 		yRange := result.yaxisRanges[series.YAxisIndex]
-		seriesColor := opt.Theme.GetSeriesColor(index)
+		seriesThemeIndex := index
+		if series.absThemeIndex != nil {
+			seriesThemeIndex = *series.absThemeIndex
+		}
+		seriesColor := opt.Theme.GetSeriesColor(seriesThemeIndex)
 
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {

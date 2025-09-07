@@ -196,6 +196,9 @@ type LineSeries struct {
 	TrendLine []SeriesTrendLine
 	// Symbol specifies a custom symbol for the series.
 	Symbol Symbol
+
+	// absThemeIndex represents the series index when combined with other chart types.
+	absThemeIndex *int
 }
 
 func (l *LineSeries) getYAxisIndex() int {
@@ -314,6 +317,9 @@ type ScatterSeries struct {
 	TrendLine []SeriesTrendLine
 	// Symbol specifies a custom symbol for the series.
 	Symbol Symbol
+
+	// absThemeIndex represents the series index when combined with other chart types.
+	absThemeIndex *int
 }
 
 func (s *ScatterSeries) getYAxisIndex() int {
@@ -435,6 +441,9 @@ type BarSeries struct {
 	// MarkLine provides a configuration for mark lines for this series. When using a MarkLine, you will want to
 	// configure padding to the chart on the right for the values.
 	MarkLine SeriesMarkLine
+
+	// absThemeIndex represents the series index when combined with other chart types.
+	absThemeIndex *int
 }
 
 func (b *BarSeries) getYAxisIndex() int {
@@ -1082,12 +1091,13 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 					result = append(result, *v)
 				case *GenericSeries:
 					result = append(result, LineSeries{
-						Values:     v.Values,
-						YAxisIndex: v.YAxisIndex,
-						Label:      v.Label,
-						Name:       v.Name,
-						MarkLine:   v.MarkLine,
-						MarkPoint:  v.MarkPoint,
+						Values:        v.Values,
+						YAxisIndex:    v.YAxisIndex,
+						Label:         v.Label,
+						Name:          v.Name,
+						MarkLine:      v.MarkLine,
+						MarkPoint:     v.MarkPoint,
+						absThemeIndex: Ptr(i),
 					})
 				}
 			}
@@ -1103,11 +1113,12 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 					result = append(result, *v)
 				case *GenericSeries:
 					result = append(result, ScatterSeries{
-						Values:     expandSingleValueScatterSeries(v.Values),
-						YAxisIndex: v.YAxisIndex,
-						Label:      v.Label,
-						Name:       v.Name,
-						MarkLine:   v.MarkLine,
+						Values:        expandSingleValueScatterSeries(v.Values),
+						YAxisIndex:    v.YAxisIndex,
+						Label:         v.Label,
+						Name:          v.Name,
+						MarkLine:      v.MarkLine,
+						absThemeIndex: Ptr(i),
 					})
 				}
 			}
@@ -1123,12 +1134,13 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 					result = append(result, *v)
 				case *GenericSeries:
 					result = append(result, BarSeries{
-						Values:     v.Values,
-						YAxisIndex: v.YAxisIndex,
-						Label:      v.Label,
-						Name:       v.Name,
-						MarkLine:   v.MarkLine,
-						MarkPoint:  v.MarkPoint,
+						Values:        v.Values,
+						YAxisIndex:    v.YAxisIndex,
+						Label:         v.Label,
+						Name:          v.Name,
+						MarkLine:      v.MarkLine,
+						MarkPoint:     v.MarkPoint,
+						absThemeIndex: Ptr(i),
 					})
 				}
 			}
@@ -1271,102 +1283,14 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 						Name:           v.Name,
 						CloseMarkLine:  v.MarkLine,
 						CloseMarkPoint: v.MarkPoint,
+						absThemeIndex:  Ptr(i),
 					})
 				}
 			}
 		}
 		return any(result).(T)
 	default:
-		result := make(GenericSeriesList, 0, sl.len())
-		for i := 0; i < sl.len(); i++ {
-			s := sl.getSeries(i)
-			if chartTypeMatch(chartType, s.getType()) {
-				switch v := s.(type) {
-				case *LineSeries:
-					result = append(result, GenericSeries{
-						Values:     v.Values,
-						YAxisIndex: v.YAxisIndex,
-						Label:      v.Label,
-						Name:       v.Name,
-						MarkLine:   v.MarkLine,
-						MarkPoint:  v.MarkPoint,
-					})
-				case *ScatterSeries:
-					result = append(result, GenericSeries{
-						Values:     v.avgValues(),
-						YAxisIndex: v.YAxisIndex,
-						Label:      v.Label,
-						Name:       v.Name,
-						MarkLine:   v.MarkLine,
-					})
-				case *BarSeries:
-					result = append(result, GenericSeries{
-						Values:     v.Values,
-						YAxisIndex: v.YAxisIndex,
-						Label:      v.Label,
-						Name:       v.Name,
-						MarkLine:   v.MarkLine,
-						MarkPoint:  v.MarkPoint,
-					})
-				case *HorizontalBarSeries:
-					result = append(result, GenericSeries{
-						Values: v.Values,
-						Label:  v.Label,
-						Name:   v.Name,
-					})
-				case *PieSeries:
-					result = append(result, GenericSeries{
-						Values: []float64{v.Value},
-						Label:  v.Label,
-						Name:   v.Name,
-						Radius: v.Radius,
-					})
-				case *DoughnutSeries:
-					result = append(result, GenericSeries{
-						Values: []float64{v.Value},
-						Label:  v.Label,
-						Name:   v.Name,
-						Radius: v.Radius,
-					})
-				case *RadarSeries:
-					result = append(result, GenericSeries{
-						Values: v.Values,
-						Label:  v.Label,
-						Name:   v.Name,
-					})
-				case *FunnelSeries:
-					result = append(result, GenericSeries{
-						Values: []float64{v.Value},
-						Label:  v.Label,
-						Name:   v.Name,
-					})
-				case *CandlestickSeries:
-					// Encode OHLC data as four in-order float64 values per candlestick
-					values := make([]float64, 0, len(v.Data)*4)
-					for _, ohlc := range v.Data {
-						if validateOHLCData(ohlc) {
-							values = append(values, ohlc.Open, ohlc.High, ohlc.Low, ohlc.Close)
-						} else if validateOHLCHighLow(ohlc) {
-							values = append(values, GetNullValue(), ohlc.High, ohlc.Low, GetNullValue())
-						} else { // For invalid OHLC data, use null values to maintain structure
-							values = append(values, GetNullValue(), GetNullValue(), GetNullValue(), GetNullValue())
-						}
-					}
-					result = append(result, GenericSeries{
-						Values:     values,
-						YAxisIndex: v.YAxisIndex,
-						Label:      v.Label,
-						Name:       v.Name,
-						Type:       ChartTypeCandlestick,
-						MarkLine:   v.CloseMarkLine,
-						MarkPoint:  v.CloseMarkPoint,
-					})
-				case *GenericSeries:
-					result = append(result, *v)
-				}
-			}
-		}
-		return any(result).(T)
+		panic("bug, unhandled chart type in filter: " + chartType)
 	}
 }
 
@@ -1762,6 +1686,9 @@ type CandlestickSeries struct {
 	CandleStyle string
 	// PatternConfig configures automatic pattern detection and labeling.
 	PatternConfig *CandlestickPatternConfig
+
+	// absThemeIndex represents the series index when combined with other chart types.
+	absThemeIndex *int
 }
 
 func (k *CandlestickSeries) getYAxisIndex() int {

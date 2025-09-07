@@ -238,8 +238,11 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 		}
 		allLabelPainters[seriesIndex] = labelPainter
 
-		// Get series-specific up/down colors
-		upColor, downColor := opt.Theme.GetSeriesUpDownColors(seriesIndex)
+		seriesThemeIndex := seriesIndex
+		if series.absThemeIndex != nil {
+			seriesThemeIndex = *series.absThemeIndex
+		}
+		upColor, downColor := opt.Theme.GetSeriesUpDownColors(seriesThemeIndex)
 
 		// Initialize point arrays for all OHLC values for this series
 		seriesClosePoints[seriesIndex] = make([]Point, len(series.Data))
@@ -441,7 +444,11 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 			continue // Skip this series if YAxisIndex is out of bounds
 		}
 		yRange := result.yaxisRanges[series.YAxisIndex]
-		seriesColor := opt.Theme.GetSeriesColor(seriesIndex)
+		seriesThemeIndex := seriesIndex
+		if series.absThemeIndex != nil {
+			seriesThemeIndex = *series.absThemeIndex
+		}
+		seriesColor := opt.Theme.GetSeriesColor(seriesThemeIndex)
 
 		ohlcComponents := []struct {
 			markLine    SeriesMarkLine
@@ -527,7 +534,7 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 					values = component.extractFunc(series)
 				}
 				trendLinePainter.add(trendLineRenderOption{
-					defaultStrokeColor: opt.Theme.GetSeriesTrendColor(seriesIndex),
+					defaultStrokeColor: opt.Theme.GetSeriesTrendColor(seriesThemeIndex),
 					xValues:            seriesCenterValues[seriesIndex],
 					seriesValues:       values,
 					axisRange:          yRange,

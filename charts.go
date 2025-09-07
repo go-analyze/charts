@@ -349,13 +349,15 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	lineSeriesList := filterSeriesList[LineSeriesList](opt.SeriesList, ChartTypeLine)
 	scatterSeriesList := filterSeriesList[ScatterSeriesList](opt.SeriesList, ChartTypeScatter)
 	barSeriesList := filterSeriesList[BarSeriesList](opt.SeriesList, ChartTypeBar)
+	candlestickSeries := filterSeriesList[CandlestickSeriesList](opt.SeriesList, ChartTypeCandlestick)
 	horizontalBarSeriesList := filterSeriesList[HorizontalBarSeriesList](opt.SeriesList, ChartTypeHorizontalBar)
 	pieSeriesList := filterSeriesList[PieSeriesList](opt.SeriesList, ChartTypePie)
 	doughnutSeriesList := filterSeriesList[DoughnutSeriesList](opt.SeriesList, ChartTypeDoughnut)
 	radarSeriesList := filterSeriesList[RadarSeriesList](opt.SeriesList, ChartTypeRadar)
 	funnelSeriesList := filterSeriesList[FunnelSeriesList](opt.SeriesList, ChartTypeFunnel)
-	candlestickSeries := filterSeriesList[CandlestickSeriesList](opt.SeriesList, ChartTypeCandlestick)
 
+	// Check if any incompatible chart types are being mixed
+	// All compatible chart types need the absIndex field in the series
 	seriesCount := len(seriesList)
 	if len(horizontalBarSeriesList) != 0 && len(horizontalBarSeriesList) != seriesCount {
 		return nil, errors.New("horizontal bar can not mix other charts")
@@ -367,8 +369,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		return nil, errors.New("radar can not mix other charts")
 	} else if len(funnelSeriesList) != 0 && len(funnelSeriesList) != seriesCount {
 		return nil, errors.New("funnel can not mix other charts")
-	} else if len(candlestickSeries) != 0 && len(candlestickSeries) != seriesCount {
-		return nil, errors.New("candlestick can not mix other charts")
 	}
 
 	axisReversed := len(horizontalBarSeriesList) != 0
@@ -456,26 +456,17 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		})
 	}
 
-	// pie chart
-	if len(pieSeriesList) != 0 {
+	// candlestick chart
+	if len(candlestickSeries) != 0 {
 		handler.Add(func() error {
-			_, err := newPieChart(p, PieChartOption{
-				Theme:      opt.Theme,
-				Font:       opt.Font,
-				Radius:     opt.Radius,
-				SeriesList: pieSeriesList,
-			}).renderChart(renderResult)
-			return err
-		})
-	}
-
-	// doughnut chart
-	if len(doughnutSeriesList) != 0 {
-		handler.Add(func() error {
-			_, err := newDoughnutChart(p, DoughnutChartOption{
-				Theme:      opt.Theme,
-				RadiusRing: opt.Radius,
-				SeriesList: doughnutSeriesList,
+			_, err := newCandlestickChart(p, CandlestickChartOption{
+				Theme:          opt.Theme,
+				XAxis:          opt.XAxis,
+				YAxis:          opt.YAxis,
+				SeriesList:     candlestickSeries,
+				CandleWidth:    0.8, // TODO - v0.6 - Use BarSize when it represents a percentage
+				WickWidth:      1.0,
+				ValueFormatter: opt.ValueFormatter,
 			}).renderChart(renderResult)
 			return err
 		})
@@ -513,6 +504,31 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		})
 	}
 
+	// pie chart
+	if len(pieSeriesList) != 0 {
+		handler.Add(func() error {
+			_, err := newPieChart(p, PieChartOption{
+				Theme:      opt.Theme,
+				Font:       opt.Font,
+				Radius:     opt.Radius,
+				SeriesList: pieSeriesList,
+			}).renderChart(renderResult)
+			return err
+		})
+	}
+
+	// doughnut chart
+	if len(doughnutSeriesList) != 0 {
+		handler.Add(func() error {
+			_, err := newDoughnutChart(p, DoughnutChartOption{
+				Theme:      opt.Theme,
+				RadiusRing: opt.Radius,
+				SeriesList: doughnutSeriesList,
+			}).renderChart(renderResult)
+			return err
+		})
+	}
+
 	// radar chart
 	if len(radarSeriesList) != 0 {
 		handler.Add(func() error {
@@ -534,22 +550,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				Theme:      opt.Theme,
 				Font:       opt.Font,
 				SeriesList: funnelSeriesList,
-			}).renderChart(renderResult)
-			return err
-		})
-	}
-
-	// candlestick chart
-	if len(candlestickSeries) != 0 {
-		handler.Add(func() error {
-			_, err := newCandlestickChart(p, CandlestickChartOption{
-				Theme:          opt.Theme,
-				XAxis:          opt.XAxis,
-				YAxis:          opt.YAxis,
-				SeriesList:     candlestickSeries,
-				CandleWidth:    0.8, // TODO - v0.6 - Use BarSize when it represents a percentage
-				WickWidth:      1.0,
-				ValueFormatter: opt.ValueFormatter,
 			}).renderChart(renderResult)
 			return err
 		})

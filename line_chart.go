@@ -160,7 +160,11 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	var priorSeriesPoints []Point
 	for index, series := range opt.SeriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
-		seriesColor := opt.Theme.GetSeriesColor(index)
+		seriesThemeIndex := index
+		if series.absThemeIndex != nil {
+			seriesThemeIndex = *series.absThemeIndex
+		}
+		seriesColor := opt.Theme.GetSeriesColor(seriesThemeIndex)
 		yRange := result.yaxisRanges[series.YAxisIndex]
 		points := make([]Point, len(series.Values))
 		var labelPainter *seriesLabelPainter
@@ -359,7 +363,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 		if len(series.TrendLine) > 0 {
 			trendLinePainter.add(trendLineRenderOption{
-				defaultStrokeColor: opt.Theme.GetSeriesTrendColor(index),
+				defaultStrokeColor: opt.Theme.GetSeriesTrendColor(seriesThemeIndex),
 				xValues:            xValues,
 				seriesValues:       series.Values,
 				axisRange:          yRange,
