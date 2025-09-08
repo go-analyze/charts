@@ -17,7 +17,9 @@ func main() {
 		},
 	}
 	collector := &chartdraw.ImageWriter{}
-	graph.Render(chartdraw.PNG, collector)
+	if err := graph.Render(chartdraw.PNG, collector); err != nil {
+		log.Fatal(err)
+	}
 
 	image, err := collector.Image()
 	if err != nil {

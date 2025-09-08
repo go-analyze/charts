@@ -195,7 +195,7 @@ type LineSeries struct {
 	// TrendLine provides configurations for trend lines for this series.
 	TrendLine []SeriesTrendLine
 	// Symbol specifies a custom symbol for the series.
-	Symbol Symbol
+	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
 
 	// absThemeIndex represents the series index when combined with other chart types.
 	absThemeIndex *int
@@ -316,7 +316,7 @@ type ScatterSeries struct {
 	// TrendLine provides configurations for trend lines for this series.
 	TrendLine []SeriesTrendLine
 	// Symbol specifies a custom symbol for the series.
-	Symbol Symbol
+	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
 
 	// absThemeIndex represents the series index when combined with other chart types.
 	absThemeIndex *int

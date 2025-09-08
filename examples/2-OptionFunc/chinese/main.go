@@ -8,7 +8,7 @@ import (
 )
 
 /*
-Example showing how to load in custom fonts.
+Example showing how to use the built-in notosans font for Chinese characters.
 */
 
 func writeFile(buf []byte) error {
@@ -22,14 +22,10 @@ func writeFile(buf []byte) error {
 }
 
 func main() {
-	// Download font files from: https://github.com/googlefonts/noto-cjk
-	if buf, err := os.ReadFile("./NotoSansSC.ttf"); err != nil {
-		panic(err)
-	} else if err = charts.InstallFont("noto", buf); err != nil {
+	// Use the built-in notosans font which provides better CJK character support
+	if err := charts.SetDefaultFont(charts.FontFamilyNotoSans); err != nil {
 		panic(err)
 	}
-	// in this example we just change the global default font
-	charts.SetDefaultFont("noto")
 	// It's also possible to specify the font on the chart configuration (for example on the title, or legend specifically)
 
 	values := [][]float64{

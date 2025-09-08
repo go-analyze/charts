@@ -66,7 +66,7 @@ type LineChartOption struct {
 	Legend LegendOption
 	// Symbol specifies the symbol to draw at data points. Empty (default) varies by dataset.
 	// Options: 'none', 'circle', 'dot', 'square', 'diamond'. Can be overridden per series.
-	Symbol Symbol
+	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
 	// LineStrokeWidth is the width of the rendered line.
 	LineStrokeWidth float64
 	// StrokeSmoothingTension controls line smoothing (0-1). 0 creates straight lines, 1 creates heavily smoothed curves.

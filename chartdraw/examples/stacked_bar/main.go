@@ -48,6 +48,6 @@ func main() {
 	}
 
 	f, _ := os.Create("output.png")
-	defer f.Close()
-	sbc.Render(chartdraw.PNG, f)
+	defer func() { _ = f.Close() }()
+	_ = sbc.Render(chartdraw.PNG, f)
 }

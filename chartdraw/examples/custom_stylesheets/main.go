@@ -43,7 +43,7 @@ func svgWithCustomInlineCSSNonce(res http.ResponseWriter, _ *http.Request) {
 
 func svgWithCustomExternalCSS(res http.ResponseWriter, _ *http.Request) {
 	// Add external CSS
-	res.Write([]byte(
+	_, _ = res.Write([]byte(
 		`<?xml version="1.0" standalone="no"?>` +
 			`<?xml-stylesheet href="/main.css" type="text/css"?>` +
 			`<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`))
@@ -73,7 +73,7 @@ func pieChart() chartdraw.PieChart {
 
 func css(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "text/css")
-	res.Write([]byte(style))
+	_, _ = res.Write([]byte(style))
 }
 
 func main() {

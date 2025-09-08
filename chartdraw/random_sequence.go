@@ -23,7 +23,7 @@ func RandomValuesWithMax(count int, max float64) []float64 {
 // NewRandomSequence creates a new random seq.
 func NewRandomSequence() *RandomSeq {
 	return &RandomSeq{
-		rnd: rand.New(rand.NewSource(time.Now().Unix())),
+		rnd: rand.New(rand.NewSource(time.Now().Unix())), // nolint:gosec // random chart data is not expected to be cryptographic
 	}
 }
 

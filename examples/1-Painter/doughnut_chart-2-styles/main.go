@@ -95,7 +95,13 @@ func main() {
 		panic(err)
 	}
 
-	writeChart(p, "doughnut-chart-2-styles.png")
-	writeChart(segmentGapPainter, "doughnut-chart-2-styles-gap.png")
-	writeChart(labelsInsidePainter, "doughnut-chart-2-styles-labels.png")
+	if err := writeChart(p, "doughnut-chart-2-styles.png"); err != nil {
+		panic(err)
+	}
+	if err := writeChart(segmentGapPainter, "doughnut-chart-2-styles-gap.png"); err != nil {
+		panic(err)
+	}
+	if err := writeChart(labelsInsidePainter, "doughnut-chart-2-styles-labels.png"); err != nil {
+		panic(err)
+	}
 }

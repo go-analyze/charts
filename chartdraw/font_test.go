@@ -24,7 +24,7 @@ func getTestFontData(t *testing.T) []byte {
 
 	r, err := gzip.NewReader(bytes.NewReader(compressed))
 	require.NoError(t, err)
-	defer r.Close()
+	defer func() { _ = r.Close() }()
 
 	decompressed, err := io.ReadAll(r)
 	require.NoError(t, err)

@@ -136,7 +136,10 @@ func handler(w http.ResponseWriter, req *http.Request, chartOptions []charts.Cha
 
 	data := bytes.ReplaceAll([]byte(html), []byte("{{body}}"), bytes.Join(bytesList, []byte("")))
 	w.Header().Set("Content-Type", "text/html")
-	w.Write(data)
+	if _, err := w.Write(data); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func indexHandler(w http.ResponseWriter, req *http.Request) {
@@ -1678,5 +1681,7 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/echarts", echartsHandler)
 	fmt.Println("http://127.0.0.1:3012/")
-	http.ListenAndServe(":3012", nil)
+	if err := http.ListenAndServe(":3012", nil); err != nil {
+		panic(err)
+	}
 }

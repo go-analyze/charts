@@ -89,8 +89,10 @@ func renderChartGroup(themeNames []string, chartsPerRow int, filename string) {
 			themeIndex++
 			lineOpt.Title.Text = "Theme '" + themeName + "'"
 			lineOpt.Theme = charts.GetTheme(themeName)
-			p.Child(charts.PainterBoxOption(charts.NewBox(startX, startY, startX+chartWidth, startY+chartHeight))).
-				LineChart(lineOpt)
+			if err := p.Child(charts.PainterBoxOption(charts.NewBox(startX, startY, startX+chartWidth, startY+chartHeight))).
+				LineChart(lineOpt); err != nil {
+				panic(err)
+			}
 		}
 	}
 	if buf, err := p.Bytes(); err != nil {

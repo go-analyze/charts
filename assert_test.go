@@ -49,7 +49,7 @@ func writeTempFile(content []byte, prefix, extension string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer tmpFile.Close()
+	defer func() { _ = tmpFile.Close() }()
 
 	if _, err := tmpFile.Write(content); err != nil {
 		return "", err

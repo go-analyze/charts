@@ -52,6 +52,6 @@ func main() {
 	})
 
 	file, _ := os.Create("output.png")
-	defer file.Close()
-	r.Save(file)
+	defer func() { _ = file.Close() }()
+	_ = r.Save(file)
 }

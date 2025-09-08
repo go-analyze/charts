@@ -63,7 +63,7 @@ type ScatterChartOption struct {
 	Legend LegendOption
 	// Symbol specifies the default shape for each data point. Default is 'dot'.
 	// Options: 'circle', 'dot', 'square', 'diamond'. Can be overridden per series.
-	Symbol Symbol
+	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
 	// SymbolSize specifies the size for each data point. Default is 2.0.
 	SymbolSize float64
 	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.

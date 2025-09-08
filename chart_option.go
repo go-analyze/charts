@@ -41,7 +41,7 @@ type ChartOption struct {
 	RadarIndicators []RadarIndicator
 	// Symbol specifies the symbol to draw at data points. Empty (default) varies by chart type.
 	// Specify 'none' to enforce no symbol, or specify a desired symbol: 'circle', 'dot', 'square', 'diamond'.
-	Symbol Symbol
+	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
 	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
 	// FillArea when set to *true fills the area under the line in line charts.

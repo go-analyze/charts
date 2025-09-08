@@ -125,11 +125,11 @@ func ColorFromRGBA(color string) Color {
 	}
 
 	rVal, _ := strconv.ParseInt(strings.TrimSpace(arr[0]), 10, 16)
-	c.R = uint8(rVal)
+	c.R = uint8(rVal) // nolint:gosec // bitSize 16 bounds to 0-255
 	gVal, _ := strconv.ParseInt(strings.TrimSpace(arr[1]), 10, 16)
-	c.G = uint8(gVal)
+	c.G = uint8(gVal) // nolint:gosec // bitSize 16 bounds to 0-255
 	bVal, _ := strconv.ParseInt(strings.TrimSpace(arr[2]), 10, 16)
-	c.B = uint8(bVal)
+	c.B = uint8(bVal) // nolint:gosec // bitSize 16 bounds to 0-255
 	if len(arr) > 3 { // if an alpha channel is specified
 		aVal, _ := strconv.ParseFloat(strings.TrimSpace(arr[3]), 64)
 		if aVal < 0 {
@@ -148,7 +148,7 @@ func ColorFromRGBA(color string) Color {
 
 func parseHex(hex string) uint8 {
 	v, _ := strconv.ParseInt(hex, 16, 16)
-	return uint8(v)
+	return uint8(v) // nolint:gosec // bitSize 16 bounds to uint8
 }
 
 // ColorFromHex returns a color from a css hex code.
@@ -262,7 +262,7 @@ func ColorFromAlphaMixedRGBA(r, g, b, a uint32) Color {
 		R: uint8(float64(r) / fa),
 		G: uint8(float64(g) / fa),
 		B: uint8(float64(b) / fa),
-		A: uint8(a | (a >> 8)),
+		A: uint8(a | (a >> 8)), // nolint:gosec // alpha already normalized to uint8 range
 	}
 }
 

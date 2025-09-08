@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -34,7 +35,7 @@ func drawChart(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "image/png")
-	graph.Render(chartdraw.PNG, res)
+	_ = graph.Render(chartdraw.PNG, res)
 }
 
 func drawCustomChart(res http.ResponseWriter, req *http.Request) {
@@ -66,14 +67,16 @@ func drawCustomChart(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "image/png")
-	graph.Render(chartdraw.PNG, res)
+	_ = graph.Render(chartdraw.PNG, res)
 }
 
 func main() {
 	http.HandleFunc("/", drawChart)
 	http.HandleFunc("/favicon.ico", func(res http.ResponseWriter, req *http.Request) {
-		res.Write([]byte{})
+		_, _ = res.Write([]byte{})
 	})
 	http.HandleFunc("/custom", drawCustomChart)
-	http.ListenAndServe(":8080", nil)
+	if err := http.ListenAndServe(":8080", nil); err != nil && err != http.ErrServerClosed {
+		log.Fatal(err)
+	}
 }

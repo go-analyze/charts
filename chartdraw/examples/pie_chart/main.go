@@ -24,6 +24,6 @@ func main() {
 	}
 
 	f, _ := os.Create("output.png")
-	defer f.Close()
-	pie.Render(chartdraw.PNG, f)
+	defer func() { _ = f.Close() }()
+	_ = pie.Render(chartdraw.PNG, f)
 }

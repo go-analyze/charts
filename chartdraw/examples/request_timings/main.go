@@ -58,7 +58,7 @@ func readLines(filePath string, handler func(string) error) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
@@ -159,7 +159,7 @@ func drawChart() http.HandlerFunc {
 		graph.Elements = []chartdraw.Renderable{chartdraw.LegendThin(&graph)}
 
 		f, _ := os.Create("output.png")
-		defer f.Close()
-		graph.Render(chartdraw.PNG, f)
+		defer func() { _ = f.Close() }()
+		_ = graph.Render(chartdraw.PNG, f)
 	}
 }

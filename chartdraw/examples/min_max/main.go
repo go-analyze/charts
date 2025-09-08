@@ -56,6 +56,6 @@ func main() {
 	graph.Elements = []chartdraw.Renderable{chartdraw.Legend(&graph)}
 
 	f, _ := os.Create("output.png")
-	defer f.Close()
-	graph.Render(chartdraw.PNG, f)
+	defer func() { _ = f.Close() }()
+	_ = graph.Render(chartdraw.PNG, f)
 }

@@ -29,6 +29,7 @@ type LegendOption struct {
 	Vertical *bool
 	// Symbol defines the icon shape next to each label. Options: 'square', 'dot', 'diamond', 'circle'.
 	Symbol Symbol // TODO - should Symbol configuration be changed now that we support per-series symbols
+	// TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
 	// OverlayChart when set to *true renders the legend over the chart. Ignored if Vertical is true (Vertical always forces overlay).
 	OverlayChart *bool
 	// BorderWidth can be set to a non-zero value to render a box around the legend.
