@@ -1194,7 +1194,6 @@ type gridCell struct {
 	offsetYStr string
 }
 
-// CellAt defines a new cell at the specified position with the given name.
 func (b *layoutBuilderGrid) CellAt(name string, col, row int) LayoutBuilderGrid {
 	b.cells = append(b.cells, gridCell{
 		name:    name,
@@ -1207,7 +1206,6 @@ func (b *layoutBuilderGrid) CellAt(name string, col, row int) LayoutBuilderGrid 
 	return b
 }
 
-// Span modifies the span of the previously defined cell.
 func (b *layoutBuilderGrid) Span(colSpan, rowSpan int) LayoutBuilderGrid {
 	if b.lastCell != nil {
 		b.lastCell.colSpan = colSpan
@@ -1216,7 +1214,6 @@ func (b *layoutBuilderGrid) Span(colSpan, rowSpan int) LayoutBuilderGrid {
 	return b
 }
 
-// Offset applies pixel-level adjustments to the previously defined cell.
 func (b *layoutBuilderGrid) Offset(x, y string) LayoutBuilderGrid {
 	if b.lastCell != nil { // Store raw string values to be parsed during Build() when dimensions are known
 		b.lastCell.offsetXStr = x
@@ -1225,7 +1222,6 @@ func (b *layoutBuilderGrid) Offset(x, y string) LayoutBuilderGrid {
 	return b
 }
 
-// Build creates child painters based on the defined grid layout.
 func (b *layoutBuilderGrid) Build() (map[string]*Painter, error) {
 	if b.cols <= 0 || b.rows <= 0 {
 		return nil, errors.New("invalid grid dimensions: cols and rows must be positive")
@@ -1306,6 +1302,11 @@ type LayoutBuilderRow interface {
 	// If gap is empty (""), it is treated as an auto-width gap and will
 	// match other auto-width columns in the row.
 	ColGap(gap string) LayoutBuilderRow
+	// RowOffset applies position adjustments to the entire current row. Unlike Offset (which is cell specific),
+	// this adjustment will adjust all rows following.
+	// Accepts pixels ("20") or percentages ("10%") - percentages are relative to the painter height.
+	// Negative values create overlapping effects, positive values create gaps.
+	RowOffset(y string) LayoutBuilderRow
 	// Offset applies position adjustments to the last added column in the current row.
 	// Accepts pixels ("20") or percentages ("10%") - percentages are relative to the cell's dimensions.
 	// X offset percentage is relative to the cell's width, Y offset percentage is relative to the row's height.
@@ -1334,8 +1335,9 @@ type layoutBuilderRow struct {
 }
 
 type rowDefinition struct {
-	columns   []columnElement
-	heightStr string
+	columns      []columnElement
+	heightStr    string
+	rowOffsetStr string
 }
 
 type columnElement struct {
@@ -1346,7 +1348,6 @@ type columnElement struct {
 	offsetYStr string
 }
 
-// Row starts defining a new row.
 func (b *layoutBuilderRow) Row() LayoutBuilderRow {
 	// Only commit current row if it has content (columns or settings)
 	if len(b.currentRow.columns) > 0 || b.currentRow.heightStr != "" {
@@ -1357,7 +1358,6 @@ func (b *layoutBuilderRow) Row() LayoutBuilderRow {
 	return b
 }
 
-// RowGap adds vertical spacing between rows.
 func (b *layoutBuilderRow) RowGap(height string) LayoutBuilderRow {
 	// Commit current row if it has content
 	if len(b.currentRow.columns) > 0 || b.currentRow.heightStr != "" {
@@ -1372,7 +1372,6 @@ func (b *layoutBuilderRow) RowGap(height string) LayoutBuilderRow {
 	return b
 }
 
-// EqualCols adds columns with equal width distribution to the current row.
 func (b *layoutBuilderRow) EqualCols(names ...string) LayoutBuilderRow {
 	for _, name := range names {
 		b.currentRow.columns = append(b.currentRow.columns, columnElement{name: name})
@@ -1380,7 +1379,6 @@ func (b *layoutBuilderRow) EqualCols(names ...string) LayoutBuilderRow {
 	return b
 }
 
-// Col adds a column with specified width to the current row.
 func (b *layoutBuilderRow) Col(name string, width string) LayoutBuilderRow {
 	b.currentRow.columns = append(b.currentRow.columns, columnElement{
 		name:     name,
@@ -1389,13 +1387,11 @@ func (b *layoutBuilderRow) Col(name string, width string) LayoutBuilderRow {
 	return b
 }
 
-// Height sets the current row height.
 func (b *layoutBuilderRow) Height(height string) LayoutBuilderRow {
 	b.currentRow.heightStr = height
 	return b
 }
 
-// ColGap adds a horizontal gap in the current row.
 func (b *layoutBuilderRow) ColGap(gap string) LayoutBuilderRow {
 	b.currentRow.columns = append(b.currentRow.columns, columnElement{
 		widthStr: gap,
@@ -1404,7 +1400,11 @@ func (b *layoutBuilderRow) ColGap(gap string) LayoutBuilderRow {
 	return b
 }
 
-// Offset applies position adjustments to the last added column in the current row.
+func (b *layoutBuilderRow) RowOffset(y string) LayoutBuilderRow {
+	b.currentRow.rowOffsetStr = y
+	return b
+}
+
 func (b *layoutBuilderRow) Offset(x, y string) LayoutBuilderRow {
 	if len(b.currentRow.columns) > 0 {
 		lastCol := &b.currentRow.columns[len(b.currentRow.columns)-1]
@@ -1415,7 +1415,6 @@ func (b *layoutBuilderRow) Offset(x, y string) LayoutBuilderRow {
 	return b
 }
 
-// Build creates child painters from the entire layout definition.
 func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
 	// Snapshot rows for this build without mutating builder state
 	rows := make([]rowDefinition, 0, len(b.rows)+1)
@@ -1481,6 +1480,14 @@ func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
 	for rowIdx, row := range rows {
 		rowHeight := rowHeights[rowIdx]
 		rowWidth := totalWidth
+
+		if row.rowOffsetStr != "" {
+			offsetVal, err := parseFlexibleValue(row.rowOffsetStr, totalHeight)
+			if err != nil {
+				return nil, fmt.Errorf("row %d: invalid row offset '%s': %w", rowIdx+1, row.rowOffsetStr, err)
+			}
+			currentY += offsetVal
+		}
 
 		// Calculate column widths within this row
 		if len(row.columns) > 0 {

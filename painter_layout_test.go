@@ -924,6 +924,90 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 120 20\nL 120 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 170 20\nL 270 20\nL 270 120\nL 170 120\nL 170 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 320 20\nL 420 20\nL 420 120\nL 320 120\nL 320 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 170 120\nL 370 120\nL 370 220\nL 170 220\nL 170 120\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 520 120\nL 620 120\nL 620 220\nL 520 220\nL 520 120\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
 		},
+		{
+			name: "row_offset_negative",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("first").
+					Row().RowOffset("-20").Height("100").EqualCols("second").
+					Row().RowOffset("-20").EqualCols("third").
+					Row().Height("100").EqualCols("fourth")
+			},
+			expectedKeys: []string{"first", "second", "third", "fourth"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["first"].Width())
+				assert.Equal(t, 100, painters["first"].Height())
+				assert.Equal(t, 600, painters["second"].Width())
+				assert.Equal(t, 100, painters["second"].Height())
+				assert.Equal(t, 600, painters["third"].Width())
+				assert.Equal(t, 100, painters["third"].Height())
+				assert.Equal(t, 600, painters["fourth"].Width())
+				assert.Equal(t, 100, painters["fourth"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 100\nL 620 100\nL 620 200\nL 20 200\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 180\nL 620 180\nL 620 280\nL 20 280\nL 20 180\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 280\nL 620 280\nL 620 380\nL 20 380\nL 20 280\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "row_offset_positive",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("first").
+					Row().RowOffset("40").Height("100").EqualCols("second").
+					Row().Height("100").EqualCols("third")
+			},
+			expectedKeys: []string{"first", "second", "third"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["first"].Width())
+				assert.Equal(t, 100, painters["first"].Height())
+				assert.Equal(t, 600, painters["second"].Width())
+				assert.Equal(t, 100, painters["second"].Height())
+				assert.Equal(t, 600, painters["third"].Width())
+				assert.Equal(t, 100, painters["third"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 160\nL 620 160\nL 620 260\nL 20 260\nL 20 160\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 260\nL 620 260\nL 620 360\nL 20 360\nL 20 260\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
+		},
+		{
+			name: "row_offset_percentage",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("25%").EqualCols("quarter1").
+					Row().RowOffset("-5%").Height("25%").EqualCols("quarter2").
+					Row().RowOffset("5%").Height("25%").EqualCols("quarter3").
+					Row().EqualCols("quarter4")
+			},
+			expectedKeys: []string{"quarter1", "quarter2", "quarter3", "quarter4"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["quarter1"].Width())
+				assert.Equal(t, 100, painters["quarter1"].Height())
+				assert.Equal(t, 600, painters["quarter2"].Width())
+				assert.Equal(t, 100, painters["quarter2"].Height())
+				assert.Equal(t, 600, painters["quarter3"].Width())
+				assert.Equal(t, 100, painters["quarter3"].Height())
+				assert.Equal(t, 600, painters["quarter4"].Width())
+				assert.Equal(t, 100, painters["quarter4"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 100\nL 620 100\nL 620 200\nL 20 200\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 220\nL 620 220\nL 620 320\nL 20 320\nL 20 220\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "row_offset_with_gaps",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				const gap = "20"
+				return b.
+					Height("80").EqualCols("top").
+					RowGap(gap).
+					Row().Height("80").EqualCols("middle").RowOffset("-" + gap). // Offset into the gap
+					Row().Height("80").EqualCols("bottom")
+			},
+			expectedKeys: []string{"top", "middle", "bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["top"].Width())
+				assert.Equal(t, 80, painters["top"].Height())
+				assert.Equal(t, 600, painters["middle"].Width())
+				assert.Equal(t, 80, painters["middle"].Height())
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 80, painters["bottom"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 100\nL 20 100\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 100\nL 620 100\nL 620 180\nL 20 180\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 180\nL 620 180\nL 620 260\nL 20 260\nL 20 180\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
+		},
 	}
 
 	for i, tc := range tests {
