@@ -21,6 +21,19 @@ func TestLayoutByGrid(t *testing.T) {
 		expectedDemoSVG string
 	}{
 		{
+			name: "no-op",
+			cols: 2,
+			rows: 2,
+			setupCells: func(b LayoutBuilderGrid) LayoutBuilderGrid {
+				return b
+			},
+			expectedKeys: []string{},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				// no-cells
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"></svg>",
+		},
+		{
 			name: "simple_2x2",
 			cols: 2,
 			rows: 2,
@@ -204,7 +217,7 @@ func TestLayoutByGrid(t *testing.T) {
 			// draw border around each painter and verify visually
 			colors := []Color{
 				ColorRed, ColorGreen, ColorBlue, ColorBlack, ColorPurple,
-				ColorAqua, ColorChocolate, ColorSalmon, ColorGray,
+				ColorAqua, ColorChocolate, ColorGray, ColorSalmon,
 			}
 			for i, key := range tc.expectedKeys {
 				painter := painters[key]
@@ -494,6 +507,596 @@ func TestLayoutByGridErrors(t *testing.T) {
 
 			builder := p.LayoutByGrid(tc.cols, tc.rows)
 			builder = tc.setupCells(builder)
+			_, err := builder.Build()
+
+			require.Error(t, err)
+			assert.Contains(t, err.Error(), tc.expectedErr)
+		})
+	}
+}
+
+func TestLayoutByRows(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		setupRows       func(LayoutBuilderRow) LayoutBuilderRow
+		expectedKeys    []string
+		verifyLayout    func(*testing.T, map[string]*Painter)
+		expectedDemoSVG string
+	}{
+		{
+			name: "no-op",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b
+			},
+			expectedKeys: []string{},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				// nothing
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"></svg>",
+		},
+		{
+			name: "simple_rows_with_equal_columns",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("60").EqualCols("header").
+					Row().Height("200").EqualCols("left", "right").
+					Row().EqualCols("footer")
+			},
+			expectedKeys: []string{"header", "left", "right", "footer"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["header"].Width())
+				assert.Equal(t, 60, painters["header"].Height())
+				assert.Equal(t, 300, painters["left"].Width())
+				assert.Equal(t, 200, painters["left"].Height())
+				assert.Equal(t, 300, painters["right"].Width())
+				assert.Equal(t, 200, painters["right"].Height())
+				assert.Equal(t, 600, painters["footer"].Width())
+				assert.Equal(t, 140, painters["footer"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 80\nL 20 80\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 80\nL 320 80\nL 320 280\nL 20 280\nL 20 80\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 320 80\nL 620 80\nL 620 280\nL 320 280\nL 320 80\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 280\nL 620 280\nL 620 420\nL 20 420\nL 20 280\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "mixed_column_widths",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("300").Col("sidebar", "150").Col("content", "").
+					Row().EqualCols("footer")
+			},
+			expectedKeys: []string{"sidebar", "content", "footer"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 150, painters["sidebar"].Width())
+				assert.Equal(t, 300, painters["sidebar"].Height())
+				assert.Equal(t, 450, painters["content"].Width())
+				assert.Equal(t, 300, painters["content"].Height())
+				assert.Equal(t, 600, painters["footer"].Width())
+				assert.Equal(t, 100, painters["footer"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 170 20\nL 170 320\nL 20 320\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 170 20\nL 620 20\nL 620 320\nL 170 320\nL 170 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
+		},
+		{
+			name: "percentage_widths_and_heights",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("30%").Col("left", "25%").Col("center", "50%").Col("right", "25%").
+					Row().EqualCols("bottom")
+			},
+			expectedKeys: []string{"left", "center", "right", "bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 150, painters["left"].Width())
+				assert.Equal(t, 120, painters["left"].Height())
+				assert.Equal(t, 300, painters["center"].Width())
+				assert.Equal(t, 120, painters["center"].Height())
+				assert.Equal(t, 150, painters["right"].Width())
+				assert.Equal(t, 120, painters["right"].Height())
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 280, painters["bottom"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 170 20\nL 170 140\nL 20 140\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 170 20\nL 470 20\nL 470 140\nL 170 140\nL 170 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 470 20\nL 620 20\nL 620 140\nL 470 140\nL 470 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 140\nL 620 140\nL 620 420\nL 20 420\nL 20 140\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "col_gap_at_start",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.Height("100").ColGap("50").EqualCols("content")
+			},
+			expectedKeys: []string{"content"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 550, painters["content"].Width())
+				assert.Equal(t, 100, painters["content"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 70 20\nL 620 20\nL 620 120\nL 70 120\nL 70 20\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+		},
+		{
+			name: "col_gap_at_end",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.Height("100").EqualCols("content").ColGap("50")
+			},
+			expectedKeys: []string{"content"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 550, painters["content"].Width())
+				assert.Equal(t, 100, painters["content"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 570 20\nL 570 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+		},
+		{
+			name: "col_gap_between_columns",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("left").ColGap("20").EqualCols("right")
+			},
+			expectedKeys: []string{"left", "right"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 290, painters["left"].Width())
+				assert.Equal(t, 100, painters["left"].Height())
+				assert.Equal(t, 290, painters["right"].Width())
+				assert.Equal(t, 100, painters["right"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 310 20\nL 310 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 330 20\nL 620 20\nL 620 120\nL 330 120\nL 330 20\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
+		},
+		{
+			name: "multiple_col_gaps_in_sequence",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.Height("100").EqualCols("a").ColGap("10").ColGap("10").EqualCols("b")
+			},
+			expectedKeys: []string{"a", "b"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 290, painters["a"].Width())
+				assert.Equal(t, 100, painters["a"].Height())
+				assert.Equal(t, 290, painters["b"].Width())
+				assert.Equal(t, 100, painters["b"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 310 20\nL 310 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 330 20\nL 620 20\nL 620 120\nL 330 120\nL 330 20\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
+		},
+		{
+			name: "row_with_only_gaps",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					ColGap("100").ColGap("200").Height("50").
+					Row().EqualCols("bottom")
+			},
+			expectedKeys: []string{"bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 350, painters["bottom"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 70\nL 620 70\nL 620 420\nL 20 420\nL 20 70\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
+		},
+		{
+			name: "row_gap_spacing",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("top").
+					RowGap("50").
+					Row().EqualCols("bottom")
+			},
+			expectedKeys: []string{"top", "bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["top"].Width())
+				assert.Equal(t, 100, painters["top"].Height())
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 250, painters["bottom"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 170\nL 620 170\nL 620 420\nL 20 420\nL 20 170\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
+		},
+		{
+			name: "empty_row_with_height",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("top").
+					Row().Height("50"). // Empty row with height, same behavior expected as RowGap
+					Row().EqualCols("bottom")
+			},
+			expectedKeys: []string{"top", "bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["top"].Width())
+				assert.Equal(t, 100, painters["top"].Height())
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 250, painters["bottom"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 170\nL 620 170\nL 620 420\nL 20 420\nL 20 170\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
+		},
+		{
+			name: "multiple_row_calls_idempotent",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("first").
+					Row().Row().Row(). // Multiple Row() calls should have no impact
+					EqualCols("second")
+			},
+			expectedKeys: []string{"first", "second"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["first"].Width())
+				assert.Equal(t, 100, painters["first"].Height())
+				assert.Equal(t, 600, painters["second"].Width())
+				assert.Equal(t, 300, painters["second"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 120\nL 620 120\nL 620 420\nL 20 420\nL 20 120\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
+		},
+		{
+			name: "overlapping_with_negative_offset",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("top").
+					Row().Height("100").EqualCols("middle").Offset("0", "-20").
+					Row().EqualCols("bottom")
+			},
+			expectedKeys: []string{"top", "middle", "bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["top"].Width())
+				assert.Equal(t, 100, painters["top"].Height())
+				assert.Equal(t, 600, painters["middle"].Width())
+				assert.Equal(t, 100, painters["middle"].Height())
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 200, painters["bottom"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 100\nL 620 100\nL 620 200\nL 20 200\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 220\nL 620 220\nL 620 420\nL 20 420\nL 20 220\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
+		},
+		{
+			name: "percentage_offset",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").EqualCols("normal").
+					Row().Height("100").EqualCols("first", "offset1").Offset("10%", "-5%").
+					Row().Height("100").Col("second", "250").ColGap("100").Col("offset2", "250").Offset("10%", "-5%")
+			},
+			expectedKeys: []string{"normal", "first", "offset1", "second", "offset2"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["normal"].Width())
+				assert.Equal(t, 100, painters["normal"].Height())
+				// Row with 10% x offset (60px) and -5% y offset (-5px)
+				assert.Equal(t, 300, painters["first"].Width())
+				assert.Equal(t, 100, painters["first"].Height())
+				assert.Equal(t, 300, painters["offset1"].Width())
+				assert.Equal(t, 100, painters["offset1"].Height())
+				// Row with specific column widths and gap, with offset
+				assert.Equal(t, 250, painters["second"].Width())
+				assert.Equal(t, 100, painters["second"].Height())
+				assert.Equal(t, 250, painters["offset2"].Width())
+				assert.Equal(t, 100, painters["offset2"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 120\nL 320 120\nL 320 220\nL 20 220\nL 20 120\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 350 115\nL 650 115\nL 650 215\nL 350 215\nL 350 115\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 220\nL 270 220\nL 270 320\nL 20 320\nL 20 220\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 395 215\nL 645 215\nL 645 315\nL 395 315\nL 395 215\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
+		},
+		{
+			name: "auto_height_distribution",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Row().EqualCols("auto1").
+					Row().EqualCols("auto2").
+					Row().EqualCols("auto3").
+					Row().EqualCols("auto4")
+			},
+			expectedKeys: []string{"auto1", "auto2", "auto3", "auto4"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				const autoHeight = 100
+				assert.Equal(t, 600, painters["auto1"].Width())
+				assert.Equal(t, autoHeight, painters["auto1"].Height())
+				assert.Equal(t, 600, painters["auto2"].Width())
+				assert.Equal(t, autoHeight, painters["auto2"].Height())
+				assert.Equal(t, 600, painters["auto3"].Width())
+				assert.Equal(t, autoHeight, painters["auto3"].Height())
+				assert.Equal(t, 600, painters["auto4"].Width())
+				assert.Equal(t, autoHeight, painters["auto4"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 120\nL 620 120\nL 620 220\nL 20 220\nL 20 120\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 220\nL 620 220\nL 620 320\nL 20 320\nL 20 220\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "auto_height_mixed",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("20").EqualCols("fixed1").
+					Row().EqualCols("auto1").
+					RowGap("60").
+					Row().EqualCols("auto2").
+					Row().EqualCols("auto3").
+					Row().Height("20").EqualCols("fixed2")
+			},
+			expectedKeys: []string{"fixed1", "auto1", "auto2", "auto3", "fixed2"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				const autoHeight = 100
+				assert.Equal(t, 600, painters["fixed1"].Width())
+				assert.Equal(t, 20, painters["fixed1"].Height())
+				assert.Equal(t, 600, painters["auto1"].Width())
+				assert.Equal(t, autoHeight, painters["auto1"].Height())
+				assert.Equal(t, 600, painters["auto2"].Width())
+				assert.Equal(t, autoHeight, painters["auto2"].Height())
+				assert.Equal(t, 600, painters["auto3"].Width())
+				assert.Equal(t, autoHeight, painters["auto3"].Height())
+				assert.Equal(t, 600, painters["fixed2"].Width())
+				assert.Equal(t, 20, painters["fixed2"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 40\nL 20 40\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 40\nL 620 40\nL 620 140\nL 20 140\nL 20 40\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 20 200\nL 620 200\nL 620 300\nL 20 300\nL 20 200\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 300\nL 620 300\nL 620 400\nL 20 400\nL 20 300\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 20 400\nL 620 400\nL 620 420\nL 20 420\nL 20 400\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
+		},
+		{
+			name: "complex_dashboard_layout",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("40").EqualCols("title").
+					RowGap("10").
+					Row().Height("80").Col("kpi1", "").ColGap("15").Col("kpi2", "").ColGap("15").Col("kpi3", "").ColGap("15").Col("kpi4", "").ColGap("15").Col("kpi5", "").
+					RowGap("10").
+					Row().Height("40%").EqualCols("mainChart").
+					Row().EqualCols("table")
+			},
+			expectedKeys: []string{"title", "kpi1", "kpi2", "kpi3", "kpi4", "kpi5", "mainChart", "table"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["title"].Width())
+				assert.Equal(t, 40, painters["title"].Height())
+				assert.Equal(t, 108, painters["kpi1"].Width())
+				assert.Equal(t, 80, painters["kpi1"].Height())
+				assert.Equal(t, 108, painters["kpi2"].Width())
+				assert.Equal(t, 80, painters["kpi2"].Height())
+				assert.Equal(t, 108, painters["kpi3"].Width())
+				assert.Equal(t, 80, painters["kpi3"].Height())
+				assert.Equal(t, 108, painters["kpi4"].Width())
+				assert.Equal(t, 80, painters["kpi4"].Height())
+				assert.Equal(t, 600, painters["mainChart"].Width())
+				assert.Equal(t, 160, painters["mainChart"].Height()) // 40% of 400
+				assert.Equal(t, 600, painters["table"].Width())
+				assert.Equal(t, 100, painters["table"].Height()) // Remaining
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 60\nL 20 60\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 70\nL 128 70\nL 128 150\nL 20 150\nL 20 70\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 143 70\nL 251 70\nL 251 150\nL 143 150\nL 143 70\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 266 70\nL 374 70\nL 374 150\nL 266 150\nL 266 70\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 389 70\nL 497 70\nL 497 150\nL 389 150\nL 389 70\" style=\"stroke-width:1;stroke:purple;fill:none\"/><path  d=\"M 512 70\nL 620 70\nL 620 150\nL 512 150\nL 512 70\" style=\"stroke-width:1;stroke:aqua;fill:none\"/><path  d=\"M 20 160\nL 620 160\nL 620 320\nL 20 320\nL 20 160\" style=\"stroke-width:1;stroke:rgb(210,105,30);fill:none\"/><path  d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:rgb(128,128,128);fill:none\"/></svg>",
+		},
+		{
+			name: "multiple_empty_rows_different_heights",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					RowGap("50").                         // Empty row at start
+					Row().Height("75").EqualCols("cell"). // Row with content
+					Row().Height("25").                   // Empty row in middle
+					Row().Height("100").EqualCols("bottom")
+			},
+			expectedKeys: []string{"cell", "bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["cell"].Width())
+				assert.Equal(t, 75, painters["cell"].Height())
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 100, painters["bottom"].Height())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 70\nL 620 70\nL 620 145\nL 20 145\nL 20 70\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 170\nL 620 170\nL 620 270\nL 20 270\nL 20 170\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
+		},
+		{
+			name: "column_width_pixels",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").Col("a", "100").Col("b", "200").Col("c", "150").Col("d", "150")
+			},
+			expectedKeys: []string{"a", "b", "c", "d"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 100, painters["a"].Width())
+				assert.Equal(t, 200, painters["b"].Width())
+				assert.Equal(t, 150, painters["c"].Width())
+				assert.Equal(t, 150, painters["d"].Width())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 120 20\nL 120 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 120 20\nL 320 20\nL 320 120\nL 120 120\nL 120 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 320 20\nL 470 20\nL 470 120\nL 320 120\nL 320 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 470 20\nL 620 20\nL 620 120\nL 470 120\nL 470 20\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "column_width_mixed",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").Col("fixed", "200").Col("percent", "30%").Col("auto", "")
+			},
+			expectedKeys: []string{"fixed", "percent", "auto"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 200, painters["fixed"].Width())
+				assert.Equal(t, 180, painters["percent"].Width()) // 30% of 600
+				assert.Equal(t, 220, painters["auto"].Width())    // Remaining space
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 220 20\nL 220 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 220 20\nL 400 20\nL 400 120\nL 220 120\nL 220 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 400 20\nL 620 20\nL 620 120\nL 400 120\nL 400 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
+		},
+		{
+			name: "height_at_end",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					EqualCols("top").Height("20").
+					Row().Col("left", "200").Col("right", "").Height("100").
+					Row().EqualCols("bottom") // Auto height
+			},
+			expectedKeys: []string{"top", "left", "right", "bottom"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				assert.Equal(t, 600, painters["top"].Width())
+				assert.Equal(t, 20, painters["top"].Height())
+				assert.Equal(t, 200, painters["left"].Width())
+				assert.Equal(t, 100, painters["left"].Height())
+				assert.Equal(t, 400, painters["right"].Width())
+				assert.Equal(t, 100, painters["right"].Height())
+				assert.Equal(t, 600, painters["bottom"].Width())
+				assert.Equal(t, 280, painters["bottom"].Height()) // Remaining height
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 620 20\nL 620 40\nL 20 40\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 20 40\nL 220 40\nL 220 140\nL 20 140\nL 20 40\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 220 40\nL 620 40\nL 620 140\nL 220 140\nL 220 40\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 20 140\nL 620 140\nL 620 420\nL 20 420\nL 20 140\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
+		},
+		{
+			name: "column_gap_positioning_validation",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("100").Col("a", "100").ColGap("50").Col("b", "100").ColGap("50").Col("c", "100").
+					Row().Height("100").ColGap("150").Col("d", "200").ColGap("150").Col("e", "100")
+			},
+			expectedKeys: []string{"a", "b", "c", "d", "e"},
+			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				// First row: 100 + 50 + 100 + 50 + 100 = 400 used, 200 remaining
+				assert.Equal(t, 100, painters["a"].Width())
+				assert.Equal(t, 100, painters["b"].Width())
+				assert.Equal(t, 100, painters["c"].Width())
+				// Second row: 150 + 200 + 150 + 100 = 600 total
+				assert.Equal(t, 200, painters["d"].Width())
+				assert.Equal(t, 100, painters["e"].Width())
+			},
+			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path  d=\"M 20 20\nL 120 20\nL 120 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path  d=\"M 170 20\nL 270 20\nL 270 120\nL 170 120\nL 170 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path  d=\"M 320 20\nL 420 20\nL 420 120\nL 320 120\nL 320 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path  d=\"M 170 120\nL 370 120\nL 370 220\nL 170 220\nL 170 120\" style=\"stroke-width:1;stroke:black;fill:none\"/><path  d=\"M 520 120\nL 620 120\nL 620 220\nL 520 220\nL 520 120\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
+		},
+	}
+
+	for i, tc := range tests {
+		t.Run(strconv.Itoa(i)+"-"+tc.name, func(t *testing.T) {
+			const padding = 20
+			p := NewPainter(PainterOptions{
+				OutputFormat: ChartOutputSVG,
+				Width:        600 + padding + padding,
+				Height:       400 + padding + padding,
+			})
+
+			builder := p.Child(PainterPaddingOption(NewBoxEqual(padding))).LayoutByRows()
+			builder = tc.setupRows(builder)
+			painters, err := builder.Build()
+			require.NoError(t, err)
+
+			assert.Len(t, painters, len(tc.expectedKeys))
+			for _, key := range tc.expectedKeys {
+				require.Contains(t, painters, key)
+			}
+			tc.verifyLayout(t, painters)
+
+			// Draw border around each painter for visual verification
+			colors := []Color{
+				ColorRed, ColorGreen, ColorBlue, ColorBlack, ColorPurple,
+				ColorAqua, ColorChocolate, ColorGray, ColorSalmon,
+			}
+			for i, key := range tc.expectedKeys {
+				painter := painters[key]
+				painter.FilledRect(0, 0, painter.Width(), painter.Height(),
+					ColorTransparent, colors[i%len(colors)], 1.0)
+			}
+			svg, err := p.Bytes()
+			require.NoError(t, err)
+			assertEqualSVG(t, tc.expectedDemoSVG, svg)
+		})
+	}
+}
+
+func TestLayoutByRowsErrors(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		setupRows   func(LayoutBuilderRow) LayoutBuilderRow
+		expectedErr string
+	}{
+		{
+			name: "duplicate_cell_names",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("dup", "dup")
+			},
+			expectedErr: "duplicate cell name: 'dup'",
+		},
+		{
+			name: "negative_height",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("cell").Height("-10")
+			},
+			expectedErr: "negative height not allowed",
+		},
+		{
+			name: "negative_width",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.Col("cell", "-10")
+			},
+			expectedErr: "negative width not allowed",
+		},
+		{
+			name: "column_percentages_exceed_100",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.Col("a", "60%").Col("b", "50%")
+			},
+			expectedErr: "column percentages exceed 100%",
+		},
+		{
+			name: "auto_rows_zero_height",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					EqualCols("cell1").Height("400").
+					Row().EqualCols("cell2") // Auto height with no space left
+			},
+			expectedErr: "auto-distributed rows result in zero height",
+		},
+		{
+			name: "invalid_height_format",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("cell").Height("abc")
+			},
+			expectedErr: "invalid height 'abc'",
+		},
+		{
+			name: "invalid_width_format",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.Col("cell", "xyz")
+			},
+			expectedErr: "invalid width 'xyz'",
+		},
+		{
+			name: "invalid_col_gap_format",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("a").ColGap("bad").EqualCols("b")
+			},
+			expectedErr: "invalid width 'bad'",
+		},
+		{
+			name: "invalid_row_gap_format",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("a").RowGap("bad")
+			},
+			expectedErr: "invalid height 'bad'",
+		},
+		{
+			name: "invalid_offset_x_format",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("cell").Offset("bad", "0")
+			},
+			expectedErr: "invalid x offset 'bad'",
+		},
+		{
+			name: "invalid_offset_y_format",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("cell").Offset("0", "bad")
+			},
+			expectedErr: "invalid y offset 'bad'",
+		},
+		{
+			name: "all_rows_fixed_exceeding_total",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					EqualCols("a").Height("200").
+					Row().EqualCols("b").Height("250").
+					Row().EqualCols("c") // Need an auto row to trigger the error
+			},
+			expectedErr: "auto-distributed rows result in zero height",
+		},
+		{
+			name: "percentages_totaling_over_100",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					EqualCols("a").Height("60%").
+					Row().EqualCols("b").Height("50%").
+					Row().EqualCols("c") // Need an auto row to trigger the error
+			},
+			expectedErr: "auto-distributed rows result in zero height",
+		},
+		{
+			name: "negative_col_gap",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.EqualCols("a").ColGap("-10").EqualCols("b")
+			},
+			expectedErr: "negative width not allowed",
+		},
+		{
+			name: "negative_row_gap",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					EqualCols("a").Height("100").
+					RowGap("-10")
+			},
+			expectedErr: "negative height not allowed",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			p := NewPainter(PainterOptions{
+				Width:  600,
+				Height: 400,
+			})
+
+			builder := p.LayoutByRows()
+			builder = tc.setupRows(builder)
 			_, err := builder.Build()
 
 			require.Error(t, err)

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strconv"
+	"strings"
 
 	"github.com/golang/freetype/truetype"
 
@@ -1278,6 +1280,288 @@ func (b *layoutBuilderGrid) Build() (map[string]*Painter, error) {
 			IsSet:  true,
 		}
 		painters[cell.name] = b.painter.Child(PainterBoxOption(box))
+	}
+
+	return painters, nil
+}
+
+// LayoutBuilderRow is returned by Painter.LayoutByRows() and provides methods for building row-based layouts.
+// The builder starts already in a row context, ready to define columns immediately.
+type LayoutBuilderRow interface {
+	// Row starts defining a new row.
+	// If the current row has columns, it commits the row and starts a new one.
+	// If the current row is empty, this is a no-op (prevents accidental empty rows).
+	// Multiple consecutive Row() calls without column definitions are idempotent.
+	Row() LayoutBuilderRow
+	// RowGap adds vertical spacing between rows (pixels or percentage).
+	// Creates an empty row with the specified height (equivalent to Row().Height(height)).
+	RowGap(height string) LayoutBuilderRow
+	// EqualCols adds columns with equal width distribution to the current row.
+	EqualCols(names ...string) LayoutBuilderRow
+	// Col adds a column with specified width to the current row (pixels, percentage, or empty for auto).
+	Col(name string, width string) LayoutBuilderRow
+	// Height sets the current row height (pixels or percentage).
+	Height(height string) LayoutBuilderRow
+	// ColGap adds a horizontal gap in the current row (like adding an invisible column).
+	ColGap(gap string) LayoutBuilderRow
+	// Offset applies position adjustments to the last added column in the current row.
+	// Accepts pixels ("20") or percentages ("10%") - percentages are relative to the cell's dimensions.
+	// X offset percentage is relative to the cell's width, Y offset percentage is relative to the row's height.
+	// Negative values create overlapping effects. If no columns have been added yet, this is a no-op.
+	Offset(x, y string) LayoutBuilderRow
+	// Build creates child painters from the entire layout definition.
+	// Returns a map of cell names to their corresponding painters.
+	Build() (map[string]*Painter, error)
+}
+
+// LayoutByRows returns builder for dividing the painter into child painters with a row-based layout.
+// This provides a flexible way to create dashboards and complex layouts where rows are built progressively.
+// The builder starts already in a row context, ready to accept column definitions immediately.
+func (p *Painter) LayoutByRows() LayoutBuilderRow {
+	return &layoutBuilderRow{
+		painter:    p,
+		rows:       make([]rowDefinition, 0, 8),
+		currentRow: rowDefinition{columns: make([]columnElement, 0, 4)},
+	}
+}
+
+type layoutBuilderRow struct {
+	painter    *Painter
+	rows       []rowDefinition
+	currentRow rowDefinition
+}
+
+type rowDefinition struct {
+	columns   []columnElement
+	heightStr string
+}
+
+type columnElement struct {
+	name       string
+	widthStr   string
+	isGap      bool
+	offsetXStr string
+	offsetYStr string
+}
+
+// Row starts defining a new row.
+func (b *layoutBuilderRow) Row() LayoutBuilderRow {
+	// Only commit current row if it has content (columns or settings)
+	if len(b.currentRow.columns) > 0 || b.currentRow.heightStr != "" {
+		b.rows = append(b.rows, b.currentRow)
+		b.currentRow = rowDefinition{columns: make([]columnElement, 0, 4)}
+	}
+	// If current row is empty, this is a no-op (prevents consecutive Row() from creating empty rows)
+	return b
+}
+
+// RowGap adds vertical spacing between rows.
+func (b *layoutBuilderRow) RowGap(height string) LayoutBuilderRow {
+	// Commit current row if it has content
+	if len(b.currentRow.columns) > 0 || b.currentRow.heightStr != "" {
+		b.rows = append(b.rows, b.currentRow)
+		b.currentRow = rowDefinition{columns: make([]columnElement, 0, 4)}
+	}
+	// Add an empty row with the specified height (acts as vertical spacing)
+	b.rows = append(b.rows, rowDefinition{
+		columns:   make([]columnElement, 0),
+		heightStr: height,
+	})
+	return b
+}
+
+// EqualCols adds columns with equal width distribution to the current row.
+func (b *layoutBuilderRow) EqualCols(names ...string) LayoutBuilderRow {
+	for _, name := range names {
+		b.currentRow.columns = append(b.currentRow.columns, columnElement{name: name})
+	}
+	return b
+}
+
+// Col adds a column with specified width to the current row.
+func (b *layoutBuilderRow) Col(name string, width string) LayoutBuilderRow {
+	b.currentRow.columns = append(b.currentRow.columns, columnElement{
+		name:     name,
+		widthStr: width,
+	})
+	return b
+}
+
+// Height sets the current row height.
+func (b *layoutBuilderRow) Height(height string) LayoutBuilderRow {
+	b.currentRow.heightStr = height
+	return b
+}
+
+// ColGap adds a horizontal gap in the current row.
+func (b *layoutBuilderRow) ColGap(gap string) LayoutBuilderRow {
+	b.currentRow.columns = append(b.currentRow.columns, columnElement{
+		widthStr: gap,
+		isGap:    true,
+	})
+	return b
+}
+
+// Offset applies position adjustments to the last added column in the current row.
+func (b *layoutBuilderRow) Offset(x, y string) LayoutBuilderRow {
+	if len(b.currentRow.columns) > 0 {
+		lastCol := &b.currentRow.columns[len(b.currentRow.columns)-1]
+		lastCol.offsetXStr = x
+		lastCol.offsetYStr = y
+	}
+	// If no columns yet, this is a no-op (similar to Grid's behavior)
+	return b
+}
+
+// Build creates child painters from the entire layout definition.
+func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
+	// Commit current row if it has content
+	if len(b.currentRow.columns) > 0 || b.currentRow.heightStr != "" {
+		b.rows = append(b.rows, b.currentRow)
+	}
+
+	if len(b.rows) == 0 {
+		return make(map[string]*Painter), nil
+	}
+
+	totalHeight := float64(b.painter.Height())
+	totalWidth := float64(b.painter.Width())
+	painters := make(map[string]*Painter)
+
+	// Calculate row heights
+	var fixedHeight, percentHeight float64
+	var autoRows []int
+	rowHeights := make([]float64, len(b.rows))
+	for i, row := range b.rows {
+		if row.heightStr == "" {
+			autoRows = append(autoRows, i) // Auto-distribute remaining space
+		} else {
+			height, err := parseFlexibleValue(row.heightStr, totalHeight)
+			if err != nil {
+				return nil, fmt.Errorf("row %d: invalid height '%s': %w", i+1, row.heightStr, err)
+			} else if height < 0 {
+				return nil, fmt.Errorf("row %d: negative height not allowed", i+1)
+			}
+			rowHeights[i] = height
+			if strings.HasSuffix(row.heightStr, "%") {
+				percentHeight += height
+			} else {
+				fixedHeight += height
+			}
+		}
+	}
+
+	// Distribute remaining height among auto rows
+	if len(autoRows) > 0 {
+		remainingHeight := totalHeight - fixedHeight - percentHeight
+		if remainingHeight <= 0 {
+			return nil, fmt.Errorf("auto-distributed rows result in zero height (available: %.0fpx after fixed allocations)", remainingHeight)
+		}
+		autoHeight := remainingHeight / float64(len(autoRows))
+		for _, idx := range autoRows {
+			rowHeights[idx] = autoHeight
+		}
+	}
+
+	// Process each row and create painters
+	var currentY float64
+	for rowIdx, row := range b.rows {
+		rowHeight := rowHeights[rowIdx]
+		rowWidth := totalWidth
+
+		// Calculate column widths within this row
+		if len(row.columns) > 0 {
+			colWidths := make([]float64, len(row.columns))
+			var totalFixed, totalPercent float64
+			var autoIndices []int
+			// Parse all column widths and validate percentages
+			for i, col := range row.columns {
+				if col.widthStr == "" {
+					autoIndices = append(autoIndices, i) // Gaps with no width are treated as auto-width gaps
+				} else {
+					if strings.HasSuffix(col.widthStr, "%") {
+						// Parse percentage value
+						percentStr := strings.TrimSuffix(col.widthStr, "%")
+						percentVal, err := strconv.ParseFloat(percentStr, 64)
+						if err != nil {
+							return nil, fmt.Errorf("row %d: invalid percentage width '%s'", rowIdx+1, col.widthStr)
+						} else if percentVal < 0 {
+							return nil, fmt.Errorf("row %d: negative width not allowed", rowIdx+1)
+						}
+						totalPercent += percentVal
+						if totalPercent > 100 {
+							return nil, fmt.Errorf("row %d: column percentages exceed 100%%", rowIdx+1)
+						}
+						colWidths[i] = (percentVal / 100.0) * rowWidth
+					} else { // Parse pixel value
+						pixelVal, err := strconv.ParseFloat(col.widthStr, 64)
+						if err != nil {
+							return nil, fmt.Errorf("row %d: invalid width '%s'", rowIdx+1, col.widthStr)
+						} else if pixelVal < 0 {
+							return nil, fmt.Errorf("row %d: negative width not allowed", rowIdx+1)
+						}
+						totalFixed += pixelVal
+						colWidths[i] = pixelVal
+					}
+				}
+			}
+
+			// Distribute remaining width among auto columns
+			if len(autoIndices) > 0 {
+				usedWidth := totalFixed + (totalPercent/100.0)*rowWidth
+				remainingWidth := rowWidth - usedWidth
+				if remainingWidth < 0 {
+					remainingWidth = 0
+				}
+				autoWidth := remainingWidth / float64(len(autoIndices))
+				for _, idx := range autoIndices {
+					colWidths[idx] = autoWidth
+				}
+			}
+
+			// Create painters for each column
+			var currentX float64
+			for colIdx, col := range row.columns {
+				if !col.isGap {
+					if _, exists := painters[col.name]; exists {
+						return nil, fmt.Errorf("duplicate cell name: '%s'", col.name)
+					}
+
+					// Calculate offsets relative to cell dimensions
+					colWidth := colWidths[colIdx]
+					var cellOffsetX, cellOffsetY float64
+					if col.offsetXStr != "" {
+						val, err := parseFlexibleValue(col.offsetXStr, colWidth)
+						if err != nil {
+							return nil, fmt.Errorf("row %d, column '%s': invalid x offset '%s': %w", rowIdx+1, col.name, col.offsetXStr, err)
+						}
+						cellOffsetX = val
+					}
+					if col.offsetYStr != "" {
+						val, err := parseFlexibleValue(col.offsetYStr, rowHeight)
+						if err != nil {
+							return nil, fmt.Errorf("row %d, column '%s': invalid y offset '%s': %w", rowIdx+1, col.name, col.offsetYStr, err)
+						}
+						cellOffsetY = val
+					}
+
+					// Calculate position with offsets
+					x := currentX + cellOffsetX
+					y := currentY + cellOffsetY
+					box := Box{
+						Left:   b.painter.box.Left + int(x),
+						Top:    b.painter.box.Top + int(y),
+						Right:  b.painter.box.Left + int(x+colWidth),
+						Bottom: b.painter.box.Top + int(y+rowHeight),
+						IsSet:  true,
+					}
+					painters[col.name] = b.painter.Child(PainterBoxOption(box))
+				}
+				currentX += colWidths[colIdx]
+			}
+		}
+
+		currentY += rowHeight
 	}
 
 	return painters, nil
