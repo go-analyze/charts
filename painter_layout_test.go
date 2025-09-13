@@ -961,6 +961,33 @@ func TestLayoutByRows(t *testing.T) {
 			assertEqualSVG(t, tc.expectedDemoSVG, svg)
 		})
 	}
+
+	t.Run("build_is_idempotent", func(t *testing.T) {
+		p := NewPainter(PainterOptions{
+			OutputFormat: ChartOutputSVG,
+			Width:        600,
+			Height:       400,
+		})
+
+		builder := p.LayoutByRows().
+			Height("100").EqualCols("top").
+			Row().Height("100").EqualCols("left", "right").
+			Row().EqualCols("bottom")
+
+		painters1, err := builder.Build()
+		require.NoError(t, err)
+		painters2, err := builder.Build()
+		require.NoError(t, err)
+
+		// Same number of painters and same keys
+		assert.Len(t, painters2, len(painters1))
+		for k, p1 := range painters1 {
+			p2, ok := painters2[k]
+			require.True(t, ok, "missing key on second build: "+k)
+			assert.Equal(t, p1.Width(), p2.Width())
+			assert.Equal(t, p1.Height(), p2.Height())
+		}
+	})
 }
 
 func TestLayoutByRowsErrors(t *testing.T) {
@@ -971,6 +998,15 @@ func TestLayoutByRowsErrors(t *testing.T) {
 		setupRows   func(LayoutBuilderRow) LayoutBuilderRow
 		expectedErr string
 	}{
+		{
+			name: "fixed_heights_exceed_total_no_auto",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.
+					Height("300").EqualCols("a").
+					Row().Height("200").EqualCols("b")
+			},
+			expectedErr: "exceed painter height",
+		},
 		{
 			name: "duplicate_cell_names",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
@@ -1085,6 +1121,13 @@ func TestLayoutByRowsErrors(t *testing.T) {
 					RowGap("-10")
 			},
 			expectedErr: "negative height not allowed",
+		},
+		{
+			name: "explicit_column_widths_exceed_row_width",
+			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
+				return b.Height("100").Col("a", "400").Col("b", "400")
+			},
+			expectedErr: "exceed available row width",
 		},
 	}
 

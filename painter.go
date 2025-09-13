@@ -1303,6 +1303,8 @@ type LayoutBuilderRow interface {
 	// Height sets the current row height (pixels or percentage).
 	Height(height string) LayoutBuilderRow
 	// ColGap adds a horizontal gap in the current row (like adding an invisible column).
+	// If gap is empty (""), it is treated as an auto-width gap and will
+	// match other auto-width columns in the row.
 	ColGap(gap string) LayoutBuilderRow
 	// Offset applies position adjustments to the last added column in the current row.
 	// Accepts pixels ("20") or percentages ("10%") - percentages are relative to the cell's dimensions.
@@ -1415,12 +1417,14 @@ func (b *layoutBuilderRow) Offset(x, y string) LayoutBuilderRow {
 
 // Build creates child painters from the entire layout definition.
 func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
-	// Commit current row if it has content
+	// Snapshot rows for this build without mutating builder state
+	rows := make([]rowDefinition, 0, len(b.rows)+1)
+	rows = append(rows, b.rows...)
 	if len(b.currentRow.columns) > 0 || b.currentRow.heightStr != "" {
-		b.rows = append(b.rows, b.currentRow)
+		rows = append(rows, b.currentRow)
 	}
 
-	if len(b.rows) == 0 {
+	if len(rows) == 0 {
 		return make(map[string]*Painter), nil
 	}
 
@@ -1431,8 +1435,8 @@ func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
 	// Calculate row heights
 	var fixedHeight, percentHeight float64
 	var autoRows []int
-	rowHeights := make([]float64, len(b.rows))
-	for i, row := range b.rows {
+	rowHeights := make([]float64, len(rows))
+	for i, row := range rows {
 		if row.heightStr == "" {
 			autoRows = append(autoRows, i) // Auto-distribute remaining space
 		} else {
@@ -1461,11 +1465,20 @@ func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
 		for _, idx := range autoRows {
 			rowHeights[idx] = autoHeight
 		}
+	} else {
+		// No auto rows, ensure total specified height does not exceed total available height
+		var sum float64
+		for _, h := range rowHeights {
+			sum += h
+		}
+		if sum > totalHeight {
+			return nil, fmt.Errorf("total row heights (%.0fpx) exceed painter height (%.0fpx)", sum, totalHeight)
+		}
 	}
 
 	// Process each row and create painters
 	var currentY float64
-	for rowIdx, row := range b.rows {
+	for rowIdx, row := range rows {
 		rowHeight := rowHeights[rowIdx]
 		rowWidth := totalWidth
 
@@ -1507,8 +1520,12 @@ func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
 			}
 
 			// Distribute remaining width among auto columns
+			usedWidth := totalFixed + (totalPercent/100.0)*rowWidth
+			if usedWidth > rowWidth {
+				return nil, fmt.Errorf("row %d: column widths exceed available row width (%.0fpx > %.0fpx)", rowIdx+1, usedWidth, rowWidth)
+			}
+
 			if len(autoIndices) > 0 {
-				usedWidth := totalFixed + (totalPercent/100.0)*rowWidth
 				remainingWidth := rowWidth - usedWidth
 				if remainingWidth < 0 {
 					remainingWidth = 0
