@@ -43,8 +43,8 @@ func main() {
 	// APPROACH 2: Row-based layout - Best for progressive, flexible layouts
 	// (only included to demonstrate the same layout using the row-based approach)
 	painters, err = p.LayoutByRows().
-		EqualCols("topCenter").Height("300").         // First row: single column, fixed height
-		Row().EqualCols("bottomLeft", "bottomRight"). // Second row: two equal columns, remaining height
+		Row().Height("300").Columns("topCenter").   // First row: single column, fixed height
+		Row().Columns("bottomLeft", "bottomRight"). // Second row: two equal columns, remaining height
 		Build()
 	if err != nil {
 		panic(err)

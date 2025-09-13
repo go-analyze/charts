@@ -1292,8 +1292,8 @@ type LayoutBuilderRow interface {
 	// RowGap adds vertical spacing between rows (pixels or percentage).
 	// Creates an empty row with the specified height (equivalent to Row().Height(height)).
 	RowGap(height string) LayoutBuilderRow
-	// EqualCols adds columns with equal width distribution to the current row.
-	EqualCols(names ...string) LayoutBuilderRow
+	// Columns adds columns with equal width distribution to the current row. Use Col if you want to set a specific column width.
+	Columns(names ...string) LayoutBuilderRow
 	// Col adds a column with specified width to the current row (pixels, percentage, or empty for auto).
 	Col(name string, width string) LayoutBuilderRow
 	// Height sets the current row height (pixels or percentage).
@@ -1372,7 +1372,7 @@ func (b *layoutBuilderRow) RowGap(height string) LayoutBuilderRow {
 	return b
 }
 
-func (b *layoutBuilderRow) EqualCols(names ...string) LayoutBuilderRow {
+func (b *layoutBuilderRow) Columns(names ...string) LayoutBuilderRow {
 	for _, name := range names {
 		b.currentRow.columns = append(b.currentRow.columns, columnElement{name: name})
 	}

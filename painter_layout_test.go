@@ -540,9 +540,9 @@ func TestLayoutByRows(t *testing.T) {
 			name: "simple_rows_with_equal_columns",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("60").EqualCols("header").
-					Row().Height("200").EqualCols("left", "right").
-					Row().EqualCols("footer")
+					Height("60").Columns("header").
+					Row().Height("200").Columns("left", "right").
+					Row().Columns("footer")
 			},
 			expectedKeys: []string{"header", "left", "right", "footer"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -562,7 +562,7 @@ func TestLayoutByRows(t *testing.T) {
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
 					Height("300").Col("sidebar", "150").Col("content", "").
-					Row().EqualCols("footer")
+					Row().Columns("footer")
 			},
 			expectedKeys: []string{"sidebar", "content", "footer"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -580,7 +580,7 @@ func TestLayoutByRows(t *testing.T) {
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
 					Height("30%").Col("left", "25%").Col("center", "50%").Col("right", "25%").
-					Row().EqualCols("bottom")
+					Row().Columns("bottom")
 			},
 			expectedKeys: []string{"left", "center", "right", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -598,7 +598,7 @@ func TestLayoutByRows(t *testing.T) {
 		{
 			name: "col_gap_at_start",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.Height("100").ColGap("50").EqualCols("content")
+				return b.Height("100").ColGap("50").Columns("content")
 			},
 			expectedKeys: []string{"content"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -610,7 +610,7 @@ func TestLayoutByRows(t *testing.T) {
 		{
 			name: "col_gap_at_end",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.Height("100").EqualCols("content").ColGap("50")
+				return b.Height("100").Columns("content").ColGap("50")
 			},
 			expectedKeys: []string{"content"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -623,7 +623,7 @@ func TestLayoutByRows(t *testing.T) {
 			name: "col_gap_between_columns",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("left").ColGap("20").EqualCols("right")
+					Height("100").Columns("left").ColGap("20").Columns("right")
 			},
 			expectedKeys: []string{"left", "right"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -637,7 +637,7 @@ func TestLayoutByRows(t *testing.T) {
 		{
 			name: "multiple_col_gaps_in_sequence",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.Height("100").EqualCols("a").ColGap("10").ColGap("10").EqualCols("b")
+				return b.Height("100").Columns("a").ColGap("10").ColGap("10").Columns("b")
 			},
 			expectedKeys: []string{"a", "b"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -653,7 +653,7 @@ func TestLayoutByRows(t *testing.T) {
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
 					ColGap("100").ColGap("200").Height("50").
-					Row().EqualCols("bottom")
+					Row().Columns("bottom")
 			},
 			expectedKeys: []string{"bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -666,9 +666,9 @@ func TestLayoutByRows(t *testing.T) {
 			name: "row_gap_spacing",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("top").
+					Height("100").Columns("top").
 					RowGap("50").
-					Row().EqualCols("bottom")
+					Row().Columns("bottom")
 			},
 			expectedKeys: []string{"top", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -683,9 +683,9 @@ func TestLayoutByRows(t *testing.T) {
 			name: "empty_row_with_height",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("top").
+					Height("100").Columns("top").
 					Row().Height("50"). // Empty row with height, same behavior expected as RowGap
-					Row().EqualCols("bottom")
+					Row().Columns("bottom")
 			},
 			expectedKeys: []string{"top", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -700,9 +700,9 @@ func TestLayoutByRows(t *testing.T) {
 			name: "multiple_row_calls_idempotent",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("first").
+					Height("100").Columns("first").
 					Row().Row().Row(). // Multiple Row() calls should have no impact
-					EqualCols("second")
+					Columns("second")
 			},
 			expectedKeys: []string{"first", "second"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -717,9 +717,9 @@ func TestLayoutByRows(t *testing.T) {
 			name: "overlapping_with_negative_offset",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("top").
-					Row().Height("100").EqualCols("middle").Offset("0", "-20").
-					Row().EqualCols("bottom")
+					Height("100").Columns("top").
+					Row().Height("100").Columns("middle").Offset("0", "-20").
+					Row().Columns("bottom")
 			},
 			expectedKeys: []string{"top", "middle", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -736,8 +736,8 @@ func TestLayoutByRows(t *testing.T) {
 			name: "percentage_offset",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("normal").
-					Row().Height("100").EqualCols("first", "offset1").Offset("10%", "-5%").
+					Height("100").Columns("normal").
+					Row().Height("100").Columns("first", "offset1").Offset("10%", "-5%").
 					Row().Height("100").Col("second", "250").ColGap("100").Col("offset2", "250").Offset("10%", "-5%")
 			},
 			expectedKeys: []string{"normal", "first", "offset1", "second", "offset2"},
@@ -761,10 +761,10 @@ func TestLayoutByRows(t *testing.T) {
 			name: "auto_height_distribution",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Row().EqualCols("auto1").
-					Row().EqualCols("auto2").
-					Row().EqualCols("auto3").
-					Row().EqualCols("auto4")
+					Row().Columns("auto1").
+					Row().Columns("auto2").
+					Row().Columns("auto3").
+					Row().Columns("auto4")
 			},
 			expectedKeys: []string{"auto1", "auto2", "auto3", "auto4"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -784,12 +784,12 @@ func TestLayoutByRows(t *testing.T) {
 			name: "auto_height_mixed",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("20").EqualCols("fixed1").
-					Row().EqualCols("auto1").
+					Height("20").Columns("fixed1").
+					Row().Columns("auto1").
 					RowGap("60").
-					Row().EqualCols("auto2").
-					Row().EqualCols("auto3").
-					Row().Height("20").EqualCols("fixed2")
+					Row().Columns("auto2").
+					Row().Columns("auto3").
+					Row().Height("20").Columns("fixed2")
 			},
 			expectedKeys: []string{"fixed1", "auto1", "auto2", "auto3", "fixed2"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -811,12 +811,12 @@ func TestLayoutByRows(t *testing.T) {
 			name: "complex_dashboard_layout",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("40").EqualCols("title").
+					Height("40").Columns("title").
 					RowGap("10").
 					Row().Height("80").Col("kpi1", "").ColGap("15").Col("kpi2", "").ColGap("15").Col("kpi3", "").ColGap("15").Col("kpi4", "").ColGap("15").Col("kpi5", "").
 					RowGap("10").
-					Row().Height("40%").EqualCols("mainChart").
-					Row().EqualCols("table")
+					Row().Height("40%").Columns("mainChart").
+					Row().Columns("table")
 			},
 			expectedKeys: []string{"title", "kpi1", "kpi2", "kpi3", "kpi4", "kpi5", "mainChart", "table"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -841,10 +841,10 @@ func TestLayoutByRows(t *testing.T) {
 			name: "multiple_empty_rows_different_heights",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					RowGap("50").                         // Empty row at start
-					Row().Height("75").EqualCols("cell"). // Row with content
-					Row().Height("25").                   // Empty row in middle
-					Row().Height("100").EqualCols("bottom")
+					RowGap("50").                       // Empty row at start
+					Row().Height("75").Columns("cell"). // Row with content
+					Row().Height("25").                 // Empty row in middle
+					Row().Height("100").Columns("bottom")
 			},
 			expectedKeys: []string{"cell", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -888,9 +888,9 @@ func TestLayoutByRows(t *testing.T) {
 			name: "height_at_end",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					EqualCols("top").Height("20").
+					Columns("top").Height("20").
 					Row().Col("left", "200").Col("right", "").Height("100").
-					Row().EqualCols("bottom") // Auto height
+					Row().Columns("bottom") // Auto height
 			},
 			expectedKeys: []string{"top", "left", "right", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -928,10 +928,10 @@ func TestLayoutByRows(t *testing.T) {
 			name: "row_offset_negative",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("first").
-					Row().RowOffset("-20").Height("100").EqualCols("second").
-					Row().RowOffset("-20").EqualCols("third").
-					Row().Height("100").EqualCols("fourth")
+					Height("100").Columns("first").
+					Row().RowOffset("-20").Height("100").Columns("second").
+					Row().RowOffset("-20").Columns("third").
+					Row().Height("100").Columns("fourth")
 			},
 			expectedKeys: []string{"first", "second", "third", "fourth"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -950,9 +950,9 @@ func TestLayoutByRows(t *testing.T) {
 			name: "row_offset_positive",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("100").EqualCols("first").
-					Row().RowOffset("40").Height("100").EqualCols("second").
-					Row().Height("100").EqualCols("third")
+					Height("100").Columns("first").
+					Row().RowOffset("40").Height("100").Columns("second").
+					Row().Height("100").Columns("third")
 			},
 			expectedKeys: []string{"first", "second", "third"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -969,10 +969,10 @@ func TestLayoutByRows(t *testing.T) {
 			name: "row_offset_percentage",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("25%").EqualCols("quarter1").
-					Row().RowOffset("-5%").Height("25%").EqualCols("quarter2").
-					Row().RowOffset("5%").Height("25%").EqualCols("quarter3").
-					Row().EqualCols("quarter4")
+					Height("25%").Columns("quarter1").
+					Row().RowOffset("-5%").Height("25%").Columns("quarter2").
+					Row().RowOffset("5%").Height("25%").Columns("quarter3").
+					Row().Columns("quarter4")
 			},
 			expectedKeys: []string{"quarter1", "quarter2", "quarter3", "quarter4"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -992,10 +992,10 @@ func TestLayoutByRows(t *testing.T) {
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				const gap = "20"
 				return b.
-					Height("80").EqualCols("top").
+					Height("80").Columns("top").
 					RowGap(gap).
-					Row().Height("80").EqualCols("middle").RowOffset("-" + gap). // Offset into the gap
-					Row().Height("80").EqualCols("bottom")
+					Row().Height("80").Columns("middle").RowOffset("-" + gap). // Offset into the gap
+					Row().Height("80").Columns("bottom")
 			},
 			expectedKeys: []string{"top", "middle", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -1054,9 +1054,9 @@ func TestLayoutByRows(t *testing.T) {
 		})
 
 		builder := p.LayoutByRows().
-			Height("100").EqualCols("top").
-			Row().Height("100").EqualCols("left", "right").
-			Row().EqualCols("bottom")
+			Height("100").Columns("top").
+			Row().Height("100").Columns("left", "right").
+			Row().Columns("bottom")
 
 		painters1, err := builder.Build()
 		require.NoError(t, err)
@@ -1086,22 +1086,22 @@ func TestLayoutByRowsErrors(t *testing.T) {
 			name: "fixed_heights_exceed_total_no_auto",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					Height("300").EqualCols("a").
-					Row().Height("200").EqualCols("b")
+					Height("300").Columns("a").
+					Row().Height("200").Columns("b")
 			},
 			expectedErr: "exceed painter height",
 		},
 		{
 			name: "duplicate_cell_names",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("dup", "dup")
+				return b.Columns("dup", "dup")
 			},
 			expectedErr: "duplicate cell name: 'dup'",
 		},
 		{
 			name: "negative_height",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("cell").Height("-10")
+				return b.Columns("cell").Height("-10")
 			},
 			expectedErr: "negative height not allowed",
 		},
@@ -1123,15 +1123,15 @@ func TestLayoutByRowsErrors(t *testing.T) {
 			name: "auto_rows_zero_height",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					EqualCols("cell1").Height("400").
-					Row().EqualCols("cell2") // Auto height with no space left
+					Columns("cell1").Height("400").
+					Row().Columns("cell2") // Auto height with no space left
 			},
 			expectedErr: "auto-distributed rows result in zero height",
 		},
 		{
 			name: "invalid_height_format",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("cell").Height("abc")
+				return b.Columns("cell").Height("abc")
 			},
 			expectedErr: "invalid height 'abc'",
 		},
@@ -1145,28 +1145,28 @@ func TestLayoutByRowsErrors(t *testing.T) {
 		{
 			name: "invalid_col_gap_format",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("a").ColGap("bad").EqualCols("b")
+				return b.Columns("a").ColGap("bad").Columns("b")
 			},
 			expectedErr: "invalid width 'bad'",
 		},
 		{
 			name: "invalid_row_gap_format",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("a").RowGap("bad")
+				return b.Columns("a").RowGap("bad")
 			},
 			expectedErr: "invalid height 'bad'",
 		},
 		{
 			name: "invalid_offset_x_format",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("cell").Offset("bad", "0")
+				return b.Columns("cell").Offset("bad", "0")
 			},
 			expectedErr: "invalid x offset 'bad'",
 		},
 		{
 			name: "invalid_offset_y_format",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("cell").Offset("0", "bad")
+				return b.Columns("cell").Offset("0", "bad")
 			},
 			expectedErr: "invalid y offset 'bad'",
 		},
@@ -1174,9 +1174,9 @@ func TestLayoutByRowsErrors(t *testing.T) {
 			name: "all_rows_fixed_exceeding_total",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					EqualCols("a").Height("200").
-					Row().EqualCols("b").Height("250").
-					Row().EqualCols("c") // Need an auto row to trigger the error
+					Columns("a").Height("200").
+					Row().Columns("b").Height("250").
+					Row().Columns("c") // Need an auto row to trigger the error
 			},
 			expectedErr: "auto-distributed rows result in zero height",
 		},
@@ -1184,16 +1184,16 @@ func TestLayoutByRowsErrors(t *testing.T) {
 			name: "percentages_totaling_over_100",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					EqualCols("a").Height("60%").
-					Row().EqualCols("b").Height("50%").
-					Row().EqualCols("c") // Need an auto row to trigger the error
+					Columns("a").Height("60%").
+					Row().Columns("b").Height("50%").
+					Row().Columns("c") // Need an auto row to trigger the error
 			},
 			expectedErr: "auto-distributed rows result in zero height",
 		},
 		{
 			name: "negative_col_gap",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.EqualCols("a").ColGap("-10").EqualCols("b")
+				return b.Columns("a").ColGap("-10").Columns("b")
 			},
 			expectedErr: "negative width not allowed",
 		},
@@ -1201,7 +1201,7 @@ func TestLayoutByRowsErrors(t *testing.T) {
 			name: "negative_row_gap",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
 				return b.
-					EqualCols("a").Height("100").
+					Columns("a").Height("100").
 					RowGap("-10")
 			},
 			expectedErr: "negative height not allowed",
