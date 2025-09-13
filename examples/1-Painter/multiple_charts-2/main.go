@@ -8,7 +8,7 @@ import (
 )
 
 /*
-Example of building a painter to write multiple charts on the same image.
+Example of building a painter to write multiple charts on the same image with unique themes.
 */
 
 func writeFile(buf []byte) error {
@@ -29,17 +29,13 @@ func main() {
 	})
 	p.FilledRect(0, 0, 800, 600, charts.ColorWhite, charts.ColorWhite, 0.0)
 	// set the space and theme for each chart
-	topCenterPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 800, 300)))
-	bottomLeftPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 300, 400, 600)))
-	bottomRightPainter := p.Child(charts.PainterBoxOption(charts.NewBox(400, 300, 800, 600)))
+	topCenterPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 0, 800, 300)),
+		charts.PainterThemeOption(charts.GetTheme(charts.ThemeVividLight)))
+	bottomLeftPainter := p.Child(charts.PainterBoxOption(charts.NewBox(0, 300, 400, 600)),
+		charts.PainterThemeOption(charts.GetTheme(charts.ThemeAnt)))
+	bottomRightPainter := p.Child(charts.PainterBoxOption(charts.NewBox(400, 300, 800, 600)),
+		charts.PainterThemeOption(charts.GetTheme(charts.ThemeLight)))
 
-	dataValues := [][]float64{
-		{120, 132, 101, 134, 90, 230, 210},
-		{220, 182, 191, 234, 290, 330, 310},
-		{150, 232, 201, 154, 190, 330, 410},
-		{320, 332, 301, 334, 390, 330, 320},
-		{820, 932, 901, 934, 1290, 1330, 1320},
-	}
 	lineOpt := charts.LineChartOption{
 		Padding: charts.NewBoxEqual(10),
 		XAxis: charts.XAxisOption{
@@ -49,36 +45,27 @@ func main() {
 			LabelCount: 7,
 		},
 		Legend: charts.LegendOption{
-			Show: charts.Ptr(false),
-		},
-		SeriesList: charts.NewSeriesListLine(dataValues),
-	}
-	barOpt := charts.BarChartOption{
-		Padding: charts.NewBoxEqual(10),
-		XAxis:   lineOpt.XAxis,
-		Legend: charts.LegendOption{
-			Show: charts.Ptr(false),
-		},
-		SeriesList: charts.NewSeriesListBar(dataValues),
-	}
-	pieOpt := charts.PieChartOption{
-		Padding: charts.NewBoxEqual(10),
-		Legend: charts.LegendOption{
 			SeriesNames: []string{
 				"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 			},
 		},
-		SeriesList: charts.NewSeriesListPie(lineOpt.SeriesList.SumSeries()), // utilize SumSeries() to easily get a pie chart representation
+		SeriesList: charts.NewSeriesListLine([][]float64{
+			{120, 132, 101, 134, 90, 230, 210},
+			{220, 182, 191, 234, 290, 330, 310},
+			{150, 232, 201, 154, 190, 330, 410},
+			{320, 332, 301, 334, 390, 330, 320},
+			{820, 932, 901, 934, 1290, 1330, 1320},
+		}),
 	}
 
 	// render the same chart in each spot for the demo
-	if err := bottomLeftPainter.BarChart(barOpt); err != nil {
+	if err := bottomLeftPainter.LineChart(lineOpt); err != nil {
 		panic(err)
 	}
 	if err := bottomRightPainter.LineChart(lineOpt); err != nil {
 		panic(err)
 	}
-	if err := topCenterPainter.PieChart(pieOpt); err != nil {
+	if err := topCenterPainter.LineChart(lineOpt); err != nil {
 		panic(err)
 	}
 
