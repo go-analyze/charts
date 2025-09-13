@@ -2,6 +2,8 @@ package charts
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -1138,4 +1140,145 @@ func (p *Painter) TableChart(opt TableChartOption) error {
 func (p *Painter) CandlestickChart(opt CandlestickChartOption) error {
 	_, err := newCandlestickChart(p, opt).Render()
 	return err
+}
+
+// LayoutBuilderGrid is returned by Painter.LayoutByGrid() and provides methods
+// for building grid-based layouts with cell spanning support.
+type LayoutBuilderGrid interface {
+	// CellAt defines a new cell at the specified position with the given name.
+	// The cell defaults to a 1x1 span, adjust larger by calling Span.
+	CellAt(name string, col, row int) LayoutBuilderGrid
+	// Span modifies the span of the previously defined cell.
+	// Must be called after CellAt.
+	Span(colSpan, rowSpan int) LayoutBuilderGrid
+	// Offset applies position adjustments to the previously defined cell.
+	// Accepts pixels ("20") or percentages ("10%") - percentages are relative to the cell's own dimensions.
+	// Must be called after CellAt. Useful for fine-tuning and creating overlapping effects.
+	Offset(x, y string) LayoutBuilderGrid
+	// Build creates child painters based on the defined grid layout.
+	// Returns a map of cell names to their corresponding painters.
+	Build() (map[string]*Painter, error)
+}
+
+// LayoutByGrid returns builder for dividing the painter into child painters with a grid based layout.
+// This is typically the easiest way to align multiple charts on to a single Painter.
+// Specify how many rows and columns the painter should be divided into,
+// then define each child painter using CellAt and Span.
+func (p *Painter) LayoutByGrid(cols, rows int) LayoutBuilderGrid {
+	cellEstimate := chartdraw.MaxInt(0, chartdraw.MinInt(128, cols*rows)) // clamp between 0 and 128 for safety
+	return &layoutBuilderGrid{
+		painter: p,
+		cols:    cols,
+		rows:    rows,
+		cells:   make([]gridCell, 0, cellEstimate),
+	}
+}
+
+type layoutBuilderGrid struct {
+	painter  *Painter
+	cols     int
+	rows     int
+	cells    []gridCell
+	lastCell *gridCell
+}
+
+type gridCell struct {
+	name       string
+	col        int
+	row        int
+	colSpan    int
+	rowSpan    int
+	offsetXStr string
+	offsetYStr string
+}
+
+// CellAt defines a new cell at the specified position with the given name.
+func (b *layoutBuilderGrid) CellAt(name string, col, row int) LayoutBuilderGrid {
+	b.cells = append(b.cells, gridCell{
+		name:    name,
+		col:     col,
+		row:     row,
+		colSpan: 1,
+		rowSpan: 1,
+	})
+	b.lastCell = &b.cells[len(b.cells)-1]
+	return b
+}
+
+// Span modifies the span of the previously defined cell.
+func (b *layoutBuilderGrid) Span(colSpan, rowSpan int) LayoutBuilderGrid {
+	if b.lastCell != nil {
+		b.lastCell.colSpan = colSpan
+		b.lastCell.rowSpan = rowSpan
+	}
+	return b
+}
+
+// Offset applies pixel-level adjustments to the previously defined cell.
+func (b *layoutBuilderGrid) Offset(x, y string) LayoutBuilderGrid {
+	if b.lastCell != nil { // Store raw string values to be parsed during Build() when dimensions are known
+		b.lastCell.offsetXStr = x
+		b.lastCell.offsetYStr = y
+	}
+	return b
+}
+
+// Build creates child painters based on the defined grid layout.
+func (b *layoutBuilderGrid) Build() (map[string]*Painter, error) {
+	if b.cols <= 0 || b.rows <= 0 {
+		return nil, errors.New("invalid grid dimensions: cols and rows must be positive")
+	}
+
+	cellWidth := float64(b.painter.Width()) / float64(b.cols)
+	cellHeight := float64(b.painter.Height()) / float64(b.rows)
+	painters := make(map[string]*Painter, len(b.cells))
+	for _, cell := range b.cells {
+		if _, exists := painters[cell.name]; exists {
+			return nil, fmt.Errorf("duplicate cell name: '%s'", cell.name)
+		} else if cell.col < 0 || cell.col >= b.cols || cell.row < 0 || cell.row >= b.rows {
+			return nil, fmt.Errorf("cell '%s' position (%d, %d) exceeds grid dimensions (%d, %d)",
+				cell.name, cell.col, cell.row, b.cols, b.rows)
+		} else if cell.colSpan <= 0 || cell.rowSpan <= 0 {
+			return nil, fmt.Errorf("cell '%s' has invalid span (%d, %d): spans must be positive",
+				cell.name, cell.colSpan, cell.rowSpan)
+		} else if cell.col+cell.colSpan > b.cols || cell.row+cell.rowSpan > b.rows {
+			return nil, fmt.Errorf("cell '%s' span extends beyond grid boundaries (%d, %d) > (%d, %d)",
+				cell.name, cell.col+cell.colSpan, cell.row+cell.rowSpan, b.cols, b.rows)
+		}
+
+		// Calculate cell dimensions first
+		width := float64(cell.colSpan) * cellWidth
+		height := float64(cell.rowSpan) * cellHeight
+
+		// Calculate offsets based on cell dimensions
+		var offsetX, offsetY float64
+		if cell.offsetXStr != "" {
+			val, err := parseFlexibleValue(cell.offsetXStr, width)
+			if err != nil {
+				return nil, fmt.Errorf("invalid x offset '%s' for cell '%s': %w", cell.offsetXStr, cell.name, err)
+			}
+			offsetX = val
+		}
+		if cell.offsetYStr != "" {
+			val, err := parseFlexibleValue(cell.offsetYStr, height)
+			if err != nil {
+				return nil, fmt.Errorf("invalid y offset '%s' for cell '%s': %w", cell.offsetYStr, cell.name, err)
+			}
+			offsetY = val
+		}
+
+		// Calculate position relative to parent's coordinates
+		x := float64(cell.col)*cellWidth + offsetX
+		y := float64(cell.row)*cellHeight + offsetY
+		box := Box{
+			Left:   b.painter.box.Left + int(x),
+			Top:    b.painter.box.Top + int(y),
+			Right:  b.painter.box.Left + int(x+width),
+			Bottom: b.painter.box.Top + int(y+height),
+			IsSet:  true,
+		}
+		painters[cell.name] = b.painter.Child(PainterBoxOption(box))
+	}
+
+	return painters, nil
 }
