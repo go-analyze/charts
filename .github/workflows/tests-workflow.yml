@@ -8,7 +8,7 @@ jobs:
     name: Verify Linting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Go
         uses: actions/setup-go@v6
@@ -43,7 +43,7 @@ jobs:
         - '1.19'
         - '1.18'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v6
