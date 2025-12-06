@@ -634,8 +634,8 @@ func TestCandlestickSeriesListMethods(t *testing.T) {
 
 	assert.Equal(t, 1, seriesList.len())
 	assert.Equal(t, "Test Series", seriesList.names()[0])
-	assert.Equal(t, len(data), len(series.Data))
-	assert.Equal(t, "", string(seriesList.getSeriesSymbol(0)))
+	assert.Len(t, series.Data, len(data))
+	assert.Empty(t, string(seriesList.getSeriesSymbol(0)))
 
 	// Test ToGenericSeriesList
 	genericList := seriesList.ToGenericSeriesList()

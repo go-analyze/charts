@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	/*
 		In this example we add a new type of series, a `PolynomialRegressionSeries` that takes another series as a required argument.
 		InnerSeries only needs to implement `ValuesProvider`, so really you could chain `PolynomialRegressionSeries` together if you wanted.

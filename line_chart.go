@@ -398,11 +398,12 @@ func (l *lineChart) Render() (Box, error) {
 		l.opt.XAxis.BoundaryGap = &boundaryGap
 	}
 	if opt.Legend.Symbol == "" {
-		if opt.Symbol == "" {
+		switch opt.Symbol {
+		case "":
 			opt.Legend.Symbol = SymbolCircle
-		} else if opt.Symbol == SymbolNone {
+		case SymbolNone:
 			opt.Legend.Symbol = SymbolDot
-		} else {
+		default:
 			opt.Legend.Symbol = opt.Symbol
 		}
 	}

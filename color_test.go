@@ -27,10 +27,10 @@ func BenchmarkColorString(b *testing.B) {
 const makeColorShadeSamples = false
 
 func testColorShades(t *testing.T, colors ...Color) {
+	t.Helper()
 	if !makeColorShadeSamples {
 		return // color samples are generated through a test failure
 	}
-	t.Helper()
 
 	p := NewPainter(PainterOptions{
 		OutputFormat: ChartOutputSVG,

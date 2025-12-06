@@ -90,9 +90,10 @@ func (ya YAxis) GetGridLines(ticks []Tick) []GridLine {
 // Measure returns the bounds of the axis.
 func (ya YAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, ticks []Tick) Box {
 	var tx int
-	if ya.AxisType == YAxisPrimary {
+	switch ya.AxisType {
+	case YAxisPrimary:
 		tx = canvasBox.Right + DefaultYAxisMargin
-	} else if ya.AxisType == YAxisSecondary {
+	case YAxisSecondary:
 		tx = canvasBox.Left - DefaultYAxisMargin
 	}
 
@@ -112,10 +113,11 @@ func (ya YAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 
 		maxTextHeight = MaxInt(tb.Height(), maxTextHeight)
 
-		if ya.AxisType == YAxisPrimary {
+		switch ya.AxisType {
+		case YAxisPrimary:
 			minx = canvasBox.Right
 			maxx = MaxInt(maxx, tx+tb.Width())
-		} else if ya.AxisType == YAxisSecondary {
+		case YAxisSecondary:
 			minx = MinInt(minx, finalTextX)
 			maxx = MaxInt(maxx, tx)
 		}
@@ -146,10 +148,11 @@ func (ya YAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 
 	var lx int
 	var tx int
-	if ya.AxisType == YAxisPrimary {
+	switch ya.AxisType {
+	case YAxisPrimary:
 		lx = canvasBox.Right + int(sw)
 		tx = lx + DefaultYAxisMargin
-	} else if ya.AxisType == YAxisSecondary {
+	case YAxisSecondary:
 		lx = canvasBox.Left - int(sw)
 		tx = lx - DefaultYAxisMargin
 	}
@@ -185,9 +188,10 @@ func (ya YAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 		tickStyle.WriteToRenderer(r)
 
 		r.MoveTo(lx, ly)
-		if ya.AxisType == YAxisPrimary {
+		switch ya.AxisType {
+		case YAxisPrimary:
 			r.LineTo(lx+DefaultHorizontalTickWidth, ly)
-		} else if ya.AxisType == YAxisSecondary {
+		case YAxisSecondary:
 			r.LineTo(lx-DefaultHorizontalTickWidth, ly)
 		}
 		r.Stroke()
@@ -201,9 +205,10 @@ func (ya YAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 		tb := Draw.MeasureText(r, ya.Name, nameStyle)
 
 		var tx int
-		if ya.AxisType == YAxisPrimary {
+		switch ya.AxisType {
+		case YAxisPrimary:
 			tx = canvasBox.Right + int(sw) + DefaultYAxisMargin + maxTextWidth + DefaultYAxisMargin
-		} else if ya.AxisType == YAxisSecondary {
+		case YAxisSecondary:
 			tx = canvasBox.Left - (DefaultYAxisMargin + int(sw) + maxTextWidth + DefaultYAxisMargin)
 		}
 

@@ -29,6 +29,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				// no-cells
 			},
 			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"></svg>",
@@ -46,6 +47,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{"topLeft", "topRight", "bottomLeft", "bottomRight"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				// Each cell should be 300x200 (600/2 x 400/2)
 				assert.Equal(t, 300, painters["topLeft"].Width())
 				assert.Equal(t, 200, painters["topLeft"].Height())
@@ -70,6 +72,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{"header", "sidebar", "main"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				// header: full width (600), 1/3 height (133)
 				assert.Equal(t, 600, painters["header"].Width())
 				assert.Equal(t, 133, painters["header"].Height())
@@ -95,6 +98,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{"normal", "offset"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 300, painters["normal"].Width())
 				assert.Equal(t, 200, painters["normal"].Height())
 
@@ -115,6 +119,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{"normal", "offset"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 300, painters["normal"].Width())
 				assert.Equal(t, 200, painters["normal"].Height())
 
@@ -138,6 +143,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{"nav", "left", "center", "right", "footer"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				// nav: full width
 				assert.Equal(t, 600, painters["nav"].Width())
 				assert.Equal(t, 133, painters["nav"].Height())
@@ -169,6 +175,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{"full"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["full"].Width())
 				assert.Equal(t, 400, painters["full"].Height())
 			},
@@ -185,6 +192,7 @@ func TestLayoutByGrid(t *testing.T) {
 			},
 			expectedKeys: []string{"base", "overlap"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 400, painters["base"].Width())
 				assert.Equal(t, 266, painters["base"].Height())
 				assert.Equal(t, 400, painters["overlap"].Width())
@@ -532,6 +540,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				// nothing
 			},
 			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"></svg>",
@@ -546,6 +555,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"header", "left", "right", "footer"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["header"].Width())
 				assert.Equal(t, 60, painters["header"].Height())
 				assert.Equal(t, 300, painters["left"].Width())
@@ -566,6 +576,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"sidebar", "content", "footer"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 150, painters["sidebar"].Width())
 				assert.Equal(t, 300, painters["sidebar"].Height())
 				assert.Equal(t, 450, painters["content"].Width())
@@ -584,6 +595,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"left", "center", "right", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 150, painters["left"].Width())
 				assert.Equal(t, 120, painters["left"].Height())
 				assert.Equal(t, 300, painters["center"].Width())
@@ -602,6 +614,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"content"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 550, painters["content"].Width())
 				assert.Equal(t, 100, painters["content"].Height())
 			},
@@ -614,6 +627,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"content"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 550, painters["content"].Width())
 				assert.Equal(t, 100, painters["content"].Height())
 			},
@@ -627,6 +641,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"left", "right"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 290, painters["left"].Width())
 				assert.Equal(t, 100, painters["left"].Height())
 				assert.Equal(t, 290, painters["right"].Width())
@@ -641,6 +656,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"a", "b"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 290, painters["a"].Width())
 				assert.Equal(t, 100, painters["a"].Height())
 				assert.Equal(t, 290, painters["b"].Width())
@@ -657,6 +673,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 350, painters["bottom"].Height())
 			},
@@ -672,6 +689,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"top", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["top"].Width())
 				assert.Equal(t, 100, painters["top"].Height())
 				assert.Equal(t, 600, painters["bottom"].Width())
@@ -689,6 +707,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"top", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["top"].Width())
 				assert.Equal(t, 100, painters["top"].Height())
 				assert.Equal(t, 600, painters["bottom"].Width())
@@ -706,6 +725,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"first", "second"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["first"].Width())
 				assert.Equal(t, 100, painters["first"].Height())
 				assert.Equal(t, 600, painters["second"].Width())
@@ -723,6 +743,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"top", "middle", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["top"].Width())
 				assert.Equal(t, 100, painters["top"].Height())
 				assert.Equal(t, 600, painters["middle"].Width())
@@ -742,6 +763,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"normal", "first", "offset1", "second", "offset2"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["normal"].Width())
 				assert.Equal(t, 100, painters["normal"].Height())
 				// Row with 10% x offset (60px) and -5% y offset (-5px)
@@ -768,6 +790,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"auto1", "auto2", "auto3", "auto4"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				const autoHeight = 100
 				assert.Equal(t, 600, painters["auto1"].Width())
 				assert.Equal(t, autoHeight, painters["auto1"].Height())
@@ -793,6 +816,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"fixed1", "auto1", "auto2", "auto3", "fixed2"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				const autoHeight = 100
 				assert.Equal(t, 600, painters["fixed1"].Width())
 				assert.Equal(t, 20, painters["fixed1"].Height())
@@ -820,6 +844,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"title", "kpi1", "kpi2", "kpi3", "kpi4", "kpi5", "mainChart", "table"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["title"].Width())
 				assert.Equal(t, 40, painters["title"].Height())
 				assert.Equal(t, 108, painters["kpi1"].Width())
@@ -848,6 +873,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"cell", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["cell"].Width())
 				assert.Equal(t, 75, painters["cell"].Height())
 				assert.Equal(t, 600, painters["bottom"].Width())
@@ -863,6 +889,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"a", "b", "c", "d"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 100, painters["a"].Width())
 				assert.Equal(t, 200, painters["b"].Width())
 				assert.Equal(t, 150, painters["c"].Width())
@@ -878,6 +905,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"fixed", "percent", "auto"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 200, painters["fixed"].Width())
 				assert.Equal(t, 180, painters["percent"].Width()) // 30% of 600
 				assert.Equal(t, 220, painters["auto"].Width())    // Remaining space
@@ -894,6 +922,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"top", "left", "right", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["top"].Width())
 				assert.Equal(t, 20, painters["top"].Height())
 				assert.Equal(t, 200, painters["left"].Width())
@@ -914,6 +943,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"a", "b", "c", "d", "e"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				// First row: 100 + 50 + 100 + 50 + 100 = 400 used, 200 remaining
 				assert.Equal(t, 100, painters["a"].Width())
 				assert.Equal(t, 100, painters["b"].Width())
@@ -935,6 +965,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"first", "second", "third", "fourth"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["first"].Width())
 				assert.Equal(t, 100, painters["first"].Height())
 				assert.Equal(t, 600, painters["second"].Width())
@@ -956,6 +987,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"first", "second", "third"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["first"].Width())
 				assert.Equal(t, 100, painters["first"].Height())
 				assert.Equal(t, 600, painters["second"].Width())
@@ -976,6 +1008,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"quarter1", "quarter2", "quarter3", "quarter4"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["quarter1"].Width())
 				assert.Equal(t, 100, painters["quarter1"].Height())
 				assert.Equal(t, 600, painters["quarter2"].Width())
@@ -999,6 +1032,7 @@ func TestLayoutByRows(t *testing.T) {
 			},
 			expectedKeys: []string{"top", "middle", "bottom"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
+				t.Helper()
 				assert.Equal(t, 600, painters["top"].Width())
 				assert.Equal(t, 80, painters["top"].Height())
 				assert.Equal(t, 600, painters["middle"].Width())

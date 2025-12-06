@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-
 	/*
 	   In this example we add a second series, and assign it to the secondary y axis, giving that series it's own range.
 

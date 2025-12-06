@@ -213,6 +213,26 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// EChartsBox represents box dimensions with JSON tags for ECharts parsing.
+type EChartsBox struct {
+	Top    int  `json:"top"`
+	Bottom int  `json:"bottom"`
+	Left   int  `json:"left"`
+	Right  int  `json:"right"`
+	IsSet  bool `json:"isSet"`
+}
+
+// ToBox converts EChartsBox to Box.
+func (eb EChartsBox) ToBox() Box {
+	return Box{
+		Top:    eb.Top,
+		Bottom: eb.Bottom,
+		Left:   eb.Left,
+		Right:  eb.Right,
+		IsSet:  eb.IsSet,
+	}
+}
+
 // EChartsLabelOption configures data labels.
 type EChartsLabelOption struct {
 	Show     bool   `json:"show"`
@@ -368,6 +388,22 @@ func (esList EChartsSeriesList) ToSeriesList() GenericSeriesList {
 	return seriesList
 }
 
+// EChartsRadarIndicator maps radar indicator options from ECharts.
+type EChartsRadarIndicator struct {
+	Name string  `json:"name"`
+	Max  float64 `json:"max"`
+	Min  float64 `json:"min"`
+}
+
+// ToRadarIndicator converts to a RadarIndicator.
+func (eri EChartsRadarIndicator) ToRadarIndicator() RadarIndicator {
+	return RadarIndicator{
+		Name: eri.Name,
+		Max:  eri.Max,
+		Min:  eri.Min,
+	}
+}
+
 // EChartsTextStyle maps text style options from ECharts.
 type EChartsTextStyle struct {
 	Color      string  `json:"color"`
@@ -393,7 +429,7 @@ type EChartsOption struct {
 	Theme      string         `json:"theme"`
 	FontFamily string         `json:"fontFamily"`
 	Padding    EChartsPadding `json:"padding"`
-	Box        Box            `json:"box"`
+	Box        EChartsBox     `json:"box"`
 	Width      int            `json:"width"`
 	Height     int            `json:"height"`
 	Title      struct {
@@ -411,7 +447,7 @@ type EChartsOption struct {
 	YAxis  EChartsYAxis  `json:"yAxis"`
 	Legend EChartsLegend `json:"legend"`
 	Radar  struct {
-		Indicator []RadarIndicator `json:"indicator"`
+		Indicator []EChartsRadarIndicator `json:"indicator"`
 	} `json:"radar"`
 	Series          EChartsSeriesList `json:"series"`
 	BackgroundColor string            `json:"backgroundColor,omitempty"`
@@ -473,11 +509,11 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			Padding:     eo.Legend.Padding.Box,
 			BorderWidth: legendBorderWidth,
 		},
-		RadarIndicators: eo.Radar.Indicator,
+		RadarIndicators: bulk.SliceTransform(EChartsRadarIndicator.ToRadarIndicator, eo.Radar.Indicator),
 		Width:           eo.Width,
 		Height:          eo.Height,
 		Padding:         eo.Padding.Box,
-		Box:             eo.Box,
+		Box:             eo.Box.ToBox(),
 		SeriesList:      eo.Series.ToSeriesList(),
 	}
 	isHorizontalChart := false

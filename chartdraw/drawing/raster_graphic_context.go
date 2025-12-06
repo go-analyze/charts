@@ -294,12 +294,13 @@ func isRectanglePath(path *Path) bool {
 	x2, y2 := path.Points[2], path.Points[3]
 	x3, y3 := path.Points[4], path.Points[5]
 	var x4, y4 float64
-	if path.Components[4] == LineToComponent {
+	switch path.Components[4] {
+	case LineToComponent:
 		x4, y4 = path.Points[6], path.Points[7]
-	} else if path.Components[4] == CloseComponent {
+	case CloseComponent:
 		x4 = x1
 		y4 = y1
-	} else {
+	default:
 		return false
 	}
 

@@ -16,6 +16,8 @@ import (
 )
 
 func hashImage(t *testing.T, r *rasterRenderer) uint32 {
+	t.Helper()
+
 	iw := &ImageWriter{}
 	require.NoError(t, r.Save(iw))
 	img, err := iw.Image()

@@ -419,7 +419,7 @@ func (c *canvas) Text(x, y int, body string, style Style) {
 	bb.WriteString(`" `)
 	styleAsSVG(bb, style, c.dpi, true)
 	if c.textTheta != nil {
-		bb.WriteString(fmt.Sprintf(` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y))
+		fmt.Fprintf(bb, ` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y)
 	}
 	bb.WriteRune('>')
 	bb.WriteString(body)
@@ -457,7 +457,7 @@ func (c *canvas) writeStrokeDashArray(bb *bytes.Buffer, s Style) {
 			if i > 0 {
 				bb.WriteString(", ")
 			}
-			bb.WriteString(fmt.Sprintf("%0.1f", v))
+			fmt.Fprintf(bb, "%0.1f", v)
 		}
 		bb.WriteString("\"")
 	}

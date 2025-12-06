@@ -62,7 +62,7 @@ func main() {
 	opt.XAxis.LabelCount = 10
 	opt.XAxis.LabelRotation = charts.DegreesToRadians(45)
 	opt.XAxis.BoundaryGap = charts.Ptr(true)
-	opt.XAxis.FontStyle = charts.NewFontStyleWithSize(6.0)
+	opt.XAxis.LabelFontStyle = charts.NewFontStyleWithSize(6.0)
 	opt.YAxis = []charts.YAxisOption{
 		{
 			Show:          charts.Ptr(false), // disabling in favor of manually printed y-values

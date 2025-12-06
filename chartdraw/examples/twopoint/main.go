@@ -11,8 +11,7 @@ import (
 )
 
 func main() {
-	var b float64
-	b = 1000
+	b := float64(1000)
 
 	ts1 := chartdraw.ContinuousSeries{ //TimeSeries{
 		Name:    "Time Series",

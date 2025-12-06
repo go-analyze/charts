@@ -3,6 +3,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -24,13 +25,13 @@ func run() error {
 	}
 	cwd := filepath.Base(abs)
 	if cwd != "examples" {
-		return fmt.Errorf("you must be in the charts/chartdraw/examples directory")
+		return errors.New("you must be in the charts/chartdraw/examples directory")
 	}
 	gallery, err := os.Create(gallerymd)
 	if err != nil {
 		return err
 	}
-	defer gallery.Close()
+	defer func() { _ = gallery.Close() }()
 
 	entries, err := os.ReadDir(".")
 	if err != nil {
@@ -40,7 +41,7 @@ func run() error {
 		dirName   string
 		imagePath string
 	}
-	var examples []example
+	examples := make([]example, 0, len(entries))
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
@@ -48,18 +49,18 @@ func run() error {
 		imagePath := filepath.Join(entry.Name(), "output.png")
 		_, err := os.Stat(imagePath)
 		if err != nil {
-			fmt.Printf("%-70s continuing\n", err)
+			_, _ = fmt.Fprintf(os.Stderr, "%-70s continuing\n", err)
 			continue
 		}
 		examples = append(examples, example{dirName: entry.Name(), imagePath: imagePath})
 	}
 
-	fmt.Fprintf(gallery, "# Examples gallery\n<p>\n")
+	_, _ = fmt.Fprintf(gallery, "# Examples gallery\n<p>\n")
 	for _, example := range examples {
-		fmt.Fprintf(gallery, "\n## [%s](%s)\n", example.dirName, example.dirName)
-		fmt.Fprintf(gallery, "\n![%s](%s)\n<p>\n", example.dirName, example.imagePath)
+		_, _ = fmt.Fprintf(gallery, "\n## [%s](%s)\n", example.dirName, example.dirName)
+		_, _ = fmt.Fprintf(gallery, "\n![%s](%s)\n<p>\n", example.dirName, example.imagePath)
 	}
 
-	fmt.Printf("\nUpdated file %s; remember to commit\n", gallerymd)
+	_, _ = fmt.Fprintf(os.Stderr, "\nUpdated file %s; remember to commit\n", gallerymd)
 	return nil
 }

@@ -488,7 +488,7 @@ func TestLabelStyleOverrides(t *testing.T) {
 
 			// Check font size for rendered values
 			if len(tt.expectedFontSize) > 0 {
-				assert.Equal(t, len(tt.expectedFontSize), len(renderedValues))
+				assert.Len(t, renderedValues, len(tt.expectedFontSize))
 				for i, expected := range tt.expectedFontSize {
 					if i < len(renderedValues) {
 						assert.InDelta(t, expected, renderedValues[i].fontStyle.FontSize, matrix.DefaultEpsilon)
@@ -498,7 +498,7 @@ func TestLabelStyleOverrides(t *testing.T) {
 
 			// Check font color for rendered values
 			if len(tt.expectedFontColor) > 0 {
-				assert.Equal(t, len(tt.expectedFontColor), len(renderedValues))
+				assert.Len(t, renderedValues, len(tt.expectedFontColor))
 				for i, expected := range tt.expectedFontColor {
 					if i < len(renderedValues) {
 						assert.Equal(t, expected, renderedValues[i].fontStyle.FontColor)
@@ -508,7 +508,7 @@ func TestLabelStyleOverrides(t *testing.T) {
 
 			// Check background color for rendered values
 			if len(tt.expectedBackgroundColor) > 0 {
-				assert.Equal(t, len(tt.expectedBackgroundColor), len(renderedValues))
+				assert.Len(t, renderedValues, len(tt.expectedBackgroundColor))
 				for i, expected := range tt.expectedBackgroundColor {
 					if i < len(renderedValues) {
 						assert.Equal(t, expected, renderedValues[i].backgroundColor)
@@ -518,7 +518,7 @@ func TestLabelStyleOverrides(t *testing.T) {
 
 			// Check corner radius for rendered values
 			if len(tt.expectedCornerRadius) > 0 {
-				assert.Equal(t, len(tt.expectedCornerRadius), len(renderedValues))
+				assert.Len(t, renderedValues, len(tt.expectedCornerRadius))
 				for i, expected := range tt.expectedCornerRadius {
 					if i < len(renderedValues) {
 						assert.Equal(t, expected, renderedValues[i].cornerRadius)
@@ -586,7 +586,7 @@ func TestLabelFormatterThresholdMin(t *testing.T) {
 			formatter := LabelFormatterThresholdMin(1e6)
 
 			text, style := formatter(0, "test", 999999)
-			assert.Equal(t, "", text)
+			assert.Empty(t, text)
 			assert.Nil(t, style)
 
 			text, style = formatter(0, "test", 1000000)

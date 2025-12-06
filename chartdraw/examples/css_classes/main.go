@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -54,5 +54,8 @@ func css(res http.ResponseWriter, req *http.Request) {
 func main() {
 	http.HandleFunc("/", inlineSVGWithClasses)
 	http.HandleFunc("/main.css", css)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }

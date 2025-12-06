@@ -160,11 +160,11 @@ func generateExampleCharts(examples []patternExample, ohlcData []charts.OHLCData
 		p := charts.NewPainter(painterOptions)
 
 		if err := p.CandlestickChart(opt); err != nil {
-			panic(fmt.Errorf("failed to render %s: %v", example.title, err))
+			panic(fmt.Errorf("failed to render %s: %w", example.title, err))
 		} else if buf, err := p.Bytes(); err != nil {
-			panic(fmt.Errorf("failed to get bytes for %s: %v", example.title, err))
+			panic(fmt.Errorf("failed to get bytes for %s: %w", example.title, err))
 		} else if err := os.WriteFile(example.filename, buf, 0644); err != nil {
-			panic(fmt.Errorf("failed to write %s: %v", example.filename, err))
+			panic(fmt.Errorf("failed to write %s: %w", example.filename, err))
 		}
 	}
 }

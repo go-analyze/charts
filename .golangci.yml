@@ -1,0 +1,66 @@
+version: 2
+
+linters:
+  exclusions:
+    rules:
+      - linters:
+          - forbidigo
+          - gosec
+        path: "examples/"
+      - linters:
+          - forbidigo
+          - gosec
+        path: "chartdraw/examples/"
+      - linters:
+          - gosec
+        path: "_test\\.go$"
+  disable:
+    - staticcheck
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - containedctx
+    - contextcheck
+    - decorder
+    - durationcheck
+    - errcheck
+    - errorlint
+    - exptostd
+    - fatcontext
+    - forbidigo
+    - gocheckcompilerdirectives
+    - gochecksumtype
+    - goconst
+    - gosec
+    - godoclint
+    - grouper
+    - iface
+    - importas
+    - mirror
+    - misspell
+    - musttag
+    - nilerr
+    - nilnil
+    - perfsprint
+    - prealloc
+    - reassign
+    - recvcheck
+    - sloglint
+    - testifylint
+    - thelper
+    - unconvert
+    - wastedassign
+    - whitespace
+  settings:
+    goconst:
+      min-len: 4
+      min-occurrences: 4
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+
+run:
+  timeout: 600s

@@ -151,10 +151,7 @@ func TraceQuad(t Liner, quad []float64, flatteningThreshold float64) {
 // TraceArc trace an arc using a Liner
 func TraceArc(t Liner, x, y, rx, ry, start, angle, scale float64) (lastX, lastY float64) {
 	end := start + angle
-	clockWise := true
-	if angle < 0 {
-		clockWise = false
-	}
+	clockWise := angle >= 0
 	ra := (math.Abs(rx) + math.Abs(ry)) / 2
 	da := math.Acos(ra/(ra+0.125/scale)) * 2
 	//normalize

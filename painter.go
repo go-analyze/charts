@@ -124,9 +124,10 @@ func NewPainter(opts PainterOptions, opt ...PainterOptionFunc) *Painter {
 		opts.Height = defaultChartHeight
 	}
 	fn := chartdraw.PNG
-	if opts.OutputFormat == ChartOutputJPG {
+	switch opts.OutputFormat {
+	case ChartOutputJPG:
 		fn = chartdraw.JPG
-	} else if opts.OutputFormat == ChartOutputSVG {
+	case ChartOutputSVG:
 		fn = chartdraw.SVG
 	}
 
@@ -310,9 +311,10 @@ func (p *Painter) LineStroke(points []Point, strokeColor Color, strokeWidth floa
 // If dotForSinglePoint is true, single points are drawn as 2 px radius dots.
 func (p *Painter) drawStraightPath(points []Point, dotForSinglePoint bool) {
 	pointCount := len(points)
-	if pointCount == 0 {
+	switch pointCount {
+	case 0:
 		return
-	} else if pointCount == 1 {
+	case 1:
 		if dotForSinglePoint {
 			p.render.Circle(2.0, points[0].X+p.box.Left, points[0].Y+p.box.Top)
 		}

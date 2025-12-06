@@ -140,18 +140,12 @@ func (s *sector) calculateAdjustedOuterLabelPosition(cx, cy int, outerRadius, la
 	adjustedBranchY := lbY
 	if s.quadrant <= 2 {
 		// quadrants in the top half
-		for {
-			if (prevY - adjustedBranchY) > threshold {
-				break
-			}
+		for (prevY - adjustedBranchY) <= threshold {
 			adjustedBranchY--
 		}
 	} else {
 		// quadrants in the bottom half
-		for {
-			if (adjustedBranchY - prevY) > threshold {
-				break
-			}
+		for (adjustedBranchY - prevY) <= threshold {
 			adjustedBranchY++
 		}
 	}

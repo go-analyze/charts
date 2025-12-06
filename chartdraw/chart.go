@@ -149,9 +149,9 @@ func (c Chart) validateSeries() error {
 }
 
 func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
-	var minx, maxx float64 = math.MaxFloat64, -math.MaxFloat64
-	var miny, maxy float64 = math.MaxFloat64, -math.MaxFloat64
-	var minya, maxya float64 = math.MaxFloat64, -math.MaxFloat64
+	minx, maxx := math.MaxFloat64, -math.MaxFloat64
+	miny, maxy := math.MaxFloat64, -math.MaxFloat64
+	minya, maxya := math.MaxFloat64, -math.MaxFloat64
 
 	seriesMappedToSecondaryAxis := false
 
@@ -168,12 +168,13 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 					minx = math.Min(minx, vx)
 					maxx = math.Max(maxx, vx)
 
-					if seriesAxis == YAxisPrimary {
+					switch seriesAxis {
+					case YAxisPrimary:
 						miny = math.Min(miny, vy1)
 						miny = math.Min(miny, vy2)
 						maxy = math.Max(maxy, vy1)
 						maxy = math.Max(maxy, vy2)
-					} else if seriesAxis == YAxisSecondary {
+					case YAxisSecondary:
 						minya = math.Min(minya, vy1)
 						minya = math.Min(minya, vy2)
 						maxya = math.Max(maxya, vy1)
@@ -189,10 +190,11 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 					minx = math.Min(minx, vx)
 					maxx = math.Max(maxx, vx)
 
-					if seriesAxis == YAxisPrimary {
+					switch seriesAxis {
+					case YAxisPrimary:
 						miny = math.Min(miny, vy)
 						maxy = math.Max(maxy, vy)
-					} else if seriesAxis == YAxisSecondary {
+					case YAxisSecondary:
 						minya = math.Min(minya, vy)
 						maxya = math.Max(maxya, vy)
 						seriesMappedToSecondaryAxis = true
@@ -410,9 +412,10 @@ func (c Chart) getAnnotationAdjustedCanvasBox(r Renderer, canvasBox Box, xr, yr,
 			if !as.GetStyle().Hidden {
 				style := c.styleDefaultsSeries(seriesIndex)
 				var annotationBounds Box
-				if as.YAxis == YAxisPrimary {
+				switch as.YAxis {
+				case YAxisPrimary:
 					annotationBounds = as.Measure(r, canvasBox, xr, yr, style)
-				} else if as.YAxis == YAxisSecondary {
+				case YAxisSecondary:
 					annotationBounds = as.Measure(r, canvasBox, xr, yra, style)
 				}
 

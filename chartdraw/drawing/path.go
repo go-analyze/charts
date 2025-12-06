@@ -111,10 +111,7 @@ func (p *Path) CubicCurveTo(cx1, cy1, cx2, cy2, x, y float64) {
 // ArcTo adds an arc to the path.
 func (p *Path) ArcTo(cx, cy, rx, ry, startAngle, delta float64) {
 	endAngle := startAngle + delta
-	clockWise := true
-	if delta < 0 {
-		clockWise = false
-	}
+	clockWise := delta >= 0
 	// normalize
 	if clockWise {
 		for endAngle < startAngle {

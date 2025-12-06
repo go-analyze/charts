@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -39,6 +40,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("Grid layout created %d painters\n", len(painters))
 
 	// APPROACH 2: Row-based layout - Best for progressive, flexible layouts
 	// (only included to demonstrate the same layout using the row-based approach)

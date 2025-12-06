@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	drawChart()
+	drawChart()(nil, nil)
 }
 
 func parseInt(str string) int {

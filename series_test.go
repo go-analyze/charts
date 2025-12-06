@@ -100,7 +100,7 @@ func TestExpandSingleValueScatterSeries(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			got := expandSingleValueScatterSeries(tc.values)
 
-			assert.Equal(t, len(tc.values), len(got))
+			assert.Len(t, got, len(tc.values))
 			for i, v := range tc.values {
 				require.Len(t, got[i], 1)
 				assert.InDelta(t, v, got[i][0], 0.0)
