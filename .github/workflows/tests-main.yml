@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   call-reusable:
     uses: ./.github/workflows/tests-workflow.yml
