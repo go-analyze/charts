@@ -40,7 +40,7 @@ func NewStackGraphicContext() *StackGraphicContext {
 	gc.current.LineWidth = 1.0
 	gc.current.StrokeColor = image.Black
 	gc.current.FillColor = image.White
-	gc.current.FillRule = FillRuleEvenOdd
+	gc.current.FillRule = FillRuleWinding
 	gc.current.FontSizePoints = 10
 	return gc
 }

@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"compress/gzip"
 	"embed"
+	"fmt"
+	"image"
+	"image/png"
 	"io"
 	"testing"
 
@@ -346,5 +349,56 @@ func TestFontDemo(t *testing.T) {
 
 	data, err := p.Bytes()
 	require.NoError(t, err)
+	assertEqualPNGCRC(t, 0x0, data)
+}
+
+func TestFontRenderPNG(t *testing.T) {
+	t.Skip("Only used to debug font rendering")
+
+	const text = "Charts'n'stuff"
+
+	p := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputPNG,
+		Width:        400,
+		Height:       400,
+	})
+	p.FilledRect(0, 0, p.Width(), p.Height(), ColorWhite, ColorWhite, 0)
+
+	// write text in incrementing sizes from 4 to 32
+	y := 10
+	font := FontStyle{
+		FontColor: ColorBlack,
+		Font:      GetFont(FontFamilyRoboto),
+	}
+	for size := 4.0; size <= 32.0; size += 2.0 {
+		font.FontSize = size
+		fullText := fmt.Sprintf("%v: %s", size, text)
+		p.Text(fullText, 10, y, 0, font)
+		textSize := p.MeasureText(fullText, 0, font)
+		y += textSize.Height() + 4
+	}
+
+	originalPNG, err := p.Bytes()
+	require.NoError(t, err)
+
+	// scale originalPNG 4x using nearest neighbor interpolation for easier detail inspection
+	img, err := png.Decode(bytes.NewReader(originalPNG))
+	require.NoError(t, err)
+	bounds := img.Bounds()
+	scaledWidth := bounds.Dx() * 4
+	scaledHeight := bounds.Dy() * 4
+	scaled := image.NewRGBA(image.Rect(0, 0, scaledWidth, scaledHeight))
+	for y := 0; y < scaledHeight; y++ {
+		for x := 0; x < scaledWidth; x++ {
+			srcX := x / 4
+			srcY := y / 4
+			scaled.Set(x, y, img.At(srcX, srcY))
+		}
+	}
+	var buf bytes.Buffer
+	err = png.Encode(&buf, scaled)
+	require.NoError(t, err)
+	data := buf.Bytes()
+
 	assertEqualPNGCRC(t, 0x0, data)
 }
