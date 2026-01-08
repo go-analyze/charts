@@ -3,11 +3,11 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/go-analyze/charts/blob/master/LICENSE)
 [![Build Status](https://github.com/go-analyze/charts/actions/workflows/tests-main.yml/badge.svg)](https://github.com/go-analyze/charts/actions/workflows/tests-main.yml)
 
-Our library focuses on generating beautiful charts and graphs within Go. Graphs are used to show a lot of different types of data, needing to be represented in a unique in order to convey the meaning behind the data. This Go module attempts to use sophisticated defaults to try and render this data in a simple way, while still offering intuitive options to update the graph rendering as you see fit.
+Our library focuses on generating beautiful charts and graphs within Go. Graphs are used to show a lot of different types of data, needing to be represented in a unique way in order to convey the meaning behind the data. This Go module attempts to use sophisticated defaults to try and render this data in a simple way, while still offering intuitive options to update the graph rendering as you see fit.
 
 ## Functionality
 
-Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `doughnut`, `radar`, `candlestick`, `funnel` and `table`.
+Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `doughnut`, `radar`, `heat map`, `candlestick`, `funnel` and `table`.
 
 New users should check out the [Features Overview](https://github.com/go-analyze/charts/wiki/Feature-Overview) on our Wiki to see commonly used features for each chart type, as well as linking to specific examples for the feature.
 
@@ -224,11 +224,11 @@ Top Pie Chart Examples:
 
 ### Doughnut Chart
 
-<img src="./assets/chart-doughnut.png" alt="Dougnut Chart">
+<img src="./assets/chart-doughnut.png" alt="Doughnut Chart">
 
 Doughnut Chart Feature List: https://github.com/go-analyze/charts/wiki/Feature-Overview#doughnut-charts
 
-Top Radar Chart Examples:
+Top Doughnut Chart Examples:
 * [doughnut_chart-1-basic](./examples/1-Painter/doughnut_chart-1-basic) - Basic doughnut chart.
 * [doughnut_chart-2-styles](./examples/1-Painter/doughnut_chart-2-styles) - A variety of styles shown for doughnut charts.
 
@@ -247,7 +247,7 @@ Top Radar Chart Examples:
 
 Heat Map Chart Feature List: https://github.com/go-analyze/charts/wiki/Feature-Overview#heat-map-charts
 
-Top Radar Chart Examples:
+Top Heat Map Chart Examples:
 * [heat_map-1-basic](./examples/1-Painter/heat_map-1-basic) - Basic heat map chart.
 
 ### Table
