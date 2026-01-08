@@ -37,6 +37,7 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [line_chart-7-boundary_gap](./1-Painter/line_chart-7-boundary_gap) - Showing the visual difference on the line chart of enabling or disabling the x-axis boundary gap.
 * [line_chart-8-dual_y_axis](./1-Painter/line_chart-8-dual_y_axis) - Basic line chart with two series, one rendered to the left axis and one to a second y axis on the right.
 * [line_chart-9-custom](./1-Painter/line_chart-9-custom) - Line chart with dense data and most default rendering disabled, instead rendering labels manually on the Painter.
+* [line_chart-10-gradient_labels](./1-Painter/line_chart-10-gradient_labels) - Line chart demonstrating individual label styling by coloring in a gradient from green to red.
 * [multiple_charts-1](./1-Painter/multiple_charts-1) - Shows how to use layouts for putting multiple charts on the same image. This example use a single set of data and renders with multiple chart types.
 * [multiple_charts-2](./1-Painter/multiple_charts-2) - Example of manually building a child painters so that you can render 4 charts on the same image with unique themes.
 * [pie_chart-1-basic](./1-Painter/pie_chart-1-basic) - Pie chart with a variety of customization demonstrated including positioning the legend in the bottom right corner.
@@ -46,6 +47,7 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [scatter_chart-1-basic](./1-Painter/scatter_chart-1-basic) - Basic scatter chart with some simple styling changes and a demonstration of `null` values.
 * [scatter_chart-2-symbols](./1-Painter/scatter_chart-2-symbols) - Basic scatter chart showing per-series symbols.
 * [scatter_chart-3-dense_data](./1-Painter/scatter_chart-3-dense_data) - Scatter chart with dense data, trend lines, and more custom styling configured.
+* [scatter_chart-4-top_n_labels](./1-Painter/scatter_chart-4-top_n_labels) - Scatter chart showing labels only for the top N values, reducing visual clutter.
 * [table-1](./1-Painter/table-1) - Table with a variety of table specific configuration and styling demonstrated.
 
 ## `ChartOption` / `OptionFunc` Example List
