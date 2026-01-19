@@ -246,7 +246,8 @@ func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabel
 	sectors := append(append(append(quadrant1, quadrant4...), quadrant3...), quadrant2...)
 
 	var currentQuadrant int
-	var prevY, maxY, minY int
+	var prevY, maxY int
+	minY := cy * 2 // initialize to bottom of canvas
 	for _, s := range sectors {
 		// draw the pie slice
 		p.moveTo(cx, cy)

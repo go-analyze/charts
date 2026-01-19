@@ -437,6 +437,25 @@ func TestPieChart(t *testing.T) {
 			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 300 200\nL 300 72\nA 128 128 80.00 0 1 426 178\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 382 102\nL 391 91\nM 391 91\nL 406 91\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><path  d=\"M 410 79\nL 476 79\nL 476 79\nA 5 5 90.00 0 1 481 84\nL 481 95\nL 481 95\nA 5 5 90.00 0 1 476 100\nL 410 100\nL 410 100\nA 5 5 90.00 0 1 405 95\nL 405 84\nL 405 84\nA 5 5 90.00 0 1 410 79\nZ\" style=\"stroke-width:2;stroke:red;fill:blue\"/><text x=\"409\" y=\"96\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">background</text><path  d=\"M 300 200\nL 426 178\nA 128 128 160.00 0 1 189 264\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 343 320\nL 348 334\nM 348 334\nL 363 334\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><path  d=\"M 362 322\nL 437 322\nL 437 343\nL 362 343\nL 362 322\" style=\"stroke-width:1.5;stroke:green;fill:none\"/><text x=\"366\" y=\"339\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">transparent</text><path  d=\"M 300 200\nL 189 264\nA 128 128 120.00 0 1 300 72\nL 300 200\nZ\" style=\"stroke:none;fill:rgb(250,200,88)\"/><path  d=\"M 190 137\nL 177 75\nM 177 75\nL 162 75\" style=\"stroke-width:1;stroke:rgb(250,200,88);fill:none\"/><text x=\"110\" y=\"80\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">: 33.33%</text></svg>",
 			pngCRC: 0x4c6d0d53,
 		},
+		{
+			name: "label_title_collision",
+			makeOptions: func() PieChartOption {
+				values := []float64{640, 360}
+				labels := []string{"Used", "Free"}
+				return PieChartOption{
+					SeriesList: NewSeriesListPie(values),
+					Legend: LegendOption{
+						SeriesNames: labels,
+						Offset:      OffsetStr{Top: "20"},
+					},
+					Title: TitleOption{
+						Text: "Test title very long text - my pie chart",
+					},
+				}
+			},
+			svg:    "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 20 20\nL 580 20\nL 580 380\nL 20 380\nL 20 20\" style=\"stroke:none;fill:white\"/><path  d=\"M 226 43\nL 256 43\nL 256 56\nL 226 56\nL 226 43\" style=\"stroke:none;fill:rgb(84,112,198)\"/><text x=\"258\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Used</text><path  d=\"M 313 43\nL 343 43\nL 343 56\nL 313 56\nL 313 43\" style=\"stroke:none;fill:rgb(145,204,117)\"/><text x=\"345\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Free</text><text x=\"20\" y=\"36\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Test title very long text - my pie chart</text><path  d=\"M 300 218\nL 300 88\nA 130 130 230.40 1 1 200 301\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(84,112,198)\"/><path  d=\"M 417 273\nL 430 279\nM 430 279\nL 445 279\" style=\"stroke-width:1;stroke:rgb(84,112,198);fill:none\"/><text x=\"448\" y=\"284\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Used: 64%</text><path  d=\"M 300 218\nL 200 301\nA 130 130 129.60 0 1 300 88\nL 300 218\nZ\" style=\"stroke:none;fill:rgb(145,204,117)\"/><path  d=\"M 183 163\nL 170 157\nM 170 157\nL 155 157\" style=\"stroke-width:1;stroke:rgb(145,204,117);fill:none\"/><text x=\"96\" y=\"162\" style=\"stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif\">Free: 36%</text></svg>",
+			pngCRC: 0xa21182d7,
+		},
 	}
 
 	for i, tt := range tests {
