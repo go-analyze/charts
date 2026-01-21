@@ -164,7 +164,7 @@ func TestChartGetRangesUseTicks(t *testing.T) {
 func TestChartGetRangesSecondaryUseTicks(t *testing.T) {
 	t.Parallel()
 
-	// this test asserts that ticks for the secondary y axis are used for determining the range.
+	// this test asserts that ticks for the secondary y-axis are used for determining the range.
 
 	c := Chart{
 		YAxis: YAxis{

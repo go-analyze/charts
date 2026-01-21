@@ -4,8 +4,9 @@ import (
 	"math"
 	"testing"
 
-	"github.com/go-analyze/charts/chartdraw/matrix"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
 func TestMatrixTransformInverse(t *testing.T) {

@@ -11,7 +11,7 @@ import (
 
 func main() {
 	/*
-	   In this example we use a custom `ValueFormatter` for the y axis, letting us specify how to format text of the y-axis ticks.
+	   In this example we use a custom `ValueFormatter` for the y-axis, letting us specify how to format text of the y-axis ticks.
 	   You can also do this for the x-axis, or the secondary y-axis.
 	   This example also shows what the chart looks like with the x-axis left off or not shown.
 	*/

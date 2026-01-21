@@ -8,9 +8,10 @@ import (
 	"golang.org/x/image/font/gofont/goregular"
 	"golang.org/x/image/math/fixed"
 
-	"github.com/go-analyze/charts/chartdraw/drawing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
 func TestTextWrapWord(t *testing.T) {

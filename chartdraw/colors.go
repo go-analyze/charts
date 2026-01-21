@@ -44,7 +44,7 @@ var (
 	// Deprecated: DefaultBackgroundColor is deprecated, it's not expected to be used externally. If you
 	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultBackgroundColor is the default chart background color.
-	// It is equivalent to css color:white.
+	// It is equivalent to CSS color:white.
 	DefaultBackgroundColor = ColorWhite
 	// Deprecated: DefaultBackgroundStrokeColor is deprecated, it's not expected to be used externally. If you
 	// use this field, open a new issue to prevent it from being made internal.
@@ -59,7 +59,7 @@ var (
 	// Deprecated: DefaultCanvasStrokeColor is deprecated, it's not expected to be used externally. If you
 	// use this field, open a new issue to prevent it from being made internal.
 	// DefaultCanvasStrokeColor is the default chart canvas stroke color.
-	// It is equivalent to css color:white.
+	// It is equivalent to CSS color:white.
 	DefaultCanvasStrokeColor = ColorWhite
 	// Deprecated: DefaultTextColor is deprecated, it's not expected to be used externally. If you
 	// use this field, open a new issue to prevent it from being made internal.

@@ -79,7 +79,7 @@ Top Line Chart Examples:
 * [line_chart-3-smooth](./examples/1-Painter/line_chart-3-smooth) - Basic line chart with thick smooth lines drawn.
 * [line_chart-4-mark](./examples/1-Painter/line_chart-4-mark) - Line chart with included mark points and mark lines.
 * [line_chart-6-stacked](./examples/1-Painter/line_chart-6-stacked) - Line chart with "Stacked" series enabled, making each series a layer on the chart and the top line showing the sum.
-* [line_chart-8-dual_y_axis](./examples/1-Painter/line_chart-8-dual_y_axis) - Basic line chart with two series, one rendered to the left axis and one to a second y axis on the right.
+* [line_chart-8-dual_y_axis](./examples/1-Painter/line_chart-8-dual_y_axis) - Basic line chart with two series, one rendered to the left axis and one to a second y-axis on the right.
 
 ### Scatter Chart
 

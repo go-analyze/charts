@@ -3,7 +3,7 @@
 
 package drawing
 
-// Transformer apply the Matrix transformation tr.
+// Transformer apply the Matrix transformation.
 type Transformer struct {
 	Tr        Matrix
 	Flattener Flattener

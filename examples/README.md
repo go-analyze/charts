@@ -35,7 +35,7 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [line_chart-5-area](./1-Painter/line_chart-5-area) - Line chart with the area below the line shaded.
 * [line_chart-6-stacked](./1-Painter/line_chart-6-stacked) - Line chart with "Stacked" series enabled, making each series a layer on the chart and the top line showing the sum.
 * [line_chart-7-boundary_gap](./1-Painter/line_chart-7-boundary_gap) - Showing the visual difference on the line chart of enabling or disabling the x-axis boundary gap.
-* [line_chart-8-dual_y_axis](./1-Painter/line_chart-8-dual_y_axis) - Basic line chart with two series, one rendered to the left axis and one to a second y axis on the right.
+* [line_chart-8-dual_y_axis](./1-Painter/line_chart-8-dual_y_axis) - Basic line chart with two series, one rendered to the left axis and one to a second y-axis on the right.
 * [line_chart-9-custom](./1-Painter/line_chart-9-custom) - Line chart with dense data and most default rendering disabled, instead rendering labels manually on the Painter.
 * [line_chart-10-gradient_labels](./1-Painter/line_chart-10-gradient_labels) - Line chart demonstrating individual label styling by coloring in a gradient from green to red.
 * [multiple_charts-1](./1-Painter/multiple_charts-1) - Shows how to use layouts for putting multiple charts on the same image. This example use a single set of data and renders with multiple chart types.

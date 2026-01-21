@@ -20,7 +20,7 @@ const style = "svg .background { fill: white; }" +
 func svgWithCustomInlineCSS(res http.ResponseWriter, _ *http.Request) {
 	res.Header().Set("Content-Type", chartdraw.ContentTypeSVG)
 
-	// Render the CSS with custom css
+	// Render the CSS with custom CSS
 	if err := pieChart().Render(chartdraw.SVGWithCSS(style, ""), res); err != nil {
 		fmt.Printf("Error rendering pie chart: %v\n", err)
 	}
@@ -34,7 +34,7 @@ func svgWithCustomInlineCSSNonce(res http.ResponseWriter, _ *http.Request) {
 	res.Header().Set("Content-Security-Policy", fmt.Sprintf("style-src 'nonce-%s'", nonce))
 	res.Header().Set("Content-Type", chartdraw.ContentTypeSVG)
 
-	// Render the CSS with custom css and a nonce.
+	// Render the CSS with custom CSS and a nonce.
 	// Try changing the nonce to a different string - your browser should block the CSS.
 	if err := pieChart().Render(chartdraw.SVGWithCSS(style, nonce), res); err != nil {
 		fmt.Printf("Error rendering pie chart: %v\n", err)

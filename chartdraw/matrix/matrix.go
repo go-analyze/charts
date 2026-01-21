@@ -47,7 +47,7 @@ func Zero(rows, cols int) *Matrix {
 	return New(rows, cols)
 }
 
-// Ones returns an matrix of ones.
+// Ones returns a matrix of ones.
 func Ones(rows, cols int) *Matrix {
 	ones := make([]float64, rows*cols)
 	for i := 0; i < (rows * cols); i++ {
@@ -379,7 +379,7 @@ func (m *Matrix) Multiply(m2 *Matrix) (m3 *Matrix, err error) {
 	return
 }
 
-// Pivotize does something i'm not sure what.
+// Pivotize does something I'm not sure what.
 func (m *Matrix) Pivotize() *Matrix {
 	pv := make([]int, m.stride)
 	for i := range pv {

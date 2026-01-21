@@ -11,9 +11,9 @@ import (
 
 func main() {
 	/*
-	   In this example we add a second series, and assign it to the secondary y axis, giving that series it's own range.
+	   In this example we add a second series, and assign it to the secondary y-axis, giving that series its own range.
 
-	   We also enable all of the axes by setting the `Show` propery of their respective styles to `true`.
+	   We also enable all the axes by setting the `Show` property of their respective styles to `true`.
 	*/
 
 	graph := chartdraw.Chart{
