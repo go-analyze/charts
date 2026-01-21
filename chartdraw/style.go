@@ -30,7 +30,7 @@ func Shown() Style {
 	}
 }
 
-// StyleTextDefaults returns a style for drawing outside a chart context.
+// Deprecated: StyleTextDefaults is deprecated, defaults are automatically applied if no value is set.
 func StyleTextDefaults() Style {
 	return Style{
 		Hidden: false,
