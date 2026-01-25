@@ -389,8 +389,17 @@ func (c *canvas) Path(parts []string, style Style) {
 	bb := c.bb
 	defer c.bb.Reset()
 
-	bb.WriteString(`<path `)
-	c.writeStrokeDashArray(bb, style)
+	bb.WriteString(`<path`)
+	if len(style.StrokeDashArray) > 0 {
+		bb.WriteString(" stroke-dasharray=\"")
+		for i, v := range style.StrokeDashArray {
+			if i > 0 {
+				bb.WriteString(", ")
+			}
+			_, _ = fmt.Fprintf(bb, "%0.1f", v)
+		}
+		bb.WriteString("\"")
+	}
 	bb.WriteString(` d="`)
 	for i, p := range parts {
 		if i > 0 {
@@ -419,7 +428,7 @@ func (c *canvas) Text(x, y int, body string, style Style) {
 	bb.WriteString(`" `)
 	styleAsSVG(bb, style, c.dpi, true)
 	if c.textTheta != nil {
-		fmt.Fprintf(bb, ` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y)
+		_, _ = fmt.Fprintf(bb, ` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y)
 	}
 	bb.WriteRune('>')
 	bb.WriteString(body)
@@ -447,20 +456,6 @@ func (c *canvas) Circle(x, y, r int, style Style) {
 
 func (c *canvas) End() {
 	_, _ = c.w.Write([]byte("</svg>"))
-}
-
-// writeStrokeDashArray writes the stroke-dasharray property of a style.
-func (c *canvas) writeStrokeDashArray(bb *bytes.Buffer, s Style) {
-	if len(s.StrokeDashArray) > 0 {
-		bb.WriteString("stroke-dasharray=\"")
-		for i, v := range s.StrokeDashArray {
-			if i > 0 {
-				bb.WriteString(", ")
-			}
-			fmt.Fprintf(bb, "%0.1f", v)
-		}
-		bb.WriteString("\"")
-	}
 }
 
 // styleAsSVG returns the style as a svg style or class string.

@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 	"math"
+	"strconv"
 	"strings"
 
 	"github.com/go-analyze/charts/chartdraw"
@@ -140,37 +141,97 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	const legendTitlePadding = 15
 	var legendTopSpacing int
-	legendResult, err := newLegendPainter(p, *opt.legend).Render()
+	var titleBox, legendResult Box
+	var err error
+
+	// make a local copy of legend options before we modify position during collision handling
+	legendOpt := *opt.legend
+
+	// helper to check if legend can be repositioned to avoid title collision
+	// repositioning is allowed when no explicit numeric offset is set
+	// OverlayChart only controls legend/chart overlap, not legend/title overlap
+	legendCanReposition := func() bool {
+		return (legendOpt.Offset.Top == "" || legendOpt.Offset.Top == PositionTop ||
+			legendOpt.Offset.Top == PositionBottom) &&
+			(legendOpt.Offset.Left == "" || legendOpt.Offset.Left == PositionLeft ||
+				legendOpt.Offset.Left == PositionCenter || legendOpt.Offset.Left == PositionRight)
+	}
+
+	// determine positioning
+	titleAtBottom := opt.title.Offset.Top == PositionBottom
+	legendAtBottom := legendOpt.Offset.Top == PositionBottom
+
+	// calculate legend box for both-at-bottom check and collision detection
+	legendPainter := newLegendPainter(p, legendOpt)
+	legendResult, err = legendPainter.calculateBox()
 	if err != nil {
 		return nil, err
 	}
-	if !legendResult.IsZero() && !flagIs(true, opt.legend.Vertical) && !flagIs(true, opt.legend.OverlayChart) {
-		legendHeight := legendResult.Height()
+
+	// when both title and legend are at bottom (without overlay), render title on a reduced canvas
+	// so title appears above where legend will render (title above legend in reading order)
+	titleCanvas := p
+	adjustedForBottom := false
+	if titleAtBottom && legendAtBottom && !legendResult.IsZero() &&
+		!flagIs(true, legendOpt.OverlayChart) {
+		titleCanvas = p.Child(PainterPaddingOption(Box{
+			Bottom: legendResult.Height() + legendTitlePadding,
+			IsSet:  true,
+		}))
+		adjustedForBottom = true
+	}
+
+	titleBox, err = newTitlePainter(titleCanvas, opt.title).Render()
+	if err != nil {
+		return nil, err
+	}
+
+	// check for collision and reposition if needed
+	// skip if both-at-bottom was handled via canvas adjustment
+	if !adjustedForBottom &&
+		!titleBox.IsZero() && !legendResult.IsZero() &&
+		legendCanReposition() && titleBox.Overlaps(legendResult) {
+		legendOpt.Offset.Top = strconv.Itoa(titleBox.Bottom)
+		legendPainter = newLegendPainter(p, legendOpt)
+	}
+
+	// render legend with final position
+	legendResult, err = legendPainter.Render()
+	if err != nil {
+		return nil, err
+	}
+
+	// reserve space for the legend if not in overlay mode
+	// - horizontal legends reserve space (top or bottom)
+	// - vertical legends always overlay from the side
+	// - skip for adjustedForBottom since title reservation handles combined space
+	if !legendResult.IsZero() && !flagIs(true, legendOpt.OverlayChart) && !adjustedForBottom &&
+		!flagIs(true, legendOpt.Vertical) {
 		if legendResult.Bottom < p.Height()/2 {
-			// horizontal legend at the top, set the spacing based on the height
-			legendTopSpacing = legendHeight + legendTitlePadding
+			// horizontal legend at top - reserve top space
+			legendTopSpacing = chartdraw.MaxInt(legendResult.Height(), legendResult.Bottom) + legendTitlePadding
 		} else {
 			// horizontal legend at the bottom, raise the chart above it
 			p = p.Child(PainterPaddingOption(Box{
-				Bottom: legendHeight + legendTitlePadding,
+				Bottom: legendResult.Height() + legendTitlePadding,
 				IsSet:  true,
 			}))
 		}
 	}
 
-	titleBox, err := newTitlePainter(p, opt.title).Render()
-	if err != nil {
-		return nil, err
-	}
+	// apply title and legend spacing to chart area
 	if !titleBox.IsZero() {
 		titlePadBox := Box{IsSet: true}
 		if titleBox.Bottom < p.Height()/2 {
 			titlePadBox.Top = chartdraw.MaxInt(legendTopSpacing, titleBox.Bottom+legendTitlePadding)
-		} else { // else, title is at the bottom, raise the chart to be above the title
-			titlePadBox.Top = legendTopSpacing // the legend may still need space on the top, set to the legend space
-			titlePadBox.Bottom = titleBox.Height()
+		} else { // title is at the bottom, raise the chart to be above the title
+			titlePadBox.Top = legendTopSpacing
+			if adjustedForBottom {
+				titlePadBox.Bottom = p.Height() - titleBox.Top
+			} else {
+				titlePadBox.Bottom = titleBox.Height()
+			}
 		}
-
 		p = p.Child(PainterPaddingOption(titlePadBox))
 	} else if legendTopSpacing > 0 { // apply chart spacing below legend
 		p = p.Child(PainterPaddingOption(Box{

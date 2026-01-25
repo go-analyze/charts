@@ -179,7 +179,7 @@ func TestTitleRenderer(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"114\" y=\"116\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">title</text><text x=\"100\" y=\"132\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">subTitle</text><path  d=\"M 90 142\nL 90 90\nL 166 90\nL 166 142\nL 90 142\" style=\"stroke-width:2;stroke:red;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"114\" y=\"116\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">title</text><text x=\"100\" y=\"132\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">subTitle</text><path d=\"M 90 142\nL 90 90\nL 166 90\nL 166 142\nL 90 142\" style=\"stroke-width:2;stroke:red;fill:none\"/></svg>",
 		},
 	}
 

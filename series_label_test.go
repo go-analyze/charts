@@ -313,7 +313,7 @@ func TestDrawLabelWithBackground(t *testing.T) {
 
 		data, err := p.Bytes()
 		require.NoError(t, err)
-		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path  d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke:none;fill:blue\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke:none;fill:blue\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
 	})
 
 	t.Run("rounded_background", func(t *testing.T) {
@@ -328,7 +328,7 @@ func TestDrawLabelWithBackground(t *testing.T) {
 
 		data, err := p.Bytes()
 		require.NoError(t, err)
-		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path  d=\"M 51 30\nL 76 30\nL 76 30\nA 5 5 90.00 0 1 81 35\nL 81 49\nL 81 49\nA 5 5 90.00 0 1 76 54\nL 51 54\nL 51 54\nA 5 5 90.00 0 1 46 49\nL 46 35\nL 46 35\nA 5 5 90.00 0 1 51 30\nZ\" style=\"stroke:none;fill:green\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path d=\"M 51 30\nL 76 30\nL 76 30\nA 5 5 90.00 0 1 81 35\nL 81 49\nL 81 49\nA 5 5 90.00 0 1 76 54\nL 51 54\nL 51 54\nA 5 5 90.00 0 1 46 49\nL 46 35\nL 46 35\nA 5 5 90.00 0 1 51 30\nZ\" style=\"stroke:none;fill:green\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
 	})
 
 	t.Run("negative_corner_radius", func(t *testing.T) {
@@ -344,7 +344,7 @@ func TestDrawLabelWithBackground(t *testing.T) {
 
 		data, err := p.Bytes()
 		require.NoError(t, err)
-		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path  d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke:none;fill:red\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke:none;fill:red\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
 	})
 }
 
@@ -1144,7 +1144,7 @@ func TestDrawLabelWithBackgroundBorders(t *testing.T) {
 
 		data, err := p.Bytes()
 		require.NoError(t, err)
-		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path  d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke-width:2;stroke:red;fill:blue\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke-width:2;stroke:red;fill:blue\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
 	})
 
 	t.Run("border_without_background", func(t *testing.T) {
@@ -1159,7 +1159,7 @@ func TestDrawLabelWithBackgroundBorders(t *testing.T) {
 
 		data, err := p.Bytes()
 		require.NoError(t, err)
-		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path  d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke-width:1.5;stroke:green;fill:none\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path d=\"M 46 30\nL 81 30\nL 81 54\nL 46 54\nL 46 30\" style=\"stroke-width:1.5;stroke:green;fill:none\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
 	})
 
 	t.Run("no_border_no_background", func(t *testing.T) {
@@ -1189,7 +1189,7 @@ func TestDrawLabelWithBackgroundBorders(t *testing.T) {
 
 		data, err := p.Bytes()
 		require.NoError(t, err)
-		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path  d=\"M 54 30\nL 73 30\nL 73 30\nA 8 8 90.00 0 1 81 38\nL 81 46\nL 81 46\nA 8 8 90.00 0 1 73 54\nL 54 54\nL 54 54\nA 8 8 90.00 0 1 46 46\nL 46 38\nL 46 38\nA 8 8 90.00 0 1 54 30\nZ\" style=\"stroke-width:3;stroke:blue;fill:yellow\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
+		assertEqualSVG(t, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 400 400\"><path d=\"M 54 30\nL 73 30\nL 73 30\nA 8 8 90.00 0 1 81 38\nL 81 46\nL 81 46\nA 8 8 90.00 0 1 73 54\nL 54 54\nL 54 54\nA 8 8 90.00 0 1 46 46\nL 46 38\nL 46 38\nA 8 8 90.00 0 1 54 30\nZ\" style=\"stroke-width:3;stroke:blue;fill:yellow\"/><text x=\"50\" y=\"50\" style=\"stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif\">test</text></svg>", data)
 	})
 }
 

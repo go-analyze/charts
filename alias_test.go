@@ -262,7 +262,7 @@ func TestMergeFontStyles(t *testing.T) {
 			assert.InDelta(t, tt.expected.FontSize, result.FontSize, matrix.DefaultEpsilon)
 			assert.Equal(t, tt.expected.FontColor, result.FontColor)
 
-			// Handle font comparison carefully since they're pointers
+			// Handle font comparison carefully since their pointers
 			if tt.expected.Font != nil && result.Font != nil {
 				// Both should be non-nil, check if they match expected source
 				if tt.primary.Font != nil {

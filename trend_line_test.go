@@ -38,7 +38,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 344\nL 170 308\nL 270 272\nL 370 236\nL 470 200\nL 570 164\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 70 344\nL 170 308\nL 270 272\nL 370 236\nL 470 200\nL 570 164\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "cubic",
@@ -61,7 +61,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 371\nL 170 345\nL 270 300\nL 370 236\nL 470 155\nL 570 57\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 70 371\nL 170 345\nL 270 300\nL 370 236\nL 470 155\nL 570 57\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "average",
@@ -85,7 +85,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 290\nL 170 260\nL 270 200\nL 370 140\nL 470 80\nL 570 50\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 70 290\nL 170 260\nL 270 200\nL 370 140\nL 470 80\nL 570 50\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "sma",
@@ -109,7 +109,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 290\nL 170 260\nL 270 200\nL 370 140\nL 470 80\nL 570 50\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 70 290\nL 170 260\nL 270 200\nL 370 140\nL 470 80\nL 570 50\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "ema",
@@ -133,7 +133,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 308\nL 170 272\nL 270 218\nL 370 155\nL 470 88\nL 570 20\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 70 308\nL 170 272\nL 270 218\nL 370 155\nL 470 88\nL 570 20\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "bollinger_upper",
@@ -157,7 +157,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 290\nL 170 250\nL 270 214\nL 370 178\nL 470 142\nL 570 146\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 70 290\nL 170 250\nL 270 214\nL 370 178\nL 470 142\nL 570 146\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "bollinger_lower",
@@ -181,7 +181,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 70 362\nL 170 367\nL 270 331\nL 370 295\nL 470 259\nL 570 218\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 70 362\nL 170 367\nL 270 331\nL 370 295\nL 470 259\nL 570 218\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "rsi",
@@ -205,7 +205,7 @@ func TestTrendLine(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path  d=\"M 370 178\nL 470 143\nL 570 238\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 370 178\nL 470 143\nL 570 238\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 	}
 
@@ -528,8 +528,7 @@ func TestMovingAverageTrend(t *testing.T) {
 			name:   "leading_and_trailing_nulls",
 			input:  []float64{nv, 2, 3, 4, nv},
 			window: 2,
-			// Only 3 non-null points, falls back to linear trend
-			// Linear trend on [2,3,4] at indices [1,2,3]
+			// Only 3 non-null points, falls back to linear trend on [2,3,4] at indices [1,2,3]
 			// slope = 1, intercept = 1, so y = 1 + x
 			want: []float64{nv, 2, 3, 4, nv},
 		},
