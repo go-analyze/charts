@@ -364,9 +364,9 @@ Forked from [vicanso/go-charts](https://github.com/vicanso/go-charts) and the ar
 
 ### API Stability
 
-We're committed to refining the API, incorporating feedback and new ideas to enhance flexibility and ease of use.
+This project follows [ZeroVer](https://0ver.org) versioning, and will never release a v1. Instead, middle digit increases (e.g., `v0.1.X` to `v0.2.0`) indicate breaking changes such as Go version updates or API modifications. Patch version increases (e.g., `v0.2.0` to `v0.2.1`) indicate bug fixes and feature expansions, which are generally safe to apply.
 
-Until the `v1.0.0` release, API changes should be anticipated. We detail needed API changes on our wiki [Version Migration Guide](https://github.com/go-analyze/charts/wiki/Version-Migration-Guide).
+We're committed to refining the API, incorporating feedback and new ideas to enhance flexibility and ease of use. We detail needed API changes on our wiki [Version Migration Guide](https://github.com/go-analyze/charts/wiki/Version-Migration-Guide).
 
 ### Changes
 
