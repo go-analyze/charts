@@ -335,12 +335,13 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 	}
 	// adjust the background color according to the set table style
 	if opt.CellModifier != nil {
-		arr := [][]string{
-			opt.Header,
-		}
+		arr := make([][]string, 1, len(opt.Data)+1)
+		arr[0] = opt.Header
 		arr = append(arr, opt.Data...)
+
 		var top int
-		heights := []int{info.headerHeight}
+		heights := make([]int, 1, len(info.rowHeights)+1)
+		heights[0] = info.headerHeight
 		heights = append(heights, info.rowHeights...)
 		// loop through all table cells to generate background color
 		for i := range arr {
