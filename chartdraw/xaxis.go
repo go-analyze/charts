@@ -103,7 +103,7 @@ func (xa XAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 			rtx = tx + tb.Width()>>1
 		case TickPositionBetweenTicks:
 			if index > 0 {
-				ltx = ra.Translate(ticks[index-1].Value)
+				ltx = ra.Translate(ticks[index-1].Value) //nolint:gosec // guarded by index > 0
 				rtx = tx
 			}
 		}
