@@ -2,8 +2,8 @@ export GO111MODULE = on
 
 .PHONY: default test test-cover bench lint
 
-# Packages to test (exclude example packages)
-CODE_PKGS := $(shell go list ./... | grep -v '/examples')
+# Packages to test, exclude packages without tests to avoid example noise
+CODE_PKGS := $(shell go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)
 
 
 test:
@@ -19,4 +19,3 @@ bench:
 lint:
 	golangci-lint run --timeout=600s
 	go vet ./...
-
