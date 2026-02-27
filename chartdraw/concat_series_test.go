@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestConcatSeries(t *testing.T) {
@@ -38,4 +39,11 @@ func TestConcatSeries(t *testing.T) {
 	xn, yn := cs.GetValue(29)
 	assert.InDelta(t, 30.0, xn, 0)
 	assert.InDelta(t, 10.0, yn, 0)
+
+	invalid := ConcatSeries([]Series{
+		ContinuousSeries{
+			XValues: LinearRange(1.0, 10.0),
+		},
+	})
+	require.Error(t, invalid.Validate())
 }

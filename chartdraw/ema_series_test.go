@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -102,4 +103,6 @@ func TestEMASeries(t *testing.T) {
 	lvx, lvy := ema.GetLastValues()
 	assert.InDelta(t, 50.0, lvx, 0)
 	assert.InDelta(t, lvy, emaExpected[49], emaDelta)
+
+	require.Error(t, (&EMASeries{}).Validate())
 }

@@ -243,8 +243,12 @@ func (t *tableChart) render() (*renderInfo, error) {
 		var cellMaxHeight int
 		paddingHeight := cellPadding.Top + cellPadding.Bottom
 		paddingWidth := cellPadding.Left + cellPadding.Right
-		cells := make([]TableCell, len(textList))
-		for index, text := range textList {
+		columnCount := len(values) - 1
+		if len(textList) < columnCount {
+			columnCount = len(textList)
+		}
+		cells := make([]TableCell, columnCount)
+		for index, text := range textList[:columnCount] {
 			tc := TableCell{
 				Text:      text,
 				Row:       rowIndex,

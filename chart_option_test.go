@@ -49,6 +49,31 @@ func TestChartOption(t *testing.T) {
 		Height:  600,
 		Padding: NewBoxEqual(10),
 	}, opt)
+
+	makeInvalidYAxisOption := func(axis int) ChartOption {
+		invalidOpt := ChartOption{
+			OutputFormat: ChartOutputSVG,
+			Width:        600,
+			Height:       400,
+			SeriesList: NewSeriesListLine([][]float64{{1, 2, 3}}, LineSeriesOption{
+				Names: []string{"Series A"},
+			}).ToGenericSeriesList(),
+		}
+		invalidOpt.SeriesList[0].YAxisIndex = axis
+		return invalidOpt
+	}
+
+	t.Run("invalid_yaxis_index_returns_error", func(t *testing.T) {
+		_, err := Render(makeInvalidYAxisOption(2))
+		require.Error(t, err)
+		require.ErrorContains(t, err, "invalid y-axis index")
+	})
+
+	t.Run("negative_yaxis_index_returns_error", func(t *testing.T) {
+		_, err := Render(makeInvalidYAxisOption(-1))
+		require.Error(t, err)
+		require.ErrorContains(t, err, "invalid y-axis index")
+	})
 }
 
 func TestChartOptionSeriesShowLabel(t *testing.T) {

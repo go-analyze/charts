@@ -59,6 +59,17 @@ func TestFilterSeriesListCandlestick(t *testing.T) {
 	assert.InDelta(t, 2.0, filtered[0].Data[1].Close, 0)
 }
 
+func TestFilterSeriesListUnknownType(t *testing.T) {
+	t.Parallel()
+
+	generic := GenericSeriesList{
+		{Values: []float64{1, 2}, Type: ChartTypeLine},
+	}
+
+	filtered := filterSeriesList[LineSeriesList](generic, "unknown")
+	assert.Empty(t, filtered)
+}
+
 func TestGetSeriesMinMaxSumMaxEmpty(t *testing.T) {
 	t.Parallel()
 

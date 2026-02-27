@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestPercentageDifferenceSeries(t *testing.T) {
@@ -32,4 +33,11 @@ func TestPercentageDifferenceSeries(t *testing.T) {
 	xn, yn = pcs.GetLastValues()
 	assert.InDelta(t, 10.0, xn, 0)
 	assert.InDelta(t, 9.0, yn, 0)
+
+	invalid := PercentChangeSeries{
+		InnerSeries: ContinuousSeries{
+			XValues: []float64{1.0, 2.0},
+		},
+	}
+	require.Error(t, invalid.Validate())
 }

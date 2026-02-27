@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestHistogramSeries(t *testing.T) {
@@ -28,4 +29,6 @@ func TestHistogramSeries(t *testing.T) {
 		assert.True(t, csy < 0 || (csy > 0 && csy == hsy1))
 		assert.True(t, csy > 0 || (csy < 0 && csy == hsy2))
 	}
+
+	require.Error(t, (HistogramSeries{}).Validate())
 }

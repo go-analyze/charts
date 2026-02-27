@@ -78,6 +78,14 @@ func (prs *PolynomialRegressionSeries) Validate() error {
 		return errors.New("linear regression series requires InnerSeries to be set")
 	}
 
+	if prs.GetOffset() < 0 || prs.GetOffset() >= prs.InnerSeries.Len() {
+		return fmt.Errorf("invalid offset; inner series has length %d but offset is %d", prs.InnerSeries.Len(), prs.GetOffset())
+	} else if prs.Degree < 0 {
+		return fmt.Errorf("invalid degree; must be >= 0 but was %d", prs.Degree)
+	} else if prs.Len() < prs.Degree+1 {
+		return fmt.Errorf("invalid degree; window length %d must be >= degree+1 (%d)", prs.Len(), prs.Degree+1)
+	}
+
 	endIndex := prs.GetEndIndex()
 	if endIndex >= prs.InnerSeries.Len() {
 		return fmt.Errorf("invalid window; inner series has length %d but end index is %d", prs.InnerSeries.Len(), endIndex)
@@ -90,18 +98,11 @@ func (prs *PolynomialRegressionSeries) Validate() error {
 func (prs *PolynomialRegressionSeries) GetValues(index int) (x, y float64) {
 	if prs.InnerSeries == nil || prs.InnerSeries.Len() == 0 {
 		return
+	} else if !prs.ensureCoeffs() {
+		return
 	}
 
-	if prs.coeffs == nil {
-		coeffs, err := prs.computeCoefficients()
-		if err != nil {
-			panic(err)
-		}
-		prs.coeffs = coeffs
-	}
-
-	offset := prs.GetOffset()
-	effectiveIndex := MinInt(index+offset, prs.InnerSeries.Len())
+	effectiveIndex := prs.clampInnerIndex(index + prs.GetOffset())
 	x, _ = prs.InnerSeries.GetValues(effectiveIndex)
 	y = prs.apply(x)
 	return
@@ -112,14 +113,10 @@ func (prs *PolynomialRegressionSeries) GetFirstValues() (x, y float64) {
 	if prs.InnerSeries == nil || prs.InnerSeries.Len() == 0 {
 		return
 	}
-	if prs.coeffs == nil {
-		coeffs, err := prs.computeCoefficients()
-		if err != nil {
-			panic(err)
-		}
-		prs.coeffs = coeffs
+	if !prs.ensureCoeffs() {
+		return
 	}
-	x, _ = prs.InnerSeries.GetValues(0)
+	x, _ = prs.InnerSeries.GetValues(prs.clampInnerIndex(0))
 	y = prs.apply(x)
 	return
 }
@@ -129,17 +126,39 @@ func (prs *PolynomialRegressionSeries) GetLastValues() (x, y float64) {
 	if prs.InnerSeries == nil || prs.InnerSeries.Len() == 0 {
 		return
 	}
-	if prs.coeffs == nil {
-		coeffs, err := prs.computeCoefficients()
-		if err != nil {
-			panic(err)
-		}
-		prs.coeffs = coeffs
+	if !prs.ensureCoeffs() {
+		return
 	}
-	endIndex := prs.GetEndIndex()
+	endIndex := prs.clampInnerIndex(prs.GetEndIndex())
 	x, _ = prs.InnerSeries.GetValues(endIndex)
 	y = prs.apply(x)
 	return
+}
+
+func (prs *PolynomialRegressionSeries) ensureCoeffs() bool {
+	if prs.coeffs != nil {
+		return true
+	}
+	if err := prs.Validate(); err != nil {
+		return false
+	}
+	coeffs, err := prs.computeCoefficients()
+	if err != nil {
+		return false
+	}
+	prs.coeffs = coeffs
+	return true
+}
+
+func (prs *PolynomialRegressionSeries) clampInnerIndex(index int) int {
+	if index <= 0 {
+		return 0
+	}
+	last := prs.InnerSeries.Len() - 1
+	if index > last {
+		return last
+	}
+	return index
 }
 
 func (prs *PolynomialRegressionSeries) apply(v float64) (out float64) {

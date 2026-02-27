@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type mockValuesProvider struct {
@@ -108,4 +109,6 @@ func TestSMASeriesGetLastValue(t *testing.T) {
 	assert.InDelta(t, 100.0, lx, 0)
 	assert.InDelta(t, 6.0, ly, 0)
 	assert.InDelta(t, yvalues[len(yvalues)-1], ly, 0)
+
+	require.Error(t, (SMASeries{}).Validate())
 }

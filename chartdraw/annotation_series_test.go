@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
@@ -109,4 +110,6 @@ func TestAnnotationSeriesRender(t *testing.T) {
 	assert.Equal(t, uint8(0), converted.R)
 	assert.Equal(t, uint8(0), converted.G)
 	assert.Equal(t, uint8(0), converted.B)
+
+	require.Error(t, (AnnotationSeries{}).Validate())
 }

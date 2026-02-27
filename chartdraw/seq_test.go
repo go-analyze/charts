@@ -1,6 +1,7 @@
 package chartdraw
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -134,4 +135,16 @@ func TestLinearSequenceRegression(t *testing.T) {
 	require.Len(t, values, 100)
 	assert.InDelta(t, 1.0, values[0], 0)
 	assert.InDelta(t, 100.0, values[99], 0)
+}
+
+func TestSeqPercentileOutOfRange(t *testing.T) {
+	t.Parallel()
+
+	values := Seq{NewArray(1, 2, 3, 4)}
+	assert.InDelta(t, 1.0, values.Percentile(-0.1), 0)
+	assert.InDelta(t, 1.0, values.Percentile(math.Inf(-1)), 0)
+	assert.InDelta(t, 4.0, values.Percentile(1.0), 0)
+	assert.InDelta(t, 4.0, values.Percentile(1.5), 0)
+	assert.InDelta(t, 4.0, values.Percentile(math.Inf(1)), 0)
+	assert.InDelta(t, 0.0, values.Percentile(math.NaN()), 0)
 }

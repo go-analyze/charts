@@ -288,6 +288,9 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	// prepare all y-axis options and range data (allowing multiple axes to be considered)
 	yAxisCount := getSeriesYAxisCount(opt.seriesList)
+	if yAxisCount < 0 {
+		return nil, errors.New("series specified invalid y-axis index")
+	}
 	type yAxisEntry struct {
 		option YAxisOption
 		prep   *valueAxisPrep

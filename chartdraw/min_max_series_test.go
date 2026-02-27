@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMinSeriesEnsureMinValue(t *testing.T) {
@@ -23,6 +24,8 @@ func TestMinSeriesEnsureMinValue(t *testing.T) {
 
 	_, y := ms.GetValues(0)
 	assert.InDelta(t, 1.0, y, 0)
+
+	require.Error(t, (&MinSeries{}).Validate())
 }
 
 func TestMaxSeriesEnsureMaxValue(t *testing.T) {
@@ -42,4 +45,6 @@ func TestMaxSeriesEnsureMaxValue(t *testing.T) {
 
 	_, y := ms.GetValues(0)
 	assert.InDelta(t, 5.0, y, 0)
+
+	require.Error(t, (&MaxSeries{}).Validate())
 }

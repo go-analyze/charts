@@ -1290,7 +1290,8 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 		}
 		return any(result).(T)
 	default:
-		panic("bug, unhandled chart type in filter: " + chartType)
+		var zero T
+		return zero
 	}
 }
 

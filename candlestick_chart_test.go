@@ -571,11 +571,40 @@ func TestCandlestickChartError(t *testing.T) {
 		errorMsgContains string
 	}{
 		{
+			name: "empty_series_list",
+			makeOptions: func() CandlestickChartOption {
+				return NewCandlestickOptionWithSeries()
+			},
+			errorMsgContains: "empty series list",
+		},
+		{
 			name: "empty_series",
 			makeOptions: func() CandlestickChartOption {
 				return NewCandlestickOptionWithSeries(CandlestickSeries{})
 			},
 			errorMsgContains: "no data in any series",
+		},
+		{
+			name: "invalid_yaxis_index",
+			makeOptions: func() CandlestickChartOption {
+				opt := NewCandlestickOptionWithSeries(CandlestickSeries{
+					Data: []OHLCData{{Open: 10, High: 12, Low: 9, Close: 11}},
+				})
+				opt.SeriesList[0].YAxisIndex = 2
+				return opt
+			},
+			errorMsgContains: "invalid y-axis index",
+		},
+		{
+			name: "negative_yaxis_index",
+			makeOptions: func() CandlestickChartOption {
+				opt := NewCandlestickOptionWithSeries(CandlestickSeries{
+					Data: []OHLCData{{Open: 10, High: 12, Low: 9, Close: 11}},
+				})
+				opt.SeriesList[0].YAxisIndex = -1
+				return opt
+			},
+			errorMsgContains: "invalid y-axis index",
 		},
 	}
 

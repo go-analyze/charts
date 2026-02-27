@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestBollingerBandSeries(t *testing.T) {
@@ -48,4 +49,6 @@ func TestBollingerBandLastValue(t *testing.T) {
 	assert.InDelta(t, 100.0, x, 0)
 	assert.InDelta(t, float64(101), math.Floor(y1), 0)
 	assert.InDelta(t, float64(83), math.Floor(y2), 0)
+
+	require.Error(t, (&BollingerBandsSeries{}).Validate())
 }

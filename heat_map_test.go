@@ -199,6 +199,8 @@ func validateHeatMapChartRender(t *testing.T, svgP, pngP *Painter, opt HeatMapOp
 }
 
 func TestHeatMapChartError(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name             string
 		makeOptions      func() HeatMapOption

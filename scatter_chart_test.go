@@ -655,6 +655,24 @@ func TestScatterChartError(t *testing.T) {
 			},
 			errorMsgContains: "empty series list",
 		},
+		{
+			name: "invalid_yaxis_index",
+			makeOptions: func() ScatterChartOption {
+				opt := NewScatterChartOptionWithData([][]float64{{1, 2, 3}})
+				opt.SeriesList[0].YAxisIndex = 2
+				return opt
+			},
+			errorMsgContains: "invalid y-axis index",
+		},
+		{
+			name: "negative_yaxis_index",
+			makeOptions: func() ScatterChartOption {
+				opt := NewScatterChartOptionWithData([][]float64{{1, 2, 3}})
+				opt.SeriesList[0].YAxisIndex = -1
+				return opt
+			},
+			errorMsgContains: "invalid y-axis index",
+		},
 	}
 
 	for i, tt := range tests {

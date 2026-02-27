@@ -325,6 +325,22 @@ func TestDoughnutChartError(t *testing.T) {
 			},
 			errorMsgContains: "greater than 0",
 		},
+		{
+			name: "negative_values",
+			makeOptions: func() DoughnutChartOption {
+				return NewDoughnutChartOptionWithData([]float64{10.0, -1.0})
+			},
+			errorMsgContains: "unsupported negative value",
+		},
+		{
+			name: "invalid_radius_center",
+			makeOptions: func() DoughnutChartOption {
+				opt := NewDoughnutChartOptionWithData([]float64{10.0, 20.0})
+				opt.RadiusCenter = "abc"
+				return opt
+			},
+			errorMsgContains: "invalid RadiusCenter",
+		},
 	}
 
 	for i, tt := range tests {

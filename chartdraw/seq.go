@@ -236,25 +236,40 @@ func (s Seq) StdDev() float64 {
 
 // Percentile finds the relative standing in a slice of floats.
 // `percent` should be given on the interval [0,1.0).
+// Values outside this range are clamped to the nearest boundary.
 func (s Seq) Percentile(percent float64) (percentile float64) {
 	l := s.Len()
 	if l == 0 {
 		return 0
 	}
 
-	if percent < 0 || percent > 1.0 {
-		panic("percent out of range [0.0, 1.0)")
+	sorted := s.Sort()
+	if math.IsNaN(percent) {
+		return 0
+	} else if math.IsInf(percent, 1) || percent >= 1.0 {
+		return sorted.GetValue(l - 1)
+	} else if math.IsInf(percent, -1) || percent <= 0 {
+		return sorted.GetValue(0)
 	}
 
-	sorted := s.Sort()
 	index := percent * float64(l)
 	if index == float64(int64(index)) {
 		i := f64i(index)
+		if i <= 0 {
+			return sorted.GetValue(0)
+		} else if i >= l {
+			return sorted.GetValue(l - 1)
+		}
 		ci := sorted.GetValue(i - 1)
 		c := sorted.GetValue(i)
 		percentile = (ci + c) / 2.0
 	} else {
 		i := f64i(index)
+		if i < 0 {
+			i = 0
+		} else if i >= l {
+			i = l - 1
+		}
 		percentile = sorted.GetValue(i)
 	}
 

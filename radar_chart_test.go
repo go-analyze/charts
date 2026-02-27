@@ -154,6 +154,13 @@ func TestRadarChartError(t *testing.T) {
 			},
 			errorMsgContains: "indicator count",
 		},
+		{
+			name: "indicator_name_value_mismatch",
+			makeOptions: func() RadarChartOption {
+				return NewRadarChartOptionWithData([][]float64{{1, 2, 3}}, []string{"foo", "bar"}, []float64{1, 2, 3})
+			},
+			errorMsgContains: "indicator count",
+		},
 	}
 
 	for i, tt := range tests {

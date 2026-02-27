@@ -86,4 +86,12 @@ func TestMACDSeries(t *testing.T) {
 	for index, vy := range yvalues {
 		assert.InDelta(t, macdExpected[index], vy, emaDelta)
 	}
+
+	require.Error(t, (&MACDLineSeries{}).Validate())
+	require.Error(t, (&MACDSeries{
+		macdl: &MACDLineSeries{},
+	}).Validate())
+	require.Error(t, (&MACDSignalSeries{
+		signal: &EMASeries{},
+	}).Validate())
 }

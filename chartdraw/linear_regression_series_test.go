@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestLinearRegressionSeries(t *testing.T) {
@@ -74,4 +75,6 @@ func TestLinearRegressionSeriesWindowAndOffset(t *testing.T) {
 	lrxn, lryn := linRegSeries.GetLastValues()
 	assert.InDelta(t, 80.0, lrxn, 0.0000001)
 	assert.InDelta(t, 80.0, lryn, 0.0000001)
+
+	require.Error(t, (&LinearRegressionSeries{}).Validate())
 }

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestBoxClone(t *testing.T) {
@@ -221,6 +222,16 @@ func TestBoxOuterConstrain(t *testing.T) {
 	assert.Equal(t, 5, d.Left, d.String())
 	assert.Equal(t, 85, d.Right, d.String())
 	assert.Equal(t, 95, d.Bottom, d.String())
+}
+
+func TestBoxValidate(t *testing.T) {
+	t.Parallel()
+
+	require.Error(t, (Box{Left: -1}).Validate())
+	require.Error(t, (Box{Right: -1}).Validate())
+	require.Error(t, (Box{Top: -1}).Validate())
+	require.Error(t, (Box{Bottom: -1}).Validate())
+	require.NoError(t, (Box{Top: 1, Left: 1, Right: 1, Bottom: 1}).Validate())
 }
 
 func TestBoxShift(t *testing.T) {

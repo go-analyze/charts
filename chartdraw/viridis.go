@@ -265,7 +265,14 @@ var viridisColors = [256]drawing.Color{
 
 // Viridis creates a color map provider.
 func Viridis(v, vmin, vmax float64) drawing.Color {
+	if vmax <= vmin {
+		return viridisColors[0]
+	}
 	normalized := (v - vmin) / (vmax - vmin)
-	index := uint8(normalized * 255)
-	return viridisColors[index]
+	if normalized <= 0 {
+		return viridisColors[0]
+	} else if normalized >= 1 {
+		return viridisColors[255]
+	}
+	return viridisColors[uint8(normalized*255)]
 }

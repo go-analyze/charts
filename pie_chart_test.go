@@ -587,6 +587,13 @@ func TestPieChartError(t *testing.T) {
 			},
 			errorMsgContains: "greater than 0",
 		},
+		{
+			name: "negative_values",
+			makeOptions: func() PieChartOption {
+				return NewPieChartOptionWithData([]float64{10.0, -1.0})
+			},
+			errorMsgContains: "unsupported negative value",
+		},
 	}
 
 	for i, tt := range tests {

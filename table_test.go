@@ -102,6 +102,19 @@ func TestTableChart(t *testing.T) {
 			},
 			errorExpected: true,
 		},
+		{
+			name: "oversized_data_row",
+			makeOptions: func() TableChartOption {
+				return TableChartOption{
+					Padding: NewBoxEqual(10),
+					Header:  []string{"A", "B"},
+					Data: [][]string{
+						{"1", "2", "extra1", "extra2"},
+					},
+				}
+			},
+			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 0 0\nL 600 0\nL 600 36\nL 0 36\nL 0 0\" style=\"stroke:none;fill:rgb(220,220,220)\"/><path d=\"M 0 36\nL 600 36\nL 600 72\nL 0 72\nL 0 36\" style=\"stroke:none;fill:white\"/><text x=\"10\" y=\"22\" style=\"stroke:none;fill:rgb(80,80,80);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">A</text><text x=\"310\" y=\"22\" style=\"stroke:none;fill:rgb(80,80,80);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">B</text><text x=\"10\" y=\"58\" style=\"stroke:none;fill:rgb(50,50,50);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">1</text><text x=\"310\" y=\"58\" style=\"stroke:none;fill:rgb(50,50,50);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">2</text></svg>",
+		},
 	}
 
 	for i, tt := range tests {
