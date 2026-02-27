@@ -254,7 +254,8 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			opt.xAxis.LabelCount, opt.xAxis.Unit, opt.xAxis.LabelCountAdjustment,
 			opt.seriesList, 0, opt.stackSeries,
 			getPreferredValueFormatter(opt.xAxis.ValueFormatter, opt.valueFormatter),
-			opt.xAxis.LabelRotation, opt.xAxis.LabelFontStyle)
+			opt.xAxis.LabelRotation, opt.xAxis.LabelFontStyle,
+			nil)
 		xAxisOpts = opt.xAxis.toAxisOption(xAxisRange)
 	} else { //  X is category axis
 		xAxisRange := calculateCategoryAxisRange(p, p.Width(), false, flagIs(false, opt.xAxis.BoundaryGap),
@@ -284,39 +285,69 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 
 	rangeHeight := p.Height() - xAxisHeight
 	var rangeWidthLeft, rangeWidthRight int
-	// go in reverse order to ensure mark lines from left axis don't extend into right axis
-	for yIndex := getSeriesYAxisCount(opt.seriesList) - 1; yIndex >= 0; yIndex-- {
-		var yAxisOption YAxisOption
-		if len(opt.yAxis) > yIndex {
-			yAxisOption = opt.yAxis[yIndex]
-		}
-		yAxisOption = *yAxisOption.prep(getPreferredTheme(yAxisOption.Theme, theme))
-		var r axisRange
-		if opt.axisReversed { // Y is category axis and X is the value axis
-			r = calculateCategoryAxisRange(p, rangeHeight, true, false,
-				yAxisOption.Labels, 0,
-				yAxisOption.LabelCount, yAxisOption.LabelCountAdjustment, yAxisOption.Unit,
-				opt.seriesList,
-				yAxisOption.LabelRotation, yAxisOption.LabelFontStyle)
-		} else { // Standard Y value axis
-			floatFormatter := getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter)
-			valueFormatter := floatFormatter
-			if yAxisOption.Formatter != "" {
-				valueFormatter = func(f float64) string {
-					return strings.ReplaceAll(yAxisOption.Formatter, "{value}", floatFormatter(f))
-				}
-			}
-			r = calculateValueAxisRange(p, true, rangeHeight,
-				yAxisOption.Min, yAxisOption.Max, yAxisOption.RangeValuePaddingScale,
-				yAxisOption.Labels, 0,
-				yAxisOption.LabelCount, yAxisOption.Unit, yAxisOption.LabelCountAdjustment,
-				opt.seriesList, yIndex, opt.stackSeries,
-				valueFormatter,
-				yAxisOption.LabelRotation, yAxisOption.LabelFontStyle)
-		}
-		result.yaxisRanges[yIndex] = r
 
-		axisOpt := yAxisOption.toAxisOption(r)
+	// prepare all y-axis options and range data (allowing multiple axes to be considered)
+	yAxisCount := getSeriesYAxisCount(opt.seriesList)
+	type yAxisEntry struct {
+		option YAxisOption
+		prep   *valueAxisPrep
+		r      axisRange
+	}
+	var entries []yAxisEntry
+	var valuePreps []*valueAxisPrep
+	var valuePrepIndices []int
+	if yAxisCount > 0 {
+		entries = make([]yAxisEntry, yAxisCount)
+		for yIndex := 0; yIndex < yAxisCount; yIndex++ {
+			var yAxisOption YAxisOption
+			if len(opt.yAxis) > yIndex {
+				yAxisOption = opt.yAxis[yIndex]
+			}
+			yAxisOption = *yAxisOption.prep(getPreferredTheme(yAxisOption.Theme, theme))
+			entries[yIndex].option = yAxisOption
+			if opt.axisReversed { // Y is category axis
+				entries[yIndex].r = calculateCategoryAxisRange(p, rangeHeight, true, false,
+					yAxisOption.Labels, 0,
+					yAxisOption.LabelCount, yAxisOption.LabelCountAdjustment, yAxisOption.Unit,
+					opt.seriesList,
+					yAxisOption.LabelRotation, yAxisOption.LabelFontStyle)
+			} else { // Standard Y value axis
+				floatFormatter := getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter)
+				valueFormatter := floatFormatter
+				if yAxisOption.Formatter != "" {
+					fmtStr := yAxisOption.Formatter
+					valueFormatter = func(f float64) string {
+						return strings.ReplaceAll(fmtStr, "{value}", floatFormatter(f))
+					}
+				}
+				prep := prepareValueAxisRange(p, true, rangeHeight,
+					yAxisOption.Min, yAxisOption.Max, yAxisOption.RangeValuePaddingScale,
+					yAxisOption.Labels, 0,
+					yAxisOption.LabelCount, yAxisOption.Unit, yAxisOption.LabelCountAdjustment,
+					opt.seriesList, yIndex, opt.stackSeries,
+					valueFormatter, yAxisOption.LabelRotation, yAxisOption.LabelFontStyle,
+					yAxisOption.PreferNiceIntervals)
+				entries[yIndex].prep = &prep
+				valuePreps = append(valuePreps, entries[yIndex].prep)
+				valuePrepIndices = append(valuePrepIndices, yIndex)
+			}
+		}
+	}
+
+	// coordinate and resolve value axis ranges
+	if len(valuePreps) > 0 {
+		ranges := coordinateValueAxisRanges(p, valuePreps)
+		for i, yIndex := range valuePrepIndices {
+			entries[yIndex].r = ranges[i]
+		}
+	}
+
+	// render y-axes (reverse order so mark lines from left axis don't extend into right axis)
+	for yIndex := yAxisCount - 1; yIndex >= 0; yIndex-- {
+		entry := entries[yIndex]
+		result.yaxisRanges[yIndex] = entry.r
+
+		axisOpt := entry.option.toAxisOption(entry.r)
 		if yIndex != 0 {
 			axisOpt.splitLineShow = false // only show split lines on primary index axis
 		}

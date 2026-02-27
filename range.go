@@ -32,17 +32,40 @@ type axisRange struct {
 	labelFontStyle FontStyle
 }
 
-// calculateValueAxisRange centralizes numeric axis logic, selecting human-friendly scale and label count.
-func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
+// valueAxisPrep captures intermediate state between preparation and resolution of a value axis range.
+type valueAxisPrep struct {
+	// data range from series
+	minVal, maxVal           float64
+	minPadScale, maxPadScale float64
+	padLabelCount            int // estimated label count after collision check
+	maxLabelCount            int // max labels that fit the axis pixel size
+	preferNice               *bool
+	// carry-through for resolution and finalization
+	labelsCfg      []string
+	valueFormatter ValueFormatter
+	labelCountCfg  int // user's explicit count (0 = auto)
+	labelUnit      float64
+	minCfg, maxCfg *float64
+	dataStartIndex int
+	labelRotation  float64
+	fontStyle      FontStyle
+	axisSize       int
+	// measured labels from preparation
+	labels         []string
+	labelW, labelH int
+}
+
+// prepareValueAxisRange gathers data range and estimates label count, returning intermediate state.
+func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	minCfg, maxCfg, rangeValuePaddingScale *float64,
 	labelsCfg []string, dataStartIndex int,
 	labelCountCfg int, labelUnit float64, labelCountAdjustment int,
 	seriesList seriesList, yAxisIndex int, stackSeries bool,
 	valueFormatter ValueFormatter,
-	labelRotation float64, fontStyle FontStyle) axisRange {
-	// calculate the range
+	labelRotation float64, fontStyle FontStyle,
+	preferNice *bool) valueAxisPrep {
 	minVal, maxVal, sumMax := getSeriesMinMaxSumMax(seriesList, yAxisIndex, stackSeries)
-	if stackSeries { // If stacked, maxVal should be the maxVal data point of all series summed together
+	if stackSeries { // If stacked, maxVal should be the max per-index sum across all series
 		if minVal > 0 {
 			minVal-- // subtract to ensure that all series are represented as a small stacked bar (may otherwise have 0 height)
 		}
@@ -111,11 +134,75 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 			padLabelCount--
 		}
 	}
-	minPadded, maxPadded := padRange(padLabelCount, minVal, maxVal, minPadScale, maxPadScale)
+	return valueAxisPrep{
+		minVal:         minVal,
+		maxVal:         maxVal,
+		minPadScale:    minPadScale,
+		maxPadScale:    maxPadScale,
+		padLabelCount:  padLabelCount,
+		maxLabelCount:  maxLabelCount,
+		preferNice:     preferNice,
+		labelsCfg:      labelsCfg,
+		valueFormatter: valueFormatter,
+		labelCountCfg:  labelCountCfg,
+		labelUnit:      labelUnit,
+		minCfg:         minCfg,
+		maxCfg:         maxCfg,
+		dataStartIndex: dataStartIndex,
+		labelRotation:  labelRotation,
+		fontStyle:      fontStyle,
+		axisSize:       axisSize,
+		labels:         labels,
+		labelW:         labelW,
+		labelH:         labelH,
+	}
+}
+
+// resolveValueAxisRange computes the padded range and label count from a prepared axis.
+// When targetLabelCount > 0, it overrides padLabelCount and disables flex.
+func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount int) (float64, float64, int) {
+	padLabelCount := prep.padLabelCount
+	maxLabelCount := prep.maxLabelCount
+	if targetLabelCount > 0 {
+		padLabelCount = targetLabelCount
+		maxLabelCount = targetLabelCount
+		flexCount = false
+	}
+
+	minPadded, maxPadded := padRange(padLabelCount, prep.minVal, prep.maxVal,
+		prep.minPadScale, prep.maxPadScale)
 	labelCount := padLabelCount
+
+	// Preserve the pre-refactor behavior: flexing the label count / max padding (PreferNiceIntervals)
+	// only applied when max padding was enabled and the input data had a real span.
+	// Previously this was enforced by padRange(...) returning early before any flex attempt.
+	if flexCount && prep.maxPadScale > 0.0 && prep.maxVal != prep.minVal {
+		spanIncrement := (prep.maxVal - prep.minVal) * 0.01
+		scaledMaxPadPercentMin := rangeMaxPaddingPercentMin * prep.maxPadScale
+		scaledMaxPadPercentMax := rangeMaxPaddingPercentMax * prep.maxPadScale
+		minPadRequired := prep.maxVal + spanIncrement*scaledMaxPadPercentMin
+		baselineExcess := maxPadded - prep.maxVal
+		maxPadLimit := math.Min(
+			prep.maxVal+spanIncrement*scaledMaxPadPercentMax*1.4,
+			maxPadded+baselineExcess*8,
+		)
+		t1Max, t1Count, t1Found := flexNiceSearch(minPadded, prep.maxVal, minPadRequired, maxPadLimit,
+			padLabelCount, maxLabelCount, func(v float64) float64 { return niceNum(v) })
+		if !t1Found {
+			if t2Max, t2Count, t2Found := flexNiceSearch(minPadded, prep.maxVal, minPadRequired, maxPadLimit,
+				padLabelCount, maxLabelCount, func(v float64) float64 { return niceNumFrom(v, extendedNiceNums[:]) }); t2Found {
+				t1Max, t1Count, t1Found = t2Max, t2Count, t2Found
+			}
+		}
+		if t1Found {
+			maxPadded = t1Max
+			labelCount = t1Count
+		}
+	}
+
 	// if the user set only a unit, we may need to refine again after padding to meet the unit
-	if labelCountCfg == 0 && labelUnit > 0 {
-		// Quick exit when the unit itself is larger than the whole span
+	if prep.labelCountCfg == 0 && prep.labelUnit > 0 {
+		labelUnit := prep.labelUnit
 		if dataSpan := maxPadded - minPadded; labelUnit >= dataSpan {
 			labelCount = minimumAxisLabels
 		} else {
@@ -135,7 +222,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 				if pad < bestPad-matrix.DefaultEpsilon ||
 					(math.Abs(pad-bestPad) < matrix.DefaultEpsilon &&
 						(deltaAbs < bestDeltaC || (deltaAbs == bestDeltaC && c > bestCount))) {
-					if bestCount == 0 || down(mn)-mn < matrix.DefaultEpsilon && mx-up(mx) < matrix.DefaultEpsilon {
+					if bestCount == 0 || (mn-down(mn) < matrix.DefaultEpsilon && up(mx)-mx < matrix.DefaultEpsilon) {
 						bestPad = pad
 						bestMin = mn
 						bestMax = mx
@@ -147,6 +234,9 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 
 			// The search expands symmetrically around padLabelCount
 			maxDelta := chartdraw.MaxInt(padLabelCount-minimumAxisLabels, maxLabelCount-padLabelCount)
+			if targetLabelCount > 0 {
+				maxDelta = 0 // only try the target count
+			}
 			for delta := 0; delta <= maxDelta; delta++ {
 				try := func(c int) {
 					if c < minimumAxisLabels || c > maxLabelCount {
@@ -154,8 +244,6 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 					}
 					spanCount := float64(c - 1)
 					span := spanCount * labelUnit
-
-					// Attempt in the order of preferred match method
 
 					// snapped min and max to the current label count
 					snappedMin := down(minPadded)
@@ -176,7 +264,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 					accept(c, snappedMin, snappedMax)
 
 					// shift MIN downward
-					if minCfg == nil {
+					if prep.minCfg == nil {
 						candMax := up(maxPadded) // snapped top
 						candMin := candMax - span
 						if (minPadded < 0 || candMin >= 0.0-matrix.DefaultEpsilon) &&
@@ -186,7 +274,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 					}
 
 					// split padding (both free)
-					if minCfg == nil && maxCfg == nil {
+					if prep.minCfg == nil && prep.maxCfg == nil {
 						// center the span around the data as much as multiples allow
 						candMin := down(minPadded - (span-dataSpan)/2)
 						candMax := candMin + span
@@ -198,7 +286,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 					}
 
 					// grow the MAX upward
-					if maxCfg == nil {
+					if prep.maxCfg == nil {
 						candMin := down(minPadded) // snapped bottom
 						candMax := candMin + span
 						if candMax >= maxPadded-matrix.DefaultEpsilon {
@@ -230,27 +318,264 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		}
 	}
 
-	if len(labels) != labelCount || minVal-minPadded > matrix.DefaultEpsilon || maxPadded-maxVal > matrix.DefaultEpsilon {
-		// regenerate labels to meet new scale
-		labels = valueLabels(labelsCfg, valueFormatter, minPadded, maxPadded, labelCount)
-		labelW, labelH = p.measureTextMaxWidthHeight(labels, labelRotation, fontStyle)
+	return minPadded, maxPadded, labelCount
+}
+
+// finalizeValueAxisRange produces the final axisRange, regenerating labels if the range changed.
+func finalizeValueAxisRange(p *Painter, prep *valueAxisPrep, minPadded, maxPadded float64, labelCount int) axisRange {
+	labels := prep.labels
+	labelW, labelH := prep.labelW, prep.labelH
+
+	if len(labels) != labelCount || prep.minVal-minPadded > matrix.DefaultEpsilon || maxPadded-prep.maxVal > matrix.DefaultEpsilon {
+		labels = valueLabels(prep.labelsCfg, prep.valueFormatter, minPadded, maxPadded, labelCount)
+		labelW, labelH = p.measureTextMaxWidthHeight(labels, prep.labelRotation, prep.fontStyle)
 	}
 
 	return axisRange{
 		isCategory:     false,
 		labels:         labels,
-		dataStartIndex: dataStartIndex,
+		dataStartIndex: prep.dataStartIndex,
 		divideCount:    len(labels),
 		tickCount:      labelCount,
 		labelCount:     labelCount,
 		min:            minPadded,
 		max:            maxPadded,
-		size:           axisSize,
+		size:           prep.axisSize,
 		textMaxWidth:   labelW,
 		textMaxHeight:  labelH,
-		labelRotation:  labelRotation,
-		labelFontStyle: fontStyle,
+		labelRotation:  prep.labelRotation,
+		labelFontStyle: prep.fontStyle,
 	}
+}
+
+// coordinateValueAxisRanges finds a shared label count for multiple value axes so that grid lines
+// align. When at least one secondary axis has PreferNiceIntervals, a search finds the best shared
+// count. Otherwise, secondary axes adopt the primary's resolved count directly.
+func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
+	n := len(preps)
+	if n == 0 {
+		return nil
+	} else if n == 1 {
+		flexCount := flagIs(true, preps[0].preferNice)
+		mn, mx, count := resolveValueAxisRange(preps[0], flexCount, 0)
+		return []axisRange{finalizeValueAxisRange(p, preps[0], mn, mx, count)}
+	}
+
+	// resolveAllPreps resolves each prep independently and finalizes the results
+	resolveAllPreps := func(targetCount int) []axisRange {
+		result := make([]axisRange, n)
+		for i, prep := range preps {
+			flex := targetCount == 0 && flagIs(true, prep.preferNice)
+			mn, mx, count := resolveValueAxisRange(prep, flex, targetCount)
+			result[i] = finalizeValueAxisRange(p, prep, mn, mx, count)
+		}
+		return result
+	}
+
+	// if any axis has an explicit labelCountCfg, that count wins; others adapt
+	var forcedCount int
+	var hasConflict bool
+	for _, prep := range preps {
+		if prep.labelCountCfg > 0 {
+			if forcedCount > 0 && forcedCount != prep.labelCountCfg {
+				hasConflict = true
+				break
+			}
+			forcedCount = prep.labelCountCfg
+		}
+	}
+	if hasConflict {
+		return resolveAllPreps(0) // conflicting explicit counts - resolve independently
+	}
+	if forcedCount > 0 {
+		return resolveAllPreps(forcedCount)
+	}
+
+	// resolve primary axis independently
+	primaryFlex := flagIs(true, preps[0].preferNice)
+	primaryMin, primaryMax, primaryCount := resolveValueAxisRange(preps[0], primaryFlex, 0)
+
+	// check if any secondary axis opts into coordination via PreferNiceIntervals
+	var anySecondaryNice bool
+	for i := 1; i < n; i++ {
+		if flagIs(true, preps[i].preferNice) {
+			anySecondaryNice = true
+			break
+		}
+	}
+	if !anySecondaryNice {
+		// secondary axes adopt the primary's label count directly
+		result := make([]axisRange, n)
+		result[0] = finalizeValueAxisRange(p, preps[0], primaryMin, primaryMax, primaryCount)
+		for i := 1; i < n; i++ {
+			mn, mx, count := resolveValueAxisRange(preps[i], false, primaryCount)
+			result[i] = finalizeValueAxisRange(p, preps[i], mn, mx, count)
+		}
+		return result
+	}
+
+	// at least one secondary has PreferNiceIntervals - resolve all independently then search
+	type naturalResult struct {
+		min, max   float64
+		labelCount int
+	}
+	naturals := make([]naturalResult, n)
+	naturals[0] = naturalResult{primaryMin, primaryMax, primaryCount}
+	for i := 1; i < n; i++ {
+		flexCount := flagIs(true, preps[i].preferNice)
+		mn, mx, count := resolveValueAxisRange(preps[i], flexCount, 0)
+		naturals[i] = naturalResult{mn, mx, count}
+	}
+
+	// if counts already match, finalize with natural resolutions
+	allMatch := true
+	for i := 1; i < n; i++ {
+		if naturals[i].labelCount != naturals[0].labelCount {
+			allMatch = false
+			break
+		}
+	}
+	if allMatch {
+		result := make([]axisRange, n)
+		for i, prep := range preps {
+			result[i] = finalizeValueAxisRange(p, prep, naturals[i].min, naturals[i].max, naturals[i].labelCount)
+		}
+		return result
+	}
+
+	// search for the best shared count
+	minNatural, maxNatural := naturals[0].labelCount, naturals[0].labelCount
+	minMaxLabel := preps[0].maxLabelCount
+	for i := 1; i < n; i++ {
+		if naturals[i].labelCount < minNatural {
+			minNatural = naturals[i].labelCount
+		}
+		if naturals[i].labelCount > maxNatural {
+			maxNatural = naturals[i].labelCount
+		}
+		if preps[i].maxLabelCount < minMaxLabel {
+			minMaxLabel = preps[i].maxLabelCount
+		}
+	}
+
+	searchMin := chartdraw.MaxInt(minNatural-3, minimumAxisLabels)
+	searchMax := chartdraw.MinInt(maxNatural+3, minMaxLabel)
+
+	// check if any axis has a configured label unit
+	var hasUnit bool
+	for _, prep := range preps {
+		if prep.labelUnit > 0 {
+			hasUnit = true
+			break
+		}
+	}
+
+	// compute per-axis max pad limits mirroring padRange's maxPadLimit formula,
+	// using the natural resolution as the baseline cap for the coordinated search
+	maxPadLimits := make([]float64, n)
+	for i, prep := range preps {
+		spanIncrement := (prep.maxVal - prep.minVal) * 0.01
+		scaledMaxPadPercentMax := rangeMaxPaddingPercentMax * prep.maxPadScale
+		baselineExcess := naturals[i].max - prep.maxVal
+		maxPadLimits[i] = math.Min(
+			prep.maxVal+spanIncrement*scaledMaxPadPercentMax*1.4,
+			naturals[i].max+baselineExcess*8,
+		)
+	}
+
+	bestCount := naturals[0].labelCount
+
+	if hasUnit {
+		// unit-aware search: best alignment tier wins, closest to natural count breaks ties
+		bestTier := 3 // start worse than any real tier
+		bestDist := math.MaxInt32
+		for c := searchMin; c <= searchMax; c++ {
+			var worstTier, dist int
+			var excessive bool
+			for i, prep := range preps {
+				mn, mx, count := resolveValueAxisRange(prep, false, c)
+				if mx > maxPadLimits[i]+1e-10 {
+					excessive = true
+					break
+				}
+				if count > 1 {
+					interval := (mx - mn) / float64(count-1)
+					if prep.labelUnit > 0 && interval > 0 {
+						tier := unitAlignmentTier(interval, prep.labelUnit)
+						if tier > worstTier {
+							worstTier = tier
+						}
+					}
+				}
+				d := c - naturals[i].labelCount
+				dist += d * d // sum of squared distances
+			}
+			if excessive {
+				continue
+			}
+			if worstTier < bestTier || (worstTier == bestTier && dist < bestDist) {
+				bestTier = worstTier
+				bestDist = dist
+				bestCount = c
+			}
+		}
+	} else {
+		// fewest non-nice axes wins, closest to natural count breaks ties
+		bestNonNice := math.MaxInt32
+		bestDist := math.MaxInt32
+		for c := searchMin; c <= searchMax; c++ {
+			var nonNice, dist int
+			var excessive bool
+			for i, prep := range preps {
+				mn, mx, count := resolveValueAxisRange(prep, false, c)
+				if mx > maxPadLimits[i]+1e-10 {
+					excessive = true
+					break
+				}
+				if count > 1 {
+					if interval := (mx - mn) / float64(count-1); interval > 0 {
+						if ni := niceNum(interval); math.Abs(ni-interval) > 1e-10 {
+							nonNice++
+						}
+					}
+				}
+				d := c - naturals[i].labelCount
+				dist += d * d
+			}
+			if excessive {
+				continue
+			}
+			if nonNice < bestNonNice || (nonNice == bestNonNice && dist < bestDist) {
+				bestNonNice = nonNice
+				bestDist = dist
+				bestCount = c
+			}
+		}
+	}
+
+	return resolveAllPreps(bestCount)
+}
+
+// calculateValueAxisRange centralizes numeric axis logic, selecting human-friendly scale and label count.
+func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
+	minCfg, maxCfg, rangeValuePaddingScale *float64,
+	labelsCfg []string, dataStartIndex int,
+	labelCountCfg int, labelUnit float64, labelCountAdjustment int,
+	seriesList seriesList, yAxisIndex int, stackSeries bool,
+	valueFormatter ValueFormatter,
+	labelRotation float64, fontStyle FontStyle,
+	preferNiceIntervals *bool) axisRange {
+	prep := prepareValueAxisRange(p, isVertical, axisSize,
+		minCfg, maxCfg, rangeValuePaddingScale,
+		labelsCfg, dataStartIndex,
+		labelCountCfg, labelUnit, labelCountAdjustment,
+		seriesList, yAxisIndex, stackSeries,
+		valueFormatter, labelRotation, fontStyle,
+		preferNiceIntervals)
+	// TODO - in v0.6.0 default flexCount if labelCountCfg == 0 && !flagIs(false, preferNiceIntervals)
+	flexCount := flagIs(true, preferNiceIntervals)
+	minPadded, maxPadded, labelCount := resolveValueAxisRange(&prep, flexCount, 0)
+	return finalizeValueAxisRange(p, &prep, minPadded, maxPadded, labelCount)
 }
 
 // calculateCategoryAxisRange does the same for category axes (common for x-axis in line/bar charts).
@@ -355,6 +680,46 @@ func valueLabels(labelsCfg []string, valueFormatter ValueFormatter, min, max flo
 	return labels
 }
 
+var niceNums = [...]float64{1, 2, 2.5, 5}
+var extendedNiceNums = [...]float64{1, 2, 2.5, 3, 4, 5, 6, 8}
+
+// niceNumFrom returns the smallest "nice" number >= val from the provided set × 10^n.
+func niceNumFrom(val float64, nums []float64) float64 {
+	if val <= 0 {
+		return 0
+	}
+	exp := math.Floor(math.Log10(val))
+	frac := val / math.Pow(10, exp)
+	for _, n := range nums {
+		if n >= frac-1e-10 {
+			return n * math.Pow(10, exp)
+		}
+	}
+	return math.Pow(10, exp+1)
+}
+
+// niceNum returns the smallest "nice" number >= val from {1, 2, 2.5, 5} × 10^n.
+func niceNum(val float64) float64 {
+	return niceNumFrom(val, niceNums[:])
+}
+
+// unitAlignmentTier returns 0 if interval is an integer multiple of unit,
+// 1 if unit is an integer multiple of interval, or 2 otherwise.
+func unitAlignmentTier(interval, unit float64) int {
+	if unit <= 0 || interval <= 0 {
+		return 2
+	}
+	// tier 0: interval is a multiple of unit (e.g. interval=80, unit=40)
+	if ratio := interval / unit; math.Abs(ratio-math.Round(ratio)) < 1e-9 {
+		return 0
+	}
+	// tier 1: unit is a multiple of interval (e.g. interval=20, unit=60)
+	if ratio := unit / interval; math.Abs(ratio-math.Round(ratio)) < 1e-9 {
+		return 1
+	}
+	return 2
+}
+
 func padRange(divideCount int, min, max, minPaddingScale, maxPaddingScale float64) (float64, float64) {
 	if minPaddingScale <= 0.0 && maxPaddingScale <= 0.0 {
 		return min, max
@@ -370,7 +735,7 @@ func padRange(divideCount int, min, max, minPaddingScale, maxPaddingScale float6
 	var spanIncrementMultiplier float64
 	// find a min value to start our range from
 	// we prefer (in order, negative if necessary), 0, 1, 10, 100, ..., 2, 20, ..., 5, 50, ...
-	updatedMin := false
+	var updatedMin bool
 rootLoop:
 	for _, multiple := range []float64{1.0, 2.0, 5.0} {
 		if min < 0 {
@@ -412,11 +777,12 @@ rootLoop:
 		return minResult - zeroSpanAdjustment, minResult + zeroSpanAdjustment
 	} else if maxPaddingScale <= 0.0 {
 		return minResult, max
-	} else if math.Abs(max) < 10 {
+	}
+
+	if math.Abs(max) < 10 {
 		return minResult, math.Ceil(max) + 1
 	}
 
-	// update max to provide ideal padding and human friendly intervals
 	interval := (max - minResult) / float64(divideCount-1)
 	roundedInterval, _ := friendlyRound(interval, spanIncrement/float64(divideCount-1),
 		math.Max(spanIncrementMultiplier, scaledMaxPadPercentMin),
@@ -429,12 +795,65 @@ rootLoop:
 	return minResult, maxResult
 }
 
+// flexNiceSearch tries divideCount ±3 looking for a nice-number interval that keeps the max
+// between minPadRequired and maxPadLimit. maxCount caps the label count to avoid overlapping
+// labels (0 means no cap). Returns the best max, count, and whether a match was found.
+func flexNiceSearch(minResult, max, minPadRequired, maxPadLimit float64,
+	divideCount, maxCount int, niceFunc func(float64) float64) (bestMax float64, bestCount int, found bool) {
+	var bestAbsDelta int
+	var bestExcess float64
+	for delta := -3; delta <= 3; delta++ {
+		dc := divideCount + delta
+		if dc < minimumAxisLabels {
+			continue
+		}
+		if maxCount > 0 && dc > maxCount {
+			continue
+		}
+		ni := niceFunc((max - minResult) / float64(dc-1))
+		if ni <= 0 {
+			continue
+		}
+		candidateMax := minResult + ni*float64(dc-1)
+		if candidateMax < minPadRequired-1e-10 || candidateMax > maxPadLimit+1e-10 {
+			continue
+		}
+		absDelta := int(math.Abs(float64(delta)))
+		excess := candidateMax - max
+		// prefer candidates close to the original count (absDelta <= 1) over far ones,
+		// then minimize absDelta within far candidates, then minimize excess
+		var isBetter bool
+		if !found {
+			isBetter = true
+		} else if (absDelta <= 1) != (bestAbsDelta <= 1) {
+			isBetter = absDelta <= 1 // close tier always beats far tier
+		} else if absDelta > 1 && absDelta != bestAbsDelta {
+			isBetter = absDelta < bestAbsDelta // within far tier, smaller delta wins
+		} else {
+			isBetter = excess < bestExcess-1e-10 // same tier and delta group, less excess wins
+		}
+		if isBetter {
+			bestAbsDelta = absDelta
+			bestExcess = excess
+			bestMax = candidateMax
+			bestCount = dc
+			found = true
+		}
+	}
+	return bestMax, bestCount, found
+}
+
 func friendlyRound(val, increment, defaultMultiplier, minMultiplier, maxMultiplier float64, add bool) (float64, float64) {
 	absVal := math.Abs(val)
-	for orderOfMagnitude := math.Floor(math.Log10(absVal)); orderOfMagnitude > 0; orderOfMagnitude-- {
+	startOOM := math.Floor(math.Log10(absVal))
+	// for sub-unit values extend to finer-grained rounding, but only when rounding up (add=true)
+	lowerBound := 1.0
+	if absVal > 0 && startOOM < 0 && add {
+		lowerBound = startOOM - 1
+	}
+	for orderOfMagnitude := startOOM; orderOfMagnitude >= lowerBound; orderOfMagnitude-- {
 		roundValue := math.Pow(10, orderOfMagnitude)
-		var proposedVal float64
-		var proposedMultiplier float64
+		var proposedVal, proposedMultiplier float64
 		for roundAdjust := 0.0; roundAdjust < 9.0; roundAdjust++ {
 			if add {
 				proposedVal = (math.Ceil(absVal/roundValue) * roundValue) + (roundValue * roundAdjust)
@@ -462,8 +881,7 @@ func friendlyRound(val, increment, defaultMultiplier, minMultiplier, maxMultipli
 	}
 	// No match found, let's see if we can just round to the next whole number
 	if (increment*maxMultiplier) >= 1.0 && val != math.Trunc(val) {
-		var proposedVal float64
-		var proposedMultiplier float64
+		var proposedVal, proposedMultiplier float64
 		if add {
 			proposedVal = math.Ceil(val)
 			proposedMultiplier = (proposedVal - val) / increment

@@ -39,6 +39,9 @@ type YAxisOption struct {
 	// LabelCountAdjustment specifies relative influence on label count.
 	// Negative values result in cleaner graphs; positive values may cause text collisions.
 	LabelCountAdjustment int
+	// PreferNiceIntervals allows the label count to flex slightly to produce rounder axis intervals.
+	// TODO - reconsider default for v0.6.0 (possibly with padding default changes)
+	PreferNiceIntervals *bool
 	// LabelSkipCount specifies a qty of lines between labels that show only horizontal lines without labels.
 	LabelSkipCount int
 	// SplitLineShow when set to *true shows horizontal axis split lines.

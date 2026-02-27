@@ -44,6 +44,7 @@ type XAxisOption struct {
 	// LabelCountAdjustment specifies a relative influence on how many labels should be rendered.
 	// Typically, this is negative to result in cleaner graphs, positive values may result in text collisions.
 	LabelCountAdjustment int
+	// TODO - add PreferNiceIntervals, see https://github.com/go-analyze/charts/issues/63
 }
 
 const boundaryGapDefaultThreshold = 40
