@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="19" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="205" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><text x="392" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">4</text><text x="571" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">6</text><path d="M 206 20
+L 206 352" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 393 20
+L 393 352" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 580 20
+L 580 352" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 20 30
+L 393 30
+L 393 346
+L 20 346
+L 20 30" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 393 30
+L 486 30
+L 486 346
+L 393 346
+L 393 30" style="stroke:none;fill:rgb(145,204,117)"/></svg>

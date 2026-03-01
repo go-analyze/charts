@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><text x="40" y="56" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Chart Title</text><path d="M 40 59
+L 70 59
+L 70 72
+L 40 72
+L 40 59" style="stroke:none;fill:rgb(84,112,198)"/><text x="72" y="71" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Search</text><path d="M 40 79
+L 70 79
+L 70 92
+L 40 92
+L 40 79" style="stroke:none;fill:rgb(145,204,117)"/><text x="72" y="91" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Direct</text><path d="M 40 99
+L 70 99
+L 70 112
+L 40 112
+L 40 99" style="stroke:none;fill:rgb(250,200,88)"/><text x="72" y="111" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Email</text><path d="M 300 215
+L 300 99
+A 116 116 159.66 0 1 340 323
+L 300 215
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 413 195
+L 428 192
+M 428 192
+L 443 192" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="446" y="197" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Search: 44.35%</text><path d="M 300 215
+L 340 323
+A 116 116 111.98 0 1 184 212
+L 300 215
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 233 308
+L 224 321
+M 224 321
+L 209 321" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="130" y="326" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Direct: 31.1%</text><path d="M 300 215
+L 184 212
+A 116 116 88.36 0 1 300 99
+L 300 215
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 220 133
+L 209 122
+M 209 122
+L 194 122" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="110" y="127" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Email: 24.54%</text></svg>

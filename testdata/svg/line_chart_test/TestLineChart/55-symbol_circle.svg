@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 250 19
+L 280 19" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="265" cy="19" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><circle cx="265" cy="19" r="2" style="stroke-width:3;stroke:white;fill:white"/><text x="282" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><path d="M 311 19
+L 341 19" style="stroke-width:3;stroke:rgb(145,204,117);fill:none"/><circle cx="326" cy="19" r="5" style="stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/><circle cx="326" cy="19" r="2" style="stroke-width:3;stroke:white;fill:white"/><text x="343" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><path d="M 51 362
+L 133 359
+L 216 366
+L 299 358
+L 382 369
+L 465 336
+L 548 340" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><circle cx="51" cy="362" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="133" cy="359" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="216" cy="366" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="299" cy="358" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="382" cy="369" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="465" cy="336" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="548" cy="340" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><path d="M 51 195
+L 133 168
+L 216 175
+L 299 167
+L 382 82
+L 465 73
+L 548 75" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/><circle cx="51" cy="195" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="133" cy="168" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="216" cy="175" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="299" cy="167" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="382" cy="82" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="465" cy="73" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="548" cy="75" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/></svg>

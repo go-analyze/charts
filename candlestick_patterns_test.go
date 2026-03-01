@@ -1252,7 +1252,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 			opt := tc.optGen()
 			opt.Theme = GetTheme(ThemeVividLight)
 
-			validateCandlestickChartRender(t, p, r, opt, tc.svg, tc.pngCRC)
+			validateCandlestickChartRender(t, p, r, opt, tc.pngCRC)
 		})
 	}
 }

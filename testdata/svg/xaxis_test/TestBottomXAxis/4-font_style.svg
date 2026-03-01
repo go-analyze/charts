@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 100 237
+L 500 237" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 100 242
+L 100 237" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 233 242
+L 233 237" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 366 242
+L 366 237" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 500 242
+L 500 237" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="153" y="255" style="stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif" transform="rotate(90.00,153,255)">abc</text><text x="286" y="255" style="stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif" transform="rotate(90.00,286,255)">def</text><text x="420" y="255" style="stroke:none;fill:rgb(70,70,70);font-size:25.6px;font-family:'Roboto Medium',sans-serif" transform="rotate(90.00,420,255)">ghi</text></svg>

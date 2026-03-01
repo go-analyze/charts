@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="9" y="16" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><text x="9" y="205" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="9" y="394" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><path d="M 24 10
+L 590 10" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 24 200
+L 590 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 68 390
+L 148 390
+L 228 390
+L 308 390
+L 389 390
+L 469 390
+L 549 390" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><path d="M 68 390
+L 148 390
+L 228 390
+L 308 390
+L 389 390
+L 469 390
+L 549 390" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/></svg>

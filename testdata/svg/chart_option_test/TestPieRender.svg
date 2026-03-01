@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="222" y="36" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Rainfall vs Evaporation</text><text x="266" y="52" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Fake Data</text><path d="M 20 29
+L 50 29" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="35" cy="29" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><text x="52" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Search Engine</text><path d="M 20 49
+L 50 49" style="stroke-width:3;stroke:rgb(145,204,117);fill:none"/><circle cx="35" cy="49" r="5" style="stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/><text x="52" y="55" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Direct</text><path d="M 20 69
+L 50 69" style="stroke-width:3;stroke:rgb(250,200,88);fill:none"/><circle cx="35" cy="69" r="5" style="stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)"/><text x="52" y="75" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Email</text><path d="M 20 89
+L 50 89" style="stroke-width:3;stroke:rgb(238,102,102);fill:none"/><circle cx="35" cy="89" r="5" style="stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)"/><text x="52" y="95" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Union Ads</text><path d="M 20 109
+L 50 109" style="stroke-width:3;stroke:rgb(115,192,222);fill:none"/><circle cx="35" cy="109" r="5" style="stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)"/><text x="52" y="115" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Video Ads</text><path d="M 300 223
+L 300 98
+A 125 125 119.89 0 1 409 285
+L 300 223
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 408 161
+L 421 153
+M 421 153
+L 436 153" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="439" y="158" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">: 33.3%</text><path d="M 300 223
+L 409 285
+A 125 125 84.08 0 1 249 337
+L 300 223
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 338 342
+L 343 356
+M 343 356
+L 358 356" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="361" y="361" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">: 23.35%</text><path d="M 300 223
+L 249 337
+A 125 125 66.35 0 1 175 222
+L 300 223
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 195 290
+L 183 299
+M 183 299
+L 168 299" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="116" y="304" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">: 18.43%</text><path d="M 300 223
+L 175 222
+A 125 125 55.37 0 1 229 120
+L 300 223
+Z" style="stroke:none;fill:rgb(238,102,102)"/><path d="M 190 165
+L 177 158
+M 177 158
+L 162 158" style="stroke-width:1;stroke:rgb(238,102,102);fill:none"/><text x="110" y="163" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">: 15.37%</text><path d="M 300 223
+L 229 120
+A 125 125 34.32 0 1 300 98
+L 300 223
+Z" style="stroke:none;fill:rgb(115,192,222)"/><path d="M 264 104
+L 259 90
+M 259 90
+L 244 90" style="stroke-width:1;stroke:rgb(115,192,222);fill:none"/><text x="199" y="95" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">: 9.53%</text></svg>

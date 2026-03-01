@@ -12,13 +12,12 @@ func TestLayoutByGrid(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name            string
-		cols            int
-		rows            int
-		setupCells      func(LayoutBuilderGrid) LayoutBuilderGrid
-		expectedKeys    []string
-		verifyLayout    func(*testing.T, map[string]*Painter)
-		expectedDemoSVG string
+		name         string
+		cols         int
+		rows         int
+		setupCells   func(LayoutBuilderGrid) LayoutBuilderGrid
+		expectedKeys []string
+		verifyLayout func(*testing.T, map[string]*Painter)
 	}{
 		{
 			name: "no-op",
@@ -32,7 +31,6 @@ func TestLayoutByGrid(t *testing.T) {
 				t.Helper()
 				// no-cells
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"></svg>",
 		},
 		{
 			name: "simple_2x2",
@@ -58,7 +56,6 @@ func TestLayoutByGrid(t *testing.T) {
 				assert.Equal(t, 300, painters["bottomRight"].Width())
 				assert.Equal(t, 200, painters["bottomRight"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 320 20\nL 320 220\nL 20 220\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 320 20\nL 620 20\nL 620 220\nL 320 220\nL 320 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 220\nL 320 220\nL 320 420\nL 20 420\nL 20 220\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 320 220\nL 620 220\nL 620 420\nL 320 420\nL 320 220\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "3x3_with_spanning",
@@ -85,7 +82,6 @@ func TestLayoutByGrid(t *testing.T) {
 				assert.Equal(t, 400, painters["main"].Width())
 				assert.Equal(t, 267, painters["main"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 153\nL 20 153\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 153\nL 220 153\nL 220 420\nL 20 420\nL 20 153\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 220 153\nL 620 153\nL 620 420\nL 220 420\nL 220 153\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
 		},
 		{
 			name: "offset",
@@ -106,7 +102,6 @@ func TestLayoutByGrid(t *testing.T) {
 				assert.Equal(t, 300, painters["offset"].Width())
 				assert.Equal(t, 200, painters["offset"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 320 20\nL 320 220\nL 20 220\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 330 200\nL 630 200\nL 630 400\nL 330 400\nL 330 200\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "offset_percent",
@@ -127,7 +122,6 @@ func TestLayoutByGrid(t *testing.T) {
 				assert.Equal(t, 300, painters["offset"].Width())
 				assert.Equal(t, 200, painters["offset"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 320 20\nL 320 220\nL 20 220\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 350 219\nL 650 219\nL 650 419\nL 350 419\nL 350 219\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "12_column_responsive_grid",
@@ -164,7 +158,6 @@ func TestLayoutByGrid(t *testing.T) {
 				assert.Equal(t, 600, painters["footer"].Width())
 				assert.Equal(t, 134, painters["footer"].Height()) // Rounding adjustment
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 153\nL 20 153\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 153\nL 170 153\nL 170 286\nL 20 286\nL 20 153\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 170 153\nL 470 153\nL 470 286\nL 170 286\nL 170 153\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 470 153\nL 620 153\nL 620 286\nL 470 286\nL 470 153\" style=\"stroke-width:1;stroke:black;fill:none\"/><path d=\"M 20 286\nL 620 286\nL 620 420\nL 20 420\nL 20 286\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
 		},
 		{
 			name: "full_single_cell",
@@ -179,7 +172,6 @@ func TestLayoutByGrid(t *testing.T) {
 				assert.Equal(t, 600, painters["full"].Width())
 				assert.Equal(t, 400, painters["full"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 420\nL 20 420\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
 		},
 		{
 			name: "overlapping_cells",
@@ -198,7 +190,6 @@ func TestLayoutByGrid(t *testing.T) {
 				assert.Equal(t, 400, painters["overlap"].Width())
 				assert.Equal(t, 267, painters["overlap"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 420 20\nL 420 286\nL 20 286\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 220 153\nL 620 153\nL 620 420\nL 220 420\nL 220 153\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 	}
 
@@ -234,7 +225,7 @@ func TestLayoutByGrid(t *testing.T) {
 			}
 			svg, err := p.Bytes()
 			require.NoError(t, err)
-			assertEqualSVG(t, tc.expectedDemoSVG, svg)
+			assertTestdataSVG(t, svg)
 		})
 	}
 
@@ -527,11 +518,10 @@ func TestLayoutByRows(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name            string
-		setupRows       func(LayoutBuilderRow) LayoutBuilderRow
-		expectedKeys    []string
-		verifyLayout    func(*testing.T, map[string]*Painter)
-		expectedDemoSVG string
+		name         string
+		setupRows    func(LayoutBuilderRow) LayoutBuilderRow
+		expectedKeys []string
+		verifyLayout func(*testing.T, map[string]*Painter)
 	}{
 		{
 			name: "no-op",
@@ -539,11 +529,6 @@ func TestLayoutByRows(t *testing.T) {
 				return b
 			},
 			expectedKeys: []string{},
-			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
-				t.Helper()
-				// nothing
-			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"></svg>",
 		},
 		{
 			name: "simple_rows_with_equal_columns",
@@ -565,7 +550,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["footer"].Width())
 				assert.Equal(t, 140, painters["footer"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 80\nL 20 80\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 80\nL 320 80\nL 320 280\nL 20 280\nL 20 80\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 320 80\nL 620 80\nL 620 280\nL 320 280\nL 320 80\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 280\nL 620 280\nL 620 420\nL 20 420\nL 20 280\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "mixed_column_widths",
@@ -584,7 +568,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["footer"].Width())
 				assert.Equal(t, 100, painters["footer"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 170 20\nL 170 320\nL 20 320\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 170 20\nL 620 20\nL 620 320\nL 170 320\nL 170 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
 		},
 		{
 			name: "percentage_widths_and_heights",
@@ -605,7 +588,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 280, painters["bottom"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 170 20\nL 170 140\nL 20 140\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 170 20\nL 470 20\nL 470 140\nL 170 140\nL 170 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 470 20\nL 620 20\nL 620 140\nL 470 140\nL 470 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 140\nL 620 140\nL 620 420\nL 20 420\nL 20 140\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "col_gap_at_start",
@@ -618,7 +600,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 550, painters["content"].Width())
 				assert.Equal(t, 100, painters["content"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 70 20\nL 620 20\nL 620 120\nL 70 120\nL 70 20\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
 		},
 		{
 			name: "col_gap_at_end",
@@ -631,13 +612,11 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 550, painters["content"].Width())
 				assert.Equal(t, 100, painters["content"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 570 20\nL 570 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
 		},
 		{
 			name: "col_gap_between_columns",
 			setupRows: func(b LayoutBuilderRow) LayoutBuilderRow {
-				return b.
-					Height("100").Columns("left").ColGap("20").Columns("right")
+				return b.Height("100").Columns("left").ColGap("20").Columns("right")
 			},
 			expectedKeys: []string{"left", "right"},
 			verifyLayout: func(t *testing.T, painters map[string]*Painter) {
@@ -647,7 +626,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 290, painters["right"].Width())
 				assert.Equal(t, 100, painters["right"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 310 20\nL 310 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 330 20\nL 620 20\nL 620 120\nL 330 120\nL 330 20\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "multiple_col_gaps_in_sequence",
@@ -662,7 +640,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 290, painters["b"].Width())
 				assert.Equal(t, 100, painters["b"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 310 20\nL 310 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 330 20\nL 620 20\nL 620 120\nL 330 120\nL 330 20\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "row_with_only_gaps",
@@ -677,7 +654,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 350, painters["bottom"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 70\nL 620 70\nL 620 420\nL 20 420\nL 20 70\" style=\"stroke-width:1;stroke:red;fill:none\"/></svg>",
 		},
 		{
 			name: "row_gap_spacing",
@@ -695,7 +671,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 250, painters["bottom"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 170\nL 620 170\nL 620 420\nL 20 420\nL 20 170\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "empty_row_with_height",
@@ -713,7 +688,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 250, painters["bottom"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 170\nL 620 170\nL 620 420\nL 20 420\nL 20 170\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "multiple_row_calls_idempotent",
@@ -731,7 +705,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["second"].Width())
 				assert.Equal(t, 300, painters["second"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 120\nL 620 120\nL 620 420\nL 20 420\nL 20 120\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "overlapping_with_negative_offset",
@@ -751,7 +724,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 200, painters["bottom"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 100\nL 620 100\nL 620 200\nL 20 200\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 220\nL 620 220\nL 620 420\nL 20 420\nL 20 220\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
 		},
 		{
 			name: "percentage_offset",
@@ -777,7 +749,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 250, painters["offset2"].Width())
 				assert.Equal(t, 100, painters["offset2"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 120\nL 320 120\nL 320 220\nL 20 220\nL 20 120\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 350 115\nL 650 115\nL 650 215\nL 350 215\nL 350 115\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 220\nL 270 220\nL 270 320\nL 20 320\nL 20 220\" style=\"stroke-width:1;stroke:black;fill:none\"/><path d=\"M 395 215\nL 645 215\nL 645 315\nL 395 315\nL 395 215\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
 		},
 		{
 			name: "auto_height_distribution",
@@ -801,7 +772,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["auto4"].Width())
 				assert.Equal(t, autoHeight, painters["auto4"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 120\nL 620 120\nL 620 220\nL 20 220\nL 20 120\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 220\nL 620 220\nL 620 320\nL 20 320\nL 20 220\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "auto_height_mixed",
@@ -829,7 +799,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["fixed2"].Width())
 				assert.Equal(t, 20, painters["fixed2"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 40\nL 20 40\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 40\nL 620 40\nL 620 140\nL 20 140\nL 20 40\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 200\nL 620 200\nL 620 300\nL 20 300\nL 20 200\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 300\nL 620 300\nL 620 400\nL 20 400\nL 20 300\" style=\"stroke-width:1;stroke:black;fill:none\"/><path d=\"M 20 400\nL 620 400\nL 620 420\nL 20 420\nL 20 400\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
 		},
 		{
 			name: "complex_dashboard_layout",
@@ -860,7 +829,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["table"].Width())
 				assert.Equal(t, 100, painters["table"].Height()) // Remaining
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 60\nL 20 60\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 70\nL 128 70\nL 128 150\nL 20 150\nL 20 70\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 143 70\nL 251 70\nL 251 150\nL 143 150\nL 143 70\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 266 70\nL 374 70\nL 374 150\nL 266 150\nL 266 70\" style=\"stroke-width:1;stroke:black;fill:none\"/><path d=\"M 389 70\nL 497 70\nL 497 150\nL 389 150\nL 389 70\" style=\"stroke-width:1;stroke:purple;fill:none\"/><path d=\"M 512 70\nL 620 70\nL 620 150\nL 512 150\nL 512 70\" style=\"stroke-width:1;stroke:aqua;fill:none\"/><path d=\"M 20 160\nL 620 160\nL 620 320\nL 20 320\nL 20 160\" style=\"stroke-width:1;stroke:rgb(210,105,30);fill:none\"/><path d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:rgb(128,128,128);fill:none\"/></svg>",
 		},
 		{
 			name: "multiple_empty_rows_different_heights",
@@ -879,7 +847,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 100, painters["bottom"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 70\nL 620 70\nL 620 145\nL 20 145\nL 20 70\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 170\nL 620 170\nL 620 270\nL 20 270\nL 20 170\" style=\"stroke-width:1;stroke:green;fill:none\"/></svg>",
 		},
 		{
 			name: "column_width_pixels",
@@ -895,7 +862,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 150, painters["c"].Width())
 				assert.Equal(t, 150, painters["d"].Width())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 120 20\nL 120 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 120 20\nL 320 20\nL 320 120\nL 120 120\nL 120 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 320 20\nL 470 20\nL 470 120\nL 320 120\nL 320 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 470 20\nL 620 20\nL 620 120\nL 470 120\nL 470 20\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "column_width_mixed",
@@ -910,7 +876,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 180, painters["percent"].Width()) // 30% of 600
 				assert.Equal(t, 220, painters["auto"].Width())    // Remaining space
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 220 20\nL 220 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 220 20\nL 400 20\nL 400 120\nL 220 120\nL 220 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 400 20\nL 620 20\nL 620 120\nL 400 120\nL 400 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
 		},
 		{
 			name: "height_at_end",
@@ -932,7 +897,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 280, painters["bottom"].Height()) // Remaining height
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 40\nL 20 40\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 40\nL 220 40\nL 220 140\nL 20 140\nL 20 40\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 220 40\nL 620 40\nL 620 140\nL 220 140\nL 220 40\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 140\nL 620 140\nL 620 420\nL 20 420\nL 20 140\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "column_gap_positioning_validation",
@@ -952,7 +916,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 200, painters["d"].Width())
 				assert.Equal(t, 100, painters["e"].Width())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 120 20\nL 120 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 170 20\nL 270 20\nL 270 120\nL 170 120\nL 170 20\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 320 20\nL 420 20\nL 420 120\nL 320 120\nL 320 20\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 170 120\nL 370 120\nL 370 220\nL 170 220\nL 170 120\" style=\"stroke-width:1;stroke:black;fill:none\"/><path d=\"M 520 120\nL 620 120\nL 620 220\nL 520 220\nL 520 120\" style=\"stroke-width:1;stroke:purple;fill:none\"/></svg>",
 		},
 		{
 			name: "row_offset_negative",
@@ -975,7 +938,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["fourth"].Width())
 				assert.Equal(t, 100, painters["fourth"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 100\nL 620 100\nL 620 200\nL 20 200\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 180\nL 620 180\nL 620 280\nL 20 280\nL 20 180\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 280\nL 620 280\nL 620 380\nL 20 380\nL 20 280\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "row_offset_positive",
@@ -995,7 +957,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["third"].Width())
 				assert.Equal(t, 100, painters["third"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 160\nL 620 160\nL 620 260\nL 20 260\nL 20 160\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 260\nL 620 260\nL 620 360\nL 20 360\nL 20 260\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
 		},
 		{
 			name: "row_offset_percentage",
@@ -1018,7 +979,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["quarter4"].Width())
 				assert.Equal(t, 100, painters["quarter4"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 120\nL 20 120\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 100\nL 620 100\nL 620 200\nL 20 200\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 220\nL 620 220\nL 620 320\nL 20 320\nL 20 220\" style=\"stroke-width:1;stroke:blue;fill:none\"/><path d=\"M 20 320\nL 620 320\nL 620 420\nL 20 420\nL 20 320\" style=\"stroke-width:1;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "row_offset_with_gaps",
@@ -1040,7 +1000,6 @@ func TestLayoutByRows(t *testing.T) {
 				assert.Equal(t, 600, painters["bottom"].Width())
 				assert.Equal(t, 80, painters["bottom"].Height())
 			},
-			expectedDemoSVG: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 640 440\"><path d=\"M 20 20\nL 620 20\nL 620 100\nL 20 100\nL 20 20\" style=\"stroke-width:1;stroke:red;fill:none\"/><path d=\"M 20 100\nL 620 100\nL 620 180\nL 20 180\nL 20 100\" style=\"stroke-width:1;stroke:green;fill:none\"/><path d=\"M 20 180\nL 620 180\nL 620 260\nL 20 260\nL 20 180\" style=\"stroke-width:1;stroke:blue;fill:none\"/></svg>",
 		},
 	}
 
@@ -1062,7 +1021,9 @@ func TestLayoutByRows(t *testing.T) {
 			for _, key := range tc.expectedKeys {
 				require.Contains(t, painters, key)
 			}
-			tc.verifyLayout(t, painters)
+			if tc.verifyLayout != nil {
+				tc.verifyLayout(t, painters)
+			}
 
 			// Draw border around each painter for visual verification
 			colors := []Color{
@@ -1076,7 +1037,7 @@ func TestLayoutByRows(t *testing.T) {
 			}
 			svg, err := p.Bytes()
 			require.NoError(t, err)
-			assertEqualSVG(t, tc.expectedDemoSVG, svg)
+			assertTestdataSVG(t, svg)
 		})
 	}
 

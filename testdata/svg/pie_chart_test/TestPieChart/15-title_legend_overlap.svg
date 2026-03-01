@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><text x="268" y="56" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Pie Chart</text><text x="257" y="72" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Title Subtext</text><path d="M 40 75
+L 70 75
+L 70 88
+L 40 88
+L 40 75" style="stroke:none;fill:rgb(84,112,198)"/><text x="72" y="87" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Search Engine</text><path d="M 191 75
+L 221 75
+L 221 88
+L 191 88
+L 191 75" style="stroke:none;fill:rgb(145,204,117)"/><text x="223" y="87" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Direct</text><path d="M 284 75
+L 314 75
+L 314 88
+L 284 88
+L 284 75" style="stroke:none;fill:rgb(250,200,88)"/><text x="316" y="87" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Email</text><path d="M 375 75
+L 405 75
+L 405 88
+L 375 88
+L 375 75" style="stroke:none;fill:rgb(238,102,102)"/><text x="407" y="87" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Union Ads</text><path d="M 40 91
+L 70 91
+L 70 104
+L 40 104
+L 40 91" style="stroke:none;fill:rgb(115,192,222)"/><text x="72" y="103" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Video Ads</text><path d="M 300 239
+L 300 143
+A 96 96 119.89 0 1 384 287
+L 300 239
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 383 191
+L 396 184
+M 396 184
+L 411 184" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="414" y="189" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Search Engine: 33.3%</text><path d="M 300 239
+L 384 287
+A 96 96 84.08 0 1 261 327
+L 300 239
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 329 330
+L 334 344
+M 334 344
+L 349 344" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="352" y="349" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Direct: 23.35%</text><path d="M 300 239
+L 261 327
+A 96 96 66.35 0 1 204 238
+L 300 239
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 220 291
+L 207 299
+M 207 299
+L 192 299" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="108" y="304" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Email: 18.43%</text><path d="M 300 239
+L 204 238
+A 96 96 55.37 0 1 246 159
+L 300 239
+Z" style="stroke:none;fill:rgb(238,102,102)"/><path d="M 215 194
+L 202 187
+M 202 187
+L 187 187" style="stroke-width:1;stroke:rgb(238,102,102);fill:none"/><text x="76" y="192" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Union Ads: 15.37%</text><path d="M 300 239
+L 246 159
+A 96 96 34.32 0 1 300 143
+L 300 239
+Z" style="stroke:none;fill:rgb(115,192,222)"/><path d="M 272 147
+L 268 133
+M 268 133
+L 253 133" style="stroke-width:1;stroke:rgb(115,192,222);fill:none"/><text x="150" y="138" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Video Ads: 9.53%</text></svg>

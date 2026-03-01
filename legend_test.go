@@ -14,7 +14,6 @@ func TestNewLegend(t *testing.T) {
 	tests := []struct {
 		name   string
 		render func(*Painter) ([]byte, error)
-		result string
 	}{
 		{
 			name: "basic",
@@ -28,7 +27,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 184 9\nL 214 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"199\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"216\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 264 9\nL 294 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"279\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"296\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path d=\"M 346 9\nL 376 9\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"361\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"378\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text></svg>",
 		},
 		{
 			name: "border",
@@ -43,7 +41,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 184 29\nL 214 29\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"199\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"216\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 264 29\nL 294 29\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"279\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"296\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path d=\"M 346 29\nL 376 29\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"361\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"378\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text><path d=\"M 174 51\nL 174 10\nL 426 10\nL 426 51\nL 174 51\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "vertical_border",
@@ -59,7 +56,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 20 29\nL 50 29\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"35\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"52\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 20 49\nL 50 49\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"35\" cy=\"49\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"52\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path d=\"M 20 69\nL 50 69\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"35\" cy=\"69\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"52\" y=\"75\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text><path d=\"M 10 95\nL 10 10\nL 102 10\nL 102 95\nL 10 95\" style=\"stroke-width:2;stroke:black;fill:none\"/></svg>",
 		},
 		{
 			name: "position_left",
@@ -74,7 +70,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 0 9\nL 30 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"15\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"32\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 80 9\nL 110 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"95\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"112\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path d=\"M 162 9\nL 192 9\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"177\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"194\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text></svg>",
 		},
 		{
 			name: "position_vertical_with_rect",
@@ -93,7 +88,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 60 3\nL 90 3\nL 90 16\nL 60 16\nL 60 3\" style=\"stroke:none;fill:rgb(84,112,198)\"/><text x=\"92\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 60 23\nL 90 23\nL 90 36\nL 60 36\nL 60 23\" style=\"stroke:none;fill:rgb(145,204,117)\"/><text x=\"92\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two</text><path d=\"M 60 43\nL 90 43\nL 90 56\nL 60 56\nL 60 43\" style=\"stroke:none;fill:rgb(250,200,88)\"/><text x=\"92\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three</text></svg>",
 		},
 		{
 			name: "custom_padding_and_font",
@@ -109,7 +103,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 151 204\nL 181 204\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"166\" cy=\"204\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"183\" y=\"210\" style=\"stroke:none;fill:blue;font-size:25.6px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 249 204\nL 279 204\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"264\" cy=\"204\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"281\" y=\"210\" style=\"stroke:none;fill:blue;font-size:25.6px;font-family:'Roboto Medium',sans-serif\">Two</text><path d=\"M 351 204\nL 381 204\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"366\" cy=\"204\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"383\" y=\"210\" style=\"stroke:none;fill:blue;font-size:25.6px;font-family:'Roboto Medium',sans-serif\">Three</text></svg>",
 		},
 		{
 			name: "hidden",
@@ -124,7 +117,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"></svg>",
 		},
 		{
 			name: "bottom_position",
@@ -141,7 +133,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 27 384\nL 57 384\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"42\" cy=\"384\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"59\" y=\"390\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 107 384\nL 137 384\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"122\" cy=\"384\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"139\" y=\"390\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 229 384\nL 259 384\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"244\" cy=\"384\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"261\" y=\"390\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 396 384\nL 426 384\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"411\" cy=\"384\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"428\" y=\"390\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text></svg>",
 		},
 		{
 			name: "vertical_right_position",
@@ -157,7 +148,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 421 9\nL 451 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"436\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"453\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 421 29\nL 451 29\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"436\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"453\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 421 49\nL 451 49\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"436\" cy=\"49\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"453\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 421 69\nL 451 69\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"436\" cy=\"69\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"453\" y=\"75\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text></svg>",
 		},
 		{
 			name: "vertical_bottom_position",
@@ -175,7 +165,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 0 324\nL 30 324\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"15\" cy=\"324\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"32\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 0 344\nL 30 344\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"15\" cy=\"344\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"32\" y=\"350\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 0 364\nL 30 364\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"15\" cy=\"364\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"32\" y=\"370\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 0 384\nL 30 384\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"15\" cy=\"384\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"32\" y=\"390\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text></svg>",
 		},
 		{
 			name: "vertical_right_bottom_position",
@@ -194,7 +183,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 421 324\nL 451 324\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"436\" cy=\"324\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"453\" y=\"330\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 421 344\nL 451 344\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"436\" cy=\"344\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"453\" y=\"350\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 421 364\nL 451 364\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"436\" cy=\"364\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"453\" y=\"370\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 421 384\nL 451 384\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"436\" cy=\"384\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"453\" y=\"390\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text></svg>",
 		},
 		{
 			name: "vertical_right_position_custom_font_size",
@@ -211,7 +199,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 494 9\nL 524 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"509\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"526\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:7.7px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 494 29\nL 524 29\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"509\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"526\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:7.7px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 494 49\nL 524 49\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"509\" cy=\"49\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"526\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:7.7px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 494 69\nL 524 69\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"509\" cy=\"69\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"526\" y=\"75\" style=\"stroke:none;fill:rgb(70,70,70);font-size:7.7px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text></svg>",
 		},
 		{
 			name: "vertical_right_position_with_padding",
@@ -228,7 +215,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 301 124\nL 331 124\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"316\" cy=\"124\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"333\" y=\"130\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 301 144\nL 331 144\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"316\" cy=\"144\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"333\" y=\"150\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 301 164\nL 331 164\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"316\" cy=\"164\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"333\" y=\"170\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 301 184\nL 331 184\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"316\" cy=\"184\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"333\" y=\"190\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text></svg>",
 		},
 		{
 			name: "left_position_overflow",
@@ -244,7 +230,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 0 9\nL 30 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"15\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"32\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 80 9\nL 110 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"95\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"112\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 202 9\nL 232 9\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"217\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"234\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 369 9\nL 399 9\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"384\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"401\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 0 25\nL 30 25\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:none\"/><circle cx=\"15\" cy=\"25\" r=\"5\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)\"/><text x=\"32\" y=\"31\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Five Words Is Even Longer</text><path d=\"M 233 25\nL 263 25\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:none\"/><circle cx=\"248\" cy=\"25\" r=\"5\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:rgb(59,162,114)\"/><text x=\"265\" y=\"31\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Six Words Is The Longest Tested</text></svg>",
 		},
 		{
 			name: "center_position_overflow",
@@ -260,7 +245,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 0 9\nL 30 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"15\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"32\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 80 9\nL 110 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"95\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"112\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 202 9\nL 232 9\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"217\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"234\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 369 9\nL 399 9\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"384\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"401\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 0 25\nL 30 25\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:none\"/><circle cx=\"15\" cy=\"25\" r=\"5\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)\"/><text x=\"32\" y=\"31\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Five Words Is Even Longer</text><path d=\"M 233 25\nL 263 25\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:none\"/><circle cx=\"248\" cy=\"25\" r=\"5\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:rgb(59,162,114)\"/><text x=\"265\" y=\"31\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Six Words Is The Longest Tested</text></svg>",
 		},
 		{
 			name: "center_position_center_align_overflow",
@@ -277,7 +261,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 0 9\nL 30 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"15\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"32\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 80 9\nL 110 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"95\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"112\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 202 9\nL 232 9\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"217\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"234\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 369 9\nL 399 9\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"384\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"401\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 55 25\nL 85 25\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:none\"/><circle cx=\"70\" cy=\"25\" r=\"5\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)\"/><text x=\"87\" y=\"31\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Five Words Is Even Longer</text><path d=\"M 288 25\nL 318 25\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:none\"/><circle cx=\"303\" cy=\"25\" r=\"5\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:rgb(59,162,114)\"/><text x=\"320\" y=\"31\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Six Words Is The Longest Tested</text></svg>",
 		},
 		{
 			name: "50%_position_overflow",
@@ -295,7 +278,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 300 9\nL 330 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"315\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"332\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 380 9\nL 410 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"395\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"412\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 300 25\nL 330 25\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"315\" cy=\"25\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"332\" y=\"31\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 300 41\nL 330 41\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"315\" cy=\"41\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"332\" y=\"47\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 300 57\nL 330 57\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:none\"/><circle cx=\"315\" cy=\"57\" r=\"5\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)\"/><text x=\"332\" y=\"63\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Five Words Is Even Longer</text><path d=\"M 300 73\nL 330 73\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:none\"/><circle cx=\"315\" cy=\"73\" r=\"5\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:rgb(59,162,114)\"/><text x=\"332\" y=\"79\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Six Words Is The Longest Tested</text></svg>",
 		},
 		{
 			name: "vertical_right_position_overflow",
@@ -314,7 +296,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><path d=\"M 440 9\nL 470 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"455\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"472\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 440 29\nL 470 29\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"455\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"472\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 440 49\nL 470 49\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"455\" cy=\"49\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"472\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 440 69\nL 470 69\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"455\" cy=\"69\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/><text x=\"472\" y=\"75\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 440 89\nL 470 89\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:none\"/><circle cx=\"455\" cy=\"89\" r=\"5\" style=\"stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)\"/><text x=\"472\" y=\"95\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Five Words Is Even Longer</text><path d=\"M 440 109\nL 470 109\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:none\"/><circle cx=\"455\" cy=\"109\" r=\"5\" style=\"stroke-width:3;stroke:rgb(59,162,114);fill:rgb(59,162,114)\"/><text x=\"472\" y=\"115\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Six Words Is The Longest Tested</text></svg>",
 		},
 		{
 			name: "right_alignment",
@@ -329,7 +310,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"27\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 57 9\nL 87 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"72\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"107\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 179 9\nL 209 9\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"194\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"229\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 346 9\nL 376 9\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"361\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"396\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 545 9\nL 575 9\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"560\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/></svg>",
 		},
 		{
 			name: "vertical_right_alignment",
@@ -345,7 +325,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"540\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 570 9\nL 600 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"585\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"498\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 570 29\nL 600 29\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"585\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"453\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 570 49\nL 600 49\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"585\" cy=\"49\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"421\" y=\"75\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 570 69\nL 600 69\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"585\" cy=\"69\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/></svg>",
 		},
 		{
 			name: "vertical_right_alignment_left_position",
@@ -362,7 +341,6 @@ func TestNewLegend(t *testing.T) {
 				}
 				return p.Bytes()
 			},
-			result: "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 600 400\"><text x=\"119\" y=\"15\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">One</text><path d=\"M 149 9\nL 179 9\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:none\"/><circle cx=\"164\" cy=\"9\" r=\"5\" style=\"stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)\"/><text x=\"77\" y=\"35\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Two Word</text><path d=\"M 149 29\nL 179 29\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:none\"/><circle cx=\"164\" cy=\"29\" r=\"5\" style=\"stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)\"/><text x=\"32\" y=\"55\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Three Word Item</text><path d=\"M 149 49\nL 179 49\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:none\"/><circle cx=\"164\" cy=\"49\" r=\"5\" style=\"stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)\"/><text x=\"0\" y=\"75\" style=\"stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif\">Four Words Is Longer</text><path d=\"M 149 69\nL 179 69\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:none\"/><circle cx=\"164\" cy=\"69\" r=\"5\" style=\"stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)\"/></svg>",
 		},
 	}
 
@@ -375,7 +353,7 @@ func TestNewLegend(t *testing.T) {
 			}, PainterThemeOption(GetTheme(ThemeLight)))
 			data, err := tt.render(p)
 			require.NoError(t, err)
-			assertEqualSVG(t, tt.result, data)
+			assertTestdataSVG(t, data)
 		})
 	}
 }

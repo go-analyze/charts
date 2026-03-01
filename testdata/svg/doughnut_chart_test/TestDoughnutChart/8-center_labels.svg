@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><path d="M 300 200
+L 300 40
+A 160 160 119.89 0 1 439 280
+L 300 200
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 300 200
+L 439 280
+A 160 160 84.08 0 1 235 346
+L 300 200
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 300 200
+L 235 346
+A 160 160 66.35 0 1 140 199
+L 300 200
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 300 200
+L 140 199
+A 160 160 55.37 0 1 210 68
+L 300 200
+Z" style="stroke:none;fill:rgb(238,102,102)"/><path d="M 300 200
+L 210 68
+A 160 160 34.32 0 1 300 40
+L 300 200
+Z" style="stroke:none;fill:rgb(115,192,222)"/><circle cx="300" cy="200" r="96" style="stroke:none;fill:white"/><path d="M 378 146
+L 366 154" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><text x="276" y="161" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-A: 33.3%</text><path d="M 356 277
+L 350 269" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/><text x="253" y="269" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-B: 23.35%</text><path d="M 215 244
+L 235 234" style="stroke-width:2;stroke:rgb(250,200,88);fill:none"/><text x="235" y="241" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-C: 18.43%</text><path d="M 213 162
+L 227 168" style="stroke-width:2;stroke:rgb(238,102,102);fill:none"/><text x="227" y="175" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-D: 15.37%</text><path d="M 253 117
+L 255 120" style="stroke-width:2;stroke:rgb(115,192,222);fill:none"/><text x="255" y="133" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-E: 9.53%</text></svg>

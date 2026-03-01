@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 250 13
+L 280 13
+L 280 26
+L 250 26
+L 250 13" style="stroke:none;fill:rgb(84,112,198)"/><text x="282" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><path d="M 311 13
+L 341 13
+L 341 26
+L 311 26
+L 311 13" style="stroke:none;fill:rgb(145,204,117)"/><text x="343" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><path d="M 51 362
+L 133 359
+L 216 366
+L 299 358
+L 382 369
+L 465 336
+L 548 340" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><path d="M 48 359
+L 54 359
+L 54 365
+L 48 365
+L 48 359
+M 130 356
+L 136 356
+L 136 362
+L 130 362
+L 130 356
+M 213 363
+L 219 363
+L 219 369
+L 213 369
+L 213 363
+M 296 355
+L 302 355
+L 302 361
+L 296 361
+L 296 355
+M 379 366
+L 385 366
+L 385 372
+L 379 372
+L 379 366
+M 462 333
+L 468 333
+L 468 339
+L 462 339
+L 462 333
+M 545 337
+L 551 337
+L 551 343
+L 545 343
+L 545 337" style="stroke-width:1;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><path d="M 51 195
+L 133 168
+L 216 175
+L 299 167
+L 382 82
+L 465 73
+L 548 75" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/><path d="M 48 192
+L 54 192
+L 54 198
+L 48 198
+L 48 192
+M 130 165
+L 136 165
+L 136 171
+L 130 171
+L 130 165
+M 213 172
+L 219 172
+L 219 178
+L 213 178
+L 213 172
+M 296 164
+L 302 164
+L 302 170
+L 296 170
+L 296 164
+M 379 79
+L 385 79
+L 385 85
+L 379 85
+L 379 79
+M 462 70
+L 468 70
+L 468 76
+L 462 76
+L 462 70
+M 545 72
+L 551 72
+L 551 78
+L 545 78
+L 545 72" style="stroke-width:1;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/></svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:rgb(40,40,40)"/><text x="0" y="16" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Heat Map</text><text x="14" y="214" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif" transform="rotate(270.00,14,214)">Y-Axis</text><path d="M 68 31
+L 68 354" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 31
+L 68 31" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 111
+L 68 111" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 192
+L 68 192" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 273
+L 68 273" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 354
+L 68 354" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><text x="49" y="77" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">3</text><text x="19" y="157" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row3</text><text x="19" y="237" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row2</text><text x="19" y="317" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row1</text><text x="312" y="396" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">X-Axis</text><path d="M 69 354
+L 600 354" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 69 359
+L 69 354" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 246 359
+L 246 354" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 423 359
+L 423 354" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 600 359
+L 600 354" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><text x="152" y="380" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">A</text><text x="329" y="380" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">B</text><text x="506" y="380" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">C</text><path d="M 70 32
+L 246 32
+L 246 139
+L 70 139
+L 70 32" style="stroke:none;fill:rgb(150,0,0)"/><path d="M 246 32
+L 422 32
+L 422 139
+L 246 139
+L 246 32" style="stroke:none;fill:rgb(176,0,0)"/><path d="M 422 32
+L 598 32
+L 598 139
+L 422 139
+L 422 32" style="stroke:none;fill:rgb(201,0,0)"/><path d="M 70 139
+L 246 139
+L 246 246
+L 70 246
+L 70 139" style="stroke:none;fill:rgb(227,0,0)"/><path d="M 246 139
+L 422 139
+L 422 246
+L 246 246
+L 246 139" style="stroke:none;fill:rgb(252,0,0)"/><path d="M 422 139
+L 598 139
+L 598 246
+L 422 246
+L 422 139" style="stroke:none;fill:rgb(254,23,23)"/><path d="M 70 246
+L 246 246
+L 246 353
+L 70 353
+L 70 246" style="stroke:none;fill:rgb(255,48,48)"/><path d="M 246 246
+L 422 246
+L 422 353
+L 246 353
+L 246 246" style="stroke:none;fill:rgb(255,74,74)"/><path d="M 422 246
+L 598 246
+L 598 353
+L 422 353
+L 422 246" style="stroke:none;fill:rgb(255,99,99)"/></svg>

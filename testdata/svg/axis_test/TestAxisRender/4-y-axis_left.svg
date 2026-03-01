@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 114 50
+L 114 350" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 50
+L 114 50" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 92
+L 114 92" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 135
+L 114 135" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 178
+L 114 178" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 221
+L 114 221" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 264
+L 114 264" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 307
+L 114 307" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 109 350
+L 114 350" style="stroke-width:1;stroke:blue;fill:none"/><text x="64" y="80" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Sun</text><text x="70" y="122" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Sat</text><text x="77" y="165" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Fri</text><text x="64" y="207" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Thu</text><text x="58" y="250" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Wed</text><text x="64" y="292" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Tue</text><text x="58" y="335" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Mon</text></svg>

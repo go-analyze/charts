@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><text x="20" y="36" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Test title very long text - my pie chart</text><path d="M 226 43
+L 256 43
+L 256 56
+L 226 56
+L 226 43" style="stroke:none;fill:rgb(84,112,198)"/><text x="258" y="55" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Used</text><path d="M 313 43
+L 343 43
+L 343 56
+L 313 56
+L 313 43" style="stroke:none;fill:rgb(145,204,117)"/><text x="345" y="55" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Free</text><path d="M 300 225
+L 300 101
+A 124 124 230.40 1 1 205 304
+L 300 225
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 411 277
+L 425 284
+M 425 284
+L 440 284" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="443" y="289" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Used: 64%</text><path d="M 300 225
+L 205 304
+A 124 124 129.60 0 1 300 101
+L 300 225
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 189 173
+L 175 166
+M 175 166
+L 160 166" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="101" y="171" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Free: 36%</text></svg>

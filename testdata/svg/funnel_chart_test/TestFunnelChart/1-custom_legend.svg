@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 552 304
+L 582 304" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="567" cy="304" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><text x="584" y="310" style="stroke:none;fill:rgb(70,70,70);font-size:5.1px;font-family:'Roboto Medium',sans-serif">Show</text><path d="M 552 324
+L 582 324" style="stroke-width:3;stroke:rgb(145,204,117);fill:none"/><circle cx="567" cy="324" r="5" style="stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/><text x="584" y="330" style="stroke:none;fill:rgb(70,70,70);font-size:5.1px;font-family:'Roboto Medium',sans-serif">Click</text><path d="M 552 344
+L 582 344" style="stroke-width:3;stroke:rgb(250,200,88);fill:none"/><circle cx="567" cy="344" r="5" style="stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)"/><text x="584" y="350" style="stroke:none;fill:rgb(70,70,70);font-size:5.1px;font-family:'Roboto Medium',sans-serif">Visit</text><path d="M 552 364
+L 582 364" style="stroke-width:3;stroke:rgb(238,102,102);fill:none"/><circle cx="567" cy="364" r="5" style="stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)"/><text x="584" y="370" style="stroke:none;fill:rgb(70,70,70);font-size:5.1px;font-family:'Roboto Medium',sans-serif">Inquiry</text><path d="M 552 384
+L 582 384" style="stroke-width:3;stroke:rgb(115,192,222);fill:none"/><circle cx="567" cy="384" r="5" style="stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)"/><text x="584" y="390" style="stroke:none;fill:rgb(70,70,70);font-size:5.1px;font-family:'Roboto Medium',sans-serif">Order</text><path d="M 0 0
+L 600 0
+L 540 78
+L 60 78
+L 0 0" style="stroke:none;fill:rgb(84,112,198)"/><text x="264" y="39" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Show(100%)</text><path d="M 60 80
+L 540 80
+L 480 158
+L 120 158
+L 60 80" style="stroke:none;fill:rgb(145,204,117)"/><text x="269" y="119" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Click(80%)</text><path d="M 120 160
+L 480 160
+L 420 238
+L 180 238
+L 120 160" style="stroke:none;fill:rgb(250,200,88)"/><text x="271" y="199" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Visit(60%)</text><path d="M 180 240
+L 420 240
+L 360 318
+L 240 318
+L 180 240" style="stroke:none;fill:rgb(238,102,102)"/><text x="264" y="279" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Inquiry(40%)</text><path d="M 240 320
+L 360 320
+L 300 398
+L 300 398
+L 240 320" style="stroke:none;fill:rgb(115,192,222)"/><text x="268" y="359" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Order(20%)</text></svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><text x="285" y="56" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Title</text><text x="287" y="72" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Sub</text><path d="M 469 264
+L 499 264" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="484" cy="264" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><text x="501" y="270" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series-A</text><path d="M 469 284
+L 499 284" style="stroke-width:3;stroke:rgb(145,204,117);fill:none"/><circle cx="484" cy="284" r="5" style="stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/><text x="501" y="290" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series-B</text><path d="M 469 304
+L 499 304" style="stroke-width:3;stroke:rgb(250,200,88);fill:none"/><circle cx="484" cy="304" r="5" style="stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)"/><text x="501" y="310" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series-C</text><path d="M 469 324
+L 499 324" style="stroke-width:3;stroke:rgb(238,102,102);fill:none"/><circle cx="484" cy="324" r="5" style="stroke-width:3;stroke:rgb(238,102,102);fill:rgb(238,102,102)"/><text x="501" y="330" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series-D</text><path d="M 469 344
+L 499 344" style="stroke-width:3;stroke:rgb(115,192,222);fill:none"/><circle cx="484" cy="344" r="5" style="stroke-width:3;stroke:rgb(115,192,222);fill:rgb(115,192,222)"/><text x="501" y="350" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series-E</text><path d="M 300 223
+L 300 114
+A 109 109 119.89 0 1 395 277
+L 300 223
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 394 169
+L 407 161
+M 407 161
+L 422 161" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="425" y="166" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-A: 33.3%</text><path d="M 300 223
+L 395 277
+A 109 109 84.08 0 1 256 323
+L 300 223
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 333 326
+L 338 341
+M 338 341
+L 353 341" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="356" y="346" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-B: 23.35%</text><path d="M 300 223
+L 256 323
+A 109 109 66.35 0 1 191 222
+L 300 223
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 209 282
+L 196 290
+M 196 290
+L 181 290" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="80" y="295" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-C: 18.43%</text><path d="M 300 223
+L 191 222
+A 109 109 55.37 0 1 238 133
+L 300 223
+Z" style="stroke:none;fill:rgb(238,102,102)"/><path d="M 204 172
+L 191 165
+M 191 165
+L 176 165" style="stroke-width:1;stroke:rgb(238,102,102);fill:none"/><text x="75" y="170" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-D: 15.37%</text><path d="M 300 223
+L 238 133
+A 109 109 34.32 0 1 300 114
+L 300 223
+Z" style="stroke:none;fill:rgb(115,192,222)"/><path d="M 268 119
+L 264 105
+M 264 105
+L 249 105" style="stroke-width:1;stroke:rgb(115,192,222);fill:none"/><text x="157" y="110" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Series-E: 9.53%</text></svg>

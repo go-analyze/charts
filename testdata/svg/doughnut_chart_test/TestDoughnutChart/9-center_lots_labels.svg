@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><path d="M 300 200
+L 440 87
+A 180 180 26.62 0 1 476 162
+L 300 200
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 300 200
+L 369 34
+A 180 180 28.90 0 1 440 87
+L 300 200
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 300 200
+L 300 20
+A 180 180 22.39 0 1 369 34
+L 300 200
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 300 200
+L 476 162
+A 180 180 25.56 0 1 475 242
+L 300 200
+Z" style="stroke:none;fill:rgb(238,102,102)"/><path d="M 300 200
+L 475 242
+A 180 180 23.60 0 1 444 308
+L 300 200
+Z" style="stroke:none;fill:rgb(115,192,222)"/><path d="M 300 200
+L 444 308
+A 180 180 44.13 0 1 328 378
+L 300 200
+Z" style="stroke:none;fill:rgb(59,162,114)"/><path d="M 300 200
+L 328 378
+A 180 180 90.37 0 1 122 226
+L 300 200
+Z" style="stroke:none;fill:rgb(252,132,82)"/><path d="M 300 200
+L 122 226
+A 180 180 25.74 0 1 128 147
+L 300 200
+Z" style="stroke:none;fill:rgb(154,96,180)"/><path d="M 300 200
+L 128 147
+A 180 180 46.84 0 1 221 38
+L 300 200
+Z" style="stroke:none;fill:rgb(234,124,204)"/><path d="M 300 200
+L 221 38
+A 180 180 25.87 0 1 300 20
+L 300 200
+Z" style="stroke:none;fill:rgb(123,142,198)"/><circle cx="300" cy="200" r="108" style="stroke:none;fill:white"/><path d="M 341 101
+L 342 106" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><text x="260" y="119" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Cyprus: 6.21%</text><path d="M 359 111
+L 354 119" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/><text x="261" y="132" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Denmark: 8.02%</text><path d="M 393 147
+L 378 155" style="stroke-width:2;stroke:rgb(250,200,88);fill:none"/><text x="294" y="162" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Estonia: 7.39%</text><path d="M 407 193
+L 386 194" style="stroke-width:2;stroke:rgb(238,102,102);fill:none"/><text x="302" y="201" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Finland: 7.09%</text><path d="M 401 237
+L 378 229" style="stroke-width:2;stroke:rgb(115,192,222);fill:none"/><text x="297" y="236" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">France: 6.55%</text><path d="M 362 288
+L 352 274" style="stroke-width:2;stroke:rgb(59,162,114);fill:none"/><text x="251" y="274" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Germany: 12.25%</text><path d="M 224 276
+L 239 261" style="stroke-width:2;stroke:rgb(252,132,82);fill:none"/><text x="239" y="261" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Greece: 25.1%</text><path d="M 195 177
+L 214 181" style="stroke-width:2;stroke:rgb(154,96,180);fill:none"/><text x="214" y="188" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Hungary: 7.14%</text><path d="M 224 125
+L 232 133" style="stroke-width:2;stroke:rgb(234,124,204);fill:none"/><text x="232" y="146" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Ireland: 13.01%</text><path d="M 266 98
+L 266 98" style="stroke-width:2;stroke:rgb(123,142,198);fill:none"/><text x="266" y="111" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Italy: 7.18%</text></svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><path d="M 217 23
+L 247 23
+L 247 36
+L 217 36
+L 217 23" style="stroke:none;fill:rgb(84,112,198)"/><text x="249" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">A</text><path d="M 280 23
+L 310 23
+L 310 36
+L 280 36
+L 280 23" style="stroke:none;fill:rgb(145,204,117)"/><text x="312" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">B</text><path d="M 342 23
+L 372 23
+L 372 36
+L 342 36
+L 342 23" style="stroke:none;fill:rgb(250,200,88)"/><text x="374" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">C</text><path d="M 300 218
+L 300 88
+A 130 130 159.66 0 1 345 340
+L 300 218
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 427 196
+L 442 193
+M 442 193
+L 457 193" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="460" y="198" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">LabelFormatter: A=1048</text><path d="M 300 218
+L 345 340
+A 130 130 111.98 0 1 170 214
+L 300 218
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 225 323
+L 216 335
+M 216 335
+L 201 335" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="66" y="340" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">LabelFormatter: B=735</text><path d="M 300 218
+L 170 214
+A 130 130 88.36 0 1 300 88
+L 300 218
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 210 126
+L 200 115
+M 200 115
+L 185 115" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="50" y="120" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">LabelFormatter: C=580</text></svg>

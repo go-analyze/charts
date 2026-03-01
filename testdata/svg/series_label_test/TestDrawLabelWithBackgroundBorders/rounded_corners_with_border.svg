@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 400"><path d="M 54 30
+L 73 30
+L 73 30
+A 8 8 90.00 0 1 81 38
+L 81 46
+L 81 46
+A 8 8 90.00 0 1 73 54
+L 54 54
+L 54 54
+A 8 8 90.00 0 1 46 46
+L 46 38
+L 46 38
+A 8 8 90.00 0 1 54 30
+Z" style="stroke-width:3;stroke:blue;fill:yellow"/><text x="50" y="50" style="stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif">test</text></svg>

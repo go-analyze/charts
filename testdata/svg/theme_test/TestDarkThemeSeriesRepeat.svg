@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:rgb(40,40,60)"/><path d="M 21 19
+L 51 19" style="stroke-width:3;stroke:rgb(250,250,250);fill:none"/><circle cx="36" cy="19" r="5" style="stroke-width:3;stroke:rgb(250,250,250);fill:rgb(250,250,250)"/><text x="53" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Email</text><path d="M 112 19
+L 142 19" style="stroke-width:3;stroke:rgb(200,50,50);fill:none"/><circle cx="127" cy="19" r="5" style="stroke-width:3;stroke:rgb(200,50,50);fill:rgb(200,50,50)"/><text x="144" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Union Ads</text><path d="M 235 19
+L 265 19" style="stroke-width:3;stroke:rgb(204,204,204);fill:none"/><circle cx="250" cy="19" r="5" style="stroke-width:3;stroke:rgb(204,204,204);fill:rgb(204,204,204)"/><text x="267" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Video Ads</text><path d="M 357 19
+L 387 19" style="stroke-width:3;stroke:rgb(156,52,52);fill:none"/><circle cx="372" cy="19" r="5" style="stroke-width:3;stroke:rgb(156,52,52);fill:rgb(156,52,52)"/><text x="389" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Direct</text><path d="M 450 19
+L 480 19" style="stroke-width:3;stroke:rgb(158,158,158);fill:none"/><circle cx="465" cy="19" r="5" style="stroke-width:3;stroke:rgb(158,158,158);fill:rgb(158,158,158)"/><text x="482" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Search Engine</text><text x="19" y="44" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">1.4k</text><text x="19" y="202" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">700</text><text x="19" y="361" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><path d="M 15 46
+L 590 46" style="stroke-width:1;stroke:rgb(40,40,60);fill:none"/><path d="M 15 125
+L 590 125" style="stroke-width:1;stroke:rgb(40,40,60);fill:none"/><path d="M 15 205
+L 590 205" style="stroke-width:1;stroke:rgb(40,40,60);fill:none"/><path d="M 15 285
+L 590 285" style="stroke-width:1;stroke:rgb(40,40,60);fill:none"/><path d="M 19 365
+L 590 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 19 370
+L 19 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 100 370
+L 100 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 182 370
+L 182 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 263 370
+L 263 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 345 370
+L 345 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 426 370
+L 426 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 508 370
+L 508 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 590 370
+L 590 365" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="59" y="375" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Mon</text><text x="141" y="375" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Tue</text><text x="222" y="375" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Wed</text><text x="304" y="375" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Thu</text><text x="385" y="375" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Fri</text><text x="467" y="375" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Sat</text><text x="549" y="375" style="stroke:none;fill:none;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Sun</text><path d="M 59 338
+L 141 335
+L 222 342
+L 304 335
+L 385 345
+L 467 313
+L 549 318" style="stroke-width:2;stroke:rgb(250,250,250);fill:none"/><path d="M 59 315
+L 141 324
+L 222 322
+L 304 312
+L 385 299
+L 467 290
+L 549 295" style="stroke-width:2;stroke:rgb(200,50,50);fill:none"/><path d="M 59 331
+L 141 313
+L 222 320
+L 304 330
+L 385 322
+L 467 290
+L 549 272" style="stroke-width:2;stroke:rgb(204,204,204);fill:none"/><path d="M 59 293
+L 141 290
+L 222 297
+L 304 289
+L 385 277
+L 467 290
+L 549 293" style="stroke-width:2;stroke:rgb(156,52,52);fill:none"/><path d="M 59 179
+L 141 153
+L 222 160
+L 304 153
+L 385 72
+L 467 62
+L 549 65" style="stroke-width:2;stroke:rgb(158,158,158);fill:none"/></svg>

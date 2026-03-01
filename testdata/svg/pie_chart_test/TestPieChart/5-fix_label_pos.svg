@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1150 550"><path d="M 20 20
+L 1130 20
+L 1130 530
+L 20 530
+L 20 20" style="stroke:none;fill:white"/><text x="981" y="56" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Fix label K (72586)</text><path d="M 575 290
+L 717 241
+A 150 150 18.17 0 1 725 288
+L 575 290
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 722 265
+L 737 262
+M 737 262
+L 752 262" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="755" y="267" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">C (149086 ≅ 5.04%)</text><path d="M 575 290
+L 687 191
+A 150 150 22.62 0 1 717 241
+L 575 290
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 704 215
+L 717 207
+M 717 207
+L 732 207" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="735" y="212" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">B (185596 ≅ 6.28%)</text><path d="M 575 290
+L 575 140
+A 150 150 48.45 0 1 687 191
+L 575 290
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 636 154
+L 642 140
+M 642 140
+L 657 140" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="660" y="145" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">A (397594 ≅ 13.45%)</text><path d="M 575 290
+L 725 288
+A 150 150 17.58 0 1 719 333
+L 575 290
+Z" style="stroke:none;fill:rgb(238,102,102)"/><path d="M 723 310
+L 738 313
+M 738 313
+L 753 313" style="stroke-width:1;stroke:rgb(238,102,102);fill:none"/><text x="756" y="318" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">D (144258 ≅ 4.88%)</text><path d="M 575 290
+L 719 333
+A 150 150 14.65 0 1 703 368
+L 575 290
+Z" style="stroke:none;fill:rgb(115,192,222)"/><path d="M 711 351
+L 725 357
+M 725 357
+L 740 357" style="stroke-width:1;stroke:rgb(115,192,222);fill:none"/><text x="743" y="362" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">E (120194 ≅ 4.06%)</text><path d="M 575 290
+L 703 368
+A 150 150 14.32 0 1 680 398
+L 575 290
+Z" style="stroke:none;fill:rgb(59,162,114)"/><path d="M 692 383
+L 703 393
+M 703 393
+L 718 393" style="stroke-width:1;stroke:rgb(59,162,114);fill:none"/><text x="721" y="398" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">F (117514 ≅ 3.97%)</text><path d="M 575 290
+L 680 398
+A 150 150 12.12 0 1 655 417
+L 575 290
+Z" style="stroke:none;fill:rgb(252,132,82)"/><path d="M 667 407
+L 676 419
+M 676 419
+L 691 419" style="stroke-width:1;stroke:rgb(252,132,82);fill:none"/><text x="694" y="424" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">G (99412 ≅ 3.36%)</text><path d="M 575 290
+L 655 417
+A 150 150 11.11 0 1 629 430
+L 575 290
+Z" style="stroke:none;fill:rgb(154,96,180)"/><path d="M 642 424
+L 648 437
+M 648 437
+L 663 437" style="stroke-width:1;stroke:rgb(154,96,180);fill:none"/><text x="666" y="442" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">H (91135 ≅ 3.08%)</text><path d="M 575 290
+L 629 430
+A 150 150 10.64 0 1 602 438
+L 575 290
+Z" style="stroke:none;fill:rgb(234,124,204)"/><path d="M 615 434
+L 619 453
+M 619 453
+L 634 453" style="stroke-width:1;stroke:rgb(234,124,204);fill:none"/><text x="637" y="458" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">I (87282 ≅ 2.95%)</text><path d="M 575 290
+L 602 438
+A 150 150 9.36 0 1 578 440
+L 575 290
+Z" style="stroke:none;fill:rgb(123,142,198)"/><path d="M 589 439
+L 591 469
+M 591 469
+L 606 469" style="stroke-width:1;stroke:rgb(123,142,198);fill:none"/><text x="609" y="474" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">J (76790 ≅ 2.59%)</text><path d="M 575 290
+L 425 300
+A 150 150 3.61 0 1 425 291
+L 575 290
+Z" style="stroke:none;fill:rgb(183,166,190)"/><path d="M 426 295
+L 411 295
+M 411 295
+L 396 295" style="stroke-width:1;stroke:rgb(183,166,190);fill:none"/><text x="303" y="300" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Z (29608 ≅ 1%)</text><path d="M 575 290
+L 426 310
+A 150 150 3.97 0 1 425 300
+L 575 290
+Z" style="stroke:none;fill:rgb(243,192,171)"/><path d="M 426 305
+L 411 311
+M 411 311
+L 396 311" style="stroke-width:1;stroke:rgb(243,192,171);fill:none"/><text x="292" y="316" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Y (32566 ≅ 1.1%)</text><path d="M 575 290
+L 428 321
+A 150 150 4.00 0 1 426 310
+L 575 290
+Z" style="stroke:none;fill:rgb(123,178,153)"/><path d="M 428 315
+L 413 327
+M 413 327
+L 398 327" style="stroke-width:1;stroke:rgb(123,178,153);fill:none"/><text x="294" y="332" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">X (32788 ≅ 1.1%)</text><path d="M 575 290
+L 431 331
+A 150 150 4.12 0 1 428 321
+L 575 290
+Z" style="stroke:none;fill:rgb(190,217,228)"/><path d="M 430 325
+L 415 343
+M 415 343
+L 400 343" style="stroke-width:1;stroke:rgb(190,217,228);fill:none"/><text x="286" y="348" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">W (33784 ≅ 1.14%)</text><path d="M 575 290
+L 434 342
+A 150 150 4.47 0 1 431 331
+L 575 290
+Z" style="stroke:none;fill:rgb(237,184,184)"/><path d="M 433 336
+L 419 359
+M 419 359
+L 404 359" style="stroke-width:1;stroke:rgb(237,184,184);fill:none"/><text x="293" y="364" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">V (36644 ≅ 1.24%)</text><path d="M 575 290
+L 439 353
+A 150 150 4.56 0 1 434 342
+L 575 290
+Z" style="stroke:none;fill:rgb(243,222,176)"/><path d="M 437 347
+L 423 375
+M 423 375
+L 408 375" style="stroke-width:1;stroke:rgb(243,222,176);fill:none"/><text x="297" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">U (37414 ≅ 1.26%)</text><path d="M 575 290
+L 445 364
+A 150 150 4.81 0 1 439 353
+L 575 290
+Z" style="stroke:none;fill:rgb(196,215,187)"/><path d="M 442 358
+L 429 391
+M 429 391
+L 414 391" style="stroke-width:1;stroke:rgb(196,215,187);fill:none"/><text x="303" y="396" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">T (39476 ≅ 1.33%)</text><path d="M 575 290
+L 452 376
+A 150 150 5.03 0 1 445 364
+L 575 290
+Z" style="stroke:none;fill:rgb(159,170,203)"/><path d="M 449 370
+L 436 407
+M 436 407
+L 421 407" style="stroke-width:1;stroke:rgb(159,170,203);fill:none"/><text x="310" y="412" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">S (41242 ≅ 1.39%)</text><path d="M 575 290
+L 462 388
+A 150 150 6.27 0 1 452 376
+L 575 290
+Z" style="stroke:none;fill:rgb(234,164,215)"/><path d="M 457 382
+L 445 423
+M 445 423
+L 430 423" style="stroke-width:1;stroke:rgb(234,164,215);fill:none"/><text x="319" y="428" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">R (51460 ≅ 1.74%)</text><path d="M 575 290
+L 474 401
+A 150 150 6.55 0 1 462 388
+L 575 290
+Z" style="stroke:none;fill:rgb(167,133,183)"/><path d="M 468 394
+L 457 439
+M 457 439
+L 442 439" style="stroke-width:1;stroke:rgb(167,133,183);fill:none"/><text x="330" y="444" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Q (53746 ≅ 1.81%)</text><path d="M 575 290
+L 487 412
+A 150 150 6.68 0 1 474 401
+L 575 290
+Z" style="stroke:none;fill:rgb(245,163,128)"/><path d="M 481 406
+L 471 455
+M 471 455
+L 456 455" style="stroke-width:1;stroke:rgb(245,163,128);fill:none"/><text x="345" y="460" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">P (54792 ≅ 1.85%)</text><path d="M 575 290
+L 502 421
+A 150 150 6.76 0 1 487 412
+L 575 290
+Z" style="stroke:none;fill:rgb(85,176,133)"/><path d="M 495 416
+L 487 471
+M 487 471
+L 472 471" style="stroke-width:1;stroke:rgb(85,176,133);fill:none"/><text x="360" y="476" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">O (55486 ≅ 1.87%)</text><path d="M 575 290
+L 519 429
+A 150 150 6.86 0 1 502 421
+L 575 290
+Z" style="stroke:none;fill:rgb(154,203,223)"/><path d="M 511 425
+L 504 487
+M 504 487
+L 489 487" style="stroke-width:1;stroke:rgb(154,203,223);fill:none"/><text x="384" y="492" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">N (56306 ≅ 1.9%)</text><path d="M 575 290
+L 536 435
+A 150 150 7.10 0 1 519 429
+L 575 290
+Z" style="stroke:none;fill:rgb(235,145,145)"/><path d="M 528 432
+L 523 503
+M 523 503
+L 508 503" style="stroke-width:1;stroke:rgb(235,145,145);fill:none"/><text x="394" y="508" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">M (58270 ≅ 1.97%)</text><path d="M 575 290
+L 555 439
+A 150 150 7.17 0 1 536 435
+L 575 290
+Z" style="stroke:none;fill:rgb(244,210,134)"/><path d="M 546 437
+L 543 519
+M 543 519
+L 528 519" style="stroke-width:1;stroke:rgb(244,210,134);fill:none"/><text x="418" y="524" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">L (58818 ≅ 1.99%)</text><path d="M 575 290
+L 578 440
+A 150 150 8.85 0 1 555 439
+L 575 290
+Z" style="stroke:none;fill:rgb(171,207,154)"/><path d="M 567 439
+L 566 535
+M 566 535
+L 551 535" style="stroke-width:1;stroke:rgb(171,207,154);fill:none"/><text x="440" y="540" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">K (72586 ≅ 2.45%)</text><path d="M 575 290
+L 425 291
+A 150 150 3.60 0 1 425 281
+L 575 290
+Z" style="stroke:none;fill:rgb(238,201,228)"/><path d="M 426 286
+L 411 279
+M 411 279
+L 396 279" style="stroke-width:1;stroke:rgb(238,201,228);fill:none"/><text x="294" y="284" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AA (29558 ≅ 1%)</text><path d="M 575 290
+L 425 281
+A 150 150 3.58 0 1 426 272
+L 575 290
+Z" style="stroke:none;fill:rgb(191,196,212)"/><path d="M 426 277
+L 411 263
+M 411 263
+L 396 263" style="stroke-width:1;stroke:rgb(191,196,212);fill:none"/><text x="276" y="268" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AB (29384 ≅ 0.99%)</text><path d="M 575 290
+L 426 272
+A 150 150 3.43 0 1 427 263
+L 575 290
+Z" style="stroke:none;fill:rgb(219,227,216)"/><path d="M 427 268
+L 412 247
+M 412 247
+L 397 247" style="stroke-width:1;stroke:rgb(219,227,216);fill:none"/><text x="277" y="252" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AC (28166 ≅ 0.95%)</text><path d="M 575 290
+L 427 263
+A 150 150 3.29 0 1 429 254
+L 575 290
+Z" style="stroke:none;fill:rgb(246,236,214)"/><path d="M 429 259
+L 414 231
+M 414 231
+L 399 231" style="stroke-width:1;stroke:rgb(246,236,214);fill:none"/><text x="279" y="236" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AD (26998 ≅ 0.91%)</text><path d="M 575 290
+L 429 254
+A 150 150 3.28 0 1 432 246
+L 575 290
+Z" style="stroke:none;fill:rgb(243,219,219)"/><path d="M 431 251
+L 416 215
+M 416 215
+L 401 215" style="stroke-width:1;stroke:rgb(243,219,219);fill:none"/><text x="282" y="220" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AE (26948 ≅ 0.91%)</text><path d="M 575 290
+L 432 246
+A 150 150 3.18 0 1 434 238
+L 575 290
+Z" style="stroke:none;fill:rgb(221,233,237)"/><path d="M 433 243
+L 419 199
+M 419 199
+L 404 199" style="stroke-width:1;stroke:rgb(221,233,237);fill:none"/><text x="286" y="204" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AF (26054 ≅ 0.88%)</text><path d="M 575 290
+L 434 238
+A 150 150 3.14 0 1 437 231
+L 575 290
+Z" style="stroke:none;fill:rgb(157,185,172)"/><path d="M 436 235
+L 422 183
+M 422 183
+L 407 183" style="stroke-width:1;stroke:rgb(157,185,172);fill:none"/><text x="287" y="188" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AG (25804 ≅ 0.87%)</text><path d="M 575 290
+L 437 231
+A 150 150 3.14 0 1 441 223
+L 575 290
+Z" style="stroke:none;fill:rgb(246,220,210)"/><path d="M 439 227
+L 426 167
+M 426 167
+L 411 167" style="stroke-width:1;stroke:rgb(246,220,210);fill:none"/><text x="290" y="172" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AH (25730 ≅ 0.87%)</text><path d="M 575 290
+L 441 223
+A 150 150 2.98 0 1 444 216
+L 575 290
+Z" style="stroke:none;fill:rgb(200,195,202)"/><path d="M 443 220
+L 430 151
+M 430 151
+L 415 151" style="stroke-width:1;stroke:rgb(200,195,202);fill:none"/><text x="300" y="156" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AI (24438 ≅ 0.82%)</text><path d="M 575 290
+L 444 216
+A 150 150 2.90 0 1 448 210
+L 575 290
+Z" style="stroke:none;fill:rgb(246,233,243)"/><path d="M 447 214
+L 434 135
+M 434 135
+L 419 135" style="stroke-width:1;stroke:rgb(246,233,243);fill:none"/><text x="308" y="140" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AJ (23782 ≅ 0.8%)</text><path d="M 575 290
+L 448 210
+A 150 150 2.79 0 1 452 204
+L 575 290
+Z" style="stroke:none;fill:rgb(123,142,198)"/><path d="M 451 207
+L 438 119
+M 438 119
+L 423 119" style="stroke-width:1;stroke:rgb(123,142,198);fill:none"/><text x="303" y="124" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AK (22896 ≅ 0.77%)</text><path d="M 575 290
+L 452 204
+A 150 150 2.61 0 1 456 198
+L 575 290
+Z" style="stroke:none;fill:rgb(171,207,154)"/><path d="M 455 201
+L 443 103
+M 443 103
+L 428 103" style="stroke-width:1;stroke:rgb(171,207,154);fill:none"/><text x="310" y="108" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AL (21404 ≅ 0.72%)</text><path d="M 575 290
+L 456 198
+A 150 150 52.28 0 1 575 140
+L 575 290
+Z" style="stroke:none;fill:rgb(244,210,134)"/><path d="M 509 156
+L 503 87
+M 503 87
+L 488 87" style="stroke-width:1;stroke:rgb(244,210,134);fill:none"/><text x="351" y="92" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">AM (428978 ≅ 14.52%)</text></svg>

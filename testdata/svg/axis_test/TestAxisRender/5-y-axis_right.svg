@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 486 50
+L 486 350" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 486 50
+L 491 50" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 486 100
+L 491 100" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 486 150
+L 491 150" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 486 200
+L 491 200" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 486 250
+L 491 250" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 486 300
+L 491 300" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 486 350
+L 491 350" style="stroke-width:1;stroke:blue;fill:none"/><text x="496" y="59" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Sun</text><text x="496" y="108" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Sat</text><text x="496" y="158" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Fri</text><text x="496" y="208" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Thu</text><text x="496" y="257" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Wed</text><text x="496" y="307" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Tue</text><text x="496" y="357" style="stroke:none;fill:green;font-size:23px;font-family:'Roboto Medium',sans-serif">Mon</text><path d="M 50 50
+L 486 50" style="stroke-width:1;stroke:rgb(128,128,128);fill:none"/><path d="M 50 100
+L 486 100" style="stroke-width:1;stroke:rgb(128,128,128);fill:none"/><path d="M 50 150
+L 486 150" style="stroke-width:1;stroke:rgb(128,128,128);fill:none"/><path d="M 50 200
+L 486 200" style="stroke-width:1;stroke:rgb(128,128,128);fill:none"/><path d="M 50 250
+L 486 250" style="stroke-width:1;stroke:rgb(128,128,128);fill:none"/><path d="M 50 300
+L 486 300" style="stroke-width:1;stroke:rgb(128,128,128);fill:none"/></svg>

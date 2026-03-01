@@ -1,6 +1,6 @@
 export GO111MODULE = on
 
-.PHONY: default test test-cover bench lint
+.PHONY: default test test-update test-cover bench lint
 
 # Packages to test, exclude packages without tests to avoid example noise
 CODE_PKGS := $(shell go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)
@@ -8,6 +8,9 @@ CODE_PKGS := $(shell go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPa
 
 test:
 	go test -race -cover $(CODE_PKGS)
+
+test-update:
+	UPDATE_SVG_GOLDEN=1 go test -count=1 -race -cover $(CODE_PKGS)
 
 test-cover:
 	go test -race -coverprofile=test.out ./... && go tool cover --html=test.out

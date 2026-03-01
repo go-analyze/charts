@@ -50,7 +50,7 @@ func testColorShades(t *testing.T, colors ...Color) {
 
 	data, err := p.Bytes()
 	require.NoError(t, err)
-	assertEqualSVG(t, "", data)
+	assertEqualSVG(t, nil, data)
 }
 
 func TestGrayColors(t *testing.T) {

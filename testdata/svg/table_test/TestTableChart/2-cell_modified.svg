@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 36
+L 0 36
+L 0 0" style="stroke:none;fill:rgb(220,220,220)"/><path d="M 0 36
+L 600 36
+L 600 93
+L 0 93
+L 0 36" style="stroke:none;fill:white"/><path d="M 0 93
+L 600 93
+L 600 150
+L 0 150
+L 0 93" style="stroke:none;fill:rgb(245,245,245)"/><path d="M 0 150
+L 600 150
+L 600 207
+L 0 207
+L 0 150" style="stroke:none;fill:white"/><path d="M 10 10
+L 110 10
+L 110 26
+L 10 26
+L 10 10" style="stroke:none;fill:white"/><path d="M 130 10
+L 230 10
+L 230 26
+L 130 26
+L 130 10" style="stroke:none;fill:aqua"/><path d="M 250 10
+L 350 10
+L 350 26
+L 250 26
+L 250 10" style="stroke:none;fill:white"/><path d="M 370 10
+L 470 10
+L 470 26
+L 370 26
+L 370 10" style="stroke:none;fill:aqua"/><path d="M 490 10
+L 590 10
+L 590 26
+L 490 26
+L 490 10" style="stroke:none;fill:white"/><path d="M 10 46
+L 110 46
+L 110 83
+L 10 83
+L 10 46" style="stroke:none;fill:white"/><path d="M 130 46
+L 230 46
+L 230 83
+L 130 83
+L 130 46" style="stroke:none;fill:yellow"/><path d="M 250 46
+L 350 46
+L 350 83
+L 250 83
+L 250 46" style="stroke:none;fill:white"/><path d="M 370 46
+L 470 46
+L 470 83
+L 370 83
+L 370 46" style="stroke:none;fill:yellow"/><path d="M 490 46
+L 590 46
+L 590 83
+L 490 83
+L 490 46" style="stroke:none;fill:white"/><path d="M 10 103
+L 110 103
+L 110 140
+L 10 140
+L 10 103" style="stroke:none;fill:white"/><path d="M 130 103
+L 230 103
+L 230 140
+L 130 140
+L 130 103" style="stroke:none;fill:aqua"/><path d="M 250 103
+L 350 103
+L 350 140
+L 250 140
+L 250 103" style="stroke:none;fill:white"/><path d="M 370 103
+L 470 103
+L 470 140
+L 370 140
+L 370 103" style="stroke:none;fill:aqua"/><path d="M 490 103
+L 590 103
+L 590 140
+L 490 140
+L 490 103" style="stroke:none;fill:white"/><path d="M 10 160
+L 110 160
+L 110 197
+L 10 197
+L 10 160" style="stroke:none;fill:white"/><path d="M 130 160
+L 230 160
+L 230 197
+L 130 197
+L 130 160" style="stroke:none;fill:yellow"/><path d="M 250 160
+L 350 160
+L 350 197
+L 250 197
+L 250 160" style="stroke:none;fill:white"/><path d="M 370 160
+L 470 160
+L 470 197
+L 370 197
+L 370 160" style="stroke:none;fill:yellow"/><path d="M 490 160
+L 590 160
+L 590 197
+L 490 197
+L 490 160" style="stroke:none;fill:white"/><text x="10" y="22" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Name</text><text x="130" y="22" style="stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Age</text><text x="250" y="22" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Address</text><text x="370" y="22" style="stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Tag</text><text x="490" y="22" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Action</text><text x="10" y="58" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">John Brown</text><text x="130" y="58" style="stroke:none;fill:purple;font-size:15.3px;font-family:'Roboto Medium',sans-serif">32</text><text x="250" y="58" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">New York No.</text><text x="250" y="79" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">1 Lake Park</text><text x="370" y="58" style="stroke:none;fill:purple;font-size:15.3px;font-family:'Roboto Medium',sans-serif">nice,</text><text x="370" y="79" style="stroke:none;fill:purple;font-size:15.3px;font-family:'Roboto Medium',sans-serif">developer</text><text x="490" y="58" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Send Mail</text><text x="10" y="115" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Jim Green</text><text x="130" y="115" style="stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif">42</text><text x="250" y="115" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">London No. 1</text><text x="250" y="136" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Lake Park</text><text x="370" y="115" style="stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif">wow</text><text x="490" y="115" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Send Mail</text><text x="10" y="172" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Joe Black</text><text x="130" y="172" style="stroke:none;fill:purple;font-size:15.3px;font-family:'Roboto Medium',sans-serif">32</text><text x="250" y="172" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Sidney No. 1</text><text x="250" y="193" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Lake Park</text><text x="370" y="172" style="stroke:none;fill:purple;font-size:15.3px;font-family:'Roboto Medium',sans-serif">cool, teacher</text><text x="490" y="172" style="stroke:none;fill:blue;font-size:15.3px;font-family:'Roboto Medium',sans-serif">Send Mail</text></svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 197 29
+L 227 29" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="212" cy="29" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><text x="229" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Line Data</text><path d="M 314 29
+L 344 29" style="stroke-width:3;stroke:rgb(145,204,117);fill:none"/><circle cx="329" cy="29" r="5" style="stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/><text x="346" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Bar Data</text><text x="40" y="62" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">400</text><text x="19" y="94" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">356.11</text><text x="19" y="127" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">312.22</text><text x="19" y="160" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">268.33</text><text x="19" y="193" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">224.44</text><text x="19" y="226" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">180.56</text><text x="19" y="259" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">136.67</text><text x="27" y="292" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">92.78</text><text x="27" y="325" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">48.89</text><text x="58" y="358" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">5</text><path d="M 73 56
+L 580 56" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 89
+L 580 89" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 122
+L 580 122" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 155
+L 580 155" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 188
+L 580 188" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 221
+L 580 221" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 254
+L 580 254" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 287
+L 580 287" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 73 320
+L 580 320" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 77 354
+L 580 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 77 359
+L 77 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 148 359
+L 148 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 220 359
+L 220 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 292 359
+L 292 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 364 359
+L 364 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 436 359
+L 436 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 508 359
+L 508 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 359
+L 580 354" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="97" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Mon</text><text x="171" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Tue</text><text x="241" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Wed</text><text x="315" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Thu</text><text x="391" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Fri</text><text x="461" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Sat</text><text x="531" y="380" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Sun</text><path d="M 87 305
+L 138 305
+L 138 353
+L 87 353
+L 87 305" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 158 290
+L 209 290
+L 209 353
+L 158 353
+L 158 290" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 230 275
+L 281 275
+L 281 353
+L 230 353
+L 230 275" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 302 260
+L 353 260
+L 353 353
+L 302 353
+L 302 260" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 374 298
+L 425 298
+L 425 353
+L 374 353
+L 374 298" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 446 283
+L 497 283
+L 497 353
+L 446 353
+L 446 283" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 518 268
+L 569 268
+L 569 353
+L 518 353
+L 518 268" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 112 268
+L 184 259
+L 256 282
+L 328 257
+L 400 290
+L 472 185
+L 544 200" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><circle cx="112" cy="268" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="184" cy="259" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="256" cy="282" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="328" cy="257" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="400" cy="290" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="472" cy="185" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="544" cy="200" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/></svg>

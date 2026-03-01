@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="20" y="36" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Basic Radar Chart</text><path d="M 143 29
+L 173 29" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="158" cy="29" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><text x="175" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Allocated Budget</text><path d="M 313 29
+L 343 29" style="stroke-width:3;stroke:rgb(145,204,117);fill:none"/><circle cx="328" cy="29" r="5" style="stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/><text x="345" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Actual Spending</text><path d="M 300 193
+L 321 206
+L 321 230
+L 300 243
+L 279 230
+L 279 206
+L 300 193" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 168
+L 343 193
+L 343 242
+L 300 268
+L 257 243
+L 257 194
+L 300 168" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 143
+L 364 181
+L 364 255
+L 300 293
+L 236 255
+L 236 181
+L 300 143" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 118
+L 386 168
+L 386 267
+L 300 318
+L 214 268
+L 214 169
+L 300 118" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 93
+L 408 156
+L 408 280
+L 300 343
+L 192 280
+L 192 156
+L 300 93" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 218
+L 300 93" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 218
+L 408 156" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 218
+L 408 280" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 218
+L 300 343" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 218
+L 192 280" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 218
+L 192 156" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><text x="284" y="85" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Sales</text><text x="413" y="161" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Administration</text><text x="413" y="285" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Information Technology</text><text x="248" y="361" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Customer Support</text><text x="111" y="285" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Development</text><text x="129" y="161" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Marketing</text><path d="M 300 138
+L 320 207
+L 372 259
+L 300 333
+L 196 278
+L 223 174
+L 300 138" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><path d="M 300 138
+L 320 207
+L 372 259
+L 300 333
+L 196 278
+L 223 174
+L 300 138" style="stroke:none;fill:rgba(84,112,198,0.1)"/><circle cx="300" cy="138" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><circle cx="320" cy="207" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><circle cx="372" cy="259" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><circle cx="300" cy="333" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><circle cx="196" cy="278" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><circle cx="223" cy="174" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><circle cx="300" cy="138" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><path d="M 300 122
+L 394 164
+L 401 276
+L 300 303
+L 213 268
+L 210 166
+L 300 122" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/><path d="M 300 122
+L 394 164
+L 401 276
+L 300 303
+L 213 268
+L 210 166
+L 300 122" style="stroke:none;fill:rgba(145,204,117,0.1)"/><circle cx="300" cy="122" r="2" style="stroke-width:2;stroke:rgb(145,204,117);fill:white"/><circle cx="394" cy="164" r="2" style="stroke-width:2;stroke:rgb(145,204,117);fill:white"/><circle cx="401" cy="276" r="2" style="stroke-width:2;stroke:rgb(145,204,117);fill:white"/><circle cx="300" cy="303" r="2" style="stroke-width:2;stroke:rgb(145,204,117);fill:white"/><circle cx="213" cy="268" r="2" style="stroke-width:2;stroke:rgb(145,204,117);fill:white"/><circle cx="210" cy="166" r="2" style="stroke-width:2;stroke:rgb(145,204,117);fill:white"/><circle cx="300" cy="122" r="2" style="stroke-width:2;stroke:rgb(145,204,117);fill:white"/></svg>

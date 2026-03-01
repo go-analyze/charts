@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><text x="268" y="56" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Pie Chart</text><path d="M 156 53
+L 186 53
+L 186 66
+L 156 66
+L 156 53" style="stroke:none;fill:rgb(84,112,198)"/><text x="188" y="65" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">A</text><path d="M 219 53
+L 249 53
+L 249 66
+L 219 66
+L 219 53" style="stroke:none;fill:rgb(145,204,117)"/><text x="251" y="65" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">B</text><path d="M 281 53
+L 311 53
+L 311 66
+L 281 66
+L 281 53" style="stroke:none;fill:rgb(250,200,88)"/><text x="313" y="65" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">C</text><path d="M 343 53
+L 373 53
+L 373 66
+L 343 66
+L 343 53" style="stroke:none;fill:rgb(238,102,102)"/><text x="375" y="65" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">D</text><path d="M 405 53
+L 435 53
+L 435 66
+L 405 66
+L 405 53" style="stroke:none;fill:rgb(115,192,222)"/><text x="437" y="65" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">E</text><path d="M 300 220
+L 300 108
+A 112 112 119.89 0 1 397 276
+L 300 220
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 396 165
+L 409 157
+M 409 157
+L 424 157" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="427" y="162" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">A: 33.3%</text><path d="M 300 220
+L 397 276
+A 112 112 84.08 0 1 255 322
+L 300 220
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 334 326
+L 339 340
+M 339 340
+L 354 340" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="357" y="345" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">B: 23.35%</text><path d="M 300 220
+L 255 322
+A 112 112 66.35 0 1 188 219
+L 300 220
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 207 280
+L 194 288
+M 194 288
+L 179 288" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="119" y="293" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">C: 18.43%</text><path d="M 300 220
+L 188 219
+A 112 112 55.37 0 1 237 128
+L 300 220
+Z" style="stroke:none;fill:rgb(238,102,102)"/><path d="M 202 168
+L 189 161
+M 189 161
+L 174 161" style="stroke-width:1;stroke:rgb(238,102,102);fill:none"/><text x="114" y="166" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">D: 15.37%</text><path d="M 300 220
+L 237 128
+A 112 112 34.32 0 1 300 108
+L 300 220
+Z" style="stroke:none;fill:rgb(115,192,222)"/><path d="M 268 114
+L 263 100
+M 263 100
+L 248 100" style="stroke-width:1;stroke:rgb(115,192,222);fill:none"/><text x="196" y="105" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">E: 9.53%</text></svg>

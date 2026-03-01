@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 640 440"><path d="M 20 20
+L 170 20
+L 170 140
+L 20 140
+L 20 20" style="stroke-width:1;stroke:red;fill:none"/><path d="M 170 20
+L 470 20
+L 470 140
+L 170 140
+L 170 20" style="stroke-width:1;stroke:green;fill:none"/><path d="M 470 20
+L 620 20
+L 620 140
+L 470 140
+L 470 20" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 20 140
+L 620 140
+L 620 420
+L 20 420
+L 20 140" style="stroke-width:1;stroke:black;fill:none"/></svg>

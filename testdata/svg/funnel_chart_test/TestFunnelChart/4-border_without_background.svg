@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 20 20
+L 580 20
+L 440 199
+L 160 199
+L 20 20" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 270 92
+L 331 92
+L 331 113
+L 270 113
+L 270 92" style="stroke-width:2.5;stroke:red;fill:none"/><text x="274" y="109" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">test label</text><path d="M 160 201
+L 440 201
+L 300 380
+L 300 380
+L 160 201" style="stroke:none;fill:rgb(145,204,117)"/><text x="284" y="290" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">(50%)</text></svg>

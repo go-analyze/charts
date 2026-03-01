@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 0 0
+L 600 0
+L 540 78
+L 60 78
+L 0 0" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 279 17
+L 322 17
+L 322 17
+A 5 5 90.00 0 1 327 22
+L 327 38
+L 327 38
+A 5 5 90.00 0 1 322 43
+L 279 43
+L 279 43
+A 5 5 90.00 0 1 274 38
+L 274 22
+L 274 22
+A 5 5 90.00 0 1 279 17
+Z" style="stroke:none;fill:red"/><text x="278" y="39" style="stroke:none;fill:white;font-size:17.9px;font-family:'Roboto Medium',sans-serif">Show</text><path d="M 60 80
+L 540 80
+L 480 158
+L 120 158
+L 60 80" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 276 94
+L 324 94
+L 324 94
+A 3 3 90.00 0 1 327 97
+L 327 120
+L 327 120
+A 3 3 90.00 0 1 324 123
+L 276 123
+L 276 123
+A 3 3 90.00 0 1 273 120
+L 273 97
+L 273 97
+A 3 3 90.00 0 1 276 94
+Z" style="stroke-width:2;stroke:purple;fill:blue"/><text x="277" y="119" style="stroke:none;fill:white;font-size:20.4px;font-family:'Roboto Medium',sans-serif">Click</text><path d="M 120 160
+L 480 160
+L 420 238
+L 180 238
+L 120 160" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 273 179
+L 328 179
+L 328 203
+L 273 203
+L 273 179" style="stroke-width:2;stroke:red;fill:lime"/><text x="277" y="199" style="stroke:none;fill:black;font-size:15.3px;font-family:'Roboto Medium',sans-serif">🟢 Visit</text><path d="M 180 240
+L 420 240
+L 360 318
+L 240 318
+L 180 240" style="stroke:none;fill:rgb(238,102,102)"/><text x="261" y="279" style="stroke:none;fill:rgb(255,165,0);font-size:19.2px;font-family:'Roboto Medium',sans-serif">⭐ Inquiry</text><path d="M 240 320
+L 360 320
+L 300 398
+L 300 398
+L 240 320" style="stroke:none;fill:rgb(115,192,222)"/></svg>

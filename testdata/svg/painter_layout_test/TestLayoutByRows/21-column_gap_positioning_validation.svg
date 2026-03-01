@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 640 440"><path d="M 20 20
+L 120 20
+L 120 120
+L 20 120
+L 20 20" style="stroke-width:1;stroke:red;fill:none"/><path d="M 170 20
+L 270 20
+L 270 120
+L 170 120
+L 170 20" style="stroke-width:1;stroke:green;fill:none"/><path d="M 320 20
+L 420 20
+L 420 120
+L 320 120
+L 320 20" style="stroke-width:1;stroke:blue;fill:none"/><path d="M 170 120
+L 370 120
+L 370 220
+L 170 220
+L 170 120" style="stroke-width:1;stroke:black;fill:none"/><path d="M 520 120
+L 620 120
+L 620 220
+L 520 220
+L 520 120" style="stroke-width:1;stroke:purple;fill:none"/></svg>
