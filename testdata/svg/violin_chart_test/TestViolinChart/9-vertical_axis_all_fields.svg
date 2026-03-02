@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="260" y="386" style="stroke:none;fill:blue;font-size:17.9px;font-family:'Roboto Medium',sans-serif">value axis</text><text x="9" y="354" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(20.00,9,354)">1.400</text><text x="105" y="354" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(20.00,105,354)">0.933</text><text x="202" y="354" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(20.00,202,354)">0.467</text><text x="299" y="354" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(20.00,299,354)">0.000</text><text x="395" y="354" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(20.00,395,354)">0.467</text><text x="492" y="354" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(20.00,492,354)">0.933</text><text x="555" y="354" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(20.00,555,354)">1.400</text><path d="M 106 10
+L 106 335" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 203 10
+L 203 335" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 10
+L 300 335" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 396 10
+L 396 335" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 493 10
+L 493 335" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 590 10
+L 590 335" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 254 20
+L 337 20
+L 337 97
+L 254 97
+L 254 20" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 217 97
+L 370 97
+L 370 174
+L 217 174
+L 217 97" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 188 174
+L 428 174
+L 428 251
+L 188 251
+L 188 174" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 258 251
+L 333 251
+L 333 329
+L 258 329
+L 258 251" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 300 20
+L 300 329" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/></svg>

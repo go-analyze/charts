@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="9" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.8</text><text x="154" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.4</text><text x="299" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="444" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.4</text><text x="568" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.8</text><path d="M 155 10
+L 155 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 10
+L 300 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 445 10
+L 445 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 590 10
+L 590 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 245 20
+L 372 20
+L 372 59
+L 245 59
+L 245 20" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 184 59
+L 445 59
+L 445 99
+L 184 99
+L 184 59" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 126 99
+L 481 99
+L 481 138
+L 126 138
+L 126 99" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 198 138
+L 379 138
+L 379 178
+L 198 178
+L 198 138" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 300 20
+L 300 178" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 220 198
+L 365 198
+L 365 237
+L 220 237
+L 220 198" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 155 237
+L 423 237
+L 423 277
+L 155 277
+L 155 237" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 104 277
+L 524 277
+L 524 316
+L 104 316
+L 104 277" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 227 316
+L 358 316
+L 358 356
+L 227 356
+L 227 316" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 300 198
+L 300 356" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/></svg>

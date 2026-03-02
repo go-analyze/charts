@@ -76,11 +76,11 @@ func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		minPadScale = *rangeValuePaddingScale
 		maxPadScale = minPadScale
 	}
-	if minCfg != nil && *minCfg < minVal {
+	if minCfg != nil && *minCfg <= minVal {
 		minVal = *minCfg
 		minPadScale = 0.0
 	}
-	if maxCfg != nil && *maxCfg > maxVal {
+	if maxCfg != nil && *maxCfg >= maxVal {
 		maxVal = *maxCfg
 		maxPadScale = 0.0
 	}
@@ -584,9 +584,13 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 	labelCountCfg int, labelCountAdjustment int, labelUnit float64,
 	seriesList seriesList, labelRotation float64, fontStyle FontStyle) axisRange {
 	// If user provided no labels, use series names.
-	// If provided only partially, fill in the remaining labels.
-	for i := len(labels); i < getSeriesMaxDataCount(seriesList); i++ {
-		labels = append(labels, strconv.Itoa(i+1))
+	// For violin charts, one provided label maps to one violin slot, so avoid auto-filling partial labels.
+	isViolinSeries := allSeriesMatchType(seriesList, ChartTypeViolin) ||
+		allSeriesMatchType(seriesList, ChartTypeHorizontalViolin)
+	if len(labels) == 0 || !isViolinSeries {
+		for i := len(labels); i < getSeriesMaxDataCount(seriesList); i++ {
+			labels = append(labels, strconv.Itoa(i+1))
+		}
 	}
 	dataCount := len(labels)
 
@@ -701,6 +705,35 @@ func niceNumFrom(val float64, nums []float64) float64 {
 // niceNum returns the smallest "nice" number >= val from {1, 2, 2.5, 5} × 10^n.
 func niceNum(val float64) float64 {
 	return niceNumFrom(val, niceNums[:])
+}
+
+// roundSymmetricAxisExtent rounds an absolute symmetric axis extent upward so each step from zero lands on a
+// friendly interval. The result is never smaller than the input extent.
+func roundSymmetricAxisExtent(extent float64, stepsFromZero int, unit float64) float64 {
+	if extent <= 0 {
+		return extent
+	}
+	if stepsFromZero < 1 {
+		stepsFromZero = 1
+	}
+	rawInterval := extent / float64(stepsFromZero)
+	if rawInterval <= 0 {
+		return extent
+	}
+	var interval float64
+	if unit > 0 {
+		interval = math.Ceil(rawInterval/unit) * unit
+	} else {
+		interval = niceNumFrom(rawInterval, extendedNiceNums[:])
+	}
+	if interval <= 0 {
+		return extent
+	}
+	roundedExtent := interval * float64(stepsFromZero)
+	if roundedExtent < extent {
+		return extent
+	}
+	return roundedExtent
 }
 
 // unitAlignmentTier returns 0 if interval is an integer multiple of unit,

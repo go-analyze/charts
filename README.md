@@ -7,7 +7,7 @@ Our library focuses on generating beautiful charts and graphs within Go. Graphs 
 
 ## Functionality
 
-Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `doughnut`, `radar`, `heat map`, `candlestick`, `funnel` and `table`.
+Currently supported chart types: `line`, `scatter`, `bar`, `horizontal bar`, `pie`, `doughnut`, `radar`, `heat map`, `candlestick`, `funnel`, `violin` and `table`.
 
 New users should check out the [Features Overview](https://github.com/go-analyze/charts/wiki/Feature-Overview) on our Wiki to see commonly used features for each chart type, as well as linking to specific examples for the feature.
 
@@ -333,6 +333,38 @@ func main() {
 
 Top Funnel Chart Examples:
 * [funnel_chart-1-basic](./examples/1-Painter/funnel_chart-1-basic) - Basic funnel chart.
+
+### Violin Chart
+
+<img src="./assets/chart-violin.png">
+
+```go
+import (
+	"github.com/go-analyze/charts"
+)
+
+func main() {
+	samples := [][]float64{normalData, skewedData, bimodalData, tightData}
+	opt, err := charts.NewViolinChartOptionWithSamples(samples, 80)
+	// ... err check
+	opt.Title.Text = "Distribution Shapes"
+	opt.Legend.SeriesNames = []string{"Normal", "Skewed", "Bimodal", "Tight"}
+	for i := range opt.SeriesList {
+		opt.SeriesList[i].MarkLine.AddLines(charts.SeriesMarkTypeMedian, charts.SeriesMarkTypeAverage)
+	}
+
+	p := charts.NewPainter(charts.PainterOptions{
+		Width:        800,
+		Height:       400,
+	})
+	err = p.ViolinChart(opt)
+	// ... err check
+	buf, err := p.Bytes()
+```
+
+Top Violin Chart Examples:
+* [violin_chart-1-basic](./examples/1-Painter/violin_chart-1-basic) - Population pyramid comparing US and Japan age demographics.
+* [violin_chart-1-samples](examples/1-Painter/violin_chart-2-samples) - KDE from sample data with median and average mark lines.
 
 ### ECharts Render
 

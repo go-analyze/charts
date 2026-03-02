@@ -67,6 +67,8 @@ type defaultRenderOption struct {
 	stackSeries bool
 	// xAxis contains options for the x-axis.
 	xAxis *XAxisOption
+	// axisRangeOverride, when set, forces the value axis range used for x-axis when axisReversed=true.
+	axisRangeOverride *[2]float64
 	// yAxis contains options for the y-axis. At most two y-axes are supported.
 	yAxis []YAxisOption
 	// title contains options for rendering the chart title.
@@ -248,8 +250,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	// we will render on the actual painter once we know the space the y-axis will occupy
 	var xAxisOpts axisOption
 	if opt.axisReversed { // X is value axis
+		var axisMin, axisMax, axisPadScale *float64
+		if opt.axisRangeOverride != nil {
+			axisMin = &opt.axisRangeOverride[0]
+			axisMax = &opt.axisRangeOverride[1]
+			zeroPad := 0.0
+			axisPadScale = &zeroPad
+		}
 		xAxisRange := calculateValueAxisRange(p, false, p.Width(),
-			nil, nil, nil,
+			axisMin, axisMax, axisPadScale,
 			opt.xAxis.Labels, opt.xAxis.DataStartIndex,
 			opt.xAxis.LabelCount, opt.xAxis.Unit, opt.xAxis.LabelCountAdjustment,
 			opt.seriesList, 0, opt.stackSeries,
@@ -450,6 +459,8 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	doughnutSeriesList := filterSeriesList[DoughnutSeriesList](opt.SeriesList, ChartTypeDoughnut)
 	radarSeriesList := filterSeriesList[RadarSeriesList](opt.SeriesList, ChartTypeRadar)
 	funnelSeriesList := filterSeriesList[FunnelSeriesList](opt.SeriesList, ChartTypeFunnel)
+	violinSeriesList := filterSeriesList[ViolinSeriesList](opt.SeriesList, ChartTypeViolin)
+	horizontalViolinSeriesList := filterSeriesList[ViolinSeriesList](opt.SeriesList, ChartTypeHorizontalViolin)
 
 	// Check if any incompatible chart types are being mixed
 	// All compatible chart types need the absIndex field in the series
@@ -464,9 +475,13 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		return nil, errors.New("radar can not mix other charts")
 	} else if len(funnelSeriesList) != 0 && len(funnelSeriesList) != seriesCount {
 		return nil, errors.New("funnel can not mix other charts")
+	} else if len(violinSeriesList) != 0 && len(violinSeriesList) != seriesCount {
+		return nil, errors.New("violin can not mix other charts")
+	} else if len(horizontalViolinSeriesList) != 0 && len(horizontalViolinSeriesList) != seriesCount {
+		return nil, errors.New("horizontal violin can not mix other charts")
 	}
 
-	axisReversed := len(horizontalBarSeriesList) != 0
+	axisReversed := len(horizontalBarSeriesList) != 0 || len(violinSeriesList) != 0
 	renderOpt := defaultRenderOption{
 		theme:          opt.Theme,
 		padding:        opt.Padding,
@@ -494,6 +509,17 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	}
 	if len(horizontalBarSeriesList) != 0 {
 		renderOpt.yAxis[0].Unit = 1
+	}
+	if len(violinSeriesList) != 0 {
+		violinConfigureRenderOption(&renderOpt, violinSeriesList, false, nil,
+			getPreferredValueFormatter(opt.XAxis.ValueFormatter, opt.ValueFormatter))
+	} else if len(horizontalViolinSeriesList) != 0 {
+		var yAxisValueFormatter ValueFormatter
+		if len(opt.YAxis) > 0 {
+			yAxisValueFormatter = opt.YAxis[0].ValueFormatter
+		}
+		violinConfigureRenderOption(&renderOpt, horizontalViolinSeriesList, true, nil,
+			getPreferredValueFormatter(yAxisValueFormatter, opt.ValueFormatter))
 	}
 
 	renderResult, err := defaultRender(p, renderOpt)
@@ -563,6 +589,47 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 				WickWidth:      1.0,
 				ValueFormatter: opt.ValueFormatter,
 			}).renderChart(renderResult)
+			return err
+		})
+	}
+
+	// violin chart
+	if len(violinSeriesList) != 0 || len(horizontalViolinSeriesList) != 0 {
+		// TODO - ChartOption does not expose options: ShowSpine, SpineWidth, ViolinWidth
+		vOpt := ViolinChartOption{
+			Theme:          opt.Theme,
+			ValueFormatter: opt.ValueFormatter,
+		}
+		if len(violinSeriesList) != 0 {
+			vOpt.SeriesList = violinSeriesList
+			// vertical: X is the value axis
+			vOpt.ValueAxis.Show = opt.XAxis.Show
+			vOpt.ValueAxis.Title = opt.XAxis.Title
+			vOpt.ValueAxis.TitleFontStyle = opt.XAxis.TitleFontStyle
+			vOpt.ValueAxis.LabelFontStyle = opt.XAxis.LabelFontStyle
+			vOpt.ValueAxis.LabelRotation = opt.XAxis.LabelRotation
+			vOpt.ValueAxis.Unit = opt.XAxis.Unit
+			vOpt.ValueAxis.LabelCount = opt.XAxis.LabelCount
+			vOpt.ValueAxis.LabelCountAdjustment = opt.XAxis.LabelCountAdjustment
+		} else {
+			vOpt.Horizontal = true
+			vOpt.SeriesList = horizontalViolinSeriesList
+			// horizontal: Y is the value axis
+			if len(opt.YAxis) > 0 {
+				ya := opt.YAxis[0]
+				vOpt.ValueAxis.Show = ya.Show
+				vOpt.ValueAxis.Title = ya.Title
+				vOpt.ValueAxis.TitleFontStyle = ya.TitleFontStyle
+				vOpt.ValueAxis.LabelFontStyle = ya.LabelFontStyle
+				vOpt.ValueAxis.LabelRotation = ya.LabelRotation
+				vOpt.ValueAxis.Unit = ya.Unit
+				vOpt.ValueAxis.LabelCount = ya.LabelCount
+				vOpt.ValueAxis.LabelCountAdjustment = ya.LabelCountAdjustment
+				vOpt.ValueAxis.PreferNiceIntervals = ya.PreferNiceIntervals
+			}
+		}
+		handler.Add(func() error {
+			_, err := newViolinChart(p, vOpt).renderChart(renderResult)
 			return err
 		})
 	}

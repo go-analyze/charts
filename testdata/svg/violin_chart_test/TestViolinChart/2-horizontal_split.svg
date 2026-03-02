@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="9" y="16" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.8</text><text x="9" y="110" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.4</text><text x="22" y="205" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="9" y="299" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.4</text><text x="9" y="394" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.8</text><path d="M 37 10
+L 590 10" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 37 105
+L 590 105" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 37 200
+L 590 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 37 295
+L 590 295" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 51 105
+L 114 105
+L 114 248
+L 51 248
+L 51 105" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 114 10
+L 178 10
+L 178 272
+L 114 272
+L 114 10" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 178 82
+L 241 82
+L 241 248
+L 178 248
+L 178 82" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 241 153
+L 305 153
+L 305 224
+L 241 224
+L 241 153" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 51 200
+L 305 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 325 153
+L 388 153
+L 388 295
+L 325 295
+L 325 153" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 388 129
+L 452 129
+L 452 390
+L 388 390
+L 388 129" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 452 153
+L 515 153
+L 515 319
+L 452 319
+L 452 153" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 515 177
+L 579 177
+L 579 248
+L 515 248
+L 515 177" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 325 200
+L 579 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/></svg>

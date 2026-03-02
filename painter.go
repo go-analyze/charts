@@ -1146,6 +1146,12 @@ func (p *Painter) CandlestickChart(opt CandlestickChartOption) error {
 	return err
 }
 
+// ViolinChart renders a violin chart with the provided configuration to the painter.
+func (p *Painter) ViolinChart(opt ViolinChartOption) error {
+	_, err := newViolinChart(p, opt).Render()
+	return err
+}
+
 // LayoutBuilderGrid is returned by Painter.LayoutByGrid() and provides methods
 // for building grid-based layouts with cell spanning support.
 type LayoutBuilderGrid interface {

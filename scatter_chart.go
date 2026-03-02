@@ -118,7 +118,7 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 		for i, sampleValues := range series.Values {
 			allNull := true
 			for _, item := range sampleValues {
-				if item == GetNullValue() {
+				if !isValidExtent(item) {
 					continue
 				}
 				allNull = false

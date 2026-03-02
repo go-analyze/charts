@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"math"
 	"strconv"
 	"testing"
 
@@ -68,6 +69,175 @@ func TestFilterSeriesListUnknownType(t *testing.T) {
 
 	filtered := filterSeriesList[LineSeriesList](generic, "unknown")
 	assert.Empty(t, filtered)
+}
+
+func TestFilterSeriesListViolinRoundTrip(t *testing.T) {
+	t.Parallel()
+
+	original := NewSeriesListViolin([][][2]float64{
+		{{0.1, 0.2}, {0.4, 0.6}, {0.2, 0.1}},
+		{{0.2, 0.1}, {0.5, 0.4}},
+	}, ViolinSeriesOption{
+		Names:    []string{"A", "B"},
+		MarkLine: NewMarkLine(SeriesMarkTypeAverage, SeriesMarkTypeMedian),
+	})
+	generic := original.ToGenericSeriesList()
+	reconstructed := filterSeriesList[ViolinSeriesList](generic, ChartTypeViolin)
+
+	require.Len(t, reconstructed, len(original))
+	for i := range original {
+		assert.Equal(t, original[i].Name, reconstructed[i].Name)
+		assert.Equal(t, original[i].MarkLine, reconstructed[i].MarkLine)
+	}
+}
+
+func TestFilterSeriesListViolinExcludesOtherTypes(t *testing.T) {
+	t.Parallel()
+
+	generic := GenericSeriesList{
+		{Values: []float64{0.1, 0.2, 0.3, 0.4}, Type: ChartTypeViolin},
+		{Values: []float64{1, 2, 3}, Type: ChartTypeLine},
+	}
+
+	violinFiltered := filterSeriesList[ViolinSeriesList](generic, ChartTypeViolin)
+	lineFiltered := filterSeriesList[LineSeriesList](generic, ChartTypeLine)
+
+	assert.Len(t, violinFiltered, 1)
+	assert.Len(t, lineFiltered, 1)
+}
+
+func TestFilterSeriesListHorizontalViolin(t *testing.T) {
+	t.Parallel()
+
+	generic := GenericSeriesList{
+		{
+			Values: []float64{0.1, 0.2, 0.3, 0.4},
+			Type:   ChartTypeHorizontalViolin,
+			Name:   "H",
+		},
+		{
+			Values: []float64{0.2, 0.1},
+			Type:   ChartTypeViolin,
+			Name:   "V",
+		},
+	}
+
+	horizontal := filterSeriesList[ViolinSeriesList](generic, ChartTypeHorizontalViolin)
+	require.Len(t, horizontal, 1)
+	assert.Equal(t, "H", horizontal[0].Name)
+	require.Len(t, horizontal[0].Data, 2)
+	assert.InDelta(t, 0.1, horizontal[0].Data[0][0], 0.0)
+	assert.InDelta(t, 0.2, horizontal[0].Data[0][1], 0.0)
+	assert.InDelta(t, 0.3, horizontal[0].Data[1][0], 0.0)
+	assert.InDelta(t, 0.4, horizontal[0].Data[1][1], 0.0)
+}
+
+func TestViolinGenericPairEncodingPreserved(t *testing.T) {
+	t.Parallel()
+
+	nanValue := math.NaN()
+	original := ViolinSeriesList{
+		{
+			Data: [][2]float64{
+				{0.1, 0.2},
+				{GetNullValue(), 0.7},
+				{nanValue, 0.9},
+			},
+			Name: "A",
+		},
+	}
+
+	generic := original.ToGenericSeriesList()
+	require.Len(t, generic, 1)
+	require.Len(t, generic[0].Values, 6)
+	assert.InDelta(t, 0.1, generic[0].Values[0], 0.0)
+	assert.InDelta(t, 0.2, generic[0].Values[1], 0.0)
+	assert.InDelta(t, GetNullValue(), generic[0].Values[2], 0.0)
+	assert.InDelta(t, 0.7, generic[0].Values[3], 0.0)
+	assert.True(t, math.IsNaN(generic[0].Values[4]))
+	assert.InDelta(t, 0.9, generic[0].Values[5], 0.0)
+
+	reconstructed := filterSeriesList[ViolinSeriesList](generic, ChartTypeViolin)
+	require.Len(t, reconstructed, 1)
+	require.Len(t, reconstructed[0].Data, 3)
+	assert.InDelta(t, GetNullValue(), reconstructed[0].Data[1][0], 0.0)
+	assert.True(t, math.IsNaN(reconstructed[0].Data[2][0]))
+}
+
+func TestViolinValueExpansionParity(t *testing.T) {
+	t.Parallel()
+
+	rawValues := []float64{
+		0.1, 0.2,
+		GetNullValue(), 0.7,
+		math.NaN(), 0.9,
+		0.5, math.Inf(1),
+		0.3, // odd tail must be ignored
+	}
+	pairs := [][2]float64{
+		{0.1, 0.2},
+		{GetNullValue(), 0.7},
+		{math.NaN(), 0.9},
+		{0.5, math.Inf(1)},
+	}
+
+	// generic series has no Side field, so it always expands both sides
+	generic := GenericSeries{
+		Type:   ChartTypeViolin,
+		Values: rawValues,
+	}
+	violin := ViolinSeries{
+		Data: pairs,
+	}
+
+	assert.Equal(t, generic.getValues(), violin.getValues())
+}
+
+func TestGetSeriesMinMaxSumMaxViolin(t *testing.T) {
+	t.Parallel()
+
+	seriesList := NewSeriesListViolin([][][2]float64{
+		{{0.1, 0.2}, {GetNullValue(), 0.8}},
+		{{0.3, 0.4}},
+	})
+
+	min, max, maxSum := getSeriesMinMaxSumMax(seriesList, 0, true)
+	assert.InDelta(t, -0.8, min, 0.0)
+	assert.InDelta(t, 0.8, max, 0.0)
+	assert.InDelta(t, 0.8, maxSum, 0.0)
+}
+
+func TestGetSeriesMinMaxSumMaxViolinGeneric(t *testing.T) {
+	t.Parallel()
+
+	generic := NewSeriesListViolin([][][2]float64{
+		{{0.1, 0.2}, {GetNullValue(), 0.8}},
+		{{0.3, 0.4}},
+	}).ToGenericSeriesList()
+
+	min, max, maxSum := getSeriesMinMaxSumMax(generic, 0, true)
+	assert.InDelta(t, -0.8, min, 0.0)
+	assert.InDelta(t, 0.8, max, 0.0)
+	assert.InDelta(t, 0.8, maxSum, 0.0)
+}
+
+func TestNewSeriesListViolin(t *testing.T) {
+	t.Parallel()
+
+	seriesList := NewSeriesListViolin([][][2]float64{
+		{{0.1, 0.2}, {0.3, 0.4}},
+		{{0.5, 0.6}},
+	}, ViolinSeriesOption{
+		Names:    []string{"A", "B"},
+		MarkLine: NewMarkLine(SeriesMarkTypeAverage),
+	})
+
+	require.Len(t, seriesList, 2)
+	assert.Equal(t, "A", seriesList[0].Name)
+	assert.Equal(t, "B", seriesList[1].Name)
+	assert.Equal(t, [][2]float64{{0.1, 0.2}, {0.3, 0.4}}, seriesList[0].Data)
+	assert.Equal(t, NewMarkLine(SeriesMarkTypeAverage), seriesList[0].MarkLine)
+	assert.Equal(t, NewMarkLine(SeriesMarkTypeAverage), seriesList[1].MarkLine)
 }
 
 func TestGetSeriesMinMaxSumMaxEmpty(t *testing.T) {
@@ -314,13 +484,13 @@ func TestSeriesSummary(t *testing.T) {
 	})
 
 	t.Run("empty_series", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			MaxIndex: -1,
 			MinIndex: -1,
 		}, summarizePopulationData(nil))
 	})
 	t.Run("one_value", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			Max:               10,
 			MaxFirstIndex:     0,
 			MaxIndex:          0,
@@ -335,7 +505,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[0].Summary())
 	})
 	t.Run("two_values", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			Max:               2,
 			MaxIndex:          1,
 			MaxFirstIndex:     1,
@@ -350,7 +520,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[1].Summary())
 	})
 	t.Run("three_values", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			Max:               3,
 			MaxFirstIndex:     2,
 			MaxIndex:          2,
@@ -365,7 +535,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[2].Summary())
 	})
 	t.Run("four_values", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			Max:               4,
 			MaxFirstIndex:     3,
 			MaxIndex:          3,
@@ -380,7 +550,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[3].Summary())
 	})
 	t.Run("prime_values", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			Max:               13,
 			MaxFirstIndex:     3,
 			MaxIndex:          3,
@@ -395,13 +565,13 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[4].Summary())
 	})
 	t.Run("null_only", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			MaxIndex: -1,
 			MinIndex: -1,
 		}, seriesList[5].Summary())
 	})
 	t.Run("value_null", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			Max:               10,
 			MaxFirstIndex:     0,
 			MaxIndex:          0,
@@ -416,7 +586,7 @@ func TestSeriesSummary(t *testing.T) {
 		}, seriesList[6].Summary())
 	})
 	t.Run("value_null_value", func(t *testing.T) {
-		assert.Equal(t, populationSummary{
+		assert.Equal(t, PopulationSummary{
 			Max:               2,
 			MaxFirstIndex:     2,
 			MaxIndex:          2,

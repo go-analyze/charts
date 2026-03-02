@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="12" y="6" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="-1" y="105" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.5</text><text x="12" y="205" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="-1" y="304" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.5</text><text x="12" y="404" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><path d="M 27 0
+L 600 0" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 27 100
+L 600 100" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 27 200
+L 600 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 27 300
+L 600 300" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 41 200
+L 305 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 325 200
+L 589 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/></svg>

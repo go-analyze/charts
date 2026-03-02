@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="25" y="240" style="stroke:none;fill:blue;font-size:17.9px;font-family:'Roboto Medium',sans-serif" transform="rotate(270.00,25,240)">value axis</text><text x="31" y="18" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(345.00,31,18)">1.400</text><text x="31" y="81" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(345.00,31,81)">0.933</text><text x="31" y="144" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(345.00,31,144)">0.467</text><text x="31" y="207" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(345.00,31,207)">0.000</text><text x="31" y="270" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(345.00,31,270)">0.467</text><text x="31" y="333" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(345.00,31,333)">0.933</text><text x="31" y="396" style="stroke:none;fill:red;font-size:12.8px;font-family:'Roboto Medium',sans-serif" transform="rotate(345.00,31,396)">1.400</text><path d="M 72 10
+L 590 10" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 72 73
+L 590 73" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 72 136
+L 590 136" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 72 200
+L 590 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 72 263
+L 590 263" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 72 326
+L 590 326" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 86 176
+L 209 176
+L 209 230
+L 86 230
+L 86 176" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 209 154
+L 333 154
+L 333 255
+L 209 255
+L 209 154" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 333 116
+L 456 116
+L 456 274
+L 333 274
+L 333 116" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 456 179
+L 580 179
+L 580 228
+L 456 228
+L 456 179" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 86 200
+L 580 200" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/></svg>

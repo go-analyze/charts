@@ -13,11 +13,13 @@ const (
 	SeriesMarkTypeMax     = "max"
 	SeriesMarkTypeMin     = "min"
 	SeriesMarkTypeAverage = "average"
+	SeriesMarkTypeMedian  = "median"
 )
 
 // SeriesMark describes a single mark line or point type.
 type SeriesMark struct {
-	// Type is the mark data type: "max", "min", "average". "average" is only for mark line.
+	// Type is the mark data type: "max", "min", "average", "median".
+	// "average" and "median" are only for mark line.
 	Type string
 	// Global specifies the mark references the sum of all series. Only used when
 	// the Series is "Stacked" and the mark is on the LAST Series of the SeriesList.
@@ -80,6 +82,7 @@ type GenericSeries struct {
 	// Values provides the series data values.
 	// For ChartTypeCandlestick, the Values field must contain OHLC data encoded as groups of 4 consecutive
 	// float64 values: [Open, High, Low, Close, ...]. For N candlesticks, Values must have exactly N*4 elements.
+	// For ChartTypeViolin, Values encodes mirrored extents as interleaved pairs: [A0, B0, A1, B1, ...].
 	Values []float64
 	// YAxisIndex is the y-axis to apply the series to: must be 0 or 1.
 	YAxisIndex int
@@ -102,7 +105,15 @@ func (g *GenericSeries) getYAxisIndex() int {
 }
 
 func (g *GenericSeries) getValues() []float64 {
-	return g.Values
+	if g.Type != ChartTypeViolin && g.Type != ChartTypeHorizontalViolin {
+		return g.Values
+	}
+	// Generic violin values are encoded pairwise as [A0,B0,A1,B1,...].
+	pairCount := len(g.Values) / 2
+	return expandViolinValues(pairCount, func(index int) (float64, float64) {
+		baseIndex := index * 2
+		return g.Values[baseIndex], g.Values[baseIndex+1]
+	})
 }
 
 func (g *GenericSeries) getType() string {
@@ -133,14 +144,17 @@ func (g GenericSeriesList) getSeriesValues(index int) []float64 {
 }
 
 func (g GenericSeriesList) getSeriesLen(index int) int {
-	if g[index].Type == ChartTypeCandlestick {
+	switch g[index].Type {
+	case ChartTypeCandlestick:
 		if l := len(g[index].Values); l%4 == 0 {
 			return l / 4
-		} else {
-			return l // invalid OHLC format, each value will get its own candle
 		}
+		return len(g[index].Values) // invalid OHLC format, each value will get its own candle
+	case ChartTypeViolin, ChartTypeHorizontalViolin:
+		return len(g[index].Values) / 2
+	default:
+		return len(g[index].Values)
 	}
-	return len(g[index].Values)
 }
 
 func (g GenericSeriesList) getSeriesSymbol(i int) Symbol {
@@ -213,7 +227,7 @@ func (l *LineSeries) getType() string {
 	return ChartTypeLine
 }
 
-func (l *LineSeries) Summary() populationSummary {
+func (l *LineSeries) Summary() PopulationSummary {
 	return summarizePopulationData(l.Values)
 }
 
@@ -349,7 +363,7 @@ func (s *ScatterSeries) getType() string {
 	return ChartTypeScatter
 }
 
-func (s *ScatterSeries) Summary() populationSummary {
+func (s *ScatterSeries) Summary() PopulationSummary {
 	return summarizePopulationData(s.getValues())
 }
 
@@ -458,7 +472,7 @@ func (b *BarSeries) getType() string {
 	return ChartTypeBar
 }
 
-func (b *BarSeries) Summary() populationSummary {
+func (b *BarSeries) Summary() PopulationSummary {
 	return summarizePopulationData(b.Values)
 }
 
@@ -569,7 +583,7 @@ func (h *HorizontalBarSeries) getType() string {
 	return ChartTypeHorizontalBar
 }
 
-func (h *HorizontalBarSeries) Summary() populationSummary {
+func (h *HorizontalBarSeries) Summary() PopulationSummary {
 	return summarizePopulationData(h.Values)
 }
 
@@ -1289,6 +1303,35 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 			}
 		}
 		return any(result).(T)
+	case ChartTypeViolin, ChartTypeHorizontalViolin:
+		isHorizontal := chartType == ChartTypeHorizontalViolin
+		result := make(ViolinSeriesList, 0, sl.len())
+		for i := 0; i < sl.len(); i++ {
+			s := sl.getSeries(i)
+			if chartTypeMatch(chartType, s.getType()) {
+				switch v := s.(type) {
+				case *ViolinSeries:
+					vs := *v
+					vs.horizontal = isHorizontal
+					result = append(result, vs)
+				case *GenericSeries:
+					// decode pairwise: [A0,B0,A1,B1,...] -> [][2]float64
+					pairs := make([][2]float64, 0, len(v.Values)/2)
+					for j := 0; j+1 < len(v.Values); j += 2 {
+						pairs = append(pairs, [2]float64{v.Values[j], v.Values[j+1]})
+					}
+					result = append(result, ViolinSeries{
+						Data:          pairs,
+						YAxisIndex:    v.YAxisIndex,
+						Name:          v.Name,
+						MarkLine:      v.MarkLine,
+						horizontal:    isHorizontal,
+						absThemeIndex: Ptr(i),
+					})
+				}
+			}
+		}
+		return any(result).(T)
 	default:
 		var zero T
 		return zero
@@ -1326,10 +1369,11 @@ func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64
 		if series.getYAxisIndex() != yaxisIndex {
 			continue
 		}
-		for i, item := range series.getValues() {
-			if item == GetNullValue() {
+		for valueIndex, item := range series.getValues() {
+			if !isValidExtent(item) {
 				continue
 			}
+
 			if item > max {
 				max = item
 			}
@@ -1337,7 +1381,10 @@ func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64
 				min = item
 			}
 			if calcSum {
-				sums[i] += item
+				if valueIndex >= len(sums) {
+					sums = append(sums, make([]float64, valueIndex-len(sums)+1)...)
+				}
+				sums[valueIndex] += item
 			}
 		}
 	}
@@ -1713,7 +1760,7 @@ func (k *CandlestickSeries) getType() string {
 	return ChartTypeCandlestick
 }
 
-func (k *CandlestickSeries) Summary() populationSummary {
+func (k *CandlestickSeries) Summary() PopulationSummary {
 	return summarizePopulationData(k.getValues())
 }
 
@@ -1724,7 +1771,7 @@ func validateOHLCData(ohlc OHLCData) bool {
 
 // validateOHLCHighLow validates that High >= Low and neither is null.
 func validateOHLCHighLow(ohlc OHLCData) bool {
-	if ohlc.High == GetNullValue() || ohlc.Low == GetNullValue() {
+	if !isValidExtent(ohlc.High) || !isValidExtent(ohlc.Low) {
 		return false
 	}
 	return ohlc.High >= ohlc.Low
@@ -1732,7 +1779,7 @@ func validateOHLCHighLow(ohlc OHLCData) bool {
 
 // validateOHLCOpen validates that Open is within the High-Low range.
 func validateOHLCOpen(ohlc OHLCData) bool {
-	if ohlc.Open == GetNullValue() || !validateOHLCHighLow(ohlc) {
+	if !isValidExtent(ohlc.Open) || !validateOHLCHighLow(ohlc) {
 		return false
 	}
 	return ohlc.High >= ohlc.Open && ohlc.Low <= ohlc.Open
@@ -1740,7 +1787,7 @@ func validateOHLCOpen(ohlc OHLCData) bool {
 
 // validateOHLCClose validates that Close is within the High-Low range.
 func validateOHLCClose(ohlc OHLCData) bool {
-	if ohlc.Close == GetNullValue() || !validateOHLCHighLow(ohlc) {
+	if !isValidExtent(ohlc.Close) || !validateOHLCHighLow(ohlc) {
 		return false
 	}
 	return ohlc.High >= ohlc.Close && ohlc.Low <= ohlc.Close
@@ -2011,7 +2058,159 @@ func AggregateCandlestick(data CandlestickSeries, factor int) CandlestickSeries 
 	}
 }
 
-type populationSummary struct {
+// ViolinSeries references a population of data for violin charts.
+type ViolinSeries struct {
+	// Data contains [A,B] pairs where A is the extent toward the negative direction and B toward the positive.
+	Data [][2]float64
+	// Stats contains sample-based summary statistics. Required for mark lines to render.
+	// Populated automatically by NewViolinChartOptionWithSamples.
+	Stats *PopulationSummary
+	// YAxisIndex must be 0 for violin charts.
+	YAxisIndex int
+	// Name specifies a name for the series.
+	Name string
+	// MarkLine provides mark line configuration for the series. Mark lines only render when Stats is set.
+	MarkLine SeriesMarkLine
+
+	// absThemeIndex represents the series index when combined with other chart types.
+	absThemeIndex *int
+	// horizontal marks this series as a horizontal violin for correct type reporting.
+	horizontal bool
+}
+
+func (v *ViolinSeries) getYAxisIndex() int {
+	return v.YAxisIndex
+}
+
+func (v *ViolinSeries) getType() string {
+	if v.horizontal {
+		return ChartTypeHorizontalViolin
+	}
+	return ChartTypeViolin
+}
+
+func (v *ViolinSeries) getValues() []float64 {
+	return expandViolinValues(len(v.Data), func(index int) (float64, float64) {
+		return v.Data[index][0], v.Data[index][1]
+	})
+}
+
+func isValidExtent(v float64) bool {
+	return v != GetNullValue() && !math.IsNaN(v) && !math.IsInf(v, 0)
+}
+
+func expandViolinValues(pairCount int, pairAt func(index int) (float64, float64)) []float64 {
+	// 0 for spine + up to 4 values per pair when both sides are valid.
+	result := make([]float64, 0, 1+pairCount*4)
+	result = append(result, 0)
+	for i := 0; i < pairCount; i++ {
+		a, b := pairAt(i)
+		if isValidExtent(a) {
+			abs := math.Abs(a)
+			result = append(result, -abs, abs)
+		}
+		if isValidExtent(b) {
+			abs := math.Abs(b)
+			result = append(result, -abs, abs)
+		}
+	}
+	return result
+}
+
+// ViolinSeriesList provides the data populations for violin charts (ViolinChartOption).
+type ViolinSeriesList []ViolinSeries
+
+func (vl ViolinSeriesList) names() []string {
+	return seriesNames(vl)
+}
+
+func (vl ViolinSeriesList) len() int {
+	return len(vl)
+}
+
+func (vl ViolinSeriesList) getSeries(index int) series {
+	return &vl[index]
+}
+
+func (vl ViolinSeriesList) getSeriesName(index int) string {
+	return vl[index].Name
+}
+
+func (vl ViolinSeriesList) getSeriesValues(index int) []float64 {
+	return vl[index].getValues()
+}
+
+func (vl ViolinSeriesList) getSeriesLen(index int) int {
+	return len(vl[index].Data)
+}
+
+func (vl ViolinSeriesList) getSeriesSymbol(_ int) Symbol {
+	return ""
+}
+
+func (vl ViolinSeriesList) hasMarkPoint() bool {
+	return false
+}
+
+func (vl ViolinSeriesList) setSeriesName(index int, name string) {
+	vl[index].Name = name
+}
+
+func (vl ViolinSeriesList) sortByNameIndex(dict map[string]int) {
+	sort.Slice(vl, func(i, j int) bool {
+		return dict[vl[i].Name] < dict[vl[j].Name]
+	})
+}
+
+// ToGenericSeriesList encodes violin data as pairs [A0,B0,A1,B1,...] in GenericSeries Values.
+func (vl ViolinSeriesList) ToGenericSeriesList() GenericSeriesList {
+	result := make([]GenericSeries, len(vl))
+	for i, s := range vl {
+		values := make([]float64, 0, len(s.Data)*2)
+		for _, pair := range s.Data {
+			values = append(values, pair[0], pair[1])
+		}
+		result[i] = GenericSeries{
+			Values:     values,
+			YAxisIndex: s.YAxisIndex,
+			Name:       s.Name,
+			Type:       s.getType(),
+			MarkLine:   s.MarkLine,
+		}
+	}
+	return result
+}
+
+// ViolinSeriesOption provides series customization for NewSeriesListViolin.
+type ViolinSeriesOption struct {
+	// Names provide data names for each series.
+	Names []string
+	// MarkLine provides mark lines for all series.
+	MarkLine SeriesMarkLine
+}
+
+// NewSeriesListViolin builds a ViolinSeriesList from [A,B] pair data per series.
+func NewSeriesListViolin(values [][][2]float64, opts ...ViolinSeriesOption) ViolinSeriesList {
+	var opt ViolinSeriesOption
+	if len(opts) != 0 {
+		opt = opts[0]
+	}
+
+	seriesList := make([]ViolinSeries, len(values))
+	for index, v := range values {
+		s := ViolinSeries{
+			Data:     v,
+			MarkLine: opt.MarkLine,
+		}
+		if index < len(opt.Names) {
+			s.Name = opt.Names[index]
+		}
+		seriesList[index] = s
+	}
+	return seriesList
+}
+
+type PopulationSummary struct {
 	// Max is the maximum value in the series.
 	Max float64
 	// MaxFirstIndex is the first index of the maximum value in the series. If the series is empty this value will be -1.
@@ -2043,14 +2242,13 @@ type populationSummary struct {
 }
 
 // summarizePopulationData returns numeric summary of the values (population statistics).
-func summarizePopulationData(data []float64) populationSummary {
+func summarizePopulationData(data []float64) PopulationSummary {
 	var minFirstIndex, minIndex, maxFirstIndex, maxIndex int
-	minValue := math.MaxFloat64
-	maxValue := -math.MaxFloat64
+	minValue, maxValue := math.MaxFloat64, -math.MaxFloat64
 	var sum, sumSq, sumCu, sumQd float64
 	sortedData := make([]float64, 0, len(data))
 	for i, x := range data {
-		if x == GetNullValue() {
+		if !isValidExtent(x) {
 			continue
 		}
 		sortedData = append(sortedData, x)
@@ -2078,7 +2276,7 @@ func summarizePopulationData(data []float64) populationSummary {
 	sort.Float64s(sortedData) // sort non-null values for median and other computations
 	ni := len(sortedData)
 	if ni == 0 {
-		return populationSummary{
+		return PopulationSummary{
 			MinIndex: -1,
 			MaxIndex: -1,
 		}
@@ -2127,7 +2325,7 @@ func summarizePopulationData(data []float64) populationSummary {
 		kurtosis = fourthCentral / (nf * variance * variance)
 	} // else, all points might be the same => kurtosis is undefined
 
-	return populationSummary{
+	return PopulationSummary{
 		Max:               maxValue,
 		MaxFirstIndex:     maxFirstIndex,
 		MaxIndex:          maxIndex,
@@ -2202,4 +2400,16 @@ func getSeriesMaxDataCount(sl seriesList) (result int) {
 		}
 	}
 	return
+}
+
+func allSeriesMatchType(sl seriesList, chartType string) bool {
+	if sl == nil || sl.len() == 0 {
+		return false
+	}
+	for i := 0; i < sl.len(); i++ {
+		if !chartTypeMatch(chartType, sl.getSeries(i).getType()) {
+			return false
+		}
+	}
+	return true
 }

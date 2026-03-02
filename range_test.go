@@ -191,6 +191,21 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		assert.InDelta(t, 25.0, ar.max, 0.0)
 	})
 
+	t.Run("min_max_equal_data_bounds", func(t *testing.T) {
+		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+		series := testSeries{yAxisIndex: 0, values: []float64{10, 20}}
+		tsl := testSeriesList{series}
+
+		min := Ptr(10.0)
+		max := Ptr(20.0)
+		ar := calculateValueAxisRange(p, true, 800, min, max,
+			nil, []string{}, 0, 0, 0, 0,
+			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
+
+		assert.InDelta(t, 10.0, ar.min, 0.0)
+		assert.InDelta(t, 20.0, ar.max, 0.0)
+	})
+
 	t.Run("decimal_range", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{1.1, 2.2, 3.3}}
@@ -548,6 +563,30 @@ func TestNiceNumFrom(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			assert.InDelta(t, tc.expected, niceNumFrom(tc.input, extendedNiceNums[:]), 1e-10)
+		})
+	}
+}
+
+func TestRoundSymmetricAxisExtent(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		extent        float64
+		stepsFromZero int
+		unit          float64
+		expected      float64
+	}{
+		{name: "nice_extent", extent: 0.62, stepsFromZero: 2, expected: 0.8},
+		{name: "already_round", extent: 4.0, stepsFromZero: 2, expected: 4.0},
+		{name: "unit_aligned", extent: 0.62, stepsFromZero: 2, unit: 0.2, expected: 0.8},
+		{name: "minimum_steps", extent: 1.0, stepsFromZero: 0, expected: 1.0},
+		{name: "non_positive_extent", extent: 0.0, stepsFromZero: 2, expected: 0.0},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.InDelta(t, tc.expected, roundSymmetricAxisExtent(tc.extent, tc.stepsFromZero, tc.unit), 1e-10)
 		})
 	}
 }

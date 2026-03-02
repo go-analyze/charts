@@ -169,16 +169,18 @@ func (o OffsetStr) WithLeftI(val int) OffsetStr {
 }
 
 const (
-	ChartTypeLine          = "line"
-	ChartTypeScatter       = "scatter"
-	ChartTypeBar           = "bar"
-	ChartTypePie           = "pie"
-	ChartTypeDoughnut      = "doughnut"
-	ChartTypeRadar         = "radar"
-	ChartTypeFunnel        = "funnel"
-	ChartTypeHorizontalBar = "horizontalBar"
-	ChartTypeHeatMap       = "heatMap"
-	ChartTypeCandlestick   = "candlestick"
+	ChartTypeLine             = "line"
+	ChartTypeScatter          = "scatter"
+	ChartTypeBar              = "bar"
+	ChartTypePie              = "pie"
+	ChartTypeDoughnut         = "doughnut"
+	ChartTypeRadar            = "radar"
+	ChartTypeFunnel           = "funnel"
+	ChartTypeHorizontalBar    = "horizontalBar"
+	ChartTypeHeatMap          = "heatMap"
+	ChartTypeCandlestick      = "candlestick"
+	ChartTypeViolin           = "violin"
+	ChartTypeHorizontalViolin = "horizontalViolin"
 )
 
 const (

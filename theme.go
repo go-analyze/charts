@@ -77,6 +77,8 @@ type ColorPalette interface {
 	WithLabelTextColor(Color) ColorPalette
 	// WithLegendTextColor returns a new ColorPalette with the specified legend text color.
 	WithLegendTextColor(Color) ColorPalette
+	// WithAxisSplitLineColor returns a new ColorPalette with the specified axis split line color.
+	WithAxisSplitLineColor(Color) ColorPalette
 	// WithXAxisTextColor returns a new ColorPalette with the specified x-axis label color.
 	WithXAxisTextColor(Color) ColorPalette
 	// WithYAxisTextColor returns a new ColorPalette with the specified y-axis label color.
@@ -996,6 +998,13 @@ func (t *themeColorPalette) WithLegendTextColor(c Color) ColorPalette {
 	copy := *t
 	copy.name += "-legend_text_mod"
 	copy.legendTextColor = c
+	return &copy
+}
+
+func (t *themeColorPalette) WithAxisSplitLineColor(c Color) ColorPalette {
+	copy := *t
+	copy.name += "-axis_splitline_mod"
+	copy.axisSplitLineColor = c
 	return &copy
 }
 

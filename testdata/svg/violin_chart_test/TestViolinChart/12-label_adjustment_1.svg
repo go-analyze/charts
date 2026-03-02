@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="9" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.75</text><text x="105" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.5</text><text x="202" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.25</text><text x="299" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="395" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.25</text><text x="492" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.5</text><text x="559" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.75</text><path d="M 106 10
+L 106 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 203 10
+L 203 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 10
+L 300 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 396 10
+L 396 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 493 10
+L 493 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 590 10
+L 590 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 214 20
+L 369 20
+L 369 104
+L 214 104
+L 214 20" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 145 104
+L 431 104
+L 431 188
+L 145 188
+L 145 104" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 91 188
+L 539 188
+L 539 272
+L 91 272
+L 91 188" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 222 272
+L 361 272
+L 361 356
+L 222 356
+L 222 272" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 300 20
+L 300 356" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/></svg>

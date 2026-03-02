@@ -56,6 +56,9 @@ type ChartOption struct {
 	BarSize int
 	// BarMargin specifies the margin between grouped bars. BarSize takes priority over margin.
 	BarMargin *float64
+
+	// TODO - ChartOption does not yet expose violin-specific options: ShowSpine, SpineWidth, ViolinWidth
+
 	// Radius is the target radius for pie and radar charts. Default is "40%".
 	Radius string
 	// Children are child charts to render together.
@@ -342,5 +345,12 @@ func FunnelRender(values []float64, opts ...OptionFunc) (*Painter, error) {
 func CandleStickRender(values [][]OHLCData, opts ...OptionFunc) (*Painter, error) {
 	return Render(ChartOption{
 		SeriesList: NewSeriesListCandlestick(values).ToGenericSeriesList(),
+	}, opts...)
+}
+
+// ViolinRender renders a violin chart.
+func ViolinRender(values [][][2]float64, opts ...OptionFunc) (*Painter, error) {
+	return Render(ChartOption{
+		SeriesList: NewSeriesListViolin(values).ToGenericSeriesList(),
 	}, opts...)
 }

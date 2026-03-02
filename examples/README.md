@@ -48,6 +48,8 @@ For most use cases the `Painter API` is recommended. In our examples we demonstr
 * [scatter_chart-2-symbols](./1-Painter/scatter_chart-2-symbols) - Basic scatter chart showing per-series symbols.
 * [scatter_chart-3-dense_data](./1-Painter/scatter_chart-3-dense_data) - Scatter chart with dense data, trend lines, and more custom styling configured.
 * [scatter_chart-4-top_n_labels](./1-Painter/scatter_chart-4-top_n_labels) - Scatter chart showing labels only for the top N values, reducing visual clutter.
+* [violin_chart-1-basic](./1-Painter/violin_chart-1-basic) - Violin chart as population pyramids comparing US and Japan age demographics.
+* [violin_chart-2-samples](1-Painter/violin_chart-2-samples) - Violin chart from sample data using KDE, with median and average mark lines.
 * [table-1](./1-Painter/table-1) - Table with a variety of table specific configuration and styling demonstrated.
 
 ## `ChartOption` / `OptionFunc` Example List

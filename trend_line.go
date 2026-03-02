@@ -144,10 +144,10 @@ func (t *trendLinePainter) Render() (Box, error) {
 			// Convert fitted data to screen points, break where fitted is null.
 			points := make([]Point, len(fitted))
 			for i, val := range fitted {
-				if val == GetNullValue() {
-					points[i] = Point{X: opt.xValues[i], Y: math.MaxInt32}
-				} else {
+				if isValidExtent(val) {
 					points[i] = Point{X: opt.xValues[i], Y: opt.axisRange.getRestHeight(val)}
+				} else {
+					points[i] = Point{X: opt.xValues[i], Y: math.MaxInt32}
 				}
 			}
 
@@ -185,7 +185,7 @@ func extractNonNullData(y []float64) ([]float64, []int) {
 	cleanData := make([]float64, 0, len(y))
 	cleanIndices := make([]int, 0, len(y))
 	for i, v := range y {
-		if v != GetNullValue() {
+		if isValidExtent(v) {
 			cleanData = append(cleanData, v)
 			cleanIndices = append(cleanIndices, i)
 		}
@@ -197,7 +197,7 @@ func extractNonNullData(y []float64) ([]float64, []int) {
 func initResultWithNulls(y []float64) []float64 {
 	result := make([]float64, len(y))
 	for i, v := range y {
-		if v == GetNullValue() {
+		if !isValidExtent(v) {
 			result[i] = GetNullValue()
 		}
 	}
@@ -238,7 +238,7 @@ func computeLinearTrend(result, data, cleanData []float64, cleanIndices []int) (
 	intercept := (sumY - slope*sumX) / n
 
 	for i, v := range data {
-		if v != GetNullValue() { // Apply trend to non-null positions only
+		if isValidExtent(v) { // Apply trend to non-null positions only
 			result[i] = intercept + slope*float64(i)
 		}
 	}
@@ -300,7 +300,7 @@ func cubicTrend(y []float64) ([]float64, error) {
 
 	// Apply cubic polynomial to non-null positions only
 	for i, v := range y {
-		if v != GetNullValue() {
+		if isValidExtent(v) {
 			x := float64(i)
 			result[i] = coeffs[0] + coeffs[1]*x + coeffs[2]*x*x + coeffs[3]*x*x*x
 		}
@@ -335,7 +335,7 @@ func exponentialMovingAverageTrend(y []float64, window int) ([]float64, error) {
 	var ema float64
 	isFirst := true
 	for i, v := range y {
-		if v == GetNullValue() {
+		if !isValidExtent(v) {
 			continue
 		}
 
@@ -413,7 +413,7 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 	// Compute moving average for non-null positions
 	halfWindow := window / 2
 	for i, v := range y {
-		if v == GetNullValue() {
+		if !isValidExtent(v) {
 			continue
 		}
 
@@ -423,7 +423,7 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 		start := chartdraw.MaxInt(0, i-halfWindow)
 		end := chartdraw.MinInt(len(y)-1, i+halfWindow)
 		for j := start; j <= end; j++ {
-			if y[j] != GetNullValue() {
+			if isValidExtent(y[j]) {
 				sum += y[j]
 				count++
 			}
@@ -462,7 +462,7 @@ func bollingerBand(y []float64, period int, multiplier float64) ([]float64, erro
 	// Compute Bollinger bands with centered window
 	halfWindow := period / 2
 	for i, v := range y {
-		if v == GetNullValue() || sma[i] == GetNullValue() {
+		if !isValidExtent(v) || !isValidExtent(sma[i]) {
 			continue
 		}
 
@@ -474,7 +474,7 @@ func bollingerBand(y []float64, period int, multiplier float64) ([]float64, erro
 		end := chartdraw.MinInt(len(y)-1, i+halfWindow)
 
 		for j := start; j <= end; j++ {
-			if y[j] != GetNullValue() {
+			if isValidExtent(y[j]) {
 				diff := y[j] - mean
 				variance += diff * diff
 				count++
