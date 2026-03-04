@@ -72,7 +72,7 @@ func TestRadarChart(t *testing.T) {
 			name:        "basic_themed",
 			themed:      true,
 			makeOptions: makeBasicRadarChartOption,
-			pngCRC:      0xaa7f7dcd,
+			pngCRC:      0xcce3ef38,
 		},
 	}
 

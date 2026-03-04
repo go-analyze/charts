@@ -140,7 +140,7 @@ func (rr *rasterRenderer) FillStroke() {
 // Circle fully draws a circle at a given point but does not apply the fill or stroke (for PathBuilder interface).
 func (rr *rasterRenderer) Circle(radius float64, x, y int) {
 	xf, yf := float64(x), float64(y)
-	rr.gc.MoveTo(xf-radius, yf) // explicit MoveTo to avoid LineTo if components already on raster, see issue #78
+	rr.gc.MoveTo(xf+radius, yf) // explicit MoveTo at arc start to avoid LineTo from prior path, see issue #78
 	rr.gc.ArcTo(xf, yf, radius, radius, 0, _2pi)
 }
 
