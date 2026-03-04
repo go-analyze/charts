@@ -1,7 +1,6 @@
 package charts
 
 import (
-	"errors"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -76,7 +75,8 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 	p := s.p
 	opt := s.opt
 	if len(opt.SeriesList) == 0 {
-		return BoxZero, errors.New("empty series list")
+		result.renderNoData(opt.Theme)
+		return p.box, nil
 	}
 	seriesPainter := result.seriesPainter
 

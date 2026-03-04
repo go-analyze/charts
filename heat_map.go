@@ -82,12 +82,14 @@ func NewHeatMapOptionWithData(data [][]float64) HeatMapOption {
 func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := h.opt
 	if len(opt.Values) == 0 {
-		return BoxZero, errors.New("empty values")
+		result.renderNoData(opt.Theme)
+		return h.p.box, nil
 	}
 	numRows := len(opt.Values)
 	numCols := sliceMaxLen(opt.Values...)
 	if numCols == 0 {
-		return BoxZero, errors.New("heat map has no columns")
+		result.renderNoData(opt.Theme)
+		return h.p.box, nil
 	}
 	seriesPainter := result.seriesPainter.Child(PainterPaddingOption(NewBoxEqual(1)))
 

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><path d="M 202 33
+L 232 33
+L 232 46
+L 202 46
+L 202 33" style="stroke:none;fill:rgb(84,112,198)"/><text x="234" y="45" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series A</text><path d="M 311 33
+L 341 33
+L 341 46
+L 311 46
+L 311 33" style="stroke:none;fill:rgb(145,204,117)"/><text x="343" y="45" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series B</text><circle cx="300" cy="218" r="60" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/><path d="M 234 284
+L 366 152" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/></svg>

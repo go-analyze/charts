@@ -522,6 +522,36 @@ func TestCandlestickChart(t *testing.T) {
 			},
 			pngCRC: 0xe7a6d8e7,
 		},
+		{
+			name: "empty_series_list",
+			makeOptions: func() CandlestickChartOption {
+				opt := NewCandlestickOptionWithSeries()
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				opt.XAxis = XAxisOption{Labels: []string{"Jan", "Feb", "Mar"}}
+				opt.YAxis = []YAxisOption{{Show: Ptr(true)}, {Show: Ptr(true)}}
+				return opt
+			},
+			pngCRC: 0x27a9f245,
+		},
+		{
+			name: "empty_series",
+			makeOptions: func() CandlestickChartOption {
+				opt := NewCandlestickOptionWithSeries(CandlestickSeries{})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				opt.XAxis = XAxisOption{Labels: []string{"Jan", "Feb", "Mar"}}
+				opt.YAxis = []YAxisOption{{Show: Ptr(true)}, {Show: Ptr(true)}}
+				return opt
+			},
+			pngCRC: 0x27a9f245,
+		},
 	}
 
 	for i, tc := range tests {
@@ -552,20 +582,6 @@ func TestCandlestickChartError(t *testing.T) {
 		makeOptions      func() CandlestickChartOption
 		errorMsgContains string
 	}{
-		{
-			name: "empty_series_list",
-			makeOptions: func() CandlestickChartOption {
-				return NewCandlestickOptionWithSeries()
-			},
-			errorMsgContains: "empty series list",
-		},
-		{
-			name: "empty_series",
-			makeOptions: func() CandlestickChartOption {
-				return NewCandlestickOptionWithSeries(CandlestickSeries{})
-			},
-			errorMsgContains: "no data in any series",
-		},
 		{
 			name: "invalid_yaxis_index",
 			makeOptions: func() CandlestickChartOption {

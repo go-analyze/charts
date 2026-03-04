@@ -484,6 +484,32 @@ func TestPieChart(t *testing.T) {
 			},
 			pngCRC: 0x2d186954,
 		},
+		{
+			name: "empty_series",
+			makeOptions: func() PieChartOption {
+				opt := NewPieChartOptionWithData([]float64{})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				return opt
+			},
+			pngCRC: 0xe190da28,
+		},
+		{
+			name: "zero_sum",
+			makeOptions: func() PieChartOption {
+				opt := NewPieChartOptionWithData([]float64{0.0, 0.0})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				return opt
+			},
+			pngCRC: 0xe190da28,
+		},
 	}
 
 	for i, tt := range tests {
@@ -554,20 +580,6 @@ func TestPieChartError(t *testing.T) {
 		makeOptions      func() PieChartOption
 		errorMsgContains string
 	}{
-		{
-			name: "empty_series",
-			makeOptions: func() PieChartOption {
-				return NewPieChartOptionWithData([]float64{})
-			},
-			errorMsgContains: "empty series list",
-		},
-		{
-			name: "zero_sum",
-			makeOptions: func() PieChartOption {
-				return NewPieChartOptionWithData([]float64{0.0, 0.0})
-			},
-			errorMsgContains: "greater than 0",
-		},
 		{
 			name: "negative_values",
 			makeOptions: func() PieChartOption {

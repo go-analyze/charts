@@ -159,6 +159,19 @@ func TestFunnelChart(t *testing.T) {
 			},
 			pngCRC: 0x94752d3e,
 		},
+		{
+			name: "empty_series",
+			makeOptions: func() FunnelChartOption {
+				opt := NewFunnelChartOptionWithData([]float64{})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				return opt
+			},
+			pngCRC: 0xcb4ecf0b,
+		},
 	}
 
 	for i, tt := range tests {
@@ -221,15 +234,7 @@ func TestFunnelChartError(t *testing.T) {
 		name             string
 		makeOptions      func() FunnelChartOption
 		errorMsgContains string
-	}{
-		{
-			name: "empty_series",
-			makeOptions: func() FunnelChartOption {
-				return NewFunnelChartOptionWithData([]float64{})
-			},
-			errorMsgContains: "empty series list",
-		},
-	}
+	}{}
 
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {

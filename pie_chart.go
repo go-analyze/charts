@@ -1,7 +1,6 @@
 package charts
 
 import (
-	"errors"
 	"fmt"
 	"math"
 
@@ -196,6 +195,10 @@ func (p *pieChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 		total += series.Value
 	}
+	if len(opt.SeriesList) == 0 || total <= 0 {
+		result.renderNoData(opt.Theme)
+		return p.p.box, nil
+	}
 
 	_, err := renderPie(seriesPainter, cx, cy, diameter, radius, total, true, opt.SeriesList,
 		opt.Theme, opt.SegmentGap, defaultPieRadiusFactor, opt.ValueFormatter, opt.Font)
@@ -206,9 +209,9 @@ func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabel
 	theme ColorPalette, sliceGap, defaultRadiusFactor float64,
 	valueFormatter ValueFormatter, fallbackFont *truetype.Font) ([]sector, error) {
 	if len(seriesList) == 0 {
-		return nil, errors.New("empty series list")
+		return nil, nil
 	} else if total <= 0 {
-		return nil, errors.New("the sum value of pie chart should be greater than 0")
+		return nil, nil
 	}
 
 	labelLineWidth := 15

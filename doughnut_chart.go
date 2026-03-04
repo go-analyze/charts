@@ -92,6 +92,10 @@ func (d *doughnutChart) Render() (Box, error) {
 
 func (d *doughnutChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := d.opt
+	if len(opt.SeriesList) == 0 {
+		result.renderNoData(opt.Theme)
+		return d.p.box, nil
+	}
 	seriesPainter := result.seriesPainter
 	centerLabels := strings.EqualFold(opt.CenterValues, "labels")
 	cx, cy, diameter := circleChartPosition(seriesPainter)
@@ -115,6 +119,10 @@ func (d *doughnutChart) renderChart(result *defaultRenderResult) (Box, error) {
 			return BoxZero, fmt.Errorf("unsupported negative value at series index %d", index)
 		}
 		total += series.Value
+	}
+	if total <= 0 {
+		result.renderNoData(opt.Theme)
+		return d.p.box, nil
 	}
 	radiusCenter := minRadius * 0.6
 	if opt.RadiusCenter != "" {

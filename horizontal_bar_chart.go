@@ -1,8 +1,6 @@
 package charts
 
 import (
-	"errors"
-
 	"github.com/golang/freetype/truetype"
 )
 
@@ -69,7 +67,8 @@ func (h *horizontalBarChart) renderChart(result *defaultRenderResult) (Box, erro
 	opt := h.opt
 	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
-		return BoxZero, errors.New("empty series list")
+		result.renderNoData(opt.Theme)
+		return p.box, nil
 	}
 	seriesPainter := result.seriesPainter
 	yRange := result.yaxisRanges[0]

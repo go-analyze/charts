@@ -280,7 +280,8 @@ func (v *violinChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := v.opt
 	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
-		return BoxZero, errors.New("empty series list")
+		result.renderNoData(opt.Theme)
+		return p.box, nil
 	}
 	for i := range opt.SeriesList {
 		if opt.SeriesList[i].YAxisIndex != 0 {

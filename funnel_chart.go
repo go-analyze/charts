@@ -1,8 +1,6 @@
 package charts
 
 import (
-	"errors"
-
 	"github.com/dustin/go-humanize"
 	"github.com/golang/freetype/truetype"
 )
@@ -52,7 +50,8 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := f.opt
 	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
-		return BoxZero, errors.New("empty series list")
+		result.renderNoData(opt.Theme)
+		return f.p.box, nil
 	}
 	seriesPainter := result.seriesPainter
 	max := opt.SeriesList[0].Value

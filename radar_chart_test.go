@@ -74,6 +74,19 @@ func TestRadarChart(t *testing.T) {
 			makeOptions: makeBasicRadarChartOption,
 			pngCRC:      0xcce3ef38,
 		},
+		{
+			name: "empty_series",
+			makeOptions: func() RadarChartOption {
+				opt := NewRadarChartOptionWithData([][]float64{}, []string{"Sales", "Admin", "IT"}, []float64{100, 200, 300})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Budget", "Spending"},
+				}
+				return opt
+			},
+			pngCRC: 0xb796d25a,
+		},
 	}
 
 	for i, tt := range tests {
@@ -138,13 +151,6 @@ func TestRadarChartError(t *testing.T) {
 		makeOptions      func() RadarChartOption
 		errorMsgContains string
 	}{
-		{
-			name: "empty_series",
-			makeOptions: func() RadarChartOption {
-				return NewRadarChartOptionWithData([][]float64{}, []string{"foo", "bar", "foobar"}, []float64{1, 2, 3})
-			},
-			errorMsgContains: "empty series list",
-		},
 		{
 			name: "too_few_indicators",
 			makeOptions: func() RadarChartOption {

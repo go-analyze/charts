@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 202 13
+L 232 13
+L 232 26
+L 202 26
+L 202 13" style="stroke:none;fill:rgb(84,112,198)"/><text x="234" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series A</text><path d="M 311 13
+L 341 13
+L 341 26
+L 311 26
+L 311 13" style="stroke:none;fill:rgb(145,204,117)"/><text x="343" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series B</text><path d="M 30 46
+L 30 366" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 25 46
+L 30 46" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 25 152
+L 30 152" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 25 259
+L 30 259" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 25 366
+L 30 366" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="10" y="105" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">C</text><text x="10" y="211" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">B</text><text x="9" y="317" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">A</text><text x="30" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="309" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="581" y="385" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><path d="M 310 46
+L 310 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 590 46
+L 590 362" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><circle cx="310" cy="206" r="60" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/><path d="M 244 272
+L 376 140" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/></svg>

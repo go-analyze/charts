@@ -153,14 +153,16 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 	opt := k.opt
 	seriesList := opt.SeriesList
 	if seriesList.len() == 0 {
-		return BoxZero, errors.New("empty series list")
+		result.renderNoData(opt.Theme)
+		return p.box, nil
 	}
 	seriesPainter := result.seriesPainter
 
 	// Find maximum data count across all series
 	maxDataCount := getSeriesMaxDataCount(seriesList)
 	if maxDataCount == 0 {
-		return BoxZero, errors.New("no data in any series")
+		result.renderNoData(opt.Theme)
+		return p.box, nil
 	}
 	width := seriesPainter.Width()
 	if width <= 0 {

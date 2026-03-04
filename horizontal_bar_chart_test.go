@@ -244,6 +244,21 @@ func TestHorizontalBarChart(t *testing.T) {
 			},
 			pngCRC: 0x2e00befd,
 		},
+		{
+			name: "empty_series",
+			makeOptions: func() HorizontalBarChartOption {
+				opt := NewHorizontalBarChartOptionWithData([][]float64{})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				opt.XAxis = XAxisOption{Show: Ptr(true)}
+				opt.YAxis = YAxisOption{Show: Ptr(true), Labels: []string{"A", "B", "C"}}
+				return opt
+			},
+			pngCRC: 0x82eca088,
+		},
 	}
 
 	for i, tt := range tests {
@@ -306,15 +321,7 @@ func TestHorizontalBarChartError(t *testing.T) {
 		name             string
 		makeOptions      func() HorizontalBarChartOption
 		errorMsgContains string
-	}{
-		{
-			name: "empty_series",
-			makeOptions: func() HorizontalBarChartOption {
-				return NewHorizontalBarChartOptionWithData([][]float64{})
-			},
-			errorMsgContains: "empty series list",
-		},
-	}
+	}{}
 
 	for i, tt := range tests {
 		t.Run(strconv.Itoa(i)+"-"+tt.name, func(t *testing.T) {

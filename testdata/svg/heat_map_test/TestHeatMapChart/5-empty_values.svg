@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="24" y="199" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif" transform="rotate(270.00,24,199)">Y-Axis</text><path d="M 78 10
+L 78 344" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 73 10
+L 78 10" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 73 121
+L 78 121" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 73 232
+L 78 232" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 73 344
+L 78 344" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="59" y="71" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="29" y="181" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row2</text><text x="29" y="292" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row1</text><text x="312" y="386" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">X-Axis</text><path d="M 79 344
+L 590 344" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 79 349
+L 79 344" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 249 349
+L 249 344" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 419 349
+L 419 344" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 590 349
+L 590 344" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="159" y="370" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">A</text><text x="329" y="370" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">B</text><text x="499" y="370" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">C</text><circle cx="334" cy="177" r="60" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/><path d="M 268 243
+L 400 111" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/></svg>

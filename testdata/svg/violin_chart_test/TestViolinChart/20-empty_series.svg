@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 256 13
+L 286 13
+L 286 26
+L 256 26
+L 256 13" style="stroke:none;fill:rgb(84,112,198)"/><text x="288" y="25" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Series A</text><text x="280" y="386" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Value</text><text x="9" y="367" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="154" y="367" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.5</text><text x="299" y="367" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="444" y="367" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0.5</text><text x="581" y="367" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><path d="M 155 46
+L 155 344" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 46
+L 300 344" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 445 46
+L 445 344" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 590 46
+L 590 344" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><circle cx="300" cy="197" r="60" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/><path d="M 234 263
+L 366 131" style="stroke-width:12;stroke:rgb(70,70,70);fill:none"/></svg>

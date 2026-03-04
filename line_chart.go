@@ -1,7 +1,6 @@
 package charts
 
 import (
-	"errors"
 	"math"
 
 	"github.com/golang/freetype/truetype"
@@ -105,7 +104,8 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	opt := l.opt
 	seriesCount := len(opt.SeriesList)
 	if seriesCount == 0 {
-		return BoxZero, errors.New("empty series list")
+		result.renderNoData(opt.Theme)
+		return p.box, nil
 	}
 	seriesPainter := result.seriesPainter
 

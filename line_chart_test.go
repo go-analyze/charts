@@ -1071,6 +1071,21 @@ func TestLineChart(t *testing.T) {
 			},
 			pngCRC: 0x9fb3176a,
 		},
+		{
+			name: "empty_series",
+			makeOptions: func() LineChartOption {
+				opt := NewLineChartOptionWithData([][]float64{})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				opt.XAxis = XAxisOption{Labels: []string{"Jan", "Feb", "Mar"}}
+				opt.YAxis = []YAxisOption{{Show: Ptr(true)}, {Show: Ptr(true)}}
+				return opt
+			},
+			pngCRC: 0xf78b2f68,
+		},
 	}
 
 	for i, tt := range tests {
@@ -1142,13 +1157,6 @@ func TestLineChartError(t *testing.T) {
 		makeOptions      func() LineChartOption
 		errorMsgContains string
 	}{
-		{
-			name: "empty_series",
-			makeOptions: func() LineChartOption {
-				return NewLineChartOptionWithData([][]float64{})
-			},
-			errorMsgContains: "empty series list",
-		},
 		{
 			name: "invalid_yaxis_index",
 			makeOptions: func() LineChartOption {

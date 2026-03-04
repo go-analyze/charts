@@ -139,6 +139,30 @@ func TestHeatMapChart(t *testing.T) {
 			makeOptions: makeDenseHeatMapOption,
 			pngCRC:      0x314e2a7a,
 		},
+		{
+			name: "empty_values",
+			makeOptions: func() HeatMapOption {
+				return HeatMapOption{
+					Padding: NewBoxEqual(10),
+					Values:  [][]float64{},
+					XAxis:   HeatMapAxis{Title: "X-Axis", Labels: []string{"A", "B", "C"}},
+					YAxis:   HeatMapAxis{Title: "Y-Axis", Labels: []string{"Row1", "Row2"}},
+				}
+			},
+			pngCRC: 0x2a939d81,
+		},
+		{
+			name: "no_columns",
+			makeOptions: func() HeatMapOption {
+				return HeatMapOption{
+					Padding: NewBoxEqual(10),
+					Values:  [][]float64{{}, {}},
+					XAxis:   HeatMapAxis{Title: "X-Axis", Labels: []string{"A", "B", "C"}},
+					YAxis:   HeatMapAxis{Title: "Y-Axis", Labels: []string{"Row1", "Row2"}},
+				}
+			},
+			pngCRC: 0xcc723e71,
+		},
 	}
 
 	for i, tt := range tests {
@@ -200,24 +224,6 @@ func TestHeatMapChartError(t *testing.T) {
 		makeOptions      func() HeatMapOption
 		errorMsgContains string
 	}{
-		{
-			name: "empty_values",
-			makeOptions: func() HeatMapOption {
-				return HeatMapOption{
-					Values: [][]float64{},
-				}
-			},
-			errorMsgContains: "empty values",
-		},
-		{
-			name: "no_columns",
-			makeOptions: func() HeatMapOption {
-				return HeatMapOption{
-					Values: [][]float64{{}, {}},
-				}
-			},
-			errorMsgContains: "heat map has no columns",
-		},
 		{
 			name: "insufficient_space",
 			makeOptions: func() HeatMapOption {

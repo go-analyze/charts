@@ -235,6 +235,32 @@ func TestDoughnutChart(t *testing.T) {
 			},
 			pngCRC: 0x5d5f7cfb,
 		},
+		{
+			name: "empty_series",
+			makeOptions: func() DoughnutChartOption {
+				opt := NewDoughnutChartOptionWithData([]float64{})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				return opt
+			},
+			pngCRC: 0xe190da28,
+		},
+		{
+			name: "zero_sum",
+			makeOptions: func() DoughnutChartOption {
+				opt := NewDoughnutChartOptionWithData([]float64{0.0, 0.0})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A", "Series B"},
+				}
+				return opt
+			},
+			pngCRC: 0xe190da28,
+		},
 	}
 
 	for i, tt := range tests {
@@ -299,20 +325,6 @@ func TestDoughnutChartError(t *testing.T) {
 		makeOptions      func() DoughnutChartOption
 		errorMsgContains string
 	}{
-		{
-			name: "empty_series",
-			makeOptions: func() DoughnutChartOption {
-				return NewDoughnutChartOptionWithData([]float64{})
-			},
-			errorMsgContains: "empty series list",
-		},
-		{
-			name: "zero_sum",
-			makeOptions: func() DoughnutChartOption {
-				return NewDoughnutChartOptionWithData([]float64{0.0, 0.0})
-			},
-			errorMsgContains: "greater than 0",
-		},
 		{
 			name: "negative_values",
 			makeOptions: func() DoughnutChartOption {

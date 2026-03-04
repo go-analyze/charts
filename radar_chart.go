@@ -91,7 +91,8 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 	if sides < 3 {
 		return BoxZero, errors.New("indicator count should be at least 3")
 	} else if len(opt.SeriesList) == 0 {
-		return BoxZero, errors.New("empty series list")
+		result.renderNoData(opt.Theme)
+		return r.p.box, nil
 	}
 	maxValues := make([]float64, len(indicators))
 	for _, series := range opt.SeriesList {

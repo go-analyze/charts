@@ -89,6 +89,37 @@ type defaultRenderResult struct {
 	seriesPainter *Painter
 }
 
+func (r *defaultRenderResult) renderNoData(theme ColorPalette) {
+	p := r.seriesPainter
+	w := p.Width()
+	h := p.Height()
+	if w <= 0 || h <= 0 {
+		return
+	}
+	// draw empty set symbol (∅): circle with a diagonal line
+	dim := float64(chartdraw.MinInt(w, h))
+	radius := dim / 5.0
+	if radius < 8 {
+		radius = 8
+	} else if radius > 60 {
+		radius = 60
+	}
+	strokeWidth := radius / 5.0
+	if strokeWidth < 2 {
+		strokeWidth = 2
+	}
+	cx := w / 2
+	cy := h / 2
+	strokeColor := theme.GetLabelTextColor()
+	p.Circle(radius, cx, cy, ColorTransparent, strokeColor, strokeWidth)
+	// diagonal line from bottom-left to top-right, extending beyond the circle
+	extend := int(radius * 1.1)
+	p.LineStroke([]Point{
+		{X: cx - extend, Y: cy + extend},
+		{X: cx + extend, Y: cy - extend},
+	}, strokeColor, strokeWidth)
+}
+
 func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, error) {
 	theme := getPreferredTheme(opt.theme, p.theme)
 	fillThemeDefaults(theme, &opt.title, opt.legend, opt.xAxis, opt.yAxis)

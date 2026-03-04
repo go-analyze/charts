@@ -313,6 +313,20 @@ func TestViolinChart(t *testing.T) {
 			},
 			pngCRC: 0xe18bf168,
 		},
+		{
+			name: "empty_series",
+			makeOptions: func() ViolinChartOption {
+				opt := NewViolinChartOptionWithSeries(ViolinSeriesList{})
+				opt.Padding = NewBoxEqual(10)
+				opt.Legend = LegendOption{
+					Show:        Ptr(true),
+					SeriesNames: []string{"Series A"},
+				}
+				opt.ValueAxis = ViolinAxis{Show: Ptr(true), Title: "Value"}
+				return opt
+			},
+			pngCRC: 0x6fab430f,
+		},
 	}
 
 	for i, tt := range tests {
@@ -468,13 +482,6 @@ func TestViolinChartError(t *testing.T) {
 		makeOptions      func() ViolinChartOption
 		errorMsgContains string
 	}{
-		{
-			name: "empty_series",
-			makeOptions: func() ViolinChartOption {
-				return NewViolinChartOptionWithSeries(ViolinSeriesList{})
-			},
-			errorMsgContains: "empty series list",
-		},
 		{
 			name: "invalid_yaxis_index",
 			makeOptions: func() ViolinChartOption {
