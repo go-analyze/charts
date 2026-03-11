@@ -96,7 +96,7 @@ func (xa XAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 		tb := Draw.MeasureText(r, t.Label, tickStyle.GetTextOptions())
 
 		tx = canvasBox.Left + ra.Translate(v)
-		ty = canvasBox.Bottom + DefaultXAxisMargin + tb.Height()
+		ty = canvasBox.Bottom + defaultXAxisMargin + tb.Height()
 		switch tp {
 		case TickPositionUnderTick, TickPositionUnset:
 			ltx = tx - tb.Width()>>1
@@ -115,7 +115,7 @@ func (xa XAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 
 	if !xa.NameStyle.Hidden && len(xa.Name) > 0 {
 		tb := Draw.MeasureText(r, xa.Name, xa.NameStyle.InheritFrom(defaults))
-		bottom += DefaultXAxisMargin + tb.Height()
+		bottom += defaultXAxisMargin + tb.Height()
 	}
 
 	return Box{
@@ -148,7 +148,7 @@ func (xa XAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 
 		tickStyle.GetStrokeOptions().WriteToRenderer(r)
 		r.MoveTo(tx, canvasBox.Bottom)
-		r.LineTo(tx, canvasBox.Bottom+DefaultVerticalTickHeight)
+		r.LineTo(tx, canvasBox.Bottom+defaultVerticalTickHeight)
 		r.Stroke()
 
 		tickWithAxisStyle := xa.TickStyle.InheritFrom(xa.Style.InheritFrom(defaults))
@@ -158,9 +158,9 @@ func (xa XAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 		case TickPositionUnderTick, TickPositionUnset:
 			if tickStyle.TextRotationDegrees == 0 {
 				tx -= tb.Width() >> 1
-				ty = canvasBox.Bottom + DefaultXAxisMargin + tb.Height()
+				ty = canvasBox.Bottom + defaultXAxisMargin + tb.Height()
 			} else {
-				ty = canvasBox.Bottom + (2 * DefaultXAxisMargin)
+				ty = canvasBox.Bottom + (2 * defaultXAxisMargin)
 			}
 			Draw.Text(r, t.Label, tx, ty, tickWithAxisStyle)
 			maxTextHeight = MaxInt(maxTextHeight, tb.Height())
@@ -173,8 +173,8 @@ func (xa XAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 				Draw.TextWithin(r, t.Label, Box{
 					Left:   ltx,
 					Right:  tx,
-					Top:    canvasBox.Bottom + DefaultXAxisMargin,
-					Bottom: canvasBox.Bottom + DefaultXAxisMargin,
+					Top:    canvasBox.Bottom + defaultXAxisMargin,
+					Bottom: canvasBox.Bottom + defaultXAxisMargin,
 					IsSet:  true,
 				}, finalTickStyle)
 
@@ -188,7 +188,7 @@ func (xa XAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 	if !xa.NameStyle.Hidden && len(xa.Name) > 0 {
 		tb := Draw.MeasureText(r, xa.Name, nameStyle)
 		tx := canvasBox.Right - (canvasBox.Width()>>1 + tb.Width()>>1)
-		ty := canvasBox.Bottom + DefaultXAxisMargin + maxTextHeight + DefaultXAxisMargin + tb.Height()
+		ty := canvasBox.Bottom + defaultXAxisMargin + maxTextHeight + defaultXAxisMargin + tb.Height()
 		Draw.Text(r, xa.Name, tx, ty, nameStyle)
 	}
 

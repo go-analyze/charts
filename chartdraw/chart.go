@@ -38,7 +38,7 @@ func (c Chart) GetDPI(defaults ...float64) float64 {
 		if len(defaults) > 0 {
 			return defaults[0]
 		}
-		return DefaultDPI
+		return defaultDPI
 	}
 	return c.DPI
 }
@@ -80,7 +80,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 	if c.Font == nil {
 		c.Font = GetDefaultFont()
 	}
-	r.SetDPI(c.GetDPI(DefaultDPI))
+	r.SetDPI(c.GetDPI(defaultDPI))
 
 	c.drawBackground(r)
 
@@ -481,7 +481,7 @@ func (c Chart) drawTitle(r Renderer) {
 		textHeight := textBox.Height()
 
 		titleX := (c.GetWidth() >> 1) - (textWidth >> 1)
-		titleY := c.TitleStyle.Padding.GetTop(DefaultTitleTop) + textHeight
+		titleY := c.TitleStyle.Padding.GetTop(defaultTitleTop) + textHeight
 
 		r.Text(c.Title, titleX, titleY)
 	}
@@ -491,7 +491,7 @@ func (c Chart) styleDefaultsBackground() Style {
 	return Style{
 		FillColor:   c.GetColorPalette().BackgroundColor(),
 		StrokeColor: c.GetColorPalette().BackgroundStrokeColor(),
-		StrokeWidth: DefaultBackgroundStrokeWidth,
+		StrokeWidth: 0.0,
 	}
 }
 
@@ -499,7 +499,7 @@ func (c Chart) styleDefaultsCanvas() Style {
 	return Style{
 		FillColor:   c.GetColorPalette().CanvasColor(),
 		StrokeColor: c.GetColorPalette().CanvasStrokeColor(),
-		StrokeWidth: DefaultCanvasStrokeWidth,
+		StrokeWidth: 0.0,
 	}
 }
 

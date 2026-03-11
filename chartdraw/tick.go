@@ -57,9 +57,9 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 
 	var tickSize float64
 	if isVertical {
-		tickSize = float64(labelBox.Height() + DefaultMinimumTickVerticalSpacing)
+		tickSize = float64(labelBox.Height() + defaultMinimumTickVerticalSpacing)
 	} else {
-		tickSize = float64(labelBox.Width() + DefaultMinimumTickHorizontalSpacing)
+		tickSize = float64(labelBox.Width() + defaultMinimumTickHorizontalSpacing)
 	}
 
 	domain := float64(ra.GetDomain())
@@ -70,7 +70,7 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 	tickStep := rangeDelta / float64(intermediateTickCount)
 
 	roundTo := GetRoundToForDelta(rangeDelta) / 10
-	intermediateTickCount = MinInt(intermediateTickCount, DefaultTickCountSanityCheck)
+	intermediateTickCount = MinInt(intermediateTickCount, defaultTickCountSanityCheck)
 
 	ticks := make([]Tick, 0, intermediateTickCount+2)
 	if ra.IsDescending() {

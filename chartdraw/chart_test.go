@@ -18,7 +18,7 @@ func TestChartGetDPI(t *testing.T) {
 	t.Parallel()
 
 	unset := Chart{}
-	assert.InDelta(t, DefaultDPI, unset.GetDPI(), 0)
+	assert.InDelta(t, defaultDPI, unset.GetDPI(), 0)
 	assert.InDelta(t, float64(192), unset.GetDPI(192), 0)
 
 	set := Chart{DPI: 128}

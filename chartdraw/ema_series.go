@@ -4,12 +4,9 @@ import (
 	"errors"
 )
 
-// TODO - remove internal defaults from public API
 const (
-	// Deprecated: DefaultEMAPeriod is deprecated, it's not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
-	// DefaultEMAPeriod is the default EMA period used in the sigma calculation.
-	DefaultEMAPeriod = 12
+	// defaultEMAPeriod is the default EMA period used in the sigma calculation.
+	defaultEMAPeriod = 12
 )
 
 // Interface Assertions.
@@ -49,7 +46,7 @@ func (ema *EMASeries) GetYAxis() YAxisType {
 // GetPeriod returns the window size.
 func (ema *EMASeries) GetPeriod() int {
 	if ema.Period == 0 {
-		return DefaultEMAPeriod
+		return defaultEMAPeriod
 	}
 	return ema.Period
 }

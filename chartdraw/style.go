@@ -30,18 +30,6 @@ func Shown() Style {
 	}
 }
 
-// Deprecated: StyleTextDefaults is deprecated, defaults are automatically applied if no value is set.
-func StyleTextDefaults() Style {
-	return Style{
-		Hidden: false,
-		FontStyle: FontStyle{
-			Font:      GetDefaultFont(),
-			FontColor: DefaultTextColor,
-			FontSize:  DefaultTitleFontSize,
-		},
-	}
-}
-
 // Style is a simple style set.
 type Style struct {
 	FontStyle
@@ -235,7 +223,7 @@ func (s Style) GetStrokeWidth(defaults ...float64) float64 {
 		if len(defaults) > 0 {
 			return defaults[0]
 		}
-		return DefaultStrokeWidth
+		return defaultStrokeWidth
 	}
 	return s.StrokeWidth
 }
@@ -246,7 +234,7 @@ func (s Style) GetDotWidth(defaults ...float64) float64 {
 		if len(defaults) > 0 {
 			return defaults[0]
 		}
-		return DefaultDotWidth
+		return defaultDotWidth
 	}
 	return s.DotWidth
 }
