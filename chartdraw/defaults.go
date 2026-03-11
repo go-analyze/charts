@@ -6,74 +6,43 @@ const (
 	// DefaultChartWidth is the default chart width.
 	DefaultChartWidth = 1024
 
-	// Deprecated: DefaultStrokeWidth is not expected to be used externally. If you use this field,
-	// open a new issue to prevent it from being made internal.
-	DefaultStrokeWidth = 0.0
-	// Deprecated: DefaultDotWidth is not expected to be used externally. If you use this field,
-	// open a new issue to prevent it from being made internal.
-	DefaultDotWidth = 0.0
+	defaultStrokeWidth = 0.0
+	defaultDotWidth    = 0.0
 
 	// DefaultSeriesLineWidth is the default line width.
 	DefaultSeriesLineWidth = 1.0
 	// DefaultAxisLineWidth is the line width of the axis lines.
 	DefaultAxisLineWidth = 1.0
 
-	// Deprecated: DefaultDPI is not expected to be used externally. If you use this field,
-	// open a new issue to prevent it from being made internal.
-	DefaultDPI = 92.0
+	defaultDPI = 92.0
 
 	// DefaultFontSize is the default font size.
 	DefaultFontSize = 10.0
 	// DefaultTitleFontSize is the default title font size.
 	DefaultTitleFontSize = 18.0
 
-	// Deprecated: DefaultAnnotationDeltaWidth is not expected to be used externally. If you use this
-	// field, open a new issue to prevent it from being made internal.
-	DefaultAnnotationDeltaWidth = 10
+	defaultAnnotationDeltaWidth = 10
 
 	// DefaultAnnotationFontSize is the font size of annotations.
 	DefaultAnnotationFontSize = 10.0
 	// DefaultAxisFontSize is the font size of the axis labels.
 	DefaultAxisFontSize = 10.0
 
-	// Deprecated: DefaultTitleTop is not expected to be used externally. If you use this
-	// field, open a new issue to prevent it from being made internal.
-	DefaultTitleTop = 10
-
-	// Deprecated: DefaultBackgroundStrokeWidth is not expected to be used externally. If you use this
-	// field, open a new issue to prevent it from being made internal.
-	DefaultBackgroundStrokeWidth = 0.0
-	// Deprecated: DefaultCanvasStrokeWidth is not expected to be used externally. If you use this
-	// field, open a new issue to prevent it from being made internal.
-	DefaultCanvasStrokeWidth = 0.0
+	defaultTitleTop = 10
 
 	// DefaultLineSpacing is the default vertical distance between lines of text.
 	DefaultLineSpacing = 5
 
-	// Deprecated: DefaultYAxisMargin is not expected to be used externally. If you use this field,
-	// open a new issue to prevent it from being made internal.
-	DefaultYAxisMargin = 10
-	// Deprecated: DefaultXAxisMargin is not expected to be used externally. If you use this field,
-	// open a new issue to prevent it from being made internal.
-	DefaultXAxisMargin = 10
+	defaultYAxisMargin = 10
+	defaultXAxisMargin = 10
 
-	// Deprecated: DefaultVerticalTickHeight is not expected to be used externally. If you use this
-	// field, open a new issue to prevent it from being made internal.
-	DefaultVerticalTickHeight = DefaultXAxisMargin >> 1
-	// Deprecated: DefaultHorizontalTickWidth is not expected to be used externally. If you use this
-	// field, open a new issue to prevent it from being made internal.
-	DefaultHorizontalTickWidth = DefaultYAxisMargin >> 1
+	defaultVerticalTickHeight  = defaultXAxisMargin >> 1
+	defaultHorizontalTickWidth = defaultYAxisMargin >> 1
 
-	// Deprecated: DefaultTickCountSanityCheck is not expected to be used externally. If you use this
-	// field, open a new issue to prevent it from being made internal.
-	DefaultTickCountSanityCheck = 1 << 10 //1024
+	defaultTickCountSanityCheck = 1 << 10 //1024
 
-	// Deprecated: DefaultMinimumTickHorizontalSpacing is not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
-	DefaultMinimumTickHorizontalSpacing = 20
-	// Deprecated: DefaultMinimumTickVerticalSpacing is not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
-	DefaultMinimumTickVerticalSpacing = 20
+	defaultMinimumTickHorizontalSpacing = 20
+	defaultMinimumTickVerticalSpacing   = 20
 
 	// DefaultDateFormat is the default date format.
 	DefaultDateFormat = "2006-01-02"

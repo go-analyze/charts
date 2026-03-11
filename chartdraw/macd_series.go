@@ -4,20 +4,13 @@ import (
 	"errors"
 )
 
-// TODO - remove internal defaults from public API
 const (
-	// Deprecated: DefaultMACDPeriodPrimary is deprecated, it's not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
-	// DefaultMACDPeriodPrimary is the long window.
-	DefaultMACDPeriodPrimary = 26
-	// Deprecated: DefaultMACDPeriodSecondary is deprecated, it's not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
-	// DefaultMACDPeriodSecondary is the short window.
-	DefaultMACDPeriodSecondary = 12
-	// Deprecated: DefaultMACDSignalPeriod is deprecated, it's not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
-	// DefaultMACDSignalPeriod is the signal period to compute for the MACD.
-	DefaultMACDSignalPeriod = 9
+	// defaultMACDPeriodPrimary is the long window.
+	defaultMACDPeriodPrimary = 26
+	// defaultMACDPeriodSecondary is the short window.
+	defaultMACDPeriodSecondary = 12
+	// defaultMACDSignalPeriod is the signal period to compute for the MACD.
+	defaultMACDSignalPeriod = 9
 )
 
 // MACDSeries computes the difference between the MACD line and the MACD Signal line.
@@ -54,17 +47,17 @@ func (macd *MACDSeries) Validate() error {
 // GetPeriods returns the primary and secondary periods.
 func (macd *MACDSeries) GetPeriods() (w1, w2, sig int) {
 	if macd.PrimaryPeriod == 0 {
-		w1 = DefaultMACDPeriodPrimary
+		w1 = defaultMACDPeriodPrimary
 	} else {
 		w1 = macd.PrimaryPeriod
 	}
 	if macd.SecondaryPeriod == 0 {
-		w2 = DefaultMACDPeriodSecondary
+		w2 = defaultMACDPeriodSecondary
 	} else {
 		w2 = macd.SecondaryPeriod
 	}
 	if macd.SignalPeriod == 0 {
-		sig = DefaultMACDSignalPeriod
+		sig = defaultMACDSignalPeriod
 	} else {
 		sig = macd.SignalPeriod
 	}
@@ -156,17 +149,17 @@ func (macds *MACDSignalSeries) Validate() error {
 // GetPeriods returns the primary and secondary periods.
 func (macds *MACDSignalSeries) GetPeriods() (w1, w2, sig int) {
 	if macds.PrimaryPeriod == 0 {
-		w1 = DefaultMACDPeriodPrimary
+		w1 = defaultMACDPeriodPrimary
 	} else {
 		w1 = macds.PrimaryPeriod
 	}
 	if macds.SecondaryPeriod == 0 {
-		w2 = DefaultMACDPeriodSecondary
+		w2 = defaultMACDPeriodSecondary
 	} else {
 		w2 = macds.SecondaryPeriod
 	}
 	if macds.SignalPeriod == 0 {
-		sig = DefaultMACDSignalPeriod
+		sig = defaultMACDSignalPeriod
 	} else {
 		sig = macds.SignalPeriod
 	}
@@ -282,12 +275,12 @@ func (macdl *MACDLineSeries) GetYAxis() YAxisType {
 // GetPeriods returns the primary and secondary periods.
 func (macdl *MACDLineSeries) GetPeriods() (w1, w2 int) {
 	if macdl.PrimaryPeriod == 0 {
-		w1 = DefaultMACDPeriodPrimary
+		w1 = defaultMACDPeriodPrimary
 	} else {
 		w1 = macdl.PrimaryPeriod
 	}
 	if macdl.SecondaryPeriod == 0 {
-		w2 = DefaultMACDPeriodSecondary
+		w2 = defaultMACDPeriodSecondary
 	} else {
 		w2 = macdl.SecondaryPeriod
 	}

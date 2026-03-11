@@ -34,7 +34,7 @@ func (pc PieChart) GetDPI(defaults ...float64) float64 {
 		if len(defaults) > 0 {
 			return defaults[0]
 		}
-		return DefaultDPI
+		return defaultDPI
 	}
 	return pc.DPI
 }
@@ -71,7 +71,7 @@ func (pc PieChart) Render(rp RendererProvider, w io.Writer) error {
 	if pc.Font == nil {
 		pc.Font = GetDefaultFont()
 	}
-	r.SetDPI(pc.GetDPI(DefaultDPI))
+	r.SetDPI(pc.GetDPI(defaultDPI))
 
 	canvasBox := pc.getDefaultCanvasBox()
 	canvasBox = pc.getCircleAdjustedCanvasBox(canvasBox)
@@ -203,7 +203,7 @@ func (pc PieChart) styleDefaultsCanvas() Style {
 	return Style{
 		FillColor:   pc.GetColorPalette().CanvasColor(),
 		StrokeColor: pc.GetColorPalette().CanvasStrokeColor(),
-		StrokeWidth: DefaultStrokeWidth,
+		StrokeWidth: defaultStrokeWidth,
 	}
 }
 
@@ -238,7 +238,7 @@ func (pc PieChart) styleDefaultsBackground() Style {
 	return Style{
 		FillColor:   pc.GetColorPalette().BackgroundColor(),
 		StrokeColor: pc.GetColorPalette().BackgroundStrokeColor(),
-		StrokeWidth: DefaultStrokeWidth,
+		StrokeWidth: defaultStrokeWidth,
 	}
 }
 

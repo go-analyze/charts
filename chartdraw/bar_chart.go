@@ -41,7 +41,7 @@ type BarChart struct {
 // GetDPI returns the dpi for the chart.
 func (bc BarChart) GetDPI() float64 {
 	if bc.DPI == 0 {
-		return DefaultDPI
+		return defaultDPI
 	}
 	return bc.DPI
 }
@@ -223,13 +223,13 @@ func (bc BarChart) drawXAxis(r Renderer, canvasBox Box) {
 		r.Stroke()
 
 		r.MoveTo(canvasBox.Left, canvasBox.Bottom)
-		r.LineTo(canvasBox.Left, canvasBox.Bottom+DefaultVerticalTickHeight)
+		r.LineTo(canvasBox.Left, canvasBox.Bottom+defaultVerticalTickHeight)
 		r.Stroke()
 
 		cursor := canvasBox.Left
 		for index, bar := range bc.Bars {
 			barLabelBox := Box{
-				Top:    canvasBox.Bottom + DefaultXAxisMargin,
+				Top:    canvasBox.Bottom + defaultXAxisMargin,
 				Left:   cursor,
 				Right:  cursor + width + spacing,
 				Bottom: bc.GetHeight(),
@@ -242,7 +242,7 @@ func (bc BarChart) drawXAxis(r Renderer, canvasBox Box) {
 			axisStyle.WriteToRenderer(r)
 			if index < len(bc.Bars)-1 {
 				r.MoveTo(barLabelBox.Right, canvasBox.Bottom)
-				r.LineTo(barLabelBox.Right, canvasBox.Bottom+DefaultVerticalTickHeight)
+				r.LineTo(barLabelBox.Right, canvasBox.Bottom+defaultVerticalTickHeight)
 				r.Stroke()
 			}
 			cursor += width + spacing
@@ -269,7 +269,7 @@ func (bc BarChart) drawTitle(r Renderer) {
 		textHeight := textBox.Height()
 
 		titleX := (bc.GetWidth() >> 1) - (textWidth >> 1)
-		titleY := bc.TitleStyle.Padding.GetTop(DefaultTitleTop) + textHeight
+		titleY := bc.TitleStyle.Padding.GetTop(defaultTitleTop) + textHeight
 
 		r.Text(bc.Title, titleX, titleY)
 	}
@@ -283,7 +283,7 @@ func (bc BarChart) styleDefaultsCanvas() Style {
 	return Style{
 		FillColor:   bc.GetColorPalette().CanvasColor(),
 		StrokeColor: bc.GetColorPalette().CanvasStrokeColor(),
-		StrokeWidth: DefaultCanvasStrokeWidth,
+		StrokeWidth: 0.0,
 	}
 }
 
@@ -355,7 +355,7 @@ func (bc BarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box, yrange Range,
 	_, _, totalWidth := bc.calculateScaledTotalWidth(canvasBox)
 
 	if !bc.XAxis.Hidden {
-		xaxisHeight := DefaultVerticalTickHeight
+		xaxisHeight := defaultVerticalTickHeight
 
 		axisStyle := bc.XAxis.InheritFrom(bc.styleDefaultsAxes())
 		axisStyle.WriteToRenderer(r)
@@ -364,7 +364,7 @@ func (bc BarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box, yrange Range,
 		for _, bar := range bc.Bars {
 			if bar.Label != "" {
 				barLabelBox := Box{
-					Top:    canvasBox.Bottom + DefaultXAxisMargin,
+					Top:    canvasBox.Bottom + defaultXAxisMargin,
 					Left:   cursor,
 					Right:  cursor + bc.GetBarWidth() + bc.GetBarSpacing(),
 					Bottom: bc.GetHeight(),
@@ -372,7 +372,7 @@ func (bc BarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box, yrange Range,
 				lines := Text.WrapFit(r, bar.Label, barLabelBox.Width(), axisStyle)
 				linesBox := Text.MeasureLines(r, lines, axisStyle)
 
-				xaxisHeight = MinInt(linesBox.Height()+(2*DefaultXAxisMargin), xaxisHeight)
+				xaxisHeight = MinInt(linesBox.Height()+(2*defaultXAxisMargin), xaxisHeight)
 			}
 		}
 
@@ -415,7 +415,7 @@ func (bc BarChart) styleDefaultsBackground() Style {
 	return Style{
 		FillColor:   bc.GetColorPalette().BackgroundColor(),
 		StrokeColor: bc.GetColorPalette().BackgroundStrokeColor(),
-		StrokeWidth: DefaultStrokeWidth,
+		StrokeWidth: defaultStrokeWidth,
 	}
 }
 

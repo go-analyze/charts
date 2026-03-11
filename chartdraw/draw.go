@@ -184,7 +184,7 @@ func (d draw) MeasureAnnotation(r Renderer, style Style, lx, ly int, label strin
 	strokeWidth := style.GetStrokeWidth()
 
 	top := ly - (pt + halfTextHeight)
-	right := lx + pl + pr + textWidth + DefaultAnnotationDeltaWidth + int(strokeWidth)
+	right := lx + pl + pr + textWidth + defaultAnnotationDeltaWidth + int(strokeWidth)
 	bottom := ly + (pb + halfTextHeight)
 
 	return Box{
@@ -211,19 +211,19 @@ func (d draw) Annotation(r Renderer, style Style, lx, ly int, label string) {
 	pr := style.Padding.GetRight(DefaultAnnotationPadding.Right)
 	pb := style.Padding.GetBottom(DefaultAnnotationPadding.Bottom)
 
-	textX := lx + pl + DefaultAnnotationDeltaWidth
+	textX := lx + pl + defaultAnnotationDeltaWidth
 	textY := ly + halfTextHeight
 
-	ltx := lx + DefaultAnnotationDeltaWidth
+	ltx := lx + defaultAnnotationDeltaWidth
 	lty := ly - (pt + halfTextHeight)
 
-	rtx := lx + pl + pr + textWidth + DefaultAnnotationDeltaWidth
+	rtx := lx + pl + pr + textWidth + defaultAnnotationDeltaWidth
 	rty := ly - (pt + halfTextHeight)
 
-	rbx := lx + pl + pr + textWidth + DefaultAnnotationDeltaWidth
+	rbx := lx + pl + pr + textWidth + defaultAnnotationDeltaWidth
 	rby := ly + (pb + halfTextHeight)
 
-	lbx := lx + DefaultAnnotationDeltaWidth
+	lbx := lx + defaultAnnotationDeltaWidth
 	lby := ly + (pb + halfTextHeight)
 
 	r.MoveTo(lx, ly)
