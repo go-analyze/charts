@@ -470,7 +470,7 @@ A 4 4 90.00 0 1 121 448
 L 121 396
 L 121 396
 A 4 4 90.00 0 1 125 392
-Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="125" y="409" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">※ Shooting Star</text><text x="132" y="422" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">† Gravestone</text><text x="153" y="435" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">± Doji</text><text x="128" y="448" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Ʇ Inv. Hammer</text><path d="M 138 412
+Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="125" y="409" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">※ Shooting Star</text><text x="132" y="422" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">† Gravestone</text><text x="151" y="435" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">↔ Doji</text><text x="128" y="448" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Ʇ Inv. Hammer</text><path d="M 138 412
 L 198 412
 L 198 412
 A 4 4 90.00 0 1 202 416
@@ -484,32 +484,32 @@ L 134 416
 L 134 416
 A 4 4 90.00 0 1 138 412
 Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="138" y="429" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Γ Hammer</text><path d="M 152 295
-L 244 295
-L 244 295
-A 4 4 90.00 0 1 248 299
-L 248 325
-L 248 325
-A 4 4 90.00 0 1 244 329
+L 250 295
+L 250 295
+A 4 4 90.00 0 1 254 299
+L 254 325
+L 254 325
+A 4 4 90.00 0 1 250 329
 L 152 329
 L 152 329
 A 4 4 90.00 0 1 148 325
 L 148 299
 L 148 299
 A 4 4 90.00 0 1 152 295
-Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="152" y="312" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Λ Bull Engulfing</text><text x="152" y="325" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">^ Bull Marubozu</text><path d="M 165 485
-L 262 485
-L 262 485
-A 4 4 90.00 0 1 266 489
-L 266 502
-L 266 502
-A 4 4 90.00 0 1 262 506
+Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="155" y="312" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Λ Bull Engulfing</text><text x="152" y="325" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">▲ Bull Marubozu</text><path d="M 165 485
+L 267 485
+L 267 485
+A 4 4 90.00 0 1 271 489
+L 271 502
+L 271 502
+A 4 4 90.00 0 1 267 506
 L 165 506
 L 165 506
 A 4 4 90.00 0 1 161 502
 L 161 489
 L 161 489
 A 4 4 90.00 0 1 165 485
-Z" style="stroke-width:1.2;stroke:rgb(239,68,68);fill:rgba(255,255,255,0.7)"/><text x="165" y="502" style="stroke:none;fill:rgb(151,12,12);font-size:12.8px;font-family:'Roboto Medium',sans-serif">v Bear Marubozu</text><path d="M 206 136
+Z" style="stroke-width:1.2;stroke:rgb(239,68,68);fill:rgba(255,255,255,0.7)"/><text x="165" y="502" style="stroke:none;fill:rgb(151,12,12);font-size:12.8px;font-family:'Roboto Medium',sans-serif">▼ Bear Marubozu</text><path d="M 206 136
 L 297 136
 L 297 136
 A 4 4 90.00 0 1 301 140
@@ -575,19 +575,19 @@ L 351 259
 L 351 259
 A 4 4 90.00 0 1 355 255
 Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="355" y="272" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">| Piercing Line</text><path d="M 436 163
-L 520 163
-L 520 163
-A 4 4 90.00 0 1 524 167
-L 524 180
-L 524 180
-A 4 4 90.00 0 1 520 184
+L 526 163
+L 526 163
+A 4 4 90.00 0 1 530 167
+L 530 180
+L 530 180
+A 4 4 90.00 0 1 526 184
 L 436 184
 L 436 184
 A 4 4 90.00 0 1 432 180
 L 432 167
 L 432 167
 A 4 4 90.00 0 1 436 163
-Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="436" y="180" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">* Morning Star</text><path d="M 476 301
+Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="436" y="180" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">✫ Morning Star</text><path d="M 476 301
 L 558 301
 L 558 301
 A 4 4 90.00 0 1 562 305
@@ -626,7 +626,7 @@ A 4 4 90.00 0 1 662 264
 L 662 212
 L 662 212
 A 4 4 90.00 0 1 666 208
-Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="666" y="225" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">※ Shooting Star</text><text x="673" y="238" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">† Gravestone</text><text x="694" y="251" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">± Doji</text><text x="669" y="264" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Ʇ Inv. Hammer</text><path d="M 693 242
+Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="666" y="225" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">※ Shooting Star</text><text x="673" y="238" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">† Gravestone</text><text x="692" y="251" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">↔ Doji</text><text x="669" y="264" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Ʇ Inv. Hammer</text><path d="M 693 242
 L 761 242
 L 761 242
 A 4 4 90.00 0 1 765 246
@@ -639,17 +639,17 @@ A 4 4 90.00 0 1 689 285
 L 689 246
 L 689 246
 A 4 4 90.00 0 1 693 242
-Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="697" y="259" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Γ Hammer</text><text x="693" y="272" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">ψ Dragonfly</text><text x="710" y="285" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">± Doji</text><path d="M 767 319
+Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="697" y="259" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Γ Hammer</text><text x="693" y="272" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">ψ Dragonfly</text><text x="708" y="285" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">↔ Doji</text><path d="M 762 319
 L 800 319
 L 800 319
 A 4 4 90.00 0 1 804 323
 L 804 336
 L 804 336
 A 4 4 90.00 0 1 800 340
-L 767 340
-L 767 340
-A 4 4 90.00 0 1 763 336
-L 763 323
-L 763 323
-A 4 4 90.00 0 1 767 319
-Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="767" y="336" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">± Doji</text></svg>
+L 762 340
+L 762 340
+A 4 4 90.00 0 1 758 336
+L 758 323
+L 758 323
+A 4 4 90.00 0 1 762 319
+Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="762" y="336" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">↔ Doji</text></svg>

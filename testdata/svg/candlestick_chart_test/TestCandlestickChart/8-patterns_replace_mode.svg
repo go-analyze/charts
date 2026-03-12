@@ -32,16 +32,16 @@ L 753 116
 L 753 301
 L 465 301
 L 465 116" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 252 419
-L 285 419
-L 285 419
-A 4 4 90.00 0 1 289 423
-L 289 436
-L 289 436
-A 4 4 90.00 0 1 285 440
+L 290 419
+L 290 419
+A 4 4 90.00 0 1 294 423
+L 294 436
+L 294 436
+A 4 4 90.00 0 1 290 440
 L 252 440
 L 252 440
 A 4 4 90.00 0 1 248 436
 L 248 423
 L 248 423
 A 4 4 90.00 0 1 252 419
-Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="252" y="436" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">± Doji</text><text x="614" y="120" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">User Label</text></svg>
+Z" style="stroke-width:1.2;stroke:rgb(200,200,200);fill:rgba(255,255,255,0.7)"/><text x="252" y="436" style="stroke:none;fill:rgb(128,128,128);font-size:12.8px;font-family:'Roboto Medium',sans-serif">↔ Doji</text><text x="614" y="120" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">User Label</text></svg>

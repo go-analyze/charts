@@ -252,7 +252,7 @@ func TestCandlestickChart(t *testing.T) {
 					SeriesList: CandlestickSeriesList{series},
 				}
 			},
-			pngCRC: 0x161b609d,
+			pngCRC: 0xf266bcd8,
 		},
 		{
 			name: "large_dataset",

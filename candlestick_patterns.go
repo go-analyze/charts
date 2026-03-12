@@ -934,74 +934,113 @@ func formatPatternsDefault(patterns []PatternDetectionResult, seriesIndex int, t
 }
 
 /* All symbols currently supported:
-Balance: ≈
-Volatility: ~
-Directional: ^ v
-Greek: Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω ϑ ϕ ϖ ϗ Ϙ ϙ Ϛ ϛ Ϝ ϝ Ϟ ϟ Ϡ ϡ ϰ ϱ ϲ ϳ ϴ ϵ ϶ Ϸ ϸ Ϲ Ϻ ϻ ϼ Ͻ Ͼ Ͽ
-Geometric: ◊ ◌
-Math: ∂ ∆ ∏ ∑ √ ∞ ∫ ≠ ≤ ≥
-Financial: $ ¢ £ ¤ ¥ ₡ ₢ ₣ ₤ ₥ ₦ ₧ ₨ ₩ ₪ ₫ € ₭ ₮ ₯ ₰ ₱ ₲ ₳ ₴ ₵ ₶ ₷ ₸ ₹ ₺ ₻ ₼ ₽ ₾ ₿
-Star: * ※ ⁎
-Special: ! " # % & ' ( ) + , - . / : ; < = > ? @ K V [ \ ] _ ` { | } ¡ ¦ § ¨ © ª « ¬ ® ¯ ° ± ² ³ ´ µ ¶ · ¸ ¹ º » ¼ ½ ¾ ¿ Å × ÷ ƒ ǀ ʘ ˆ ˇ ˘ ˙ ˚ ˛ ˜ ˝ – — † ‡ • ‣ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ › ‼ ‽ ⁂ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍ ⁏ ℀ ℁ ℂ ℃ ℄ ℅ ℆ ℇ ℈ ℉ ℊ ℋ ℌ ℍ ℎ ℏ ℐ ℑ ℒ ℓ ℔ ℕ № ℗ ℘ ℙ ℚ ℛ ℜ ℝ ℞ ℟ ℠ ℡ ™ ℣ ℤ ℥ ℧ ℨ ℩ ℬ ℭ ℮ ℯ ℰ ℱ Ⅎ ℳ ℴ ℵ ℶ ℷ ℸ ℹ ℺ ℻ ℼ ℽ ℾ ℿ ⅀ ⅁ ⅂ ⅃ ⅄ ⅅ ⅆ ⅇ ⅈ ⅉ ⅊ ⅋ ⅌ ⅍ ⅎ ⅏ Ʇ
+Directional: ^ v 🞀 🞁 🞂 🞃 ▲ △ ▴ ▵ ▶ ▷ ▸ ▹ ► ▻ ▼ ▽ ▾ ▿ ◀ ◁ ◂ ◃ ◄ ◅ ← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↯ ⇦ ⇧ ⇨ ⇩ ⇪ ⇫ ⇬ ⇭ ⇮ ⇯ ⇰ ⇳ ➔ ➘ ➙ ➚ ➛ ➜ ➝ ➞ ➟ ➠ ➡ ➢ ➣ ➤ ➥ ➦ ➧ ➨ ➩ ➪ ➫ ➬ ➭ ➮ ➯ ➱ ➲ ➳ ➴ ➵ ➶ ➷ ➸ ➹ ➺ ➻ ➼ ➽ ➾ ⬅ ⬆ ⬇ ⬈ ⬉ ⬊ ⬋ ⬌ ⬍
+Greek: Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω ϑ ϕ ϖ ϗ Ϙ ϙ Ϛ ϛ Ϝ ϝ Ϟ ϟ Ϡ ϡ ϰ ϱ ϲ ϳ ϴ ϵ ϶ Ϸ ϸ Ϲ Ϻ ϻ ϼ ͻ ͼ Ϳ
+Geometric: ■ □ ▢ ▣ ▤ ▥ ▦ ▧ ▨ ▩ ▪ ▫ ▬ ▭ ▮ ▯ ▰ ▱ ◆ ◇ ◈ ◉ ◊ ○ ◌ ◍ ◎ ● ◐ ◑ ◒ ◓ ◔ ◕ ◖ ◗ ◘ ◙ ◚ ◛ ◜ ◝ ◞ ◟ ◠ ◡ ◢ ◣ ◤ ◥ ◧ ◨ ◩ ◪ ◫ ⬒ ⬓ ⬔ ⬕ ⬖ ⬗ ⬘ ⬙ ⬚ ⬛ ⬜ ⬝ ⬞ ⬟ ⬠ ⬡ ⬢ ⬣ ⬤ ⬥ ⬦ ⬧ ⬨ ⬩ ⬪ ⬫ ⬬ ⬭ ⬮ ⬯ ⭐ ⭑ ⭒ ⭓ ⭔ ⭕ 🞄 🞅 🞆 🞇 🞈 🞉 🞊 🞋 🞌 🞍 🞎 🞏 🞐 🞑 🞒 🞓 🞔 🞕 🞖 🞗 🞘 🞙 🞚 🞛 🞜 🞠 🞨 🞩 🞪 🞫 🞬 🞭 🞮 🞯 🞰 🞱 🞲 🞳 🞴 🞵 🞶 🞷 🞸 🞹 🞺 🞻 🞼 🞽 🞾 🞿 🟀 🟁 🟂 🟃 🟄 🟅 🟆 🟇 🟈 🟉 🟊 🟋 🟌 🟍 🟎 🟏 🟐 🟑 🟒 🟓 🟔 🟕 🟖 🟗 🟘
+Star: * ※ ⁎ ✦ ✧ ✩ ✪ ✫ ✬ ✭ ✮ ✯ ✰ ✴ ✶ ✸ ✹ ✺ ⭐ ⭑ ⭒
+Dingbats: ✁ ✂ ✃ ✄ ✆ ✈ ✉ ✍ ✎ ✏ ✐ ✑ ✒ ✓ ✔ ✕ ✖ ✗ ✘ ✙ ✚ ✛ ✜ ✢ ✣ ✤ ✥ ❖ ❗ ❘ ❙ ❚ ❛ ❜ ❝ ❞ ❡ ❢ ❣ ❤ ❥ ❦ ❧
+Pictographs: 🌍 🌎 🌏 🌡 💰 💳 📈 📉 📊 📋 🔍 🔒 🔓 🕐 🕑 🕒 🕓 🕔 🕕 🕖 🕗 🕘 🕙 🕚 🕛 🗃 🗄 🗑 🗒 🗓 🗨 🗳
+Misc: ☊ ☋ ☌ ☍ ☹ ☺ ☻ ☽ ☾ ♀ ♂ ⚰ ⚱
+Technical: ⌀ ⌁ ⌂ ⌈ ⌉ ⌊ ⌋ ⌘ ⌚ ⌛ ⌨ ⎔ ⎖ ⎗ ⎘ ⏎ ⏏ ⏚ ⏛ ⏣
+Enclosed: ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳ Ⓐ Ⓑ Ⓒ Ⓓ Ⓔ Ⓕ Ⓖ Ⓗ Ⓘ Ⓙ Ⓚ Ⓛ Ⓜ Ⓝ Ⓞ Ⓟ Ⓠ Ⓡ Ⓢ Ⓣ Ⓤ Ⓥ Ⓦ Ⓧ Ⓨ Ⓩ ⓐ ⓑ ⓒ ⓓ ⓔ ⓕ ⓖ ⓗ ⓘ ⓙ ⓚ ⓛ ⓜ ⓝ ⓞ ⓟ ⓠ ⓡ ⓢ ⓣ ⓤ ⓥ ⓦ ⓧ ⓨ ⓩ
+Religious/Cultural: ☭ ☮ ☯
+Math: ± × ÷ ∂ ∆ ∏ ∑ − ∘ ∙ √ ∞ ∫ ≈ ~ ≠ ≤ ≥
+Financial: $ ¢ £ ¤ ¥ ₠ ₡ ₢ ₣ ₤ ₥ ₦ ₧ ₨ ₩ ₪ ₫ € ₭ ₮ ₯ ₰ ₱ ₲ ₳ ₴ ₵ ₶ ₷ ₸ ₹ ₺ ₻ ₼ ₽ ₾ ₿
+Special: ! " # % & ' ( ) + , - . / : ; < = > ? @ [ ] _ ` { | } ¡ ¦ § ¨ © ª « ¬ ® ¯ ° ² ³ ´ µ ¶ · ¸ ¹ º » ¼ ½ ¾ ¿ Å ÷ ƒ ǀ ʘ ˆ ˇ ˘ ˙ ˚ ˛ ˜ ˝ – — † ‡ • ‣ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ › ‼ ‽ ⁂ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍ ⁏ Ʇ
 */
 
 // getPatternDisplayName returns the pattern name with appropriate symbol.
 func getPatternDisplayName(patternType string) string {
 	switch patternType {
 	case candlestickPatternDoji:
-		// Current: ± (plus-minus, balance symbol)
-		// Alternatives: ≈ (approximately equal), ∏ (product)
-		return "± Doji"
+		// Current: ↔ (left-right arrow, two-way indecision)
+		// Shape: ≈ (approximately equal), ✙ (outlined Greek cross), ✚ (heavy Greek cross), ✛ (open centre cross)
+		// Semantic: ± (plus-minus, balance), ◎ (bullseye, target/balance),
+		//   ◐ (circle left half, duality/indecision), ◑ (circle right half),
+		//   ⬌ (open-headed left-right arrow), ∘ (ring operator)
+		return "↔ Doji"
 	case candlestickPatternHammer:
-		// Current: Γ (Greek gamma, hammer shape)
-		// Alternatives: Τ (Greek tau), τ (small tau)
+		// Current: Γ (Greek gamma, hammer shape - body at top, shadow down)
+		// Shape: Τ (Greek tau), τ (small tau), ⌈ (left ceiling bracket), ⌉ (right ceiling bracket)
+		// Directional: ↑ (up arrow), ⬆ (bold up arrow), ⬈ (NE arrow), ➚ (NE dingbat arrow), ▲ / △ (up triangle)
+		// Semantic: 📈 (chart increasing)
 		return "Γ Hammer"
 	case candlestickPatternInvertedHammer:
-		// Current: Ʇ (turned T, upside-down hammer)
+		// Current: Ʇ (turned T, upside-down hammer - body at bottom, shadow up)
+		// Shape: ⌊ (left floor bracket), ⌋ (right floor bracket)
+		// Directional: ↑ (up arrow), ⬆ (bold up arrow), ⬈ (NE arrow), ➚ (NE dingbat arrow), ▲ / △ (up triangle)
 		return "Ʇ Inv. Hammer"
 	case candlestickPatternShootingStar:
-		// Current: ※ (reference mark, star-like)
-		// Alternatives: * (asterisk), ⁎ (low asterisk), ‣ (triangular bullet), • (bullet)
+		// Current: ※ (reference mark, star-like - body at bottom, long shadow up, bearish)
+		// Stars: * (asterisk), ⁎ (low asterisk), ✦ (four-pointed star), ✧ (white four-pointed star), ⭑ (black star),
+		//   ⭒ (open star), ✶ (six-pointed star), ✴ (eight-pointed star), ✩ (outlined star), ✪ (circled star)
+		// Directional: ↓ (down arrow), ⬇ (bold down arrow), ⬊ (SE arrow), ➘ (SE dingbat arrow), ▼ / ▽ (down triangle)
 		return "※ Shooting Star"
 	case candlestickPatternGravestone:
-		// Current: † (dagger, cross symbol)
-		// Alternatives: ‡ (double dagger)
+		// Current: † (dagger/cross - visually resembles gravestone doji shape, body at bottom, long shadow up, bearish doji)
+		// Semantic: ⚱ (funeral urn), ⚰ (coffin), ‡ (double dagger)
+		// Directional: ↓ (down arrow), ⬇ (bold down arrow), ⬊ (SE arrow), ➘ (SE dingbat arrow), ▼ / ▽ (down triangle)
 		return "† Gravestone"
 	case candlestickPatternDragonfly:
-		// Current: ψ (small psi, trident-like)
-		// Alternatives: Ψ (capital psi), ‡ (double dagger), ◊ (geometric diamond)
+		// Current: ψ (small psi, trident-like - body at top, long shadow down, bullish doji)
+		// Shape: Ψ (capital psi), ⌈ (left ceiling bracket), ⌉ (right ceiling bracket), ◡ (lower half arc)
+		// Directional: ↑ (up arrow), ⬆ (bold up arrow), ⬈ (NE arrow), ➚ (NE dingbat arrow), ▲ / △ (up triangle)
+		// Semantic: ◊ (geometric diamond)
 		return "ψ Dragonfly"
 	case candlestickPatternMarubozuBull:
-		// Current: ^ (circumflex, upward direction)
-		// Alternatives: Λ (lambda), Δ (delta)
-		return "^ Bull Marubozu"
+		// Current: ▲ (up triangle - full body, no shadows, bullish)
+		// Shape: ^ (circumflex), Λ (lambda), Δ (delta), △ (white up triangle),
+		//   ▮ (black vertical rectangle, solid body), ■ (filled square)
+		// Directional: ↑ (up arrow), ⬆ (bold up arrow), ⬈ (NE arrow), ➚ (NE dingbat arrow)
+		// Semantic: 📈 (chart increasing)
+		return "▲ Bull Marubozu"
 	case candlestickPatternMarubozuBear:
-		// Current: v (lowercase v, downward direction)
-		// Alternatives: V (capital v)
-		return "v Bear Marubozu"
+		// Current: ▼ (down triangle - full body, no shadows, bearish)
+		// Shape: v (lowercase v), V (capital v), ▽ (white down triangle),
+		//   ▮ (black vertical rectangle, solid body), ■ (filled square)
+		// Directional: ↓ (down arrow), ⬇ (bold down arrow), ⬊ (SE arrow), ➘ (SE dingbat arrow)
+		// Semantic: 📉 (chart decreasing)
+		return "▼ Bear Marubozu"
 	case candlestickPatternEngulfingBull:
-		// Current: Λ (Lambda, upward V shape, engulfing)
-		// Alternatives: Δ (delta), < (less than)
+		// Current: Λ (Lambda, upward V shape, engulfing - large bullish candle wraps previous)
+		// Shape: Δ (delta), < (less than, encompassing), ◢ (black lower right triangle),
+		// Directional: ↑ (up arrow), ⬆ (bold up arrow), ⬈ (NE arrow), ➚ (NE dingbat arrow), ▲ / △ (up triangle)
+		// Semantic: 📈 (chart increasing)
 		return "Λ Bull Engulfing"
 	case candlestickPatternEngulfingBear:
-		// Current: V (capital V, downward engulfing)
-		// Alternatives: v (lowercase v), > (greater than)
+		// Current: V (capital V, downward engulfing - large bearish candle wraps previous)
+		// Shape: v (lowercase v), > (greater than), ◣ (black lower left triangle),
+		// Directional: ↓ (down arrow), ⬇ (bold down arrow), ⬊ (SE arrow), ➘ (SE dingbat arrow), ▼ / ▽ (down triangle)
+		// Semantic: 📉 (chart decreasing)
 		return "V Bear Engulfing"
 	case candlestickPatternMorningStar:
-		// Current: * (asterisk, star symbol)
-		// Alternatives: ※ (reference mark), ⁎ (low asterisk), ‣ (triangular bullet), • (bullet)
-		return "* Morning Star"
+		// Current: ✫ (open centre star - three candle bullish reversal at dawn)
+		// Stars: * (asterisk), ※ (reference mark), ⭐ (star), ✦ (four-pointed star),
+		//   ⭑ (black star), ⭒ (open star), ✶ (six-pointed star), ✴ (eight-pointed star),
+		//   ✩ (outlined star), ✪ (circled star), ✬ (black centre star), ✭ (outlined black star),
+		//   ✮ (heavy outlined star), ✯ (pinwheel star), ✰ (shadowed star)
+		// Directional: ↑ (up arrow), ⬆ (bold up arrow), ➚ (NE dingbat arrow)
+		// Semantic: ☺ (smiling face, positive/dawn)
+		return "✫ Morning Star"
 	case candlestickPatternEveningStar:
-		// Current: ⁎ (low asterisk, evening star)
-		// Alternatives: ※ (reference mark), * (asterisk), ‣ (triangular bullet), • (bullet)
+		// Current: ⁎ (low asterisk, evening star - three candle bearish reversal at dusk)
+		// Stars: ※ (reference mark), * (asterisk), ⭐ (star), ✧ (white four-pointed star),
+		//   ⭑ (black star), ⭒ (open star), ✶ (six-pointed star), ✴ (eight-pointed star),
+		//   ✩ (outlined star), ✪ (circled star), ✫ (open centre star), ✰ (shadowed star)
+		// Directional: ↓ (down arrow), ⬇ (bold down arrow), ➘ (SE dingbat arrow)
+		// Semantic: ☹ (frowning face, negative/dusk), ☽ (crescent moon, evening)
 		return "⁎ Evening Star"
 	case candlestickPatternPiercingLine:
-		// Current: | (vertical bar)
-		// Alternatives: ǀ (dental click), ¦ (broken bar)
+		// Current: | (vertical bar - bullish candle pierces into previous bearish candle)
+		// Shape: ǀ (dental click), ¦ (broken bar), ▮ (black vertical rectangle)
+		// Directional: ↑ (up arrow), ⬆ (bold up arrow), ⬈ (NE arrow), ➚ (NE dingbat arrow), ▲ / △ (up triangle)
+		// Semantic: 📈 (chart increasing)
 		return "| Piercing Line"
 	case candlestickPatternDarkCloudCover:
-		// Current: Ξ (Xi, horizontal lines like cloud layers)
-		// Alternatives: ≈ (approximately equal), ∞ (infinity), ~ (tilde)
+		// Current: Ξ (Xi, horizontal lines like cloud layers - bearish candle closes into previous)
+		// Shape: ≈ (approximately equal, wavy/cloud-like), ◠ (upper half arc, dome/cloud shape)
+		// Directional: ↓ (down arrow), ⬇ (bold down arrow), ⬊ (SE arrow), ➘ (SE dingbat arrow), ▼ / ▽ (down triangle)
+		// Semantic: ~ (tilde, wavy/cloud), ☽ (crescent moon, darkening), 📉 (chart decreasing)
 		return "Ξ Dark Cloud"
 	default:
 		return ""

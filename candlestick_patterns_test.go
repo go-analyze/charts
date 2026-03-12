@@ -676,7 +676,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 					ShadowRatio:   2.0,
 				})
 			},
-			pngCRC: 0xd067a55e,
+			pngCRC: 0xd14dc283,
 		},
 		{
 			name: "hammer",
@@ -736,7 +736,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 					ShadowRatio:   2.0,
 				})
 			},
-			pngCRC: 0x725139d9,
+			pngCRC: 0x8159f53b,
 		},
 		{
 			name: "dragonfly_doji",
@@ -751,7 +751,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 					ShadowRatio:   2.0,
 				})
 			},
-			pngCRC: 0xcfd8e852,
+			pngCRC: 0xa6e7aaef,
 		},
 		{
 			name: "bullish_marubozu",
@@ -766,7 +766,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 					ShadowRatio:   2.0,
 				})
 			},
-			pngCRC: 0xd0f5d6dc,
+			pngCRC: 0xf59a696f,
 		},
 		{
 			name: "bearish_marubozu",
@@ -781,7 +781,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 					ShadowRatio:   2.0,
 				})
 			},
-			pngCRC: 0x7bcd015c,
+			pngCRC: 0x78ba7419,
 		},
 		{
 			name: "bullish_engulfing",
@@ -832,7 +832,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 					ShadowRatio:   2.0,
 				})
 			},
-			pngCRC: 0x64e44680,
+			pngCRC: 0xe848b023,
 		},
 		{
 			name: "evening_star",
@@ -903,7 +903,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				opt.XAxis = XAxisOption{Show: Ptr(false)}
 				return opt
 			},
-			pngCRC: 0x9fdbf9bb,
+			pngCRC: 0x84037a1d,
 		},
 		{
 			name: "combination_mixed",
@@ -937,7 +937,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				opt.XAxis = XAxisOption{Show: Ptr(false)}
 				return opt
 			},
-			pngCRC: 0xb7e09738,
+			pngCRC: 0x0aa5328a,
 		},
 		{
 			name: "combination_three_candle_patterns",
@@ -972,7 +972,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0x8a803bee,
+			pngCRC: 0x7a2d1492,
 		},
 		{
 			name: "bullish_patterns",
@@ -996,7 +996,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				opt.XAxis = XAxisOption{Show: Ptr(false)}
 				return opt
 			},
-			pngCRC: 0xbc37c30a,
+			pngCRC: 0x9b02ec55,
 		},
 		{
 			name: "bearish_patterns",
@@ -1020,7 +1020,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				opt.XAxis = XAxisOption{Show: Ptr(false)}
 				return opt
 			},
-			pngCRC: 0xbd9e64fa,
+			pngCRC: 0x1e8a4f88,
 		},
 		{
 			name: "reversal_patterns",
@@ -1058,7 +1058,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				opt.XAxis = XAxisOption{Show: Ptr(false)}
 				return opt
 			},
-			pngCRC: 0x3d9f0bf0,
+			pngCRC: 0x4abd9948,
 		},
 		{
 			name: "trend_patterns",
@@ -1082,7 +1082,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				opt.XAxis = XAxisOption{Show: Ptr(false)}
 				return opt
 			},
-			pngCRC: 0x535890ac,
+			pngCRC: 0x410c3669,
 		},
 		{
 			name: "all_patterns_showcase",
@@ -1209,7 +1209,7 @@ func TestCandlestickChartPatterns(t *testing.T) {
 				opt.XAxis = XAxisOption{Show: Ptr(false)}
 				return opt
 			},
-			pngCRC: 0xb2d95ec8,
+			pngCRC: 0x2272c6bb,
 		},
 	}
 
