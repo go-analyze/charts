@@ -1,7 +1,7 @@
 package charts
 
 import (
-	"sort"
+	"slices"
 	"strings"
 )
 
@@ -115,7 +115,7 @@ func LabelFormatterTopN(values []float64, n int) SeriesLabelFormatter {
 	// Sort values in ascending order to find the nth highest
 	sortedValues := make([]float64, len(values))
 	copy(sortedValues, values)
-	sort.Float64s(sortedValues)
+	slices.Sort(sortedValues)
 
 	// set threshold to the nth highest (from the end of ascending sorted slice)
 	threshold := sortedValues[len(sortedValues)-n]

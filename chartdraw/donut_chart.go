@@ -111,7 +111,7 @@ func (pc DonutChart) drawTitle(r Renderer) {
 
 func (pc DonutChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 	cx, cy := canvasBox.Center()
-	diameter := MinInt(canvasBox.Width(), canvasBox.Height())
+	diameter := min(canvasBox.Width(), canvasBox.Height())
 	radius := float64(diameter>>1) / 1.1
 	labelRadius := (radius * 2.83) / 3.0
 
@@ -186,7 +186,7 @@ func (pc DonutChart) getDefaultCanvasBox() Box {
 }
 
 func (pc DonutChart) getCircleAdjustedCanvasBox(canvasBox Box) Box {
-	circleDiameter := MinInt(canvasBox.Width(), canvasBox.Height())
+	circleDiameter := min(canvasBox.Width(), canvasBox.Height())
 
 	square := Box{
 		Right:  circleDiameter,
@@ -226,7 +226,7 @@ func (pc DonutChart) styleDonutChartValue(index int) Style {
 }
 
 func (pc DonutChart) getScaledFontSize() float64 {
-	effectiveDimension := MinInt(pc.GetWidth(), pc.GetHeight())
+	effectiveDimension := min(pc.GetWidth(), pc.GetHeight())
 	if effectiveDimension >= 2048 {
 		return 48.0
 	} else if effectiveDimension >= 1024 {
@@ -269,7 +269,7 @@ func (pc DonutChart) styleDefaultsTitle() Style {
 }
 
 func (pc DonutChart) getTitleFontSize() float64 {
-	effectiveDimension := MinInt(pc.GetWidth(), pc.GetHeight())
+	effectiveDimension := min(pc.GetWidth(), pc.GetHeight())
 	if effectiveDimension >= 2048 {
 		return 48
 	} else if effectiveDimension >= 1024 {

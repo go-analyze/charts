@@ -2,7 +2,7 @@ package chartdraw
 
 import (
 	"math"
-	"sort"
+	"slices"
 )
 
 // ValueSequence returns a sequence for a given values set.
@@ -144,7 +144,7 @@ func (s Seq) Sort() Seq {
 		return s
 	}
 	values := s.Values()
-	sort.Float64s(values)
+	slices.Sort(values)
 	return Seq{Array(values)}
 }
 

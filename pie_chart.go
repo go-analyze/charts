@@ -151,7 +151,7 @@ func (s *sector) calculateAdjustedOuterLabelPosition(cx, cy int, outerRadius, la
 func circleChartPosition(painter *Painter) (int, int, float64) {
 	cx := painter.Width() >> 1
 	cy := painter.Height() >> 1
-	diameter := chartdraw.MinInt(painter.Width(), painter.Height())
+	diameter := min(painter.Width(), painter.Height())
 	return cx, cy, float64(diameter)
 }
 

@@ -196,10 +196,10 @@ func (rgc *RasterGraphicContext) GetStringBounds(s string) (left, top, right, bo
 			ps := rgc.glyphBuf.Points[e0:e1]
 			for _, p := range ps {
 				x, y := pointToF64Point(p)
-				top = math.Min(top, y)
-				bottom = math.Max(bottom, y)
-				left = math.Min(left, x+cursor)
-				right = math.Max(right, x+cursor)
+				top = min(top, y)
+				bottom = max(bottom, y)
+				left = min(left, x+cursor)
+				right = max(right, x+cursor)
 			}
 			e0 = e1
 		}

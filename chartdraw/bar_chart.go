@@ -148,22 +148,22 @@ func (bc BarChart) getRanges() Range {
 	if len(bc.YAxis.Ticks) > 0 {
 		tickMin, tickMax := math.MaxFloat64, -math.MaxFloat64
 		for _, t := range bc.YAxis.Ticks {
-			tickMin = math.Min(tickMin, t.Value)
-			tickMax = math.Max(tickMax, t.Value)
+			tickMin = min(tickMin, t.Value)
+			tickMax = max(tickMax, t.Value)
 		}
 		yrange.SetMin(tickMin)
 		yrange.SetMax(tickMax)
 		return yrange
 	}
 
-	min, max := math.MaxFloat64, -math.MaxFloat64
+	minVal, maxVal := math.MaxFloat64, -math.MaxFloat64
 	for _, b := range bc.Bars {
-		min = math.Min(b.Value, min)
-		max = math.Max(b.Value, max)
+		minVal = min(b.Value, minVal)
+		maxVal = max(b.Value, maxVal)
 	}
 
-	yrange.SetMin(min)
-	yrange.SetMax(max)
+	yrange.SetMin(minVal)
+	yrange.SetMax(maxVal)
 
 	return yrange
 }
@@ -372,7 +372,7 @@ func (bc BarChart) getAdjustedCanvasBox(r Renderer, canvasBox Box, yrange Range,
 				lines := Text.WrapFit(r, bar.Label, barLabelBox.Width(), axisStyle)
 				linesBox := Text.MeasureLines(r, lines, axisStyle)
 
-				xaxisHeight = MinInt(linesBox.Height()+(2*defaultXAxisMargin), xaxisHeight)
+				xaxisHeight = min(linesBox.Height()+(2*defaultXAxisMargin), xaxisHeight)
 			}
 		}
 
@@ -428,7 +428,7 @@ func (bc BarChart) styleDefaultsBar(index int) Style {
 }
 
 func (bc BarChart) getTitleFontSize() float64 {
-	effectiveDimension := MinInt(bc.GetWidth(), bc.GetHeight())
+	effectiveDimension := min(bc.GetWidth(), bc.GetHeight())
 	if effectiveDimension >= 2048 {
 		return 48
 	} else if effectiveDimension >= 1024 {

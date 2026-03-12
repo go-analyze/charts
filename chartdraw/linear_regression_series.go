@@ -59,7 +59,7 @@ func (lrs *LinearRegressionSeries) GetYAxis() YAxisType {
 
 // Len returns the number of elements in the series.
 func (lrs *LinearRegressionSeries) Len() int {
-	return MinInt(lrs.GetLimit(), lrs.InnerSeries.Len()-lrs.GetOffset())
+	return min(lrs.GetLimit(), lrs.InnerSeries.Len()-lrs.GetOffset())
 }
 
 // GetLimit returns the window size.
@@ -74,7 +74,7 @@ func (lrs *LinearRegressionSeries) GetLimit() int {
 func (lrs *LinearRegressionSeries) GetEndIndex() int {
 	windowEnd := lrs.GetOffset() + lrs.GetLimit()
 	innerSeriesLastIndex := lrs.InnerSeries.Len() - 1
-	return MinInt(windowEnd, innerSeriesLastIndex)
+	return min(windowEnd, innerSeriesLastIndex)
 }
 
 // GetOffset returns the data offset.
@@ -94,7 +94,7 @@ func (lrs *LinearRegressionSeries) GetValues(index int) (x, y float64) {
 		lrs.computeCoefficients()
 	}
 	offset := lrs.GetOffset()
-	effectiveIndex := MinInt(index+offset, lrs.InnerSeries.Len())
+	effectiveIndex := min(index+offset, lrs.InnerSeries.Len())
 	x, _ = lrs.InnerSeries.GetValues(effectiveIndex)
 	y = (lrs.m * lrs.normalize(x)) + lrs.b
 	return

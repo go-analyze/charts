@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -134,9 +134,7 @@ func populateData() (values [][]float64, xAxisLabels []string, labels []string, 
 	for k := range lensDefinitions {
 		labels = append(labels, k)
 	}
-	sort.Slice(labels, func(i, j int) bool {
-		return labels[i] < labels[j]
-	})
+	slices.Sort(labels)
 
 	for i := startMM; i <= endMM; i++ {
 		xAxisLabels = append(xAxisLabels, fmt.Sprintf("%vmm", i))

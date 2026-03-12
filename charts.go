@@ -4,8 +4,6 @@ import (
 	"errors"
 	"math"
 	"strconv"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 const defaultLabelFontSize = 10.0
@@ -96,7 +94,7 @@ func (r *defaultRenderResult) renderNoData(theme ColorPalette) {
 		return
 	}
 	// draw empty set symbol (∅): circle with a diagonal line
-	dim := float64(chartdraw.MinInt(w, h))
+	dim := float64(min(w, h))
 	radius := dim / 5.0
 	if radius < 8 {
 		radius = 8
@@ -241,7 +239,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		!flagIs(true, legendOpt.Vertical) {
 		if legendResult.Bottom < p.Height()/2 {
 			// horizontal legend at top - reserve top space
-			legendTopSpacing = chartdraw.MaxInt(legendResult.Height(), legendResult.Bottom) + legendTitlePadding
+			legendTopSpacing = max(legendResult.Height(), legendResult.Bottom) + legendTitlePadding
 		} else {
 			// horizontal legend at the bottom, raise the chart above it
 			p = p.Child(PainterPaddingOption(Box{
@@ -255,7 +253,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	if !titleBox.IsZero() {
 		titlePadBox := Box{IsSet: true}
 		if titleBox.Bottom < p.Height()/2 {
-			titlePadBox.Top = chartdraw.MaxInt(legendTopSpacing, titleBox.Bottom+legendTitlePadding)
+			titlePadBox.Top = max(legendTopSpacing, titleBox.Bottom+legendTitlePadding)
 		} else { // title is at the bottom, raise the chart to be above the title
 			titlePadBox.Top = legendTopSpacing
 			if adjustedForBottom {

@@ -2,8 +2,6 @@ package charts
 
 import (
 	"math"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type scatterChart struct {
@@ -80,7 +78,7 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 		symbolSize = opt.SymbolSize
 	}
 	xValues := boundaryGapAxisPositions(seriesPainter.Width(), flagIs(true, opt.XAxis.BoundaryGap),
-		chartdraw.MaxInt(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels)))
+		max(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels)))
 
 	markLinePainter := newMarkLinePainter(seriesPainter)
 	trendLinePainter := newTrendLinePainter(seriesPainter)

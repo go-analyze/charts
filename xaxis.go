@@ -1,9 +1,5 @@
 package charts
 
-import (
-	"math"
-)
-
 // XAxisOption configures the horizontal axis.
 type XAxisOption struct {
 	// Show specifies if the x-axis should be rendered. Set to *false (via Ptr(false)) to hide the axis.
@@ -46,7 +42,7 @@ func (opt *XAxisOption) prep(fallbackTheme ColorPalette) *XAxisOption {
 	opt.Theme = getPreferredTheme(opt.Theme, fallbackTheme)
 	opt.LabelFontStyle = fillFontStyleDefaults(opt.LabelFontStyle, defaultFontSize,
 		opt.Theme.GetXAxisTextColor())
-	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, math.Max(opt.LabelFontStyle.FontSize, defaultFontSize),
+	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, max(opt.LabelFontStyle.FontSize, defaultFontSize),
 		opt.LabelFontStyle.FontColor, opt.LabelFontStyle.Font)
 	return opt
 }

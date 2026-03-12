@@ -1,8 +1,9 @@
 package charts
 
 import (
+	"cmp"
 	"math"
-	"sort"
+	"slices"
 
 	"github.com/go-analyze/bulk"
 
@@ -178,8 +179,8 @@ func (g GenericSeriesList) setSeriesName(index int, name string) {
 }
 
 func (g GenericSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(g, func(i, j int) bool {
-		return dict[g[i].Name] < dict[g[j].Name]
+	slices.SortFunc(g, func(a, b GenericSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -286,8 +287,8 @@ func (l LineSeriesList) setSeriesName(index int, name string) {
 }
 
 func (l LineSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(l, func(i, j int) bool {
-		return dict[l[i].Name] < dict[l[j].Name]
+	slices.SortFunc(l, func(a, b LineSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -412,8 +413,8 @@ func (s ScatterSeriesList) setSeriesName(index int, name string) {
 }
 
 func (s ScatterSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(s, func(i, j int) bool {
-		return dict[s[i].Name] < dict[s[j].Name]
+	slices.SortFunc(s, func(a, b ScatterSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -531,8 +532,8 @@ func (b BarSeriesList) setSeriesName(index int, name string) {
 }
 
 func (b BarSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(b, func(i, j int) bool {
-		return dict[b[i].Name] < dict[b[j].Name]
+	slices.SortFunc(b, func(a, b BarSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -637,8 +638,8 @@ func (h HorizontalBarSeriesList) setSeriesName(index int, name string) {
 }
 
 func (h HorizontalBarSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(h, func(i, j int) bool {
-		return dict[h[i].Name] < dict[h[j].Name]
+	slices.SortFunc(h, func(a, b HorizontalBarSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -724,8 +725,8 @@ func (f FunnelSeriesList) setSeriesName(index int, name string) {
 }
 
 func (f FunnelSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(f, func(i, j int) bool {
-		return dict[f[i].Name] < dict[f[j].Name]
+	slices.SortFunc(f, func(a, b FunnelSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -832,8 +833,8 @@ func (p PieSeriesList) setSeriesName(index int, name string) {
 }
 
 func (p PieSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(p, func(i, j int) bool {
-		return dict[p[i].Name] < dict[p[j].Name]
+	slices.SortFunc(p, func(a, b PieSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -941,8 +942,8 @@ func (d DoughnutSeriesList) setSeriesName(index int, name string) {
 }
 
 func (d DoughnutSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(d, func(i, j int) bool {
-		return dict[d[i].Name] < dict[d[j].Name]
+	slices.SortFunc(d, func(a, b DoughnutSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -1037,8 +1038,8 @@ func (r RadarSeriesList) setSeriesName(index int, name string) {
 }
 
 func (r RadarSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(r, func(i, j int) bool {
-		return dict[r[i].Name] < dict[r[j].Name]
+	slices.SortFunc(r, func(a, b RadarSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -1844,8 +1845,8 @@ func (k CandlestickSeriesList) setSeriesName(index int, name string) {
 }
 
 func (k CandlestickSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(k, func(i, j int) bool {
-		return dict[k[i].Name] < dict[k[j].Name]
+	slices.SortFunc(k, func(a, b CandlestickSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -2157,8 +2158,8 @@ func (vl ViolinSeriesList) setSeriesName(index int, name string) {
 }
 
 func (vl ViolinSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(vl, func(i, j int) bool {
-		return dict[vl[i].Name] < dict[vl[j].Name]
+	slices.SortFunc(vl, func(a, b ViolinSeries) int {
+		return cmp.Compare(dict[a.Name], dict[b.Name])
 	})
 }
 
@@ -2273,7 +2274,7 @@ func summarizePopulationData(data []float64) PopulationSummary {
 		sumCu += x * x * x
 		sumQd += x * x * x * x
 	}
-	sort.Float64s(sortedData) // sort non-null values for median and other computations
+	slices.Sort(sortedData) // sort non-null values for median and other computations
 	ni := len(sortedData)
 	if ni == 0 {
 		return PopulationSummary{

@@ -111,19 +111,19 @@ func (ya YAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 			finalTextX = tx - tb.Width()
 		}
 
-		maxTextHeight = MaxInt(tb.Height(), maxTextHeight)
+		maxTextHeight = max(tb.Height(), maxTextHeight)
 
 		switch ya.AxisType {
 		case YAxisPrimary:
 			minx = canvasBox.Right
-			maxx = MaxInt(maxx, tx+tb.Width())
+			maxx = max(maxx, tx+tb.Width())
 		case YAxisSecondary:
-			minx = MinInt(minx, finalTextX)
-			maxx = MaxInt(maxx, tx)
+			minx = min(minx, finalTextX)
+			maxx = max(maxx, tx)
 		}
 
-		miny = MinInt(miny, ly-tbh2)
-		maxy = MaxInt(maxy, ly+tbh2)
+		miny = min(miny, ly-tbh2)
+		maxy = max(maxy, ly+tbh2)
 	}
 
 	if !ya.NameStyle.Hidden && len(ya.Name) > 0 {

@@ -1,9 +1,5 @@
 package charts
 
-import (
-	"math"
-)
-
 // YAxisOption configures the vertical axis.
 type YAxisOption struct {
 	// Show specifies if the y-axis should be rendered. Set to *false (via Ptr(false)) to hide the axis.
@@ -54,7 +50,7 @@ func (opt *YAxisOption) prep(fallbackTheme ColorPalette) *YAxisOption {
 	opt.Theme = getPreferredTheme(opt.Theme, fallbackTheme)
 	opt.LabelFontStyle = fillFontStyleDefaults(opt.LabelFontStyle, defaultFontSize,
 		opt.Theme.GetYAxisTextColor())
-	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, math.Max(opt.LabelFontStyle.FontSize, defaultFontSize),
+	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, max(opt.LabelFontStyle.FontSize, defaultFontSize),
 		opt.LabelFontStyle.FontColor, opt.LabelFontStyle.Font)
 	return opt
 }

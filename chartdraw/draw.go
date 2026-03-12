@@ -38,8 +38,8 @@ func (d draw) LineSeries(r Renderer, canvasBox Box, xrange, yrange Range, style 
 			y = cb - yrange.Translate(vy)
 			r.LineTo(x, y)
 		}
-		r.LineTo(x, MinInt(cb, cb-yv0))
-		r.LineTo(x0, MinInt(cb, cb-yv0))
+		r.LineTo(x, min(cb, cb-yv0))
+		r.LineTo(x0, min(cb, cb-yv0))
 		r.LineTo(x0, y0)
 		r.Fill()
 	}
