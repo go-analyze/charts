@@ -851,7 +851,7 @@ func TestPainterMeasureText(t *testing.T) {
 				name:        "shapes",
 				input:       "▫●□▲▼◇★○△▪▴▾◆◯⬟⬠⬡⬢⬣⬤⬥",
 				font:        styleLargeNoto,
-				expectedCRC: 0x2a17094,
+				expectedCRC: 0xfc5fbeb0,
 			},
 			{
 				name:        "playing_cards",
@@ -869,19 +869,19 @@ func TestPainterMeasureText(t *testing.T) {
 				name:        "fallback_notosans_currency",
 				input:       "₠₡₢₥₭₮₯₰₲₳₴₵₶₷₸₻₾₿",
 				font:        styleLargeRoboto,
-				expectedCRC: 0xe1e34ff1,
+				expectedCRC: 0xd9c0ca71,
 			},
 			{
 				name:        "fallback_notosans_letterlike",
 				input:       "℀℁ℂ℃℄℆ℇ℈℉ℊℋℌℍℎℏℐℑℒ℔ℕ℗℘ℙℚℛℜℝ℞℟℣ℤ℥℧ℨ℩KÅℬℭℯ",
 				font:        styleLargeRoboto,
-				expectedCRC: 0xbe623813,
+				expectedCRC: 0xb6a12c24,
 			},
 			{
 				name:        "fallback_notosans_subscripts",
 				input:       "ⁱₐₑₒₓₔₕₖₗₘₙₚₛₜ",
 				font:        styleLargeRoboto,
-				expectedCRC: 0x6a15590d,
+				expectedCRC: 0xc74dbb,
 			},
 			{
 				name:        "fallback_roboto_mathematical",

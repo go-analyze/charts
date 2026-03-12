@@ -214,12 +214,12 @@ L 347 302
 L 347 302
 A 4 4 90.00 0 1 351 298
 Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="355" y="315" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Γ Hammer</text><text x="351" y="328" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">ψ Dragonfly</text><path d="M 387 312
-L 479 312
-L 479 312
-A 4 4 90.00 0 1 483 316
-L 483 329
-L 483 329
-A 4 4 90.00 0 1 479 333
+L 477 312
+L 477 312
+A 4 4 90.00 0 1 481 316
+L 481 329
+L 481 329
+A 4 4 90.00 0 1 477 333
 L 387 333
 L 387 333
 A 4 4 90.00 0 1 383 329
@@ -240,19 +240,19 @@ L 418 349
 L 418 349
 A 4 4 90.00 0 1 422 345
 Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="426" y="362" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Γ Hammer</text><text x="422" y="375" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">ψ Dragonfly</text><path d="M 458 369
-L 550 369
-L 550 369
-A 4 4 90.00 0 1 554 373
-L 554 399
-L 554 399
-A 4 4 90.00 0 1 550 403
+L 548 369
+L 548 369
+A 4 4 90.00 0 1 552 373
+L 552 399
+L 552 399
+A 4 4 90.00 0 1 548 403
 L 458 403
 L 458 403
 A 4 4 90.00 0 1 454 399
 L 454 373
 L 454 373
 A 4 4 90.00 0 1 458 369
-Z" style="stroke-width:1.2;stroke:rgb(239,68,68);fill:rgba(255,255,255,0.7)"/><text x="458" y="386" style="stroke:none;fill:rgb(151,12,12);font-size:12.8px;font-family:'Roboto Medium',sans-serif">※ Shooting Star</text><text x="466" y="399" style="stroke:none;fill:rgb(151,12,12);font-size:12.8px;font-family:'Roboto Medium',sans-serif">† Gravestone</text><path d="M 529 110
+Z" style="stroke-width:1.2;stroke:rgb(239,68,68);fill:rgba(255,255,255,0.7)"/><text x="458" y="386" style="stroke:none;fill:rgb(151,12,12);font-size:12.8px;font-family:'Roboto Medium',sans-serif">※ Shooting Star</text><text x="465" y="399" style="stroke:none;fill:rgb(151,12,12);font-size:12.8px;font-family:'Roboto Medium',sans-serif">† Gravestone</text><path d="M 529 110
 L 620 110
 L 620 110
 A 4 4 90.00 0 1 624 114

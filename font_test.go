@@ -249,7 +249,7 @@ func TestFontCapabilities(t *testing.T) {
 			name:    "currency",
 			content: "¢£¤¥€¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿₠₡₢₣₤₥₦₧₨₩₪₫€₭₮₯₰₱₲₳₴₵₶₷₸₹₺₻₼₽₾₿＄￠￡￢￣￤￥￦",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 63, shouldSupport: []rune{'$', '€', '£', '¥'}},
+				FontFamilyRoboto:   {minSupport: 87, shouldSupport: []rune{'$', '€', '£', '¥'}},
 				FontFamilyNotoSans: {minSupport: 88, shouldSupport: []rune{'$', '€', '£', '¥', '₹'}},
 			},
 		},
@@ -265,7 +265,7 @@ func TestFontCapabilities(t *testing.T) {
 			name:    "arrows",
 			content: "←↑→↓↔↕↖↗↘↙↚↛↜↝↞↟↠↡↢↣↤↥↦↧↨↩↪↫↬↭↮↯↰↱↲↳↴↵↶↷↸↹↺↻↼↽↾↿⇀⇁⇂⇃⇄⇅⇆⇇⇈⇉⇊⇋⇌⇍⇎⇏⇐⇑⇒⇓⇔⇕⇖⇗⇘⇙⇚⇛⇜⇝⇞⇟⇠⇡⇢⇣⇤⇥⇦⇧⇨⇩⇪⇫⇬⇭⇮⇯⇰⇱⇲⇳⇴⇵⇶⇷⇸⇹⇺⇻⇼⇽⇾⇿",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 0},
+				FontFamilyRoboto:   {minSupport: 1},
 				FontFamilyNotoSans: {minSupport: 0},
 			},
 		},
@@ -281,7 +281,7 @@ func TestFontCapabilities(t *testing.T) {
 			name:    "geometric_shapes",
 			content: "■□▢▣▤▥▦▧▨▩▪▫▬▭▮▯▰▱▲△▴▵▶▷▸▹►▻▼▽▾▿◀◁◂◃◄◅◆◇◈◉◊○◌◍◎●◐◑◒◓◔◕◖◗◘◙◚◛◜◝◞◟◠◡◢◣◤◥",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 1},
+				FontFamilyRoboto:   {minSupport: 5},
 				FontFamilyNotoSans: {minSupport: 1},
 			},
 		},
@@ -290,12 +290,12 @@ func TestFontCapabilities(t *testing.T) {
 	for _, fontFamily := range availableFonts {
 		t.Run(fontFamily, func(t *testing.T) {
 			font := GetFont(fontFamily)
-			require.NotNil(t, font, "Font %s should be available", fontFamily)
+			require.NotNil(t, font)
 
 			for _, category := range testCategories {
 				t.Run(category.name, func(t *testing.T) {
 					expectation, hasExpectation := category.expectations[fontFamily]
-					require.True(t, hasExpectation, "No expectations defined for this font/category combination")
+					require.True(t, hasExpectation, "Test case has no expectations defined")
 
 					var supportedCount int
 					for _, r := range category.content {
