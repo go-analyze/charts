@@ -37,7 +37,7 @@ func MinMax(values ...float64) (min, max float64) {
 	return
 }
 
-// MinInt returns the minimum int.
+// Deprecated: MinInt is deprecated, use go 1.23 `min` builtin instead.
 func MinInt(values ...int) int {
 	min := math.MaxInt32
 	for x := 0; x < len(values); x++ {
@@ -48,7 +48,7 @@ func MinInt(values ...int) int {
 	return min
 }
 
-// MaxInt returns the maximum int.
+// Deprecated: MaxInt is deprecated, use go 1.23 `max` builtin instead.
 func MaxInt(values ...int) int {
 	max := math.MinInt32
 	for x := 0; x < len(values); x++ {
