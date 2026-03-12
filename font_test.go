@@ -209,7 +209,8 @@ func TestFontCapabilities(t *testing.T) {
 	t.Parallel()
 
 	// Test fonts and categories with expected minimum support levels per font
-	availableFonts := []string{FontFamilyRoboto, FontFamilyNotoSans}
+	const fontFamilyNotoSansSymbols = "notosans-chartsymbols"
+	availableFonts := []string{FontFamilyRoboto, FontFamilyNotoSans, fontFamilyNotoSansSymbols}
 
 	type fontExpectation struct {
 		minSupport    float64 // percentage of characters that should be supported
@@ -225,64 +226,162 @@ func TestFontCapabilities(t *testing.T) {
 			name:    "basic_latin",
 			content: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 100, shouldSupport: []rune{'A', 'a', '1'}},
-				FontFamilyNotoSans: {minSupport: 100, shouldSupport: []rune{'A', 'a', '1'}},
+				FontFamilyRoboto:          {minSupport: 100, shouldSupport: []rune{'A', 'a', '1'}},
+				FontFamilyNotoSans:        {minSupport: 100, shouldSupport: []rune{'A', 'a', '1'}},
+				fontFamilyNotoSansSymbols: {minSupport: 0},
 			},
 		},
 		{
 			name:    "punctuation",
 			content: "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 100, shouldSupport: []rune{'.', ',', '!', '?'}},
-				FontFamilyNotoSans: {minSupport: 100, shouldSupport: []rune{'.', ',', '!', '?'}},
+				FontFamilyRoboto:          {minSupport: 100, shouldSupport: []rune{'.', ',', '!', '?'}},
+				FontFamilyNotoSans:        {minSupport: 100, shouldSupport: []rune{'.', ',', '!', '?'}},
+				fontFamilyNotoSansSymbols: {minSupport: 0},
 			},
 		},
 		{
 			name:    "common_symbols",
 			content: `©®™§¶†‡•…‰′″‹›«»""''–—`,
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 100},
-				FontFamilyNotoSans: {minSupport: 100},
+				FontFamilyRoboto:          {minSupport: 100},
+				FontFamilyNotoSans:        {minSupport: 100},
+				fontFamilyNotoSansSymbols: {minSupport: 0},
 			},
 		},
 		{
 			name:    "currency",
 			content: "¢£¤¥€¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿₠₡₢₣₤₥₦₧₨₩₪₫€₭₮₯₰₱₲₳₴₵₶₷₸₹₺₻₼₽₾₿＄￠￡￢￣￤￥￦",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 87, shouldSupport: []rune{'$', '€', '£', '¥'}},
-				FontFamilyNotoSans: {minSupport: 88, shouldSupport: []rune{'$', '€', '£', '¥', '₹'}},
+				FontFamilyRoboto:          {minSupport: 87, shouldSupport: []rune{'$', '€', '£', '¥'}},
+				FontFamilyNotoSans:        {minSupport: 88, shouldSupport: []rune{'$', '€', '£', '¥', '₹'}},
+				fontFamilyNotoSansSymbols: {minSupport: 0},
 			},
 		},
 		{
 			name:    "mathematical_operators",
 			content: "±×÷√∞≈≠≤≥∑∏∂∫∆∇∈∉∀∃∄∅∆∇∈∉∊∋∌∍∎∏∐∑−∓∔∕∖∗∘∙∝∞∟∠∡∢∣∤∥∦∧∨∩∪",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 34},
-				FontFamilyNotoSans: {minSupport: 5},
+				FontFamilyRoboto:          {minSupport: 34},
+				FontFamilyNotoSans:        {minSupport: 5},
+				fontFamilyNotoSansSymbols: {minSupport: 3},
 			},
 		},
 		{
 			name:    "arrows",
 			content: "←↑→↓↔↕↖↗↘↙↚↛↜↝↞↟↠↡↢↣↤↥↦↧↨↩↪↫↬↭↮↯↰↱↲↳↴↵↶↷↸↹↺↻↼↽↾↿⇀⇁⇂⇃⇄⇅⇆⇇⇈⇉⇊⇋⇌⇍⇎⇏⇐⇑⇒⇓⇔⇕⇖⇗⇘⇙⇚⇛⇜⇝⇞⇟⇠⇡⇢⇣⇤⇥⇦⇧⇨⇩⇪⇫⇬⇭⇮⇯⇰⇱⇲⇳⇴⇵⇶⇷⇸⇹⇺⇻⇼⇽⇾⇿",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 1},
-				FontFamilyNotoSans: {minSupport: 0},
+				FontFamilyRoboto:          {minSupport: 1},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 18, shouldSupport: []rune{'←', '→', '↔', '↕'}},
+			},
+		},
+		{
+			name:    "bold_arrows",
+			content: "⬅⬆⬇⬈⬉⬊⬋⬌⬍⬒⬓⬔⬕⬖⬗⬘⬙⬚⬛⬜⬝⬞⬟⬠⬡⬢⬣⬤⬥⬦⬧⬨⬩⬪⬫⬬⬭⬮⬯⭐⭑⭒⭓⭔⭕",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 100, shouldSupport: []rune{'⬅', '⬆', '⬇'}},
 			},
 		},
 		{
 			name:    "emoji_faces",
 			content: "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩🥳😏😒😞😔😟😕🙁☹😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😱😨😰😥😓🤗🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😵🤐🥴🤢🤮🤧😷🤒🤕🤑🤠😈👿👹👺🤡💩👻💀☠👽👾🤖🎃😺😸😹😻😼😽🙀😿😾",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 0},
-				FontFamilyNotoSans: {minSupport: 0},
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 2},
 			},
 		},
 		{
 			name:    "geometric_shapes",
 			content: "■□▢▣▤▥▦▧▨▩▪▫▬▭▮▯▰▱▲△▴▵▶▷▸▹►▻▼▽▾▿◀◁◂◃◄◅◆◇◈◉◊○◌◍◎●◐◑◒◓◔◕◖◗◘◙◚◛◜◝◞◟◠◡◢◣◤◥",
 			expectations: map[string]fontExpectation{
-				FontFamilyRoboto:   {minSupport: 5},
-				FontFamilyNotoSans: {minSupport: 1},
+				FontFamilyRoboto:          {minSupport: 5},
+				FontFamilyNotoSans:        {minSupport: 1},
+				fontFamilyNotoSansSymbols: {minSupport: 92},
+			},
+		},
+		{
+			name:    "enclosed_numbers",
+			content: "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳⓪❶❷❸❹❺❻❼❽❾❿⓫⓬⓭⓮⓯⓰⓱⓲⓳⓴",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 100},
+			},
+		},
+		{
+			name:    "enclosed_letters",
+			content: "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 100},
+			},
+		},
+		{
+			name:    "technical",
+			content: "⌀⌁⌂⌈⌉⌊⌋⌘⌚⌛⌨⎔⎖⎗⎘⏎⏏⏚⏛⏣",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 100},
+			},
+		},
+		{
+			name:    "alchemical",
+			content: "🜀🜁🜂🜃🜄🜅🜆🜇🜈🜉🜊🜋🜌🜍🜎🜏🜐🜑🜒🜓🜔🜕🜖🜗🜘🜙🜚🜛🜜🜝",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 0},
+			},
+		},
+		{
+			name:    "religious_cultural",
+			content: "☦☧☨☩☪☫☬☭☮☯☸✝✞✟✠✡",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 18},
+			},
+		},
+		{
+			name:    "misc",
+			content: "☊☋☌☍☓☤☥☹☺☻☽☾☿♀♁♂♃♄♅♆♇♈♉♊♋♌♍♎♏♐♑♒♓",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 33},
+			},
+		},
+		{
+			name:    "dingbats",
+			content: "✁✂✃✄✆✈✉✍✎✏✐✑✒✓✔✕✖✗✘✙✚✛✜✢✣✤✥✦✧✩✪✫✬✭✮✯✰✱✲✳✴✵✶✷✸✹✺✻✼✽✾✿❀❁❂❃❄❅❆❇❈❉❊❋❍❏❐❑❒❖❗❘❙❚❛❜❝❞❡❢❣❤❥❦❧❶❷❸❹❺❻❼❽❾❿➔➘➙➚➛➜➝➞➟➠➡➢➣➤➥➦➧➨➩➪➫➬➭➮➯➱➲➳➴➵➶➷➸➹➺➻➼➽➾",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 100, shouldSupport: []rune{'✓', '✔', '✗', '✘', '★'}},
+			},
+		},
+		{
+			name:    "pictographs",
+			content: "🌍🌎🌏🌡💰💳📈📉📊📋📍🔍🔑🔒🔓🔔🔕🔗🔥🔧🔨🔩🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🗃🗄🗑🗒🗓🗨🗳",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 78, shouldSupport: []rune{'📈', '📉', '📊'}},
+			},
+		},
+		{
+			name:    "geometric_ext",
+			content: "🞀🞁🞂🞃🞄🞅🞆🞇🞈🞉🞊🞋🞌🞍🞎🞏🞐🞑🞒🞓🞔🞕🞖🞗🞘🞙🞚🞛🞜🞠🞡🞢🞣🞤🞥🞦🞧🞨🞩🞪🞫🞬🞭🞮🞯🞰🞱🞲🞳🞴🞵🞶🞷🞸🞹🞺🞻🞼🞽🞾🞿🟀🟁🟂🟃🟄🟅🟆🟇🟈🟉🟊🟋🟌🟍🟎🟏🟐🟑🟒🟓🟔🟕🟖🟗🟘🟰",
+			expectations: map[string]fontExpectation{
+				FontFamilyRoboto:          {minSupport: 0},
+				FontFamilyNotoSans:        {minSupport: 0},
+				fontFamilyNotoSansSymbols: {minSupport: 90},
 			},
 		},
 	}
@@ -306,8 +405,8 @@ func TestFontCapabilities(t *testing.T) {
 					totalCount := len([]rune(category.content))
 					supportPercentage := float64(supportedCount) / float64(totalCount) * 100
 
-					t.Logf("%s support: %d/%d characters (%.1f%%)",
-						fontFamily, supportedCount, totalCount, supportPercentage)
+					t.Logf("%s support: %d/%d %s characters (%.1f%%)",
+						fontFamily, supportedCount, totalCount, category.name, supportPercentage)
 
 					assert.GreaterOrEqual(t, supportPercentage, expectation.minSupport)
 					assert.LessOrEqual(t, supportPercentage, expectation.minSupport+1.0)

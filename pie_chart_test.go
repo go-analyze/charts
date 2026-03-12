@@ -391,7 +391,7 @@ func TestPieChart(t *testing.T) {
 					},
 				}
 			},
-			pngCRC: 0x95d1ed60,
+			pngCRC: 0x2f15e12c,
 		},
 		{
 			name: "border_styling",

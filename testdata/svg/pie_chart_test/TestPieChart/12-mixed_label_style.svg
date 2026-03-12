@@ -20,20 +20,20 @@ L 300 200
 Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 180 278
 L 167 286
 M 167 286
-L 152 286" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><path d="M 100 270
-L 164 270
-L 164 270
-A 4 4 90.00 0 1 168 274
-L 168 291
-L 168 291
-A 4 4 90.00 0 1 164 295
-L 100 295
-L 100 295
-A 4 4 90.00 0 1 96 291
-L 96 274
-L 96 274
-A 4 4 90.00 0 1 100 270
-Z" style="stroke:none;fill:purple"/><text x="100" y="291" style="stroke:none;fill:white;font-size:16.6px;font-family:'Roboto Medium',sans-serif">📊 Styled</text><path d="M 300 200
+L 152 286" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><path d="M 97 270
+L 165 270
+L 165 270
+A 4 4 90.00 0 1 169 274
+L 169 291
+L 169 291
+A 4 4 90.00 0 1 165 295
+L 97 295
+L 97 295
+A 4 4 90.00 0 1 93 291
+L 93 274
+L 93 274
+A 4 4 90.00 0 1 97 270
+Z" style="stroke:none;fill:purple"/><text x="97" y="291" style="stroke:none;fill:white;font-size:16.6px;font-family:'Roboto Medium',sans-serif">📊 Styled</text><path d="M 300 200
 L 156 199
 A 144 144 55.37 0 1 219 81
 L 300 200
@@ -44,4 +44,4 @@ L 300 200
 Z" style="stroke:none;fill:rgb(115,192,222)"/><path d="M 258 63
 L 254 49
 M 254 49
-L 239 49" style="stroke-width:1;stroke:rgb(115,192,222);fill:none"/><text x="178" y="54" style="stroke:none;fill:green;font-size:17.9px;font-family:'Roboto Medium',sans-serif">Custom ★</text></svg>
+L 239 49" style="stroke-width:1;stroke:rgb(115,192,222);fill:none"/><text x="175" y="54" style="stroke:none;fill:green;font-size:17.9px;font-family:'Roboto Medium',sans-serif">Custom ★</text></svg>

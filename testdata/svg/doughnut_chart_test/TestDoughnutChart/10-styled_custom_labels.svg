@@ -10,12 +10,12 @@ Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 424 128
 L 437 121
 M 437 121
 L 452 121" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><path d="M 455 106
-L 535 106
-L 535 106
-A 4 4 90.00 0 1 539 110
-L 539 126
-L 539 126
-A 4 4 90.00 0 1 535 130
+L 538 106
+L 538 106
+A 4 4 90.00 0 1 542 110
+L 542 126
+L 542 126
+A 4 4 90.00 0 1 538 130
 L 455 130
 L 455 130
 A 4 4 90.00 0 1 451 126
@@ -49,20 +49,20 @@ L 300 200
 Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 180 278
 L 167 286
 M 167 286
-L 152 286" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><path d="M 103 272
-L 154 272
-L 154 272
-A 3 3 90.00 0 1 157 275
-L 157 292
-L 157 292
-A 3 3 90.00 0 1 154 295
-L 103 295
-L 103 295
-A 3 3 90.00 0 1 100 292
-L 100 275
-L 100 275
-A 3 3 90.00 0 1 103 272
-Z" style="stroke-width:2;stroke:red;fill:lime"/><text x="104" y="291" style="stroke:none;fill:black;font-size:14.1px;font-family:'Roboto Medium',sans-serif">💰 Sales</text><path d="M 300 200
+L 152 286" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><path d="M 101 272
+L 155 272
+L 155 272
+A 3 3 90.00 0 1 158 275
+L 158 292
+L 158 292
+A 3 3 90.00 0 1 155 295
+L 101 295
+L 101 295
+A 3 3 90.00 0 1 98 292
+L 98 275
+L 98 275
+A 3 3 90.00 0 1 101 272
+Z" style="stroke-width:2;stroke:red;fill:lime"/><text x="102" y="291" style="stroke:none;fill:black;font-size:14.1px;font-family:'Roboto Medium',sans-serif">💰 Sales</text><path d="M 300 200
 L 156 199
 A 144 144 55.37 0 1 219 81
 L 300 200

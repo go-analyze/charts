@@ -530,7 +530,7 @@ func TestScatterChart(t *testing.T) {
 					},
 				}
 			},
-			pngCRC: 0x72387269,
+			pngCRC: 0xe30566f0,
 		},
 		{
 			name: "bollinger",

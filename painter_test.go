@@ -724,48 +724,48 @@ func TestPainterMeasureText(t *testing.T) {
 		text := "⭐"
 
 		assert.Equal(t, Box{Right: 12, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 13, Bottom: 12, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 13, Bottom: 12, IsSet: true}, jpgP.MeasureText(text, 0, style))
 
 		assert.Equal(t, Box{Right: 28, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 30, Bottom: 28, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 30, Bottom: 28, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
 	})
 
 	t.Run("question_emoji", func(t *testing.T) {
 		text := "❓"
 
 		assert.Equal(t, Box{Right: 12, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 11, Bottom: 14, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 11, Bottom: 14, IsSet: true}, jpgP.MeasureText(text, 0, style))
 
 		assert.Equal(t, Box{Right: 28, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 25, Bottom: 31, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 25, Bottom: 31, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
 	})
 
 	t.Run("money_emoji", func(t *testing.T) {
 		text := "💰"
 
-		assert.Equal(t, Box{Right: 12, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 8, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 15, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 18, Bottom: 17, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 18, Bottom: 17, IsSet: true}, jpgP.MeasureText(text, 0, style))
 
-		assert.Equal(t, Box{Right: 28, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 24, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 35, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 41, Bottom: 40, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 41, Bottom: 40, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
 	})
 
 	t.Run("multiple_emojis", func(t *testing.T) {
 		text := "🟢⭐❓💰"
 
-		assert.Equal(t, Box{Right: 48, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 32, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 32, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 51, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 49, Bottom: 17, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 49, Bottom: 17, IsSet: true}, jpgP.MeasureText(text, 0, style))
 
-		assert.Equal(t, Box{Right: 112, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 95, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 95, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 119, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 120, Bottom: 40, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 120, Bottom: 40, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
 	})
 
 	t.Run("mixed_text_emoji", func(t *testing.T) {
@@ -796,12 +796,12 @@ func TestPainterMeasureText(t *testing.T) {
 		text := "▪▫"
 
 		assert.Equal(t, Box{Right: 24, Bottom: 16, IsSet: true}, svgP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, pngP.MeasureText(text, 0, style))
-		assert.Equal(t, Box{Right: 16, Bottom: 13, IsSet: true}, jpgP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 13, Bottom: 9, IsSet: true}, pngP.MeasureText(text, 0, style))
+		assert.Equal(t, Box{Right: 13, Bottom: 9, IsSet: true}, jpgP.MeasureText(text, 0, style))
 
 		assert.Equal(t, Box{Right: 56, Bottom: 36, IsSet: true}, svgP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
-		assert.Equal(t, Box{Right: 48, Bottom: 30, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 30, Bottom: 21, IsSet: true}, pngP.MeasureText(text, 0, styleLargeNoto))
+		assert.Equal(t, Box{Right: 30, Bottom: 21, IsSet: true}, jpgP.MeasureText(text, 0, styleLargeNoto))
 	})
 
 	t.Run("wave_dash_and_part_alternation_mark", func(t *testing.T) {
@@ -845,13 +845,13 @@ func TestPainterMeasureText(t *testing.T) {
 				name:        "emojis",
 				input:       "⭐❓💰🔥💯🎯🚀⚡🌟🎉🎊",
 				font:        styleLargeNoto,
-				expectedCRC: 0xaaf41b1b,
+				expectedCRC: 0xd27d14bf,
 			},
 			{
 				name:        "shapes",
 				input:       "▫●□▲▼◇★○△▪▴▾◆◯⬟⬠⬡⬢⬣⬤⬥",
 				font:        styleLargeNoto,
-				expectedCRC: 0xfc5fbeb0,
+				expectedCRC: 0x5de812bb,
 			},
 			{
 				name:        "playing_cards",
@@ -863,7 +863,7 @@ func TestPainterMeasureText(t *testing.T) {
 				name:        "faces",
 				input:       "😂😍🤣😊😭😘😎🤔😴😋😉😏😬😐😑😮😯",
 				font:        styleLargeNoto,
-				expectedCRC: 0x64607851,
+				expectedCRC: 0xde74f82d,
 			},
 			{
 				name:        "fallback_notosans_currency",

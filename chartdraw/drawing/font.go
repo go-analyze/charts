@@ -13,7 +13,7 @@ import (
 )
 
 // FallbackFonts is the ordered list of fallback fonts to try when a character is missing.
-var FallbackFonts = []string{"notosans", "roboto"}
+var FallbackFonts = []string{"notosans", "notosans-chartsymbols", "roboto"}
 
 //go:embed fonts/*.ttf.gz
 var fontFiles embed.FS

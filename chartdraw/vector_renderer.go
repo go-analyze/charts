@@ -77,6 +77,7 @@ func (vr *vectorRenderer) measureStringWithFallback(face font.Face, s string, fo
 		// emoji's may be filled in by other fonts, if glyph is missing or has very small advance, try fallback fonts
 		if (!ok || glyphAdvance/64 <= fixed.Int26_6(fontSize*0.75)) && isEmojiOrSymbol(c) {
 			var foundInFallback bool
+			var symbolFontFallback bool // true if glyph only exists in a symbol-specific font
 			for _, fallbackName := range drawing.FallbackFonts {
 				if fallbackFont := drawing.GetFont(fallbackName); fallbackFont != nil {
 					// Check if fallback font has this character
@@ -87,6 +88,7 @@ func (vr *vectorRenderer) measureStringWithFallback(face font.Face, s string, fo
 								glyphAdvance = fallbackAdvance
 							}
 							foundInFallback = true
+							symbolFontFallback = strings.Contains(fallbackName, "symbol")
 							break
 						}
 					}
@@ -95,6 +97,13 @@ func (vr *vectorRenderer) measureStringWithFallback(face font.Face, s string, fo
 
 			if !foundInFallback { // If no fallback font has the character, estimate symbol width
 				glyphAdvance = fixed.Int26_6(fontSize * 64)
+			} else if symbolFontFallback {
+				// Symbol fonts may have narrow advance widths that don't match browser rendering,
+				// since SVG text is rendered by the browser using system fonts, not our embedded fonts.
+				// Ensure a minimum advance to prevent undersized label backgrounds.
+				if minAdvance := fixed.Int26_6(fontSize * 64); glyphAdvance < minAdvance {
+					glyphAdvance = minAdvance
+				}
 			}
 		}
 

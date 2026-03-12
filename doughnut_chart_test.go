@@ -233,7 +233,7 @@ func TestDoughnutChart(t *testing.T) {
 					},
 				}
 			},
-			pngCRC: 0x5d5f7cfb,
+			pngCRC: 0x84f67102,
 		},
 		{
 			name: "empty_series",
