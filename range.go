@@ -20,9 +20,7 @@ type axisRange struct {
 	// reversed indicates the axis renders its range in reverse order.
 	reversed bool
 	// labels are the rendered labels: 1:1 for categories or range value labels to render.
-	labels []string
-	// TODO - dataStartIndex deprecated to be removed in v0.6
-	dataStartIndex int
+	labels         []string
 	tickCount      int
 	divideCount    int
 	labelCount     int
@@ -48,7 +46,6 @@ type valueAxisPrep struct {
 	labelCountCfg  int // user's explicit count (0 = auto)
 	labelUnit      float64
 	minCfg, maxCfg *float64
-	dataStartIndex int // TODO - deprecated to be removed in v0.6
 	labelRotation  float64
 	fontStyle      FontStyle
 	axisSize       int
@@ -60,7 +57,7 @@ type valueAxisPrep struct {
 // prepareValueAxisRange gathers data range and estimates label count, returning intermediate state.
 func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	minCfg, maxCfg, rangeValuePaddingScale *float64,
-	labelsCfg []string, dataStartIndex int,
+	labelsCfg []string,
 	labelCountCfg int, labelUnit float64, labelCountAdjustment int,
 	seriesList seriesList, yAxisIndex int, stackSeries bool,
 	valueFormatter ValueFormatter,
@@ -150,7 +147,6 @@ func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		labelUnit:      labelUnit,
 		minCfg:         minCfg,
 		maxCfg:         maxCfg,
-		dataStartIndex: dataStartIndex,
 		labelRotation:  labelRotation,
 		fontStyle:      fontStyle,
 		axisSize:       axisSize,
@@ -336,7 +332,6 @@ func finalizeValueAxisRange(p *Painter, prep *valueAxisPrep, minPadded, maxPadde
 	return axisRange{
 		isCategory:     false,
 		labels:         labels,
-		dataStartIndex: prep.dataStartIndex,
 		divideCount:    len(labels),
 		tickCount:      labelCount,
 		labelCount:     labelCount,
@@ -561,7 +556,7 @@ func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
 // calculateValueAxisRange centralizes numeric axis logic, selecting human-friendly scale and label count.
 func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	minCfg, maxCfg, rangeValuePaddingScale *float64,
-	labelsCfg []string, dataStartIndex int,
+	labelsCfg []string,
 	labelCountCfg int, labelUnit float64, labelCountAdjustment int,
 	seriesList seriesList, yAxisIndex int, stackSeries bool,
 	valueFormatter ValueFormatter,
@@ -569,7 +564,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	preferNiceIntervals *bool) axisRange {
 	prep := prepareValueAxisRange(p, isVertical, axisSize,
 		minCfg, maxCfg, rangeValuePaddingScale,
-		labelsCfg, dataStartIndex,
+		labelsCfg,
 		labelCountCfg, labelUnit, labelCountAdjustment,
 		seriesList, yAxisIndex, stackSeries,
 		valueFormatter, labelRotation, fontStyle,
@@ -582,7 +577,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 
 // calculateCategoryAxisRange does the same for category axes (common for x-axis in line/bar charts).
 func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extraSpace bool,
-	labels []string, dataStartIndex int,
+	labels []string,
 	labelCountCfg int, labelCountAdjustment int, labelUnit float64,
 	seriesList seriesList, labelRotation float64, fontStyle FontStyle) axisRange {
 	// If user provided no labels, use series names.
@@ -661,7 +656,6 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 	return axisRange{
 		isCategory:     true,
 		labels:         labels,
-		dataStartIndex: dataStartIndex,
 		divideCount:    dataCount,
 		tickCount:      tickCount,
 		labelCount:     labelCount,

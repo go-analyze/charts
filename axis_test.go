@@ -29,8 +29,8 @@ func TestAxisRender(t *testing.T) {
 			name: "x-axis",
 			optionFactory: func(p *Painter) axisOption {
 				opt := XAxisOption{
-					BoundaryGap: Ptr(true),
-					FontStyle:   fs,
+					BoundaryGap:    Ptr(true),
+					LabelFontStyle: fs,
 				}
 				return opt.prep(axisTheme, false).toAxisOption(newTestRangeForLabels(dayLabels, 0, fs))
 			},
@@ -39,8 +39,8 @@ func TestAxisRender(t *testing.T) {
 			name: "x-axis_rotation45",
 			optionFactory: func(p *Painter) axisOption {
 				opt := XAxisOption{
-					BoundaryGap: Ptr(true),
-					FontStyle:   fs,
+					BoundaryGap:    Ptr(true),
+					LabelFontStyle: fs,
 				}
 				return opt.prep(axisTheme, false).toAxisOption(newTestRangeForLabels(dayLabels, DegreesToRadians(45), fs))
 			},
@@ -49,9 +49,9 @@ func TestAxisRender(t *testing.T) {
 			name: "x-axis_rotation90",
 			optionFactory: func(p *Painter) axisOption {
 				opt := XAxisOption{
-					Labels:      dayLabels,
-					BoundaryGap: Ptr(true),
-					FontStyle:   fs,
+					Labels:         dayLabels,
+					BoundaryGap:    Ptr(true),
+					LabelFontStyle: fs,
 				}
 				return opt.prep(axisTheme, false).toAxisOption(newTestRangeForLabels(dayLabels, DegreesToRadians(90), fs))
 			},
@@ -97,17 +97,6 @@ func TestAxisRender(t *testing.T) {
 					theme:         axisTheme,
 					aRange:        aRange,
 					splitLineShow: Ptr(false),
-				}
-			},
-		},
-		{
-			name: "label_start_offset",
-			optionFactory: func(p *Painter) axisOption {
-				aRange := newTestRangeForLabels(letterLabels, 0, fs)
-				aRange.dataStartIndex = 2
-				return axisOption{
-					theme:  axisTheme,
-					aRange: aRange,
 				}
 			},
 		},
@@ -161,7 +150,7 @@ func TestAxisRender(t *testing.T) {
 				}
 				return axisOption{
 					theme: axisTheme,
-					aRange: calculateCategoryAxisRange(p, p.Width(), false, false, labels, 0,
+					aRange: calculateCategoryAxisRange(p, p.Width(), false, false, labels,
 						0, 0, 0, tsl, 0, fs),
 					boundaryGap: Ptr(true),
 				}
@@ -234,18 +223,9 @@ func TestBottomXAxis(t *testing.T) {
 			name: "font_style",
 			makeOption: func() XAxisOption {
 				return XAxisOption{
-					Labels:        []string{"abc", "def", "ghi"},
-					FontStyle:     NewFontStyleWithSize(20),
-					LabelRotation: DegreesToRadians(90),
-				}
-			},
-		},
-		{
-			name: "label_start_offset",
-			makeOption: func() XAxisOption {
-				return XAxisOption{
-					Labels:         []string{"a", "b", "c", "d", "e", "f"},
-					DataStartIndex: 2,
+					Labels:         []string{"abc", "def", "ghi"},
+					LabelFontStyle: NewFontStyleWithSize(20),
+					LabelRotation:  DegreesToRadians(90),
 				}
 			},
 		},
@@ -307,10 +287,10 @@ func TestYAxis(t *testing.T) {
 			name: "font_style_with_rotation",
 			makeOption: func() *YAxisOption {
 				return &YAxisOption{
-					Position:      PositionLeft, // typically defaulted in defaultRender
-					Labels:        []string{"a", "b", "c"},
-					FontStyle:     NewFontStyleWithSize(20),
-					LabelRotation: DegreesToRadians(270),
+					Position:       PositionLeft, // typically defaulted in defaultRender
+					Labels:         []string{"a", "b", "c"},
+					LabelFontStyle: NewFontStyleWithSize(20),
+					LabelRotation:  DegreesToRadians(270),
 				}
 			},
 		},

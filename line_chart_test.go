@@ -438,7 +438,7 @@ func TestLineChart(t *testing.T) {
 				opt := makeFullLineChartOption()
 				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
-				opt.XAxis.FontStyle = customFont
+				opt.XAxis.LabelFontStyle = customFont
 				opt.Title.FontStyle = customFont
 				return opt
 			},
@@ -1002,7 +1002,7 @@ func TestLineChart(t *testing.T) {
 					{120, 132, 101, 134, 190, 230, 210},
 				}, LineSeriesOption{
 					TrendLine: []SeriesTrendLine{
-						{Type: SeriesTrendTypeAverage, Window: 3, LineColor: ColorRed, DashedLine: Ptr(false)},
+						{Type: SeriesTrendTypeSMA, Period: 3, LineColor: ColorRed, DashedLine: Ptr(false)},
 					},
 				})
 				return opt
@@ -1034,7 +1034,7 @@ func TestLineChart(t *testing.T) {
 				}, LineSeriesOption{
 					TrendLine: []SeriesTrendLine{
 						{Type: SeriesTrendTypeLinear, LineColor: ColorRed, DashedLine: Ptr(false)},
-						{Type: SeriesTrendTypeAverage, LineColor: ColorBrown},
+						{Type: SeriesTrendTypeSMA, LineColor: ColorBrown},
 						{Type: SeriesTrendTypeCubic, LineColor: ColorRedAlt1, StrokeSmoothingTension: 0.8},
 					},
 				})

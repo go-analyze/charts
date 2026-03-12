@@ -3,8 +3,6 @@ package charts
 import (
 	"errors"
 	"math"
-
-	"github.com/golang/freetype/truetype"
 )
 
 type barChart struct {
@@ -27,14 +25,11 @@ func NewBarChartOptionWithData(data [][]float64) BarChartOption {
 
 // NewBarChartOptionWithSeries returns an initialized BarChartOption with the provided SeriesList.
 func NewBarChartOptionWithSeries(sl BarSeriesList) BarChartOption {
-	yAxisCount := getSeriesYAxisCount(sl)
 	return BarChartOption{
 		SeriesList:     sl,
 		Padding:        defaultPadding,
 		Theme:          GetDefaultTheme(),
-		Font:           GetDefaultFont(),
-		ValueAxis:      make([]ValueAxisOption, yAxisCount),
-		YAxis:          make([]YAxisOption, yAxisCount),
+		ValueAxis:      make([]ValueAxisOption, getSeriesYAxisCount(sl)),
 		ValueFormatter: defaultValueFormatter,
 	}
 }
@@ -45,8 +40,6 @@ type BarChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// Horizontal selects horizontal bar orientation when true, swapping the category and value axis.
 	Horizontal bool
 	// ValueAxis configures the value (numeric) axis. This axis represents the series values.
@@ -62,16 +55,10 @@ type BarChartOption struct {
 	// SeriesLabelPosition specifies the label position for the series.
 	// Vertical bars: "top" or "bottom". Horizontal bars: "left" or "right".
 	SeriesLabelPosition string
-	// Deprecated: Use CategoryAxis as a direct replacement.
-	XAxis XAxisOption
-	// Deprecated: Use ValueAxis as a direct replacement.
-	YAxis []YAxisOption
 	// Title contains options for rendering the chart title.
 	Title TitleOption
 	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Deprecated: Use BarSize as a direct replacement.
-	BarWidth int
 	// BarSize sets the bar thickness, width in vertical orientation, height in horizontal orientation.
 	BarSize int // TODO - v0.6 - Update to float64 to represent a percent
 	// BarMargin specifies the margin between grouped bars. BarSize takes priority over a set margin.
@@ -80,39 +67,6 @@ type BarChartOption struct {
 	RoundedBarCaps *bool
 	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
-}
-
-func (opt *BarChartOption) resolveAxes() (CategoryAxisOption, []ValueAxisOption) {
-	var catAxis CategoryAxisOption
-	if !opt.CategoryAxis.isZero() {
-		catAxis = opt.CategoryAxis
-	} else {
-		catAxis = opt.XAxis
-	}
-
-	var valAxis []ValueAxisOption
-	if anyValueAxisConfigured(opt.ValueAxis) {
-		valAxis = opt.ValueAxis
-	} else if anyValueAxisConfigured(opt.YAxis) {
-		valAxis = opt.YAxis
-	} else if len(opt.ValueAxis) > 0 {
-		valAxis = opt.ValueAxis
-	} else if len(opt.YAxis) > 0 {
-		valAxis = opt.YAxis
-	} else { // default to a single value axis when none is configured
-		valAxis = []ValueAxisOption{{}}
-	}
-
-	return catAxis, valAxis
-}
-
-func anyValueAxisConfigured(axes []ValueAxisOption) bool {
-	for i := range axes {
-		if !axes[i].isZero() {
-			return true
-		}
-	}
-	return false
 }
 
 // normalizeBarAxisPositions silently normalizes unsupported position values to their defaults.
@@ -210,9 +164,6 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 	divideValues := result.categoryAxisRange.autoDivide()
 	stackedSeries := flagIs(true, opt.StackSeries)
 	barSize := opt.BarSize
-	if barSize == 0 {
-		barSize = opt.BarWidth
-	}
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
 	if stackedSeries {
@@ -309,10 +260,6 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 						}
 					}
 				}
-				if fontStyle.Font == nil {
-					fontStyle.Font = opt.Font
-				}
-
 				labelPainter.Add(labelValue{
 					vertical:  true, // label is vertically oriented
 					index:     index,
@@ -342,7 +289,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 					fillColor:      seriesColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      seriesMarks,
 					seriesValues:   series.Values,
 					axisRange:      yRange,
@@ -357,7 +304,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 					fillColor:      defaultGlobalMarkFillColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      globalMarks,
 					seriesValues:   globalSeriesData,
 					axisRange:      yRange,
@@ -377,7 +324,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 			if len(seriesMarks) > 0 {
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          seriesColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					markpoints:         seriesMarks,
 					seriesValues:       series.Values,
@@ -392,7 +339,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					markpoints:         globalMarks,
 					seriesValues:       globalSeriesData,
@@ -421,11 +368,15 @@ func (b *barChart) Render() (Box, error) {
 		opt.Legend.Symbol = SymbolSquare
 	}
 
-	categoryAxis, valueAxis := opt.resolveAxes()
 	// TODO - support dual horizontal value axis when top x-axis rendering is added
-	if opt.Horizontal && len(valueAxis) > 1 {
+	if opt.Horizontal && len(opt.ValueAxis) > 1 {
 		return BoxZero, errors.New("dual value axes with horizontal bars is not supported")
 	}
+	valueAxis := opt.ValueAxis
+	if len(valueAxis) == 0 {
+		valueAxis = []ValueAxisOption{{}}
+	}
+	categoryAxis := opt.CategoryAxis
 	normalizeBarAxisPositions(opt.Horizontal, &categoryAxis, valueAxis)
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
@@ -464,9 +415,6 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 		baselineX, dir = plotWidth, -1
 	}
 	barSize := opt.BarSize
-	if barSize == 0 {
-		barSize = opt.BarWidth
-	}
 
 	// if stacking, keep track of accumulated widths for each data index (after the "reverse" logic)
 	var accumulatedWidths []int
@@ -573,10 +521,6 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 						}
 					}
 				}
-				if fontStyle.Font == nil {
-					fontStyle.Font = opt.Font
-				}
-
 				labelPainter.Add(labelValue{
 					vertical:  false, // horizontal label
 					index:     index,
@@ -606,7 +550,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 					fillColor:      seriesColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      seriesMarks,
 					seriesValues:   series.Values,
 					axisRange:      result.valueAxisRanges[0],
@@ -622,7 +566,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 					fillColor:      defaultGlobalMarkFillColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      globalMarks,
 					seriesValues:   globalSeriesData,
 					axisRange:      result.valueAxisRanges[0],
@@ -648,7 +592,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 			if len(seriesMarks) > 0 {
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          seriesColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					rotationRadians:    markPointRotation,
 					markpoints:         seriesMarks,
@@ -664,7 +608,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					rotationRadians:    markPointRotation,
 					markpoints:         globalMarks,

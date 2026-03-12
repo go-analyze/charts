@@ -65,17 +65,17 @@ func main() {
 			{
 				Min:            charts.Ptr(0.0), // force min to be zero
 				Max:            charts.Ptr(280.0),
-				FontStyle:      axisFont,
+				LabelFontStyle: axisFont,
 				Unit:           10,
 				LabelSkipCount: 1,
 			},
 		},
 		XAxis: charts.XAxisOption{
-			Labels:        xAxisLabels,
-			FontStyle:     axisFont,
-			BoundaryGap:   charts.Ptr(false),
-			LabelCount:    10,
-			LabelRotation: charts.DegreesToRadians(45),
+			Labels:         xAxisLabels,
+			LabelFontStyle: axisFont,
+			BoundaryGap:    charts.Ptr(false),
+			LabelCount:     10,
+			LabelRotation:  charts.DegreesToRadians(45),
 		},
 	}
 

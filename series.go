@@ -564,109 +564,6 @@ func (b BarSeriesList) ToGenericSeriesList() GenericSeriesList {
 	return result
 }
 
-// Deprecated: HorizontalBarSeries is deprecated, use BarSeries with BarChartOption.Horizontal set to true.
-type HorizontalBarSeries struct {
-	// Values provides the series data values.
-	Values []float64
-	// Label provides the series labels.
-	Label SeriesLabel
-	// Name specifies a name for the series.
-	Name string
-	// MarkLine provides a configuration for mark lines for this series.
-	MarkLine SeriesMarkLine
-}
-
-func (h *HorizontalBarSeries) getYAxisIndex() int {
-	return 0
-}
-
-func (h *HorizontalBarSeries) getValues() []float64 {
-	return h.Values
-}
-
-func (h *HorizontalBarSeries) getType() string {
-	return ChartTypeHorizontalBar
-}
-
-func (h *HorizontalBarSeries) Summary() PopulationSummary {
-	return summarizePopulationData(h.Values)
-}
-
-// Deprecated: HorizontalBarSeriesList is deprecated, use BarSeriesList with BarChartOption.Horizontal set to true.
-type HorizontalBarSeriesList []HorizontalBarSeries
-
-func (h HorizontalBarSeriesList) names() []string {
-	return seriesNames(h)
-}
-
-// SumSeries returns a float64 slice with the sum of each series.
-func (h HorizontalBarSeriesList) SumSeries() []float64 {
-	return sumSeries(h)
-}
-
-// SumSeriesValues returns a float64 slice with each series totaled by the value index.
-func (h HorizontalBarSeriesList) SumSeriesValues() []float64 {
-	return sumSeriesData(h, -1)
-}
-
-func (h HorizontalBarSeriesList) len() int {
-	return len(h)
-}
-
-func (h HorizontalBarSeriesList) getSeries(index int) series {
-	return &h[index]
-}
-
-func (h HorizontalBarSeriesList) getSeriesName(index int) string {
-	return h[index].Name
-}
-
-func (h HorizontalBarSeriesList) getSeriesValues(index int) []float64 {
-	return h[index].Values
-}
-
-func (h HorizontalBarSeriesList) getSeriesLen(index int) int {
-	return len(h[index].Values)
-}
-
-func (h HorizontalBarSeriesList) getSeriesSymbol(_ int) Symbol {
-	return ""
-}
-
-func (h HorizontalBarSeriesList) hasMarkPoint() bool {
-	return false // not currently supported on this chart type
-}
-
-func (h HorizontalBarSeriesList) setSeriesName(index int, name string) {
-	h[index].Name = name
-}
-
-func (h HorizontalBarSeriesList) sortByNameIndex(dict map[string]int) {
-	sort.Slice(h, func(i, j int) bool {
-		return dict[h[i].Name] < dict[h[j].Name]
-	})
-}
-
-// SetSeriesLabels sets the label for all elements in the series.
-func (h HorizontalBarSeriesList) SetSeriesLabels(label SeriesLabel) {
-	for i := range h {
-		h[i].Label = label
-	}
-}
-
-func (h HorizontalBarSeriesList) ToGenericSeriesList() GenericSeriesList {
-	result := make([]GenericSeries, len(h))
-	for i, s := range h {
-		result[i] = GenericSeries{
-			Values: s.Values,
-			Label:  s.Label,
-			Name:   s.Name,
-			Type:   ChartTypeHorizontalBar,
-		}
-	}
-	return result
-}
-
 // FunnelSeries references a population of data for funnel charts.
 type FunnelSeries struct {
 	// Value provides the value for the funnel section.
@@ -1166,53 +1063,24 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 		}
 		return any(result).(T)
 	case ChartTypeHorizontalBar:
-		// support both BarSeriesList and HorizontalBarSeriesList
-		var target T
-		if _, isBar := any(target).(BarSeriesList); isBar {
-			result := make(BarSeriesList, 0, sl.len())
-			for i := 0; i < sl.len(); i++ {
-				s := sl.getSeries(i)
-				if chartTypeMatch(chartType, s.getType()) {
-					switch v := s.(type) {
-					case *HorizontalBarSeries:
-						result = append(result, BarSeries{
-							Values:     v.Values,
-							Label:      v.Label,
-							Name:       v.Name,
-							MarkLine:   v.MarkLine,
-							horizontal: true,
-						})
-					case *BarSeries:
-						bs := *v
-						bs.horizontal = true
-						result = append(result, bs)
-					case *GenericSeries:
-						result = append(result, BarSeries{
-							Values:        v.Values,
-							Label:         v.Label,
-							Name:          v.Name,
-							MarkLine:      v.MarkLine,
-							MarkPoint:     v.MarkPoint,
-							absThemeIndex: Ptr(i),
-							horizontal:    true,
-						})
-					}
-				}
-			}
-			return any(result).(T)
-		}
-		result := make(HorizontalBarSeriesList, 0, sl.len())
+		result := make(BarSeriesList, 0, sl.len())
 		for i := 0; i < sl.len(); i++ {
 			s := sl.getSeries(i)
 			if chartTypeMatch(chartType, s.getType()) {
 				switch v := s.(type) {
-				case *HorizontalBarSeries:
-					result = append(result, *v)
+				case *BarSeries:
+					bs := *v
+					bs.horizontal = true
+					result = append(result, bs)
 				case *GenericSeries:
-					result = append(result, HorizontalBarSeries{
-						Values: v.Values,
-						Label:  v.Label,
-						Name:   v.Name,
+					result = append(result, BarSeries{
+						Values:        v.Values,
+						Label:         v.Label,
+						Name:          v.Name,
+						MarkLine:      v.MarkLine,
+						MarkPoint:     v.MarkPoint,
+						absThemeIndex: Ptr(i),
+						horizontal:    true,
 					})
 				}
 			}
@@ -1548,7 +1416,7 @@ func NewSeriesListScatterMultiValue(values [][][]float64, opts ...ScatterSeriesO
 	return seriesList
 }
 
-// BarSeriesOption provides series customization for NewSeriesListBar or NewSeriesListHorizontalBar.
+// BarSeriesOption provides series customization for NewSeriesListBar.
 type BarSeriesOption struct {
 	Label     SeriesLabel
 	Names     []string
@@ -1571,27 +1439,6 @@ func NewSeriesListBar(values [][]float64, opts ...BarSeriesOption) BarSeriesList
 			Label:     opt.Label,
 			MarkPoint: opt.MarkPoint,
 			MarkLine:  opt.MarkLine,
-		}
-		if index < len(opt.Names) {
-			s.Name = opt.Names[index]
-		}
-		seriesList[index] = s
-	}
-	return seriesList
-}
-
-// Deprecated: NewSeriesListHorizontalBar is deprecated, use NewSeriesListBar with BarChartOption.Horizontal set to true.
-func NewSeriesListHorizontalBar(values [][]float64, opts ...BarSeriesOption) HorizontalBarSeriesList {
-	var opt BarSeriesOption
-	if len(opts) != 0 {
-		opt = opts[0]
-	}
-
-	seriesList := make([]HorizontalBarSeries, len(values))
-	for index, v := range values {
-		s := HorizontalBarSeries{
-			Values: v,
-			Label:  opt.Label,
 		}
 		if index < len(opt.Names) {
 			s.Name = opt.Names[index]

@@ -15,9 +15,6 @@ type CategoryAxisOption struct {
 	TitleFontStyle FontStyle
 	// Labels provides labels for each value on the axis. Indices must match series data indices.
 	Labels []string
-	// Deprecated: DataStartIndex is deprecated and will be removed in v0.6.0.
-	// Slice your Labels and series data together using Go slice expressions as a direct replacement.
-	DataStartIndex int
 	// Position controls the physical axis placement. All four position constants are accepted.
 	// TODO - top-positioned category axis rendering for vertical bars is not yet supported.
 	Position string
@@ -25,8 +22,6 @@ type CategoryAxisOption struct {
 	// centered between two axis ticks. Default is set based on the dataset density / size to produce an easy-to-read
 	// graph. Specify a *bool (through charts.Ptr(false) or charts.Ptr(true)) to enforce a spacing.
 	BoundaryGap *bool
-	// Deprecated: FontStyle is deprecated, use LabelFontStyle.
-	FontStyle FontStyle
 	// LabelFontStyle specifies the font configuration for each label.
 	LabelFontStyle FontStyle
 	// LabelRotation is the rotation angle in radians for labels. Use DegreesToRadians(float64) to convert from degrees.
@@ -44,36 +39,13 @@ type CategoryAxisOption struct {
 	LabelCountAdjustment int
 }
 
-// isZero returns true if all fields are at their zero values.
-func (opt *CategoryAxisOption) isZero() bool {
-	return opt.Show == nil &&
-		opt.Theme == nil &&
-		opt.Title == "" &&
-		opt.TitleFontStyle.IsZero() &&
-		len(opt.Labels) == 0 &&
-		opt.DataStartIndex == 0 &&
-		opt.Position == "" &&
-		opt.BoundaryGap == nil &&
-		opt.FontStyle.IsZero() &&
-		opt.LabelFontStyle.IsZero() &&
-		opt.LabelRotation == 0 &&
-		opt.LabelOffset == (OffsetInt{}) &&
-		opt.ValueFormatter == nil &&
-		opt.Unit == 0 &&
-		opt.LabelCount == 0 &&
-		opt.LabelCountAdjustment == 0
-}
-
 // XAxisOption is an alias for CategoryAxisOption. Use whatever the chart type accepts.
 type XAxisOption = CategoryAxisOption
 
 // prepAxisStyles resolves theme, label, and title font styles for either axis option type.
 func prepAxisStyles(theme *ColorPalette, fallbackTheme ColorPalette, isVertical bool,
-	labelFontStyle *FontStyle, deprecatedFontStyle FontStyle, titleFontStyle *FontStyle) {
+	labelFontStyle *FontStyle, titleFontStyle *FontStyle) {
 	*theme = getPreferredTheme(*theme, fallbackTheme)
-	if labelFontStyle.IsZero() {
-		*labelFontStyle = deprecatedFontStyle
-	}
 	textColor := (*theme).GetXAxisTextColor()
 	if isVertical {
 		textColor = (*theme).GetYAxisTextColor()
@@ -84,7 +56,7 @@ func prepAxisStyles(theme *ColorPalette, fallbackTheme ColorPalette, isVertical 
 }
 
 func (opt *CategoryAxisOption) prep(fallbackTheme ColorPalette, isVertical bool) *CategoryAxisOption {
-	prepAxisStyles(&opt.Theme, fallbackTheme, isVertical, &opt.LabelFontStyle, opt.FontStyle, &opt.TitleFontStyle)
+	prepAxisStyles(&opt.Theme, fallbackTheme, isVertical, &opt.LabelFontStyle, &opt.TitleFontStyle)
 	return opt
 }
 
@@ -123,14 +95,10 @@ type ValueAxisOption struct {
 	// Position controls the physical axis placement. All four position constants are accepted.
 	// TODO - top-positioned value axis rendering is not yet supported.
 	Position string
-	// Deprecated: FontStyle is deprecated, use LabelFontStyle.
-	FontStyle FontStyle
 	// LabelFontStyle specifies the font configuration for each label.
 	LabelFontStyle FontStyle
 	// LabelRotation is the rotation angle in radians for labels. Use DegreesToRadians(float64) to convert from degrees.
 	LabelRotation float64
-	// Deprecated: Formatter is deprecated, use ValueFormatter instead.
-	Formatter string
 	// Unit suggests the axis step size (recommendation only). Larger values result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis. Use a smaller count to reduce text collisions.
@@ -155,37 +123,11 @@ type ValueAxisOption struct {
 	isCategoryAxis bool
 }
 
-// isZero returns true if all fields are at their zero values.
-func (opt *ValueAxisOption) isZero() bool {
-	return opt.Show == nil &&
-		opt.Theme == nil &&
-		opt.Title == "" &&
-		opt.TitleFontStyle.IsZero() &&
-		opt.Min == nil &&
-		opt.Max == nil &&
-		opt.RangeValuePaddingScale == nil &&
-		len(opt.Labels) == 0 &&
-		opt.Position == "" &&
-		opt.FontStyle.IsZero() &&
-		opt.LabelFontStyle.IsZero() &&
-		opt.LabelRotation == 0 &&
-		opt.Formatter == "" &&
-		opt.Unit == 0 &&
-		opt.LabelCount == 0 &&
-		opt.LabelCountAdjustment == 0 &&
-		opt.PreferNiceIntervals == nil &&
-		opt.LabelSkipCount == 0 &&
-		opt.SplitLineShow == nil &&
-		opt.SpineLineShow == nil &&
-		opt.ValueFormatter == nil &&
-		!opt.isCategoryAxis
-}
-
 // YAxisOption is an alias for ValueAxisOption. Use whatever the chart type accepts.
 type YAxisOption = ValueAxisOption
 
 func (opt *ValueAxisOption) prep(fallbackTheme ColorPalette, isVertical bool) *ValueAxisOption {
-	prepAxisStyles(&opt.Theme, fallbackTheme, isVertical, &opt.LabelFontStyle, opt.FontStyle, &opt.TitleFontStyle)
+	prepAxisStyles(&opt.Theme, fallbackTheme, isVertical, &opt.LabelFontStyle, &opt.TitleFontStyle)
 	return opt
 }
 
@@ -444,7 +386,6 @@ func (a *axisPainter) Render() (Box, error) {
 			tickSpaces:  tickSpaces,
 			length:      tickLength,
 			vertical:    isVertical,
-			firstIndex:  opt.aRange.dataStartIndex,
 			strokeWidth: strokeWidth,
 			strokeColor: axisColor,
 		})
@@ -488,7 +429,6 @@ func (a *axisPainter) Render() (Box, error) {
 		align:          alignSide,
 		textRotation:   opt.aRange.labelRotation,
 		offset:         opt.labelOffset,
-		firstIndex:     opt.aRange.dataStartIndex,
 		labelCount:     opt.aRange.labelCount,
 		labelSkipCount: opt.labelSkipCount,
 		fontStyle:      opt.aRange.labelFontStyle,

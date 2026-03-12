@@ -463,7 +463,6 @@ func TestViolinSingleSeriesUsesFullCategoryArea(t *testing.T) {
 		0,
 		0,
 		0,
-		0,
 		seriesList,
 		0,
 		FontStyle{},

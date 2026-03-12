@@ -57,7 +57,6 @@ type PainterOptions struct {
 type PainterOptionFunc func(*Painter)
 
 type ticksOption struct {
-	firstIndex  int
 	length      int
 	vertical    bool
 	tickCount   int
@@ -74,7 +73,6 @@ type multiTextOption struct {
 	align          string
 	textRotation   float64
 	offset         OffsetInt
-	firstIndex     int
 	labelCount     int
 	labelSkipCount int
 }
@@ -546,11 +544,6 @@ const (
 	_3pi2 = (3 * math.Pi) / 2.0
 )
 
-// Deprecated: Pin is deprecated, use MarkPin with 0 radians as a replacement.
-func (p *Painter) Pin(x, y, width int, fillColor, strokeColor Color, strokeWidth float64) {
-	p.MarkPin(x, y, width, 0, fillColor, strokeColor, strokeWidth)
-}
-
 // MarkPin draws a rotatable pin shape (circle + curved tail) used for mark points.
 // rotationRadians rotates the entire pin shape around the anchor point (x, y).
 // A rotation of 0 draws the pin pointing downward.
@@ -852,9 +845,7 @@ func (p *Painter) ticks(opt ticksOption) {
 		values = autoDivide(p.Width(), opt.tickSpaces)
 	}
 	for index, value := range values {
-		if index < opt.firstIndex {
-			continue
-		} else if !isTick(len(values)-opt.firstIndex, opt.tickCount, index-opt.firstIndex) {
+		if !isTick(len(values), opt.tickCount, index) {
 			continue
 		}
 		if opt.vertical {
@@ -907,10 +898,8 @@ func (p *Painter) multiText(opt multiTextOption) {
 	for index, start := range positions {
 		if opt.centerLabels && index == positionCount-1 {
 			break // positions have one item more than we can map to text, this extra value is used to center against
-		} else if index < opt.firstIndex {
-			continue
 		} else if index != count-1 && // one off case for last label due to values and label qty difference
-			!isTick(positionCount-opt.firstIndex, tickCount, index-opt.firstIndex) {
+			!isTick(positionCount, tickCount, index) {
 			continue
 		} else if index != count-1 && // ensure the bottom value is always printed
 			skippedLabels < opt.labelSkipCount {
@@ -1134,12 +1123,6 @@ func (p *Painter) legendLineDot(box Box, strokeColor Color, strokeWidth float64,
 // BarChart renders a bar chart with the provided configuration to the painter.
 func (p *Painter) BarChart(opt BarChartOption) error {
 	_, err := newBarChart(p, opt).Render()
-	return err
-}
-
-// Deprecated: HorizontalBarChart is deprecated, use Painter.BarChart with Horizontal set to true.
-func (p *Painter) HorizontalBarChart(opt HorizontalBarChartOption) error {
-	_, err := newHorizontalBarChart(p, opt).Render()
 	return err
 }
 

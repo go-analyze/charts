@@ -4,7 +4,6 @@ import (
 	"errors"
 	"math"
 	"strconv"
-	"strings"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -291,7 +290,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		xValueAxis.prep(getPreferredTheme(xValueAxis.Theme, theme), false)
 		xAxisRange := calculateValueAxisRange(p, false, p.Width(),
 			xValueAxis.Min, xValueAxis.Max, xValueAxis.RangeValuePaddingScale,
-			xValueAxis.Labels, 0,
+			xValueAxis.Labels,
 			xValueAxis.LabelCount, xValueAxis.Unit, xValueAxis.LabelCountAdjustment,
 			opt.seriesList, 0, opt.stackSeries,
 			getPreferredValueFormatter(xValueAxis.ValueFormatter, opt.valueFormatter),
@@ -300,7 +299,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		xAxisOpts = xValueAxis.toAxisOption(xAxisRange)
 	} else { // X is category axis (typical)
 		xAxisRange := calculateCategoryAxisRange(p, p.Width(), false, flagIs(false, opt.categoryAxis.BoundaryGap),
-			opt.categoryAxis.Labels, opt.categoryAxis.DataStartIndex,
+			opt.categoryAxis.Labels,
 			opt.categoryAxis.LabelCount, opt.categoryAxis.LabelCountAdjustment, opt.categoryAxis.Unit,
 			opt.seriesList,
 			opt.categoryAxis.LabelRotation, opt.categoryAxis.LabelFontStyle)
@@ -337,7 +336,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		// Y-slot renders the category axis directly
 		ca := opt.categoryAxis
 		catRange := calculateCategoryAxisRange(p, rangeHeight, true, false,
-			ca.Labels, ca.DataStartIndex,
+			ca.Labels,
 			ca.LabelCount, ca.LabelCountAdjustment, ca.Unit,
 			opt.seriesList,
 			ca.LabelRotation, ca.LabelFontStyle)
@@ -378,17 +377,10 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 				}
 				yAxisOption = *yAxisOption.prep(getPreferredTheme(yAxisOption.Theme, theme), true)
 				entries[yIndex].option = yAxisOption
-				floatFormatter := getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter)
-				valueFormatter := floatFormatter
-				if yAxisOption.Formatter != "" {
-					fmtStr := yAxisOption.Formatter
-					valueFormatter = func(f float64) string {
-						return strings.ReplaceAll(fmtStr, "{value}", floatFormatter(f))
-					}
-				}
+				valueFormatter := getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter)
 				prep := prepareValueAxisRange(p, true, rangeHeight,
 					yAxisOption.Min, yAxisOption.Max, yAxisOption.RangeValuePaddingScale,
-					yAxisOption.Labels, 0,
+					yAxisOption.Labels,
 					yAxisOption.LabelCount, yAxisOption.Unit, yAxisOption.LabelCountAdjustment,
 					opt.seriesList, yIndex, opt.stackSeries,
 					valueFormatter, yAxisOption.LabelRotation, yAxisOption.LabelFontStyle,
@@ -501,7 +493,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 			OutputFormat: opt.OutputFormat,
 			Width:        opt.Width,
 			Height:       opt.Height,
-			Font:         opt.Font,
 		})
 	}
 	p := opt.parent
@@ -571,29 +562,37 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		}
 	}
 	if len(horizontalBarSeriesList) != 0 {
-		// Horizontal bar: XAxis carries value data, YAxis carries category data
-		// Translate to semantic slots matching the direct HorizontalBarChartOption.Render() path
+		// horizontal bar: XAxis carries value data, YAxis carries category data
 		var catAxis CategoryAxisOption
 		if len(opt.YAxis) > 0 {
 			ya := opt.YAxis[0]
 			catAxis = CategoryAxisOption{
-				Show: ya.Show, Theme: ya.Theme,
-				Title: ya.Title, TitleFontStyle: ya.TitleFontStyle,
-				Labels: ya.Labels, Position: ya.Position,
-				FontStyle: ya.FontStyle, LabelFontStyle: ya.LabelFontStyle,
-				LabelRotation: ya.LabelRotation, ValueFormatter: ya.ValueFormatter,
-				Unit: ya.Unit, LabelCount: ya.LabelCount,
+				Show:                 ya.Show,
+				Theme:                ya.Theme,
+				Title:                ya.Title,
+				TitleFontStyle:       ya.TitleFontStyle,
+				Labels:               ya.Labels,
+				Position:             ya.Position,
+				LabelFontStyle:       ya.LabelFontStyle,
+				LabelRotation:        ya.LabelRotation,
+				ValueFormatter:       ya.ValueFormatter,
+				Unit:                 ya.Unit,
+				LabelCount:           ya.LabelCount,
 				LabelCountAdjustment: ya.LabelCountAdjustment,
 			}
 		}
 		catAxis.Unit = 1 // each category bar should have a label; axis fitting skips only when labels don't physically fit
 		valAxis := ValueAxisOption{
-			Show: opt.XAxis.Show, Theme: opt.XAxis.Theme,
-			Title: opt.XAxis.Title, TitleFontStyle: opt.XAxis.TitleFontStyle,
-			Labels:    opt.XAxis.Labels,
-			FontStyle: opt.XAxis.FontStyle, LabelFontStyle: opt.XAxis.LabelFontStyle,
-			LabelRotation: opt.XAxis.LabelRotation, ValueFormatter: opt.XAxis.ValueFormatter,
-			Unit: opt.XAxis.Unit, LabelCount: opt.XAxis.LabelCount,
+			Show:                 opt.XAxis.Show,
+			Theme:                opt.XAxis.Theme,
+			Title:                opt.XAxis.Title,
+			TitleFontStyle:       opt.XAxis.TitleFontStyle,
+			Labels:               opt.XAxis.Labels,
+			LabelFontStyle:       opt.XAxis.LabelFontStyle,
+			LabelRotation:        opt.XAxis.LabelRotation,
+			ValueFormatter:       opt.XAxis.ValueFormatter,
+			Unit:                 opt.XAxis.Unit,
+			LabelCount:           opt.XAxis.LabelCount,
 			LabelCountAdjustment: opt.XAxis.LabelCountAdjustment,
 		}
 		renderOpt.categoryAxis = &catAxis
@@ -639,18 +638,13 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	// bar chart
 	if len(barSeriesList) != 0 {
 		handler.Add(func() error {
-			width := opt.BarSize
-			if width == 0 {
-				width = opt.BarWidth
-			}
 			_, err := newBarChart(p, BarChartOption{
-				Theme:       opt.Theme,
-				Font:        opt.Font,
-				XAxis:       opt.XAxis,
-				SeriesList:  barSeriesList,
-				StackSeries: opt.StackSeries,
-				BarWidth:    width,
-				BarMargin:   opt.BarMargin,
+				Theme:        opt.Theme,
+				CategoryAxis: opt.XAxis,
+				SeriesList:   barSeriesList,
+				StackSeries:  opt.StackSeries,
+				BarSize:      opt.BarSize,
+				BarMargin:    opt.BarMargin,
 			}).renderChart(renderResult)
 			return err
 		})
@@ -663,15 +657,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		}
 
 		handler.Add(func() error {
-			size := opt.BarSize
-			if size == 0 {
-				size = opt.BarHeight
-			}
 			_, err := newBarChart(p, BarChartOption{
 				Horizontal:     true,
 				Theme:          opt.Theme,
-				Font:           opt.Font,
-				BarSize:        size,
+				BarSize:        opt.BarSize,
 				BarMargin:      opt.BarMargin,
 				SeriesList:     horizontalBarSeriesList,
 				StackSeries:    opt.StackSeries,
@@ -743,7 +732,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		handler.Add(func() error {
 			_, err := newLineChart(p, LineChartOption{
 				Theme:           opt.Theme,
-				Font:            opt.Font,
 				XAxis:           opt.XAxis,
 				SeriesList:      lineSeriesList,
 				StackSeries:     opt.StackSeries,
@@ -761,7 +749,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		handler.Add(func() error {
 			_, err := newScatterChart(p, ScatterChartOption{
 				Theme:      opt.Theme,
-				Font:       opt.Font,
 				XAxis:      opt.XAxis,
 				Symbol:     opt.Symbol,
 				SeriesList: scatterSeriesList,
@@ -775,7 +762,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		handler.Add(func() error {
 			_, err := newPieChart(p, PieChartOption{
 				Theme:      opt.Theme,
-				Font:       opt.Font,
 				Radius:     opt.Radius,
 				SeriesList: pieSeriesList,
 			}).renderChart(renderResult)
@@ -800,7 +786,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		handler.Add(func() error {
 			_, err := newRadarChart(p, RadarChartOption{
 				Theme:           opt.Theme,
-				Font:            opt.Font,
 				RadarIndicators: opt.RadarIndicators,
 				Radius:          opt.Radius,
 				SeriesList:      radarSeriesList,
@@ -814,7 +799,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		handler.Add(func() error {
 			_, err := newFunnelChart(p, FunnelChartOption{
 				Theme:      opt.Theme,
-				Font:       opt.Font,
 				SeriesList: funnelSeriesList,
 			}).renderChart(renderResult)
 			return err
@@ -829,9 +813,6 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		item.parent = p
 		if item.Theme == nil {
 			item.Theme = opt.Theme
-		}
-		if item.Font == nil {
-			item.Font = opt.Font
 		}
 		if _, err = Render(item); err != nil {
 			return nil, err

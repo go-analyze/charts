@@ -30,8 +30,8 @@ func TestSeriesLists(t *testing.T) {
 				assert.Len(t, filterSeriesList[BarSeriesList](seriesList, ChartTypeBar), 3)
 				assert.Empty(t, filterSeriesList[LineSeriesList](seriesList, ChartTypeLine))
 			case ChartTypeHorizontalBar:
-				seriesList = NewSeriesListHorizontalBar(values)
-				assert.Len(t, filterSeriesList[HorizontalBarSeriesList](seriesList, ChartTypeHorizontalBar), 3)
+				seriesList = NewSeriesListGeneric(values, ChartTypeHorizontalBar)
+				assert.Len(t, filterSeriesList[BarSeriesList](seriesList, ChartTypeHorizontalBar), 3)
 				assert.Empty(t, filterSeriesList[LineSeriesList](seriesList, ChartTypeLine))
 			default:
 				require.Fail(t, "Need to implement chart type test")
@@ -312,12 +312,6 @@ func TestSumSeries(t *testing.T) {
 				return NewSeriesListBar(values)
 			},
 		},
-		{
-			name: "horizontal_bar",
-			seriesFact: func(values [][]float64) summableSeries {
-				return NewSeriesListHorizontalBar(values)
-			},
-		},
 	}
 	tests := []struct {
 		name     string
@@ -392,12 +386,6 @@ func TestSumSeriesValues(t *testing.T) {
 			name: "bar",
 			seriesFact: func(values [][]float64) summableSeries {
 				return NewSeriesListBar(values)
-			},
-		},
-		{
-			name: "horizontal_bar",
-			seriesFact: func(values [][]float64) summableSeries {
-				return NewSeriesListHorizontalBar(values)
 			},
 		},
 	}

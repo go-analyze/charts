@@ -28,7 +28,7 @@ func main() {
 	}
 
 	opt := charts.NewBarChartOptionWithData(values)
-	opt.XAxis.Labels = []string{
+	opt.CategoryAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	}
 	opt.Legend.Show = charts.Ptr(false)
@@ -45,14 +45,14 @@ func main() {
 	}
 	barSizePainter := p.Child(charts.PainterBoxOption(charts.NewBox(400, 0, 800, 400)))
 	opt.Title.Text = "Small Bar"
-	opt.BarWidth = 4 // TODO - v0.6 - Update to percentage (e.g., 0.3)
+	opt.BarSize = 4 // TODO - v0.6 - Update to percentage (e.g., 0.3)
 	if err := barSizePainter.BarChart(opt); err != nil {
 		panic(err)
 	}
 	marginPainter := p.Child(charts.PainterBoxOption(charts.NewBox(800, 0, 1200, 400)))
 	opt.Title.Text = "No Margin"
 	opt.BarMargin = charts.Ptr(0.0) // TODO - v0.6 - Update to percentage
-	opt.BarWidth = 0                // reset to default size
+	opt.BarSize = 0                 // reset to default size
 	if err := marginPainter.BarChart(opt); err != nil {
 		panic(err)
 	}

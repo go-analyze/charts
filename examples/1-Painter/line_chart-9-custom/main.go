@@ -65,12 +65,12 @@ func main() {
 	opt.XAxis.LabelFontStyle = charts.NewFontStyleWithSize(6.0)
 	opt.YAxis = []charts.YAxisOption{
 		{
-			Show:          charts.Ptr(false), // disabling in favor of manually printed y-values
-			Min:           charts.Ptr(1.4),
-			Max:           charts.Ptr(8.0),
-			LabelCount:    4,
-			SpineLineShow: charts.Ptr(true),
-			FontStyle:     charts.NewFontStyleWithSize(8.0),
+			Show:           charts.Ptr(false), // disabling in favor of manually printed y-values
+			Min:            charts.Ptr(1.4),
+			Max:            charts.Ptr(8.0),
+			LabelCount:     4,
+			SpineLineShow:  charts.Ptr(true),
+			LabelFontStyle: charts.NewFontStyleWithSize(8.0),
 		},
 	}
 	opt.Legend.Show = charts.Ptr(false)

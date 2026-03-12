@@ -14,7 +14,6 @@ func TestChartOption(t *testing.T) {
 
 	fns := []OptionFunc{
 		SVGOutputOptionFunc(),
-		FontOptionFunc(GetDefaultFont()),
 		ThemeNameOptionFunc(ThemeVividDark),
 		TitleTextOptionFunc("title"),
 		LegendLabelsOptionFunc([]string{"label"}),
@@ -29,7 +28,6 @@ func TestChartOption(t *testing.T) {
 	}
 	require.Equal(t, ChartOption{
 		OutputFormat: ChartOutputSVG,
-		Font:         GetDefaultFont(),
 		Theme:        GetTheme(ThemeVividDark),
 		Title: TitleOption{
 			Text: "title",
@@ -346,10 +344,10 @@ func TestChildRender(t *testing.T) {
 		XAxisLabelsOptionFunc([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}),
 		ChildOptionFunc(ChartOption{
 			Box: NewBox(200, 10, 500, 200),
-			SeriesList: NewSeriesListHorizontalBar([][]float64{
+			SeriesList: NewSeriesListGeneric([][]float64{
 				{70, 90, 110, 130},
 				{80, 100, 120, 140},
-			}).ToGenericSeriesList(),
+			}, ChartTypeHorizontalBar),
 			Legend: LegendOption{
 				SeriesNames: []string{"2011", "2012"},
 			},

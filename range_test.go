@@ -111,7 +111,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, false, 800, nil, nil, Ptr(0.0),
-			nil, 0, 3, 0, 0,
+			nil, 3, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Len(t, ar.labels, 3)
@@ -126,7 +126,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			nil, 0, 0, 5, 0,
+			nil, 0, 5, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Equal(t, 12, ar.labelCount)
@@ -139,7 +139,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, false, 1200, nil, nil, nil,
-			nil, 0, 0, 5, 2,
+			nil, 0, 5, 2,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Equal(t, 8, ar.labelCount)
@@ -153,7 +153,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, false, 2400, nil, nil, nil,
-			nil, 0, 0, 5, 4,
+			nil, 0, 5, 4,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Equal(t, 25, ar.labelCount)
@@ -169,7 +169,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			nil, 0, 0, 0, 0,
+			nil, 0, 0, 0,
 			tsl, 0, true, defaultValueFormatter, 0, fs, nil)
 
 		assert.InDelta(t, 0.0, ar.min, 0.0)
@@ -184,7 +184,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		min := Ptr(5.0)
 		max := Ptr(25.0)
 		ar := calculateValueAxisRange(p, true, 800, min, max,
-			nil, []string{}, 0, 0, 0, 0,
+			nil, []string{}, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.InDelta(t, 5.0, ar.min, 0.0)
@@ -199,7 +199,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		min := Ptr(10.0)
 		max := Ptr(20.0)
 		ar := calculateValueAxisRange(p, true, 800, min, max,
-			nil, []string{}, 0, 0, 0, 0,
+			nil, []string{}, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.InDelta(t, 10.0, ar.min, 0.0)
@@ -212,7 +212,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			nil, 0, 0, 0, 0,
+			nil, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.InDelta(t, 1.0, ar.min, 0.0)
@@ -229,7 +229,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		inputLabels := []string{"ThisIsAVeryLongLabelThatExceedsNormal", "AnotherVeryLongLabelThatExceedsNormal",
 			"WowLookAtTheseLabels!", "AndHereIsAnotherReallyLongLabel"}
 		ar := calculateValueAxisRange(p, false, 800, nil, nil, nil,
-			inputLabels, 0, 0, 0, 0,
+			inputLabels, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Equal(t, 810, ar.textMaxWidth)
@@ -245,7 +245,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		tsl := testSeriesList{series}
 
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			nil, 0, 0, 0, 0,
+			nil, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.InDelta(t, 49.0, ar.min, 0.0)
@@ -259,7 +259,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 
 		rotation := DegreesToRadians(45.0)
 		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			[]string{"Label One", "Label Two", "Label Three", "Label Four"}, 0, 0, 0, 0,
+			[]string{"Label One", "Label Two", "Label Three", "Label Four"}, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, rotation, fs, nil)
 
 		assert.Equal(t, 103, ar.textMaxWidth)
@@ -277,7 +277,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		providedLabels := []string{"Label1", "Label2", "Label3", "Label4", "Label5"}
 		explicitLabelCount := 3
 		ar := calculateValueAxisRange(p, false, 800, nil, nil, nil,
-			providedLabels, 0, explicitLabelCount, 0, 0,
+			providedLabels, explicitLabelCount, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Equal(t, []string{"Label1", "Label2", "Label3"}, ar.labels)
@@ -292,7 +292,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 
 		ar := calculateValueAxisRange(p, false, 800,
 			nil, nil, Ptr(0.0), // force no padding
-			nil, 0, 0, 7, 0,
+			nil, 0, 7, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Equal(t, 6, ar.labelCount)
@@ -308,7 +308,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 
 		ar := calculateValueAxisRange(p, false, 800,
 			nil, nil, Ptr(0.0), // force no padding
-			nil, 0, 0, 9, 0,
+			nil, 0, 9, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.Equal(t, 4, ar.labelCount)
@@ -324,11 +324,11 @@ func TestCalculateValueAxisRange(t *testing.T) {
 
 		// without PreferNiceIntervals the flex logic is not triggered
 		arDefault := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			nil, 0, 0, 0, 0,
+			nil, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 		// with PreferNiceIntervals the flex logic produces nicer intervals
 		arNice := calculateValueAxisRange(p, true, 800, nil, nil, nil,
-			nil, 0, 0, 0, 0,
+			nil, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 
 		assert.NotEqual(t, arDefault.max, arNice.max)
@@ -348,7 +348,6 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		ar := calculateValueAxisRange(
 			p, false, 462, // isVertical, axisSize
 			nil, nil, nil, nil, // minCfg, maxCfg, rangeValuePaddingScale, labelsCfg
-			0,            // dataStartIndex
 			0,            // labelCountCfg
 			100000,       // labelUnit (much larger than the data span)
 			0,            // labelCountAdjustment
@@ -376,7 +375,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{3}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, nil,
 			0, 0, 0, tsl, 0, fs)
 
 		expectedLabels := []string{"1"}
@@ -395,7 +394,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{3, 1}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, false, providedLabels, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, providedLabels,
 			0, 0, 0, tsl, 0, fs)
 
 		assert.Equal(t, []string{"CustomLabel", "2"}, ar.labels)
@@ -412,7 +411,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{4}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, nil,
 			2, 1, 0, tsl, 0, fs)
 
 		assert.Equal(t, 1, ar.divideCount)
@@ -427,7 +426,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 		}
 
 		rotation := DegreesToRadians(30.0)
-		ar := calculateCategoryAxisRange(p, 800, true, false, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, true, false, []string{},
 			0, 0, 0, tsl, rotation, fs)
 
 		assert.Equal(t, 17, ar.textMaxWidth)
@@ -443,7 +442,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{3}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, false, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, []string{},
 			0, -2, 0, tsl, 0, fs)
 
 		assert.Equal(t, 2, ar.labelCount)
@@ -456,7 +455,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{2}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, false, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, []string{},
 			5, 0, 0, tsl, 0, fs)
 
 		assert.Equal(t, 2, ar.labelCount)
@@ -472,7 +471,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 
 		inputLabels := []string{"ThisIsAVeryLongLabelThatExceedsNormal", "AnotherVeryLongLabelThatExceedsNormal",
 			"WowLookAtTheseLabels!", "AndHereIsAnotherReallyLongLabel"}
-		ar := calculateCategoryAxisRange(p, 600, false, false, inputLabels, 0,
+		ar := calculateCategoryAxisRange(p, 600, false, false, inputLabels,
 			0, 0, 0, tsl, 0, fs)
 
 		assert.Equal(t, 2, ar.labelCount)
@@ -493,7 +492,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 			{values: []float64{10}},
 		}
 
-		ar := calculateCategoryAxisRange(p, 800, false, false, []string{}, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, []string{},
 			0, 0, 4.0, tsl, 0, fs)
 
 		assert.Equal(t, 2, ar.labelCount)
@@ -502,7 +501,7 @@ func TestCalculateCategoryAxisRange(t *testing.T) {
 	t.Run("empty_series_list", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		tsl := testSeriesList{}
-		ar := calculateCategoryAxisRange(p, 800, false, false, nil, 0,
+		ar := calculateCategoryAxisRange(p, 800, false, false, nil,
 			0, 0, 0, tsl, 0, fs)
 
 		assert.Empty(t, ar.labels)
@@ -979,7 +978,7 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		series := testSeriesList{{values: []float64{0, 100}}}
 		prep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			series, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 		results := coordinateValueAxisRanges(p, []*valueAxisPrep{&prep})
 
@@ -991,11 +990,11 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		leftSeries := testSeriesList{{values: []float64{0, 100}}}
 		leftPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 5, 0, 0,
+			nil, nil, nil, nil, 5, 0, 0,
 			leftSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 		rightSeries := testSeriesList{{values: []float64{0, 200}}}
 		rightPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			rightSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 
 		results := coordinateValueAxisRanges(p, []*valueAxisPrep{&leftPrep, &rightPrep})
@@ -1009,11 +1008,11 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		leftSeries := testSeriesList{{values: []float64{0, 100}}}
 		leftPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 5, 0, 0,
+			nil, nil, nil, nil, 5, 0, 0,
 			leftSeries, 0, false, defaultValueFormatter, 0, fs, nil)
 		rightSeries := testSeriesList{{values: []float64{0, 200}}}
 		rightPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 8, 0, 0,
+			nil, nil, nil, nil, 8, 0, 0,
 			rightSeries, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		results := coordinateValueAxisRanges(p, []*valueAxisPrep{&leftPrep, &rightPrep})
@@ -1028,11 +1027,11 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		leftSeries := testSeriesList{{values: []float64{0, 100}}}
 		leftPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			leftSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 		rightSeries := testSeriesList{{values: []float64{0, 200}}}
 		rightPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			rightSeries, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		results := coordinateValueAxisRanges(p, []*valueAxisPrep{&leftPrep, &rightPrep})
@@ -1047,11 +1046,11 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		// use similar data ranges so natural counts are likely the same
 		leftSeries := testSeriesList{{values: []float64{0, 100}}}
 		leftPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			leftSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 		rightSeries := testSeriesList{{values: []float64{0, 100}}}
 		rightPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			rightSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 
 		results := coordinateValueAxisRanges(p, []*valueAxisPrep{&leftPrep, &rightPrep})
@@ -1065,12 +1064,12 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		// left axis: data 0-250, no unit
 		leftSeries := testSeriesList{{values: []float64{0, 250}}}
 		leftPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			leftSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 		// right axis: data 0-680, unit=40
 		rightSeries := testSeriesList{{values: []float64{0, 680}}}
 		rightPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 40, 0,
+			nil, nil, nil, nil, 0, 40, 0,
 			rightSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 
 		preps := []*valueAxisPrep{&leftPrep, &rightPrep}
@@ -1092,11 +1091,11 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		// both axes without units — existing scoring unchanged
 		leftSeries := testSeriesList{{values: []float64{0, 100}}}
 		leftPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			leftSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 		rightSeries := testSeriesList{{values: []float64{0, 200}}}
 		rightPrep := prepareValueAxisRange(p, true, 500,
-			nil, nil, nil, nil, 0, 0, 0, 0,
+			nil, nil, nil, nil, 0, 0, 0,
 			rightSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
 
 		preps := []*valueAxisPrep{&leftPrep, &rightPrep}

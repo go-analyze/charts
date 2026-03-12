@@ -275,7 +275,7 @@ func TestPainterExternal(t *testing.T) {
 			name: "pin",
 			fn: func(p *Painter) {
 				c := Color{R: 84, G: 112, B: 198, A: 255}
-				p.Pin(30, 30, 30, c, c, 1)
+				p.MarkPin(30, 30, 30, 0, c, c, 1)
 			},
 			pngCRC: 0x981d8eb5,
 		},

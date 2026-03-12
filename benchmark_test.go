@@ -283,7 +283,7 @@ func renderPainterScatter(painter *Painter) {
 	lineOpt.SeriesList[0].MarkLine.Lines = lineMarks
 	lineOpt.SeriesList[0].TrendLine = NewTrendLine(SeriesTrendTypeCubic)
 	lineOpt.SeriesList[1].MarkLine.Lines = lineMarks
-	lineOpt.SeriesList[1].TrendLine = NewTrendLine(SeriesTrendTypeAverage)
+	lineOpt.SeriesList[1].TrendLine = NewTrendLine(SeriesTrendTypeSMA)
 	lineOpt.Legend = LegendOption{
 		Offset: OffsetStr{
 			Top: "-90",
@@ -349,10 +349,10 @@ func renderPainterBar(painter *Painter) {
 	barOpt.SeriesList[0].MarkLine.Lines = lineMarks
 	barOpt.SeriesList[1].MarkPoint.Points = pointMarks
 	barOpt.SeriesList[1].MarkLine.Lines = lineMarks
-	barOpt.XAxis.Labels = []string{
+	barOpt.CategoryAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}
-	barOpt.XAxis.LabelCount = 12
+	barOpt.CategoryAxis.LabelCount = 12
 	barOpt.Legend = LegendOption{
 		SeriesNames:  []string{"Rainfall", "Evaporation"},
 		Offset:       OffsetRight,

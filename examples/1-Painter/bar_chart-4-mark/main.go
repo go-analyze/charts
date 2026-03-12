@@ -28,7 +28,7 @@ func main() {
 	}
 
 	opt := charts.NewBarChartOptionWithData(values)
-	opt.XAxis.Labels = []string{
+	opt.CategoryAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	}
 	opt.Legend = charts.LegendOption{

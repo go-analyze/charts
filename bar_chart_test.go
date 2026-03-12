@@ -20,10 +20,10 @@ func makeBasicBarChartOption() BarChartOption {
 	return BarChartOption{
 		Padding:    NewBoxEqual(10),
 		SeriesList: seriesList,
-		XAxis: XAxisOption{
+		CategoryAxis: CategoryAxisOption{
 			Labels: []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
 		},
-		YAxis: []YAxisOption{
+		ValueAxis: []ValueAxisOption{
 			{
 				Show:                Ptr(true),
 				PreferNiceIntervals: Ptr(true),
@@ -37,11 +37,11 @@ func makeMinimalBarChartOption() BarChartOption {
 		{12, 24},
 		{24, 48},
 	})
-	opt.XAxis = XAxisOption{
+	opt.CategoryAxis = CategoryAxisOption{
 		Show:   Ptr(false),
 		Labels: []string{"A", "B"},
 	}
-	opt.YAxis[0].Show = Ptr(false)
+	opt.ValueAxis[0].Show = Ptr(false)
 	return opt
 }
 
@@ -60,14 +60,14 @@ func makeFullBarChartStackedOption() BarChartOption {
 		Padding:     NewBoxEqual(20),
 		SeriesList:  seriesList,
 		StackSeries: Ptr(true),
-		XAxis: XAxisOption{
+		CategoryAxis: CategoryAxisOption{
 			Labels: []string{"1", "2", "3", "4", "5", "6", "7", "8"},
 		},
 		Legend: LegendOption{
 			SeriesNames: []string{"A", "B", "C"},
 			Symbol:      SymbolDot,
 		},
-		YAxis: []YAxisOption{
+		ValueAxis: []ValueAxisOption{
 			{
 				RangeValuePaddingScale: Ptr(1.0),
 			},
@@ -85,7 +85,6 @@ func TestNewBarChartOptionWithData(t *testing.T) {
 
 	assert.Len(t, opt.SeriesList, 2)
 	assert.Equal(t, ChartTypeBar, opt.SeriesList[0].getType())
-	assert.Len(t, opt.YAxis, 1)
 	assert.Len(t, opt.ValueAxis, 1)
 	assert.Equal(t, defaultPadding, opt.Padding)
 
@@ -123,7 +122,7 @@ func TestBarChart(t *testing.T) {
 				opt := makeBasicBarChartOption()
 				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
-				opt.XAxis.FontStyle = customFont
+				opt.CategoryAxis.LabelFontStyle = customFont
 				opt.Title.FontStyle = customFont
 				return opt
 			},
@@ -133,8 +132,8 @@ func TestBarChart(t *testing.T) {
 			name: "boundary_gap_enable",
 			makeOptions: func() BarChartOption {
 				opt := makeBasicBarChartOption()
-				opt.XAxis.BoundaryGap = Ptr(true)
-				opt.YAxis[0].Show = Ptr(false)
+				opt.CategoryAxis.BoundaryGap = Ptr(true)
+				opt.ValueAxis[0].Show = Ptr(false)
 				return opt
 			},
 			pngCRC: 0xad9a8d00,
@@ -143,7 +142,7 @@ func TestBarChart(t *testing.T) {
 			name: "boundary_gap_disable",
 			makeOptions: func() BarChartOption {
 				opt := makeBasicBarChartOption()
-				opt.XAxis.BoundaryGap = Ptr(false)
+				opt.CategoryAxis.BoundaryGap = Ptr(false)
 				return opt
 			},
 			pngCRC: 0x348f762e,
@@ -163,9 +162,9 @@ func TestBarChart(t *testing.T) {
 			name: "bar_width_truncate",
 			makeOptions: func() BarChartOption {
 				opt := makeBasicBarChartOption()
-				opt.XAxis.Show = Ptr(false)
-				opt.YAxis[0].Show = Ptr(false)
-				opt.BarWidth = 1000
+				opt.CategoryAxis.Show = Ptr(false)
+				opt.ValueAxis[0].Show = Ptr(false)
+				opt.BarSize = 1000
 				return opt
 			},
 			pngCRC: 0x78126afc,
@@ -174,7 +173,7 @@ func TestBarChart(t *testing.T) {
 			name: "bar_width_thin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalBarChartOption()
-				opt.BarWidth = 2
+				opt.BarSize = 2
 				return opt
 			},
 			pngCRC: 0xa9ef8762,
@@ -201,7 +200,7 @@ func TestBarChart(t *testing.T) {
 			name: "bar_width_and_narrow_margin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalBarChartOption()
-				opt.BarWidth = 10
+				opt.BarSize = 10
 				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
@@ -211,7 +210,7 @@ func TestBarChart(t *testing.T) {
 			name: "bar_width_and_wide_margin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalBarChartOption()
-				opt.BarWidth = 10
+				opt.BarSize = 10
 				opt.BarMargin = Ptr(1000.0) // will be limited for readability
 				return opt
 			},
@@ -224,9 +223,9 @@ func TestBarChart(t *testing.T) {
 				opt.Theme = GetTheme(ThemeLight)
 				opt.Title.Text = "T"
 				opt.SeriesList[1].YAxisIndex = 1
-				opt.YAxis = append(opt.YAxis, opt.YAxis[0])
-				opt.YAxis[0].Theme = opt.Theme.WithYAxisSeriesColor(0)
-				opt.YAxis[1].Theme = opt.Theme.WithYAxisSeriesColor(1)
+				opt.ValueAxis = append(opt.ValueAxis, opt.ValueAxis[0])
+				opt.ValueAxis[0].Theme = opt.Theme.WithYAxisSeriesColor(0)
+				opt.ValueAxis[1].Theme = opt.Theme.WithYAxisSeriesColor(1)
 				return opt
 			},
 			pngCRC: 0x25fa0e30,
@@ -272,7 +271,7 @@ func TestBarChart(t *testing.T) {
 					opt.SeriesList[i].MarkLine.Lines = nil
 					opt.SeriesList[i].MarkPoint.Points = nil
 				}
-				opt.YAxis[0].Show = Ptr(false)
+				opt.ValueAxis[0].Show = Ptr(false)
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
@@ -295,7 +294,7 @@ func TestBarChart(t *testing.T) {
 						opt.SeriesList[i].MarkPoint.Points = nil
 					}
 				}
-				opt.YAxis[0].Show = Ptr(false)
+				opt.ValueAxis[0].Show = Ptr(false)
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
@@ -307,8 +306,8 @@ func TestBarChart(t *testing.T) {
 				opt := NewBarChartOptionWithData([][]float64{{4.0}, {1.0}})
 				opt.StackSeries = Ptr(true)
 				// disable extra
-				opt.XAxis.Show = Ptr(false)
-				opt.YAxis[0].Show = Ptr(false)
+				opt.CategoryAxis.Show = Ptr(false)
+				opt.ValueAxis[0].Show = Ptr(false)
 				return opt
 			},
 			pngCRC: 0xa03afde3,
@@ -328,7 +327,7 @@ func TestBarChart(t *testing.T) {
 					}
 					opt.SeriesList[i].MarkPoint.Points = nil
 				}
-				opt.YAxis[0].Show = Ptr(false)
+				opt.ValueAxis[0].Show = Ptr(false)
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
@@ -343,8 +342,8 @@ func TestBarChart(t *testing.T) {
 					Show:        Ptr(true),
 					SeriesNames: []string{"Series A", "Series B"},
 				}
-				opt.XAxis = XAxisOption{Labels: []string{"Jan", "Feb", "Mar"}}
-				opt.YAxis = []YAxisOption{{Show: Ptr(true)}, {Show: Ptr(true)}}
+				opt.CategoryAxis = CategoryAxisOption{Labels: []string{"Jan", "Feb", "Mar"}}
+				opt.ValueAxis = []ValueAxisOption{{Show: Ptr(true)}, {Show: Ptr(true)}}
 				return opt
 			},
 			pngCRC: 0x135c35e9,
@@ -608,8 +607,8 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt := makeBasicHorizontalBarOption()
 				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
-				opt.ValueAxis = []ValueAxisOption{{FontStyle: customFont}}
-				opt.CategoryAxis.FontStyle = customFont
+				opt.ValueAxis = []ValueAxisOption{{LabelFontStyle: customFont}}
+				opt.CategoryAxis.LabelFontStyle = customFont
 				opt.Title.FontStyle = customFont
 				return opt
 			},

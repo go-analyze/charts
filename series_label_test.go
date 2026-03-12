@@ -10,46 +10,6 @@ import (
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
-func TestLabelFormatPie(t *testing.T) {
-	t.Parallel()
-
-	assert.Equal(t, "a: 12%",
-		labelFormatPie("a", "", nil, 10, 0.12))
-
-	assert.Equal(t, "a: f",
-		labelFormatPie("a", "{b}: {c}", func(f float64) string {
-			return "f"
-		}, 10, 0.12))
-}
-
-func TestLabelFormatFunnel(t *testing.T) {
-	t.Parallel()
-
-	assert.Equal(t, "a(12%)", labelFormatFunnel("a", "", nil, 10, 0.12))
-
-	assert.Equal(t, "b(f, 25%)",
-		labelFormatFunnel("b", "{b}({c}, {d})", func(f float64) string {
-			return "f"
-		}, 20, 0.25))
-}
-
-func TestLabelFormatter(t *testing.T) {
-	t.Parallel()
-
-	assert.Equal(t, "10",
-		labelFormatValue([]string{"a", "b"}, "", nil, 0, 10, 0.12))
-
-	assert.Equal(t, "f f 12%",
-		labelFormatValue([]string{"a", "b"}, "{c} {c} {d}",
-			func(f float64) string {
-				return "f"
-			},
-			0, 10, 0.12))
-
-	assert.Equal(t, "Name: a, Value: 10, Percent: 12%",
-		labelFormatPie("a", "Name: {b}, Value: {c}, Percent: {d}", nil, 10, 0.12))
-}
-
 func TestSeriesLabelFormatter(t *testing.T) {
 	t.Parallel()
 
@@ -118,29 +78,17 @@ func TestSeriesLabelFormatter(t *testing.T) {
 			expected: []string{"Value: 42.3"},
 		},
 		{
-			name: "fallback_to_format_template_when_label_formatter_is_nil",
+			name: "label_formatter_with_name",
 			label: SeriesLabel{
-				Show:           Ptr(true),
-				FormatTemplate: "Series {b} = {c}",
-			},
-			values: []labelValue{
-				{index: 0, value: 42.3},
-			},
-			expected: []string{"Series series0 = 42.3"},
-		},
-		{
-			name: "label_formatter_takes_precedence_over_format_template",
-			label: SeriesLabel{
-				Show:           Ptr(true),
-				FormatTemplate: "Template: {c}",
+				Show: Ptr(true),
 				LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
-					return "Formatter: " + strconv.FormatFloat(val, 'f', 0, 64), nil
+					return "Series " + name + " = " + strconv.FormatFloat(val, 'f', 1, 64), nil
 				},
 			},
 			values: []labelValue{
 				{index: 0, value: 42.3},
 			},
-			expected: []string{"Formatter: 42"},
+			expected: []string{"Series series0 = 42.3"},
 		},
 	}
 

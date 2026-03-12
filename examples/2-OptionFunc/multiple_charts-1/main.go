@@ -60,8 +60,9 @@ func main() {
 		panic(err)
 	}
 
-	hBarOpt := charts.HorizontalBarChartOption{
-		Padding: charts.NewBoxEqual(10),
+	hBarOpt := charts.BarChartOption{
+		Horizontal: true,
+		Padding:    charts.NewBoxEqual(10),
 		// set a transparent background theme to not overwrite the chart below
 		Theme: charts.GetDefaultTheme().WithBackgroundColor(charts.ColorTransparent),
 		Legend: charts.LegendOption{
@@ -69,19 +70,19 @@ func main() {
 				"2011", "2012",
 			},
 		},
-		YAxis: charts.YAxisOption{
+		CategoryAxis: charts.CategoryAxisOption{
 			Labels: []string{
 				"USA", "India", "China", "World",
 			},
 		},
-		SeriesList: charts.NewSeriesListHorizontalBar([][]float64{
+		SeriesList: charts.NewSeriesListBar([][]float64{
 			{70, 90, 110, 130},
 			{80, 100, 120, 140},
 		}),
 	}
 	p = p.Child(charts.PainterBoxOption(charts.NewBox(200, 0, 600, 200)))
 
-	if err = p.HorizontalBarChart(hBarOpt); err != nil {
+	if err = p.BarChart(hBarOpt); err != nil {
 		panic(err)
 	} else if buf, err := p.Bytes(); err != nil {
 		panic(err)

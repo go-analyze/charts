@@ -83,7 +83,7 @@ func main() {
 		SeriesList: charts.NewSeriesListLine(dataValues),
 	}
 	barOpt := charts.NewBarChartOptionWithData(dataValues)
-	barOpt.XAxis = lineOpt.XAxis
+	barOpt.CategoryAxis = lineOpt.XAxis
 	barOpt.Legend = lineOpt.Legend
 	scatterOpt := charts.NewScatterChartOptionWithData(dataValues)
 	scatterOpt.XAxis = lineOpt.XAxis
