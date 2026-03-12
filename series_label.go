@@ -3,8 +3,6 @@ package charts
 import (
 	"sort"
 	"strings"
-
-	"github.com/dustin/go-humanize"
 )
 
 // SeriesLabel configures how individual data point labels are rendered on charts.
@@ -15,13 +13,6 @@ type SeriesLabel struct {
 	// LabelFormatter provides complete control over label content and per-point styling.
 	// When set, this takes precedence for label production.
 	LabelFormatter SeriesLabelFormatter
-	// Deprecated: FormatTemplate is deprecated, use LabelFormatter instead for better control.
-	// Template string for formatting data labels with placeholders:
-	//   {b}: the name of the data item
-	//   {c}: the value of the data item
-	//   {d}: the percentage of the data item (pie/doughnut charts only)
-	// Example: "{b}: {c} ({d})" produces "Sales: 150 (25%)"
-	FormatTemplate string
 	// ValueFormatter functions as the simplest method of number formatting or customization.
 	// Only utilized when other methods are not set.
 	ValueFormatter ValueFormatter
@@ -313,12 +304,7 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 		if label.ValueFormatter == nil {
 			label.ValueFormatter = defaultValueFormatter
 		}
-		if label.FormatTemplate != "" {
-			text = labelFormatValue(o.seriesNames, label.FormatTemplate, label.ValueFormatter,
-				value.index, value.value, -1)
-		} else {
-			text = label.ValueFormatter(value.value)
-		}
+		text = label.ValueFormatter(value.value)
 	}
 	text = strings.TrimSpace(text)
 	if text == "" {
@@ -487,52 +473,4 @@ func (o *seriesLabelPainter) Render() (Box, error) {
 		}
 	}
 	return BoxZero, nil
-}
-
-// Deprecated: labelFormatPie is deprecated.
-func labelFormatPie(seriesName string, layout string, valueFormatter ValueFormatter,
-	value float64, percent float64) string {
-	if len(layout) == 0 {
-		layout = "{b}: {d}"
-	}
-	return newLabelFormatter([]string{seriesName}, layout, valueFormatter)(0, value, percent)
-}
-
-// Deprecated: labelFormatFunnel is deprecated.
-func labelFormatFunnel(seriesName string, layout string, valueFormatter ValueFormatter,
-	value float64, percent float64) string {
-	if len(layout) == 0 {
-		layout = "{b}({d})"
-	}
-	return newLabelFormatter([]string{seriesName}, layout, valueFormatter)(0, value, percent)
-}
-
-// Deprecated: labelFormatValue is deprecated.
-func labelFormatValue(seriesNames []string, layout string, valueFormatter ValueFormatter,
-	index int, value float64, percent float64) string {
-	if len(layout) == 0 {
-		layout = "{c}"
-	}
-	return newLabelFormatter(seriesNames, layout, valueFormatter)(index, value, percent)
-}
-
-// Deprecated: newLabelFormatter is deprecated.
-func newLabelFormatter(seriesNames []string, layout string, valueFormatter ValueFormatter) func(index int, value float64, percent float64) string {
-	if valueFormatter == nil {
-		valueFormatter = defaultValueFormatter
-	}
-	return func(index int, value, percent float64) string {
-		var percentText string
-		if percent >= 0 {
-			percentText = humanize.FtoaWithDigits(percent*100, 2) + "%"
-		}
-		var name string
-		if len(seriesNames) > index {
-			name = seriesNames[index]
-		}
-		text := strings.ReplaceAll(layout, "{c}", valueFormatter(value))
-		text = strings.ReplaceAll(text, "{d}", percentText)
-		text = strings.ReplaceAll(text, "{b}", name)
-		return text
-	}
 }

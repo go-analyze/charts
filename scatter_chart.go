@@ -3,8 +3,6 @@ package charts
 import (
 	"math"
 
-	"github.com/golang/freetype/truetype"
-
 	"github.com/go-analyze/charts/chartdraw"
 )
 
@@ -32,7 +30,6 @@ func NewScatterChartOptionWithSeries(sl ScatterSeriesList) ScatterChartOption {
 		SeriesList: sl,
 		Padding:    defaultPadding,
 		Theme:      GetDefaultTheme(),
-		Font:       GetDefaultFont(),
 		XAxis: XAxisOption{
 			Labels: make([]string, getSeriesMaxDataCount(sl)),
 		},
@@ -47,8 +44,6 @@ type ScatterChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// SeriesList provides the data population for the chart. Typically constructed using
 	// NewSeriesListScatter or NewSeriesListScatterMultiValue.
 	SeriesList ScatterSeriesList
@@ -128,9 +123,6 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 				}
 				points = append(points, p)
 
-				if series.Label.FontStyle.Font == nil {
-					series.Label.FontStyle.Font = opt.Font
-				}
 				if labelPainter != nil {
 					labelPainter.Add(labelValue{
 						index: index,
@@ -162,7 +154,7 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 				fillColor:    seriesColor,
 				fontColor:    opt.Theme.GetMarkTextColor(),
 				strokeColor:  seriesColor,
-				font:         opt.Font,
+				font:         series.Label.FontStyle.Font,
 				marklines:    series.MarkLine.Lines.filterGlobal(false),
 				seriesValues: series.getValues(),
 				axisRange:    yRange,

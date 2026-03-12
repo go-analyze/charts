@@ -67,8 +67,8 @@ func TestTrendLine(t *testing.T) {
 				axisRange := newTestRange(p.Height(), 6, 0.0, 6.0, 0.0, 0.0)
 				xValues := []int{50, 150, 250, 350, 450, 550}
 				trend := SeriesTrendLine{
-					Type:   SeriesTrendTypeAverage,
-					Window: 3,
+					Type:   SeriesTrendTypeSMA,
+					Period: 3,
 				}
 				trendLine.add(trendLineRenderOption{
 					defaultStrokeColor: ColorBlack,

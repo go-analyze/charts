@@ -2,8 +2,6 @@ package charts
 
 import (
 	"errors"
-
-	"github.com/golang/freetype/truetype"
 )
 
 // ChartOption represents a generic method of representing a chart. This can be useful when you want to render
@@ -28,8 +26,6 @@ type ChartOption struct {
 	Title TitleOption
 	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// Box specifies the drawing area for the chart.
 	Box Box
 	// SeriesList provides the population data for the chart, constructed through NewSeriesListGeneric.
@@ -48,10 +44,6 @@ type ChartOption struct {
 	FillArea *bool
 	// FillOpacity is the opacity or alpha channel (0-255) of the area fill in line charts.
 	FillOpacity uint8
-	// Deprecated: BarWidth is deprecated, instead use BarSize.
-	BarWidth int
-	// Deprecated: BarHeight is deprecated, instead use BarSize.
-	BarHeight int
 	// BarSize represents the width of bars, or height for horizontal bar charts.
 	BarSize int
 	// BarMargin specifies the margin between grouped bars. BarSize takes priority over margin.
@@ -90,13 +82,6 @@ func JPGOutputOptionFunc() OptionFunc {
 func outputFormatOptionFunc(t string) OptionFunc {
 	return func(opt *ChartOption) {
 		opt.OutputFormat = t
-	}
-}
-
-// Deprecated: FontOptionFunc is deprecated, fonts should be set on the specific elements (SeriesLabel, Title, etc).
-func FontOptionFunc(font *truetype.Font) OptionFunc {
-	return func(opt *ChartOption) {
-		opt.Font = font
 	}
 }
 
@@ -253,9 +238,6 @@ func (o *ChartOption) fillDefault() error {
 		o.YAxis = yAxisOptions
 	}
 
-	if o.Font == nil {
-		o.Font = GetDefaultFont()
-	}
 	if o.Theme == nil {
 		o.Theme = GetDefaultTheme()
 	}

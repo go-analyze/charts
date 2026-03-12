@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-analyze/bulk"
+	"github.com/golang/freetype/truetype"
 )
 
 func convertToArray(data []byte) []byte {
@@ -460,6 +461,10 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	if len(fontFamily) == 0 {
 		fontFamily = eo.Title.TextStyle.FontFamily
 	}
+	var fallbackFont *truetype.Font
+	if fontFamily != "" {
+		fallbackFont = GetFont(fontFamily)
+	}
 	theme := GetTheme(eo.Theme)
 	backgroundColor := ParseColor(eo.BackgroundColor)
 	if !backgroundColor.IsZero() {
@@ -480,9 +485,19 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	titleTextStyle := eo.Title.TextStyle.ToFontStyle()
 	titleSubtextStyle := eo.Title.SubtextStyle.ToFontStyle()
 	legendTextStyle := eo.Legend.TextStyle.ToFontStyle()
+	if fallbackFont != nil {
+		if titleTextStyle.Font == nil {
+			titleTextStyle.Font = fallbackFont
+		}
+		if titleSubtextStyle.Font == nil {
+			titleSubtextStyle.Font = fallbackFont
+		}
+		if legendTextStyle.Font == nil {
+			legendTextStyle.Font = fallbackFont
+		}
+	}
 	o := ChartOption{
 		OutputFormat: eo.Type,
-		Font:         GetFont(fontFamily),
 		Theme:        theme,
 		Title: TitleOption{
 			Show:             eo.Title.Show,
@@ -516,7 +531,14 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		Box:             eo.Box.ToBox(),
 		SeriesList:      eo.Series.ToSeriesList(),
 	}
-	isHorizontalChart := false
+	if fallbackFont != nil {
+		for i := range o.SeriesList {
+			if o.SeriesList[i].Label.FontStyle.Font == nil {
+				o.SeriesList[i].Label.FontStyle.Font = fallbackFont
+			}
+		}
+	}
+	var isHorizontalChart bool
 	for _, item := range eo.XAxis.Data {
 		if item.Type == "value" {
 			isHorizontalChart = true
@@ -525,9 +547,11 @@ func (eo *EChartsOption) ToOption() ChartOption {
 	}
 	if isHorizontalChart {
 		for index := range o.SeriesList {
-			series := o.SeriesList[index]
-			if series.Type == ChartTypeBar {
+			switch o.SeriesList[index].Type {
+			case ChartTypeBar:
 				o.SeriesList[index].Type = ChartTypeHorizontalBar
+			case ChartTypeViolin:
+				o.SeriesList[index].Type = ChartTypeHorizontalViolin
 			}
 		}
 	}
@@ -542,12 +566,16 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			}
 			axisTheme = o.Theme.WithXAxisColor(axisLineColor)
 		}
+		xLabelFontStyle := xAxisData.AxisLabel.makeFontStyle()
+		if fallbackFont != nil && xLabelFontStyle.Font == nil {
+			xLabelFontStyle.Font = fallbackFont
+		}
 		o.XAxis = XAxisOption{
-			Theme:       axisTheme,
-			BoundaryGap: xAxisData.BoundaryGap,
-			Labels:      xAxisData.Data,
-			LabelCount:  xAxisData.SplitNumber,
-			FontStyle:   xAxisData.AxisLabel.makeFontStyle(),
+			Theme:          axisTheme,
+			BoundaryGap:    xAxisData.BoundaryGap,
+			Labels:         xAxisData.Data,
+			LabelCount:     xAxisData.SplitNumber,
+			LabelFontStyle: xLabelFontStyle,
 		}
 		if o.XAxis.BoundaryGap == nil {
 			// Ensure default ECharts behavior of centering labels and sets a "BoundaryGap"
@@ -571,13 +599,17 @@ func (eo *EChartsOption) ToOption() ChartOption {
 					FormatValueHumanize(f, 2, false))
 			}
 		}
+		yLabelFontStyle := item.AxisLabel.makeFontStyle()
+		if fallbackFont != nil && yLabelFontStyle.Font == nil {
+			yLabelFontStyle.Font = fallbackFont
+		}
 		yAxisOptions[index] = YAxisOption{
 			Min:            item.Min,
 			Max:            item.Max,
 			ValueFormatter: valFormatter,
 			Theme:          axisTheme,
 			Labels:         item.Data,
-			LabelFontStyle: item.AxisLabel.makeFontStyle(),
+			LabelFontStyle: yLabelFontStyle,
 			SpineLineShow:  item.AxisLine.Show,
 		}
 	}

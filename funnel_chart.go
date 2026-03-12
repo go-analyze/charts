@@ -2,7 +2,6 @@ package charts
 
 import (
 	"github.com/dustin/go-humanize"
-	"github.com/golang/freetype/truetype"
 )
 
 type funnelChart struct {
@@ -24,7 +23,6 @@ func NewFunnelChartOptionWithData(data []float64) FunnelChartOption {
 		SeriesList: NewSeriesListFunnel(data),
 		Padding:    defaultPadding,
 		Theme:      GetDefaultTheme(),
-		Font:       GetDefaultFont(),
 	}
 }
 
@@ -34,16 +32,12 @@ type FunnelChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListFunnel.
 	SeriesList FunnelSeriesList
 	// Title contains options for rendering the chart title.
 	Title TitleOption
 	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Deprecated: ValueFormatter is deprecated, instead set the ValueFormatter at `SeriesList[*].Label.ValueFormatter`.
-	ValueFormatter ValueFormatter
 }
 
 func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
@@ -85,13 +79,6 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 		if !flagIs(false, item.Label.Show) {
 			if item.Label.LabelFormatter != nil {
 				textList[index], labelStyleList[index] = item.Label.LabelFormatter(index, seriesNames[index], item.Value)
-			} else if item.Label.FormatTemplate != "" {
-				valueFormatter := item.Label.ValueFormatter
-				if valueFormatter == nil {
-					valueFormatter = opt.ValueFormatter
-				}
-				textList[index] = labelFormatFunnel(seriesNames[index], item.Label.FormatTemplate, valueFormatter,
-					item.Value, percent)
 			} else if item.Label.ValueFormatter != nil {
 				textList[index] = item.Label.ValueFormatter(item.Value)
 			} else { // default label
@@ -136,7 +123,7 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 
 		text := textList[index]
 		fontStyle := fillFontStyleDefaults(opt.SeriesList[index].Label.FontStyle,
-			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font, seriesPainter.font)
+			defaultLabelFontSize, theme.GetLabelTextColor(), seriesPainter.font)
 
 		// Apply label style overrides if present
 		var backgroundColor Color

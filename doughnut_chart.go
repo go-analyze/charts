@@ -137,7 +137,7 @@ func (d *doughnutChart) renderChart(result *defaultRenderResult) (Box, error) {
 	}
 
 	sectors, err := renderPie(seriesPainter, cx, cy, diameter, radiusRing, total, !centerLabels,
-		opt.SeriesList.toPieSeriesList(), opt.Theme, opt.SegmentGap, radiusFactorDefault, opt.ValueFormatter, nil)
+		opt.SeriesList.toPieSeriesList(), opt.Theme, opt.SegmentGap, radiusFactorDefault)
 	if err != nil {
 		msg := strings.ReplaceAll(err.Error(), "pie", "doughnut")
 		msg = strings.ReplaceAll(msg, "Pie", "Doughnut")

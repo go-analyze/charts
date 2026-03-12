@@ -360,12 +360,16 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 			},
 			YAxis: []charts.YAxisOption{
 				{
-					Formatter: "{value}ml",
-					Theme:     charts.GetDefaultTheme().WithYAxisColor(charts.ColorRGB(84, 112, 198)),
+					ValueFormatter: func(f float64) string {
+						return fmt.Sprintf("%.0fml", f)
+					},
+					Theme: charts.GetDefaultTheme().WithYAxisColor(charts.ColorRGB(84, 112, 198)),
 				},
 				{
-					Formatter: "{value}°C",
-					Theme:     charts.GetDefaultTheme().WithYAxisColor(charts.ColorRGB(250, 200, 88)),
+					ValueFormatter: func(f float64) string {
+						return fmt.Sprintf("%.0f°C", f)
+					},
+					Theme: charts.GetDefaultTheme().WithYAxisColor(charts.ColorRGB(250, 200, 88)),
 				},
 			},
 			SeriesList: append(charts.NewSeriesListGeneric([][]float64{

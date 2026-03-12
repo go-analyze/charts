@@ -24,14 +24,10 @@ type YAxisOption struct {
 	Labels []string
 	// Position describes the y-axis position: 'left' or 'right'.
 	Position string
-	// Deprecated: FontStyle is deprecated, use LabelFontStyle.
-	FontStyle FontStyle
 	// LabelFontStyle specifies the font configuration for each label.
 	LabelFontStyle FontStyle
 	// LabelRotation is the rotation angle in radians for labels. Use DegreesToRadians(float64) to convert from degrees.
 	LabelRotation float64
-	// Deprecated: Formatter is deprecated, use ValueFormatter instead.
-	Formatter string
 	// Unit suggests the axis step size (recommendation only). Larger values result in fewer labels.
 	Unit float64
 	// LabelCount is the number of labels to show on the axis. Use a smaller count to reduce text collisions.
@@ -56,9 +52,6 @@ type YAxisOption struct {
 
 func (opt *YAxisOption) prep(fallbackTheme ColorPalette) *YAxisOption {
 	opt.Theme = getPreferredTheme(opt.Theme, fallbackTheme)
-	if opt.LabelFontStyle.IsZero() {
-		opt.LabelFontStyle = opt.FontStyle
-	}
 	opt.LabelFontStyle = fillFontStyleDefaults(opt.LabelFontStyle, defaultFontSize,
 		opt.Theme.GetYAxisTextColor())
 	opt.TitleFontStyle = fillFontStyleDefaults(opt.TitleFontStyle, math.Max(opt.LabelFontStyle.FontSize, defaultFontSize),

@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 	"testing"
@@ -8,6 +9,8 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-analyze/charts/chartdraw"
 )
 
 func makeBasicPieChartOption() PieChartOption {
@@ -84,14 +87,16 @@ func TestPieChart(t *testing.T) {
 					5563970, 5428792, 5194336, 3850894, 2857279, 2116792, 1883008, 1373101,
 					920701, 660809, 542051,
 				}
+				total := chartdraw.SumFloat64(values...)
 
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:           Ptr(true),
-							FormatTemplate: "{b} ({c} ≅ {d})",
-							ValueFormatter: func(f float64) string {
-								return humanize.FtoaWithDigits(f, 2)
+							Show: Ptr(true),
+							LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+								return fmt.Sprintf("%s (%s ≅ %s%%)", name,
+									humanize.FtoaWithDigits(val, 2),
+									humanize.FtoaWithDigits(val/total*100, 2)), nil
 							},
 						},
 					}),
@@ -144,14 +149,16 @@ func TestPieChart(t *testing.T) {
 					2857279, 660809, 542051, 17947406, 36753736, 10467366, 19051562, 5428792,
 					2116792, 48059777, 10521556,
 				}
+				total := chartdraw.SumFloat64(values...)
 
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:           Ptr(true),
-							FormatTemplate: "{b} ({c} ≅ {d})",
-							ValueFormatter: func(f float64) string {
-								return humanize.FtoaWithDigits(f, 2)
+							Show: Ptr(true),
+							LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+								return fmt.Sprintf("%s (%s ≅ %s%%)", name,
+									humanize.FtoaWithDigits(val, 2),
+									humanize.FtoaWithDigits(val/total*100, 2)), nil
 							},
 						},
 					}),
@@ -229,13 +236,15 @@ func TestPieChart(t *testing.T) {
 					32566, 29608, 29558, 29384, 28166, 26998, 26948, 26054,
 					25804, 25730, 24438, 23782, 22896, 21404, 428978,
 				}
+				total := chartdraw.SumFloat64(values...)
 				return PieChartOption{
 					SeriesList: NewSeriesListPie(values, PieSeriesOption{
 						Label: SeriesLabel{
-							Show:           Ptr(true),
-							FormatTemplate: "{b} ({c} ≅ {d})",
-							ValueFormatter: func(f float64) string {
-								return humanize.FtoaWithDigits(f, 2)
+							Show: Ptr(true),
+							LabelFormatter: func(index int, name string, val float64) (string, *LabelStyle) {
+								return fmt.Sprintf("%s (%s ≅ %s%%)", name,
+									humanize.FtoaWithDigits(val, 2),
+									humanize.FtoaWithDigits(val/total*100, 2)), nil
 							},
 						},
 					}),

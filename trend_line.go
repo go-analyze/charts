@@ -15,8 +15,6 @@ const (
 	SeriesTrendTypeLinear = "linear"
 	// SeriesTrendTypeCubic represents a cubic polynomial (degree 3) regression trend line that fits a curved line through the data points.
 	SeriesTrendTypeCubic = "cubic"
-	// Deprecated: SeriesTrendTypeAverage is deprecated, use SeriesTrendTypeSMA instead.
-	SeriesTrendTypeAverage = "average"
 	// SeriesTrendTypeSMA represents a Simple Moving Average trend line that smooths data using a sliding window average.
 	SeriesTrendTypeSMA = "sma"
 	// SeriesTrendTypeEMA represents an Exponential Moving Average trend line that gives more weight to recent data points.
@@ -44,8 +42,6 @@ type SeriesTrendLine struct {
 	DashedLine *bool
 	// Type specifies the trend line type: "linear", "cubic", "sma", "ema", "rsi".
 	Type string
-	// Deprecated: Window is deprecated, use Period instead.
-	Window int
 	// Period specifies the number of data points to consider for trend calculations.
 	// Used by moving averages (SMA, EMA), Bollinger Bands, RSI, and other indicators.
 	// For example, Period=20 calculates a 20-period moving average.
@@ -103,9 +99,6 @@ func (t *trendLinePainter) Render() (Box, error) {
 		}
 
 		for _, trend := range opt.trends {
-			if trend.Window != 0 && trend.Period == 0 {
-				trend.Period = trend.Window
-			}
 			var fitted []float64
 			var err error
 			switch trend.Type {
@@ -113,7 +106,7 @@ func (t *trendLinePainter) Render() (Box, error) {
 				fitted, err = linearTrend(opt.seriesValues)
 			case SeriesTrendTypeCubic:
 				fitted, err = cubicTrend(opt.seriesValues)
-			case SeriesTrendTypeSMA, "average" /* long term backwards compatibility */ :
+			case SeriesTrendTypeSMA:
 				fitted, err = movingAverageTrend(opt.seriesValues, trend.Period)
 			case SeriesTrendTypeEMA:
 				fitted, err = exponentialMovingAverageTrend(opt.seriesValues, trend.Period)
