@@ -40,7 +40,7 @@ func TestVectorRendererMeasureText(t *testing.T) {
 
 	vr := SVG(100, 100)
 
-	vr.SetDPI(DefaultDPI)
+	vr.SetDPI(defaultDPI)
 	vr.SetFont(GetDefaultFont())
 	vr.SetFontSize(12.0)
 
@@ -65,7 +65,7 @@ func TestCanvasStyleSVG(t *testing.T) {
 	}
 
 	var bb bytes.Buffer
-	styleAsSVG(&bb, set, DefaultDPI, false)
+	styleAsSVG(&bb, set, defaultDPI, false)
 	svgString := bb.String()
 	assert.NotEmpty(t, svgString)
 	assert.True(t, strings.HasPrefix(svgString, "style=\""))
@@ -77,7 +77,7 @@ func TestCanvasStyleSVG(t *testing.T) {
 	assert.True(t, strings.HasSuffix(svgString, "\""))
 
 	bb.Reset()
-	styleAsSVG(&bb, set, DefaultDPI, true)
+	styleAsSVG(&bb, set, defaultDPI, true)
 	svgString = bb.String()
 	assert.True(t, strings.HasPrefix(svgString, "style=\""))
 	assert.Contains(t, svgString, "stroke:white")
@@ -96,7 +96,7 @@ func TestCanvasClassSVG(t *testing.T) {
 	}
 
 	var bb bytes.Buffer
-	styleAsSVG(&bb, set, DefaultDPI, false)
+	styleAsSVG(&bb, set, defaultDPI, false)
 	assert.Equal(t, "class=\"test-class\"", bb.String())
 }
 

@@ -51,18 +51,18 @@ func main() {
 		}),
 		charts.PaddingOptionFunc(charts.NewBoxEqual(12)),
 		charts.YAxisOptionFunc(charts.YAxisOption{
-			Min:       charts.Ptr(0.0), // force min to be zero
-			FontStyle: axisFont,
+			Min:            charts.Ptr(0.0), // force min to be zero
+			LabelFontStyle: axisFont,
 			// y-axis labels well spaced to keep a clean look
 			Unit:           10,
 			LabelSkipCount: 1,
 		}),
 		charts.XAxisOptionFunc(charts.XAxisOption{
-			Labels:        xAxisLabels,
-			FontStyle:     axisFont,
-			BoundaryGap:   charts.Ptr(true),
-			LabelCount:    10,
-			LabelRotation: charts.DegreesToRadians(45),
+			Labels:         xAxisLabels,
+			LabelFontStyle: axisFont,
+			BoundaryGap:    charts.Ptr(true),
+			LabelCount:     10,
+			LabelRotation:  charts.DegreesToRadians(45),
 		}),
 		func(opt *charts.ChartOption) {
 			// disable the symbols and reduce the stroke width to give more fidelity on the line

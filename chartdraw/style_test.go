@@ -63,12 +63,12 @@ func TestStyleGetStrokeWidth(t *testing.T) {
 	t.Parallel()
 
 	unset := Style{}
-	assert.InDelta(t, DefaultStrokeWidth, unset.GetStrokeWidth(), 0)
-	assert.InDelta(t, DefaultStrokeWidth+1, unset.GetStrokeWidth(DefaultStrokeWidth+1), 0)
+	assert.InDelta(t, defaultStrokeWidth, unset.GetStrokeWidth(), 0)
+	assert.InDelta(t, defaultStrokeWidth+1, unset.GetStrokeWidth(defaultStrokeWidth+1), 0)
 
-	set := Style{StrokeWidth: DefaultStrokeWidth + 2}
-	assert.InDelta(t, DefaultStrokeWidth+2, set.GetStrokeWidth(), 0)
-	assert.InDelta(t, DefaultStrokeWidth+2, set.GetStrokeWidth(DefaultStrokeWidth+1), 0)
+	set := Style{StrokeWidth: defaultStrokeWidth + 2}
+	assert.InDelta(t, defaultStrokeWidth+2, set.GetStrokeWidth(), 0)
+	assert.InDelta(t, defaultStrokeWidth+2, set.GetStrokeWidth(defaultStrokeWidth+1), 0)
 }
 
 func TestStyleGetFontSize(t *testing.T) {

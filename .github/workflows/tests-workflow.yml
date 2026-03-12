@@ -16,7 +16,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: "1.25"
+          go-version-file: go.mod
 
       - name: Set up golangci-lint
         run: |
@@ -37,14 +37,10 @@ jobs:
     strategy:
       matrix:
         go:
+        - '1.26'
         - '1.25'
         - '1.24'
         - '1.23'
-        - '1.22'
-        - '1.21'
-        - '1.20'
-        - '1.19'
-        - '1.18'
     steps:
       - uses: actions/checkout@v6
 

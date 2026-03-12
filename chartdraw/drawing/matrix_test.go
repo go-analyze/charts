@@ -142,15 +142,15 @@ func TestMatrixDeterminant(t *testing.T) {
 func TestMinMax(t *testing.T) {
 	t.Parallel()
 
-	mn, mx := minMax(3, -1)
+	mn, mx := min(3.0, -1.0), max(3.0, -1.0)
 	assert.InDelta(t, -1.0, mn, 0)
 	assert.InDelta(t, 3.0, mx, 0)
 
-	mn, mx = minMax(-2, -5)
+	mn, mx = min(-2.0, -5.0), max(-2.0, -5.0)
 	assert.InDelta(t, -5.0, mn, 0)
 	assert.InDelta(t, -2.0, mx, 0)
 
-	mn, mx = minMax(0, 0)
+	mn, mx = min(0.0, 0.0), max(0.0, 0.0)
 	assert.InDelta(t, 0.0, mn, 0)
 	assert.InDelta(t, 0.0, mx, 0)
 }

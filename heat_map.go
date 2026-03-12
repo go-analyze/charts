@@ -5,8 +5,6 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/golang/freetype/truetype"
-
 	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
@@ -19,8 +17,6 @@ type HeatMapOption struct {
 	BaseColorIndex int
 	// Padding specifies the padding around the heat map chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// Title contains options for rendering the chart title.
 	Title TitleOption
 	// Values provides the 2D data for the heat map.
@@ -142,7 +138,7 @@ func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 	if flagIs(true, opt.ValuesLabel.Show) {
 		opt.ValuesLabel.FontStyle =
 			fillFontStyleDefaults(opt.ValuesLabel.FontStyle, defaultLabelFontSize, opt.Theme.GetLabelTextColor(),
-				opt.Font, seriesPainter.font)
+				seriesPainter.font)
 
 		labelPainter := newSeriesLabelPainter(seriesPainter, []string{""}, opt.ValuesLabel, opt.Theme, opt.Padding.Right)
 		for y := range opt.Values {

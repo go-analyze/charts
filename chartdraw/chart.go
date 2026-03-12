@@ -38,7 +38,7 @@ func (c Chart) GetDPI(defaults ...float64) float64 {
 		if len(defaults) > 0 {
 			return defaults[0]
 		}
-		return DefaultDPI
+		return defaultDPI
 	}
 	return c.DPI
 }
@@ -80,7 +80,7 @@ func (c Chart) Render(rp RendererProvider, w io.Writer) error {
 	if c.Font == nil {
 		c.Font = GetDefaultFont()
 	}
-	r.SetDPI(c.GetDPI(DefaultDPI))
+	r.SetDPI(c.GetDPI(defaultDPI))
 
 	c.drawBackground(r)
 
@@ -165,20 +165,20 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 				for index := 0; index < seriesLength; index++ {
 					vx, vy1, vy2 := bvp.GetBoundedValues(index)
 
-					minx = math.Min(minx, vx)
-					maxx = math.Max(maxx, vx)
+					minx = min(minx, vx)
+					maxx = max(maxx, vx)
 
 					switch seriesAxis {
 					case YAxisPrimary:
-						miny = math.Min(miny, vy1)
-						miny = math.Min(miny, vy2)
-						maxy = math.Max(maxy, vy1)
-						maxy = math.Max(maxy, vy2)
+						miny = min(miny, vy1)
+						miny = min(miny, vy2)
+						maxy = max(maxy, vy1)
+						maxy = max(maxy, vy2)
 					case YAxisSecondary:
-						minya = math.Min(minya, vy1)
-						minya = math.Min(minya, vy2)
-						maxya = math.Max(maxya, vy1)
-						maxya = math.Max(maxya, vy2)
+						minya = min(minya, vy1)
+						minya = min(minya, vy2)
+						maxya = max(maxya, vy1)
+						maxya = max(maxya, vy2)
 						seriesMappedToSecondaryAxis = true
 					}
 				}
@@ -187,16 +187,16 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 				for index := 0; index < seriesLength; index++ {
 					vx, vy := vp.GetValues(index)
 
-					minx = math.Min(minx, vx)
-					maxx = math.Max(maxx, vx)
+					minx = min(minx, vx)
+					maxx = max(maxx, vx)
 
 					switch seriesAxis {
 					case YAxisPrimary:
-						miny = math.Min(miny, vy)
-						maxy = math.Max(maxy, vy)
+						miny = min(miny, vy)
+						maxy = max(maxy, vy)
 					case YAxisSecondary:
-						minya = math.Min(minya, vy)
-						maxya = math.Max(maxya, vy)
+						minya = min(minya, vy)
+						maxya = max(maxya, vy)
 						seriesMappedToSecondaryAxis = true
 					}
 				}
@@ -225,8 +225,8 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 	if len(c.XAxis.Ticks) > 0 {
 		tickMin, tickMax := math.MaxFloat64, -math.MaxFloat64
 		for _, t := range c.XAxis.Ticks {
-			tickMin = math.Min(tickMin, t.Value)
-			tickMax = math.Max(tickMax, t.Value)
+			tickMin = min(tickMin, t.Value)
+			tickMax = max(tickMax, t.Value)
 		}
 		xrange.SetMin(tickMin)
 		xrange.SetMax(tickMax)
@@ -238,8 +238,8 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 	if len(c.YAxis.Ticks) > 0 {
 		tickMin, tickMax := math.MaxFloat64, -math.MaxFloat64
 		for _, t := range c.YAxis.Ticks {
-			tickMin = math.Min(tickMin, t.Value)
-			tickMax = math.Max(tickMax, t.Value)
+			tickMin = min(tickMin, t.Value)
+			tickMax = max(tickMax, t.Value)
 		}
 		yrange.SetMin(tickMin)
 		yrange.SetMax(tickMax)
@@ -260,8 +260,8 @@ func (c Chart) getRanges() (xrange, yrange, yrangeAlt Range) {
 	if len(c.YAxisSecondary.Ticks) > 0 {
 		tickMin, tickMax := math.MaxFloat64, -math.MaxFloat64
 		for _, t := range c.YAxisSecondary.Ticks {
-			tickMin = math.Min(tickMin, t.Value)
-			tickMax = math.Max(tickMax, t.Value)
+			tickMin = min(tickMin, t.Value)
+			tickMax = max(tickMax, t.Value)
 		}
 		yrangeAlt.SetMin(tickMin)
 		yrangeAlt.SetMax(tickMax)
@@ -481,7 +481,7 @@ func (c Chart) drawTitle(r Renderer) {
 		textHeight := textBox.Height()
 
 		titleX := (c.GetWidth() >> 1) - (textWidth >> 1)
-		titleY := c.TitleStyle.Padding.GetTop(DefaultTitleTop) + textHeight
+		titleY := c.TitleStyle.Padding.GetTop(defaultTitleTop) + textHeight
 
 		r.Text(c.Title, titleX, titleY)
 	}
@@ -491,7 +491,7 @@ func (c Chart) styleDefaultsBackground() Style {
 	return Style{
 		FillColor:   c.GetColorPalette().BackgroundColor(),
 		StrokeColor: c.GetColorPalette().BackgroundStrokeColor(),
-		StrokeWidth: DefaultBackgroundStrokeWidth,
+		StrokeWidth: 0.0,
 	}
 }
 
@@ -499,7 +499,7 @@ func (c Chart) styleDefaultsCanvas() Style {
 	return Style{
 		FillColor:   c.GetColorPalette().CanvasColor(),
 		StrokeColor: c.GetColorPalette().CanvasStrokeColor(),
-		StrokeWidth: DefaultCanvasStrokeWidth,
+		StrokeWidth: 0.0,
 	}
 }
 

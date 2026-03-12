@@ -605,7 +605,7 @@ func TestViolinSamplesNormalization(t *testing.T) {
 
 	globalMaxA := maxViolinExtent(global.SeriesList[0].Data)
 	globalMaxB := maxViolinExtent(global.SeriesList[1].Data)
-	assert.InDelta(t, 1.0, math.Max(globalMaxA, globalMaxB), 1e-9)
+	assert.InDelta(t, 1.0, max(globalMaxA, globalMaxB), 1e-9)
 	assert.True(t, globalMaxA < 1.0 || globalMaxB < 1.0)
 }
 

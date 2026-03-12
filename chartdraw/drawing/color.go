@@ -337,14 +337,14 @@ func rgbToHSL(ri, gi, bi uint8) (h, s, l float64) {
 	g := float64(gi) / 255.0
 	b := float64(bi) / 255.0
 
-	max := math.Max(r, math.Max(g, b))
-	min := math.Min(r, math.Min(g, b))
-	l = (max + min) / 2
+	cmax := max(r, g, b)
+	cmin := min(r, g, b)
+	l = (cmax + cmin) / 2
 
-	if max != min {
-		d := max - min
+	if cmax != cmin {
+		d := cmax - cmin
 		s = d / (1 - math.Abs(2*l-1))
-		switch max {
+		switch cmax {
 		case r:
 			h = (g - b) / d
 			if g < b {

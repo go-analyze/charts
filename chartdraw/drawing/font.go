@@ -25,17 +25,15 @@ func init() {
 	// Discover embedded font files
 	if entries, err := fontFiles.ReadDir("fonts"); err == nil {
 		for _, entry := range entries {
-			if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".ttf.gz") {
-				// Extract font name: NotoSans-Regular.ttf.gz -> notosans, NotoSans-Bold.ttf.gz -> notosans-bold
-				name := strings.TrimSuffix(entry.Name(), ".ttf.gz")
-				// Only remove -Regular and -Medium suffixes, keep others like -Bold
-				if strings.HasSuffix(strings.ToLower(name), "-regular") {
-					name = name[:len(name)-8] // Remove "-Regular"
-				} else if strings.HasSuffix(strings.ToLower(name), "-medium") {
-					name = name[:len(name)-7] // Remove "-Medium"
+			if !entry.IsDir() {
+				if name, ok := strings.CutSuffix(entry.Name(), ".ttf.gz"); ok {
+					// Extract font name: NotoSans-Regular.ttf.gz -> notosans, NotoSans-Bold.ttf.gz -> notosans-bold
+					// Only remove -Regular and -Medium suffixes, keep others like -Bold
+					name = strings.ToLower(name)
+					name, _ = strings.CutSuffix(name, "-regular")
+					name, _ = strings.CutSuffix(name, "-medium")
+					embeddedFontNames[name] = entry.Name()
 				}
-				name = strings.ToLower(name)
-				embeddedFontNames[name] = entry.Name()
 			}
 		}
 	}

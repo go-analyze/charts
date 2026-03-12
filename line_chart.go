@@ -2,10 +2,6 @@ package charts
 
 import (
 	"math"
-
-	"github.com/golang/freetype/truetype"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type lineChart struct {
@@ -32,7 +28,6 @@ func NewLineChartOptionWithSeries(sl LineSeriesList) LineChartOption {
 		SeriesList: sl,
 		Padding:    defaultPadding,
 		Theme:      GetDefaultTheme(),
-		Font:       GetDefaultFont(),
 		XAxis: XAxisOption{
 			Labels: make([]string, getSeriesMaxDataCount(sl)),
 		},
@@ -47,8 +42,6 @@ type LineChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListLine.
 	SeriesList LineSeriesList
 	// StackSeries when true layers each series so the last represents the cumulative sum.
@@ -120,7 +113,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	if opt.XAxis.BoundaryGap != nil {
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
-	xDivideCount := chartdraw.MaxInt(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels))
+	xDivideCount := max(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels))
 	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= boundaryGapDefaultThreshold {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment.
 		// Although label changes can be forced to center, this behavior is unconditional for the line
@@ -301,7 +294,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 					fillColor:      seriesColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      seriesMarks,
 					seriesValues:   series.Values,
 					axisRange:      yRange,
@@ -316,7 +309,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 					fillColor:      defaultGlobalMarkFillColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      globalMarks,
 					seriesValues:   globalSeriesData,
 					axisRange:      yRange,
@@ -336,7 +329,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 			if len(seriesMarks) > 0 {
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          seriesColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					points:             points,
 					markpoints:         seriesMarks,
@@ -351,7 +344,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					points:             points,
 					markpoints:         globalMarks,

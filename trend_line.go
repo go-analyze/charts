@@ -4,7 +4,6 @@ import (
 	"errors"
 	"math"
 
-	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
@@ -15,8 +14,6 @@ const (
 	SeriesTrendTypeLinear = "linear"
 	// SeriesTrendTypeCubic represents a cubic polynomial (degree 3) regression trend line that fits a curved line through the data points.
 	SeriesTrendTypeCubic = "cubic"
-	// Deprecated: SeriesTrendTypeAverage is deprecated, use SeriesTrendTypeSMA instead.
-	SeriesTrendTypeAverage = "average"
 	// SeriesTrendTypeSMA represents a Simple Moving Average trend line that smooths data using a sliding window average.
 	SeriesTrendTypeSMA = "sma"
 	// SeriesTrendTypeEMA represents an Exponential Moving Average trend line that gives more weight to recent data points.
@@ -44,8 +41,6 @@ type SeriesTrendLine struct {
 	DashedLine *bool
 	// Type specifies the trend line type: "linear", "cubic", "sma", "ema", "rsi".
 	Type string
-	// Deprecated: Window is deprecated, use Period instead.
-	Window int
 	// Period specifies the number of data points to consider for trend calculations.
 	// Used by moving averages (SMA, EMA), Bollinger Bands, RSI, and other indicators.
 	// For example, Period=20 calculates a 20-period moving average.
@@ -103,9 +98,6 @@ func (t *trendLinePainter) Render() (Box, error) {
 		}
 
 		for _, trend := range opt.trends {
-			if trend.Window != 0 && trend.Period == 0 {
-				trend.Period = trend.Window
-			}
 			var fitted []float64
 			var err error
 			switch trend.Type {
@@ -113,7 +105,7 @@ func (t *trendLinePainter) Render() (Box, error) {
 				fitted, err = linearTrend(opt.seriesValues)
 			case SeriesTrendTypeCubic:
 				fitted, err = cubicTrend(opt.seriesValues)
-			case SeriesTrendTypeSMA, "average" /* long term backwards compatibility */ :
+			case SeriesTrendTypeSMA:
 				fitted, err = movingAverageTrend(opt.seriesValues, trend.Period)
 			case SeriesTrendTypeEMA:
 				fitted, err = exponentialMovingAverageTrend(opt.seriesValues, trend.Period)
@@ -160,7 +152,7 @@ func (t *trendLinePainter) Render() (Box, error) {
 			if isDashed {
 				// Calculate dash size based on painter dimensions for better visibility
 				avgDimension := float64(t.p.box.Width()+t.p.box.Height()) / 2
-				dashLength := math.Max(avgDimension*0.02, 4.0) // Minimum 4px, scale with size
+				dashLength := max(avgDimension*0.02, 4.0) // Minimum 4px, scale with size
 				gapLength := dashLength * 0.8
 				dashArray := []float64{dashLength, gapLength}
 				if trend.StrokeSmoothingTension > 0 {
@@ -326,7 +318,7 @@ func exponentialMovingAverageTrend(y []float64, window int) ([]float64, error) {
 	}
 
 	if window <= 0 {
-		window = chartdraw.MaxInt(2, nonNullCount/5)
+		window = max(2, nonNullCount/5)
 	}
 
 	multiplier := 2.0 / (float64(window) + 1.0)
@@ -407,7 +399,7 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 	}
 
 	if window <= 0 {
-		window = chartdraw.MaxInt(2, nonNullCount/5)
+		window = max(2, nonNullCount/5)
 	}
 
 	// Compute moving average for non-null positions
@@ -420,8 +412,8 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 		// Calculate average of surrounding non-null values within window
 		var sum float64
 		var count int
-		start := chartdraw.MaxInt(0, i-halfWindow)
-		end := chartdraw.MinInt(len(y)-1, i+halfWindow)
+		start := max(0, i-halfWindow)
+		end := min(len(y)-1, i+halfWindow)
 		for j := start; j <= end; j++ {
 			if isValidExtent(y[j]) {
 				sum += y[j]
@@ -447,7 +439,7 @@ func bollingerBand(y []float64, period int, multiplier float64) ([]float64, erro
 		return result, nil // Not enough data
 	}
 	if period <= 0 {
-		period = chartdraw.MaxInt(2, nonNullCount/5)
+		period = max(2, nonNullCount/5)
 	}
 	if period > nonNullCount {
 		return result, nil // Period too large
@@ -470,8 +462,8 @@ func bollingerBand(y []float64, period int, multiplier float64) ([]float64, erro
 		mean := sma[i]
 		var variance float64
 		var count int
-		start := chartdraw.MaxInt(0, i-halfWindow)
-		end := chartdraw.MinInt(len(y)-1, i+halfWindow)
+		start := max(0, i-halfWindow)
+		end := min(len(y)-1, i+halfWindow)
 
 		for j := start; j <= end; j++ {
 			if isValidExtent(y[j]) {
@@ -512,7 +504,7 @@ func rsiTrend(y []float64, period int) ([]float64, error) {
 		return result, nil // Not enough non-null data
 	}
 	if period <= 0 {
-		period = chartdraw.MaxInt(2, len(cleanData)/5)
+		period = max(2, len(cleanData)/5)
 	}
 	if len(cleanData) < period+1 {
 		return result, nil // Insufficient data for RSI
