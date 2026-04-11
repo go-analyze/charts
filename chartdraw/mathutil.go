@@ -37,28 +37,6 @@ func MinMax(values ...float64) (min, max float64) {
 	return
 }
 
-// Deprecated: MinInt is deprecated, use go 1.23 `min` builtin instead.
-func MinInt(values ...int) int {
-	min := math.MaxInt32
-	for x := 0; x < len(values); x++ {
-		if values[x] < min {
-			min = values[x]
-		}
-	}
-	return min
-}
-
-// Deprecated: MaxInt is deprecated, use go 1.23 `max` builtin instead.
-func MaxInt(values ...int) int {
-	max := math.MinInt32
-	for x := 0; x < len(values); x++ {
-		if values[x] > max {
-			max = values[x]
-		}
-	}
-	return max
-}
-
 // AbsInt returns the absolute value of an int.
 func AbsInt(value int) int {
 	if value < 0 {
@@ -85,22 +63,18 @@ func PercentToRadians(pct float64) float64 {
 
 // RadianAdd adds a delta to a base in radians.
 func RadianAdd(base, delta float64) float64 {
-	value := base + delta
-	return math.Mod(math.Mod(value, _2pi)+_2pi, _2pi)
+	return math.Mod(math.Mod(base+delta, _2pi)+_2pi, _2pi)
 }
 
 // DegreesAdd adds a delta to a base in degrees.
 func DegreesAdd(baseDegrees, deltaDegrees float64) float64 {
-	value := baseDegrees + deltaDegrees
-	return math.Mod(math.Mod(value, 360.0)+360.0, 360.0)
+	return math.Mod(math.Mod(baseDegrees+deltaDegrees, 360.0)+360.0, 360.0)
 }
 
 // CirclePoint returns the absolute position of a circle diameter point given
 // by the radius and the theta.
 func CirclePoint(cx, cy int, radius, thetaRadians float64) (x, y int) {
-	x = cx + int(radius*math.Sin(thetaRadians))
-	y = cy - int(radius*math.Cos(thetaRadians))
-	return
+	return cx + int(radius*math.Sin(thetaRadians)), cy - int(radius*math.Cos(thetaRadians))
 }
 
 // RotateCoordinate rotates a coordinate around a given center by a theta in radians.
@@ -108,9 +82,7 @@ func RotateCoordinate(cx, cy, x, y int, thetaRadians float64) (rx, ry int) {
 	tempX, tempY := float64(x-cx), float64(y-cy)
 	rotatedX := tempX*math.Cos(thetaRadians) - tempY*math.Sin(thetaRadians)
 	rotatedY := tempX*math.Sin(thetaRadians) + tempY*math.Cos(thetaRadians)
-	rx = int(rotatedX) + cx
-	ry = int(rotatedY) + cy
-	return
+	return int(rotatedX) + cx, int(rotatedY) + cy
 }
 
 // RoundUp rounds up to a given roundTo value.
@@ -135,12 +107,8 @@ func RoundDown(value, roundTo float64) float64 {
 // An example: 4,3,2,1 => 0.4, 0.3, 0.2, 0.1
 // Caveat; the total may be < 1.0; there are going to be issues with irrational numbers etc.
 func Normalize(values ...float64) []float64 {
-	var total float64
-	for _, v := range values {
-		total += v
-	}
 	output := make([]float64, len(values))
-	if total != 0 {
+	if total := SumFloat64(values...); total != 0 {
 		for x, v := range values {
 			output[x] = RoundDown(v/total, 0.0001)
 		}
@@ -229,6 +197,5 @@ func RoundPlaces(input float64, places int) (rounded float64) {
 }
 
 func f64i(value float64) int {
-	r := RoundPlaces(value, 0)
-	return int(r)
+	return int(RoundPlaces(value, 0))
 }

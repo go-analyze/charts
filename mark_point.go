@@ -74,7 +74,7 @@ func (m *markPointPainter) Render() (Box, error) {
 		summary := summarizePopulationData(opt.seriesValues)
 		textStyle := FontStyle{
 			FontSize: defaultLabelFontSize,
-			Font:     opt.font,
+			Font:     getPreferredFont(opt.font),
 		}
 		if isLightColor(opt.fillColor) {
 			textStyle.FontColor = defaultLightFontColor

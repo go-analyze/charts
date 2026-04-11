@@ -1,9 +1,5 @@
 package charts
 
-import (
-	"github.com/golang/freetype/truetype"
-)
-
 type horizontalBarChart struct {
 	p   *Painter
 	opt *HorizontalBarChartOption
@@ -16,7 +12,6 @@ func NewHorizontalBarChartOptionWithData(data [][]float64) HorizontalBarChartOpt
 		SeriesList:     sl,
 		Padding:        defaultPadding,
 		Theme:          GetDefaultTheme(),
-		Font:           GetDefaultFont(),
 		ValueFormatter: defaultValueFormatter,
 	}
 }
@@ -28,8 +23,6 @@ type HorizontalBarChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListHorizontalBar.
 	SeriesList HorizontalBarSeriesList
 	// StackSeries when *true renders the series stacked within one bar.
@@ -153,10 +146,6 @@ func (h *horizontalBarChart) renderChart(result *defaultRenderResult) (Box, erro
 						}
 					}
 				}
-				if fontStyle.Font == nil {
-					fontStyle.Font = opt.Font
-				}
-
 				labelPainter.Add(labelValue{
 					vertical:  false, // horizontal label
 					index:     index,
@@ -186,7 +175,7 @@ func (h *horizontalBarChart) renderChart(result *defaultRenderResult) (Box, erro
 					fillColor:      seriesColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
-					font:           opt.Font,
+					font:           series.Label.FontStyle.Font,
 					marklines:      seriesMarks,
 					seriesValues:   series.Values,
 					axisRange:      result.xaxisRange,
@@ -202,7 +191,7 @@ func (h *horizontalBarChart) renderChart(result *defaultRenderResult) (Box, erro
 					fillColor:      defaultGlobalMarkFillColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
-					font:           opt.Font,
+					font:           series.Label.FontStyle.Font,
 					marklines:      globalMarks,
 					seriesValues:   globalSeriesData,
 					axisRange:      result.xaxisRange,

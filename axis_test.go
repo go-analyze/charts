@@ -25,8 +25,8 @@ func TestAxisRender(t *testing.T) {
 			name: "x-axis",
 			optionFactory: func(p *Painter) axisOption {
 				opt := XAxisOption{
-					BoundaryGap: Ptr(true),
-					FontStyle:   fs,
+					BoundaryGap:    Ptr(true),
+					LabelFontStyle: fs,
 				}
 				return opt.prep(nil).toAxisOption(newTestRangeForLabels(dayLabels, 0, fs))
 			},
@@ -35,8 +35,8 @@ func TestAxisRender(t *testing.T) {
 			name: "x-axis_rotation45",
 			optionFactory: func(p *Painter) axisOption {
 				opt := XAxisOption{
-					BoundaryGap: Ptr(true),
-					FontStyle:   fs,
+					BoundaryGap:    Ptr(true),
+					LabelFontStyle: fs,
 				}
 				return opt.prep(nil).toAxisOption(newTestRangeForLabels(dayLabels, DegreesToRadians(45), fs))
 			},
@@ -45,9 +45,9 @@ func TestAxisRender(t *testing.T) {
 			name: "x-axis_rotation90",
 			optionFactory: func(p *Painter) axisOption {
 				opt := XAxisOption{
-					Labels:      dayLabels,
-					BoundaryGap: Ptr(true),
-					FontStyle:   fs,
+					Labels:         dayLabels,
+					BoundaryGap:    Ptr(true),
+					LabelFontStyle: fs,
 				}
 				return opt.prep(nil).toAxisOption(newTestRangeForLabels(dayLabels, DegreesToRadians(90), fs))
 			},

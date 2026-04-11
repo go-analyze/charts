@@ -1,10 +1,11 @@
 package charts
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"math"
-	"sort"
+	"slices"
 	"strings"
 )
 
@@ -137,7 +138,7 @@ func (d *doughnutChart) renderChart(result *defaultRenderResult) (Box, error) {
 	}
 
 	sectors, err := renderPie(seriesPainter, cx, cy, diameter, radiusRing, total, !centerLabels,
-		opt.SeriesList.toPieSeriesList(), opt.Theme, opt.SegmentGap, radiusFactorDefault, opt.ValueFormatter, nil)
+		opt.SeriesList.toPieSeriesList(), opt.Theme, opt.SegmentGap, radiusFactorDefault)
 	if err != nil {
 		msg := strings.ReplaceAll(err.Error(), "pie", "doughnut")
 		msg = strings.ReplaceAll(msg, "Pie", "Doughnut")
@@ -231,8 +232,8 @@ type labelPlacement struct {
 func placeCenterLabelsWithCollisionResolution(p *Painter, opt *DoughnutChartOption,
 	cx, cy int, radiusCenter float64, sectors []sector) []*labelPlacement {
 	// ensure sorted by ascending midAngle
-	sort.Slice(sectors, func(i, j int) bool {
-		return sectors[i].midAngle < sectors[j].midAngle
+	slices.SortFunc(sectors, func(a, b sector) int {
+		return cmp.Compare(a.midAngle, b.midAngle)
 	})
 	anchorRad := innerLabelRadiusFactor * radiusCenter
 
@@ -388,7 +389,7 @@ func minimalRadialPush(p, q *labelPlacement, cx, cy int) (dx, dy int) {
 	// measure overlap along that radial vector vs q
 	pMin, pMax := projectBoxRadially(p.box, ux, uy)
 	qMin, qMax := projectBoxRadially(q.box, ux, uy)
-	overlapDist := math.Min(pMax, qMax) - math.Max(pMin, qMin)
+	overlapDist := min(pMax, qMax) - max(pMin, qMin)
 	if overlapDist <= 0 {
 		return int(math.Copysign(1, ux)), int(math.Copysign(1, uy)) // fallback nudge to ensure we don't stall nudging
 	}

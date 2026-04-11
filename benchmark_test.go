@@ -283,7 +283,7 @@ func renderPainterScatter(painter *Painter) {
 	lineOpt.SeriesList[0].MarkLine.Lines = lineMarks
 	lineOpt.SeriesList[0].TrendLine = NewTrendLine(SeriesTrendTypeCubic)
 	lineOpt.SeriesList[1].MarkLine.Lines = lineMarks
-	lineOpt.SeriesList[1].TrendLine = NewTrendLine(SeriesTrendTypeAverage)
+	lineOpt.SeriesList[1].TrendLine = NewTrendLine(SeriesTrendTypeSMA)
 	lineOpt.Legend = LegendOption{
 		Offset: OffsetStr{
 			Top: "-90",

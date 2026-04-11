@@ -105,8 +105,8 @@ func TestHorizontalBarChart(t *testing.T) {
 				opt := makeBasicHorizontalBarChartOption()
 				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
-				opt.XAxis.FontStyle = customFont
-				opt.YAxis.FontStyle = customFont
+				opt.XAxis.LabelFontStyle = customFont
+				opt.YAxis.LabelFontStyle = customFont
 				opt.Title.FontStyle = customFont
 				return opt
 			},

@@ -40,10 +40,10 @@ func TestYAxis(t *testing.T) {
 			name: "font_style_with_rotation",
 			makeOption: func() *YAxisOption {
 				return &YAxisOption{
-					Position:      PositionLeft, // typically defaulted in defaultRender
-					Labels:        []string{"a", "b", "c"},
-					FontStyle:     NewFontStyleWithSize(20),
-					LabelRotation: DegreesToRadians(270),
+					Position:       PositionLeft, // typically defaulted in defaultRender
+					Labels:         []string{"a", "b", "c"},
+					LabelFontStyle: NewFontStyleWithSize(20),
+					LabelRotation:  DegreesToRadians(270),
 				}
 			},
 		},

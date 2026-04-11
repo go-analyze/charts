@@ -41,7 +41,7 @@ func (bbs *BollingerBandsSeries) GetYAxis() YAxisType {
 // GetPeriod returns the window size.
 func (bbs *BollingerBandsSeries) GetPeriod() int {
 	if bbs.Period == 0 {
-		return DefaultSimpleMovingAveragePeriod
+		return defaultSimpleMovingAveragePeriod
 	}
 	return bbs.Period
 }

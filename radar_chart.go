@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/freetype/truetype"
 )
 
 var radarDefaultValueFormatter = func(v float64) string {
@@ -35,7 +34,6 @@ func NewRadarChartOptionWithData(data [][]float64, names []string, values []floa
 		RadarIndicators: NewRadarIndicators(names, values),
 		Padding:         defaultPadding,
 		Theme:           GetDefaultTheme(),
-		Font:            GetDefaultFont(),
 	}
 }
 
@@ -45,8 +43,6 @@ type RadarChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// SeriesList provides the data population for the chart. Constructed using NewSeriesListRadar.
 	SeriesList RadarSeriesList
 	// Title contains options for rendering the chart title.
@@ -134,7 +130,7 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 	for index, p := range points {
 		name := indicators[index].Name
 		fontStyle := fillFontStyleDefaults(indicators[index].FontStyle,
-			defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font, seriesPainter.font)
+			defaultLabelFontSize, theme.GetLabelTextColor(), seriesPainter.font)
 		b := seriesPainter.MeasureText(name, 0, fontStyle)
 		isXCenter := p.X == center.X
 		isYCenter := p.Y == center.Y
@@ -204,7 +200,7 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 			seriesPainter.Circle(dotWith, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
 			if flagIs(true, series.Label.Show) && index < len(series.Values) {
 				fontStyle := fillFontStyleDefaults(series.Label.FontStyle,
-					defaultLabelFontSize, theme.GetLabelTextColor(), opt.Font, seriesPainter.font)
+					defaultLabelFontSize, theme.GetLabelTextColor(), seriesPainter.font)
 				valueStr := valueFormatter(series.Values[index])
 				b := seriesPainter.MeasureText(valueStr, 0, fontStyle)
 				seriesPainter.Text(valueStr, point.X-b.Width()/2, point.Y, 0, fontStyle)

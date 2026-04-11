@@ -779,7 +779,7 @@ func (p *Painter) TextFit(body string, x, y, width int, fontStyle FontStyle, tex
 		}
 
 		p.render.Text(line, x0+p.box.Left, y0+p.box.Top)
-		output.Right = chartdraw.MaxInt(lineBox.Right, output.Right)
+		output.Right = max(lineBox.Right, output.Right)
 		output.Bottom += lineBox.Height()
 		if index < len(lines)-1 {
 			output.Bottom += style.GetTextLineSpacing()
@@ -1175,7 +1175,7 @@ type LayoutBuilderGrid interface {
 // Specify how many rows and columns the painter should be divided into,
 // then define each child painter using CellAt and Span.
 func (p *Painter) LayoutByGrid(cols, rows int) LayoutBuilderGrid {
-	cellEstimate := chartdraw.MaxInt(0, chartdraw.MinInt(128, cols*rows)) // clamp between 0 and 128 for safety
+	cellEstimate := max(0, min(128, cols*rows)) // clamp between 0 and 128 for safety
 	return &layoutBuilderGrid{
 		painter: p,
 		cols:    cols,
@@ -1507,9 +1507,8 @@ func (b *layoutBuilderRow) Build() (map[string]*Painter, error) {
 				if col.widthStr == "" {
 					autoIndices = append(autoIndices, i) // Gaps with no width are treated as auto-width gaps
 				} else {
-					if strings.HasSuffix(col.widthStr, "%") {
+					if percentStr, ok := strings.CutSuffix(col.widthStr, "%"); ok {
 						// Parse percentage value
-						percentStr := strings.TrimSuffix(col.widthStr, "%")
 						percentVal, err := strconv.ParseFloat(percentStr, 64)
 						if err != nil {
 							return nil, fmt.Errorf("row %d: invalid percentage width '%s'", rowIdx+1, col.widthStr)

@@ -121,7 +121,7 @@ func TestBarChart(t *testing.T) {
 				opt := makeBasicBarChartOption()
 				customFont := NewFontStyleWithSize(4.0).WithColor(ColorBlue)
 				opt.Legend.FontStyle = customFont
-				opt.XAxis.FontStyle = customFont
+				opt.XAxis.LabelFontStyle = customFont
 				opt.Title.FontStyle = customFont
 				return opt
 			},

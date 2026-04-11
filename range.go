@@ -4,7 +4,6 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
@@ -100,14 +99,14 @@ func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 			initialLabelCount = int((maxVal-minVal)/labelUnit) + 1
 		} else {
 			initialLabelCount =
-				chartdraw.MinInt(chartdraw.MaxInt(int(maxVal-minVal)+1, defaultYAxisLabelCountLow),
+				min(max(int(maxVal-minVal)+1, defaultYAxisLabelCountLow),
 					defaultYAxisLabelCountHigh)
 			if decimalData { // if there is a decimal, we double our labels to provide more detail
-				initialLabelCount = chartdraw.MinInt(initialLabelCount*2, defaultYAxisLabelCountHigh)
+				initialLabelCount = min(initialLabelCount*2, defaultYAxisLabelCountHigh)
 			}
 		}
 	}
-	initialLabelCount = chartdraw.MaxInt(initialLabelCount+labelCountAdjustment, minimumAxisLabels)
+	initialLabelCount = max(initialLabelCount+labelCountAdjustment, minimumAxisLabels)
 	labels := valueLabels(labelsCfg, valueFormatter, minVal, maxVal, initialLabelCount)
 	labelW, labelH := p.measureTextMaxWidthHeight(labels, labelRotation, fontStyle)
 
@@ -123,11 +122,11 @@ func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		} else {
 			if labelW > 0 {
 				// add to the label width to give good spacing
-				maxLabelCount = axisSize / (labelW + chartdraw.MinInt(20, labelW))
+				maxLabelCount = axisSize / (labelW + min(20, labelW))
 			}
 		}
 		if maxLabelCount < padLabelCount {
-			padLabelCount = chartdraw.MaxInt(maxLabelCount, minimumAxisLabels)
+			padLabelCount = max(maxLabelCount, minimumAxisLabels)
 		}
 		if labelUnit > 0 && padLabelCount > minimumAxisLabels {
 			// reduce padLabelCount to ensure it remains within the max count if we have to add one to meet unit expectations
@@ -182,7 +181,7 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 		scaledMaxPadPercentMax := rangeMaxPaddingPercentMax * prep.maxPadScale
 		minPadRequired := prep.maxVal + spanIncrement*scaledMaxPadPercentMin
 		baselineExcess := maxPadded - prep.maxVal
-		maxPadLimit := math.Min(
+		maxPadLimit := min(
 			prep.maxVal+spanIncrement*scaledMaxPadPercentMax*1.4,
 			maxPadded+baselineExcess*8,
 		)
@@ -233,7 +232,7 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 			}
 
 			// The search expands symmetrically around padLabelCount
-			maxDelta := chartdraw.MaxInt(padLabelCount-minimumAxisLabels, maxLabelCount-padLabelCount)
+			maxDelta := max(padLabelCount-minimumAxisLabels, maxLabelCount-padLabelCount)
 			if targetLabelCount > 0 {
 				maxDelta = 0 // only try the target count
 			}
@@ -458,8 +457,8 @@ func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
 		}
 	}
 
-	searchMin := chartdraw.MaxInt(minNatural-3, minimumAxisLabels)
-	searchMax := chartdraw.MinInt(maxNatural+3, minMaxLabel)
+	searchMin := max(minNatural-3, minimumAxisLabels)
+	searchMax := min(maxNatural+3, minMaxLabel)
 
 	// check if any axis has a configured label unit
 	var hasUnit bool
@@ -477,7 +476,7 @@ func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
 		spanIncrement := (prep.maxVal - prep.minVal) * 0.01
 		scaledMaxPadPercentMax := rangeMaxPaddingPercentMax * prep.maxPadScale
 		baselineExcess := naturals[i].max - prep.maxVal
-		maxPadLimits[i] = math.Min(
+		maxPadLimits[i] = min(
 			prep.maxVal+spanIncrement*scaledMaxPadPercentMax*1.4,
 			naturals[i].max+baselineExcess*8,
 		)
@@ -602,7 +601,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 	} else if labelCount > dataCount {
 		labelCount = dataCount
 	}
-	labelCount = chartdraw.MaxInt(labelCount+labelCountAdjustment, minimumAxisLabels)
+	labelCount = max(labelCount+labelCountAdjustment, minimumAxisLabels)
 	// validate the labels fit, otherwise reduce the count
 	if labelCountCfg == 0 {
 		maxLabelCount := labelCount
@@ -612,7 +611,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 				if extraSpace {
 					extra = 10
 				}
-				maxLabelCount = chartdraw.MaxInt(axisSize/(textH+extra), minimumAxisLabels)
+				maxLabelCount = max(axisSize/(textH+extra), minimumAxisLabels)
 			}
 		} else {
 			if textW > 0 {
@@ -621,7 +620,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 				if !extraSpace {
 					extra /= 2
 				}
-				maxLabelCount = chartdraw.MaxInt(axisSize/(textW+extra), minimumAxisLabels)
+				maxLabelCount = max(axisSize/(textW+extra), minimumAxisLabels)
 			}
 		}
 		if labelUnit > 0 {
@@ -632,7 +631,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 				if count > maxLabelCount {
 					multiplier++
 				} else {
-					labelCount = chartdraw.MaxInt(count, minimumAxisLabels)
+					labelCount = max(count, minimumAxisLabels)
 					break
 				}
 			}
@@ -645,7 +644,7 @@ func calculateCategoryAxisRange(p *Painter, axisSize int, isVertical bool, extra
 				step++
 				candidateCount = 2 + (dataCount-2)/step
 			}
-			labelCount = chartdraw.MaxInt(candidateCount, minimumAxisLabels)
+			labelCount = max(candidateCount, minimumAxisLabels)
 		}
 	}
 	// ensure there are not too many ticks, we want them relative and related to the label positions

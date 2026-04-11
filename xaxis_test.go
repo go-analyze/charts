@@ -54,9 +54,9 @@ func TestBottomXAxis(t *testing.T) {
 			name: "font_style",
 			makeOption: func() XAxisOption {
 				return XAxisOption{
-					Labels:        []string{"abc", "def", "ghi"},
-					FontStyle:     NewFontStyleWithSize(20),
-					LabelRotation: DegreesToRadians(90),
+					Labels:         []string{"abc", "def", "ghi"},
+					LabelFontStyle: NewFontStyleWithSize(20),
+					LabelRotation:  DegreesToRadians(90),
 				}
 			},
 		},

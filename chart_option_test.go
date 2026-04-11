@@ -14,7 +14,6 @@ func TestChartOption(t *testing.T) {
 
 	fns := []OptionFunc{
 		SVGOutputOptionFunc(),
-		FontOptionFunc(GetDefaultFont()),
 		ThemeNameOptionFunc(ThemeVividDark),
 		TitleTextOptionFunc("title"),
 		LegendLabelsOptionFunc([]string{"label"}),
@@ -29,7 +28,6 @@ func TestChartOption(t *testing.T) {
 	}
 	require.Equal(t, ChartOption{
 		OutputFormat: ChartOutputSVG,
-		Font:         GetDefaultFont(),
 		Theme:        GetTheme(ThemeVividDark),
 		Title: TitleOption{
 			Text: "title",

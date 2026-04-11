@@ -188,10 +188,10 @@ func TestCustomFontSizeRender(t *testing.T) {
 	}, PainterThemeOption(GetTheme(ThemeLight)))
 
 	opt := makeBasicLineChartOption()
-	opt.XAxis.FontStyle.FontSize = 4.0
+	opt.XAxis.LabelFontStyle.FontSize = 4.0
 	opt.YAxis = []YAxisOption{
 		{
-			FontStyle: NewFontStyleWithSize(4.0),
+			LabelFontStyle: NewFontStyleWithSize(4.0),
 		},
 	}
 	opt.Title.FontStyle.FontSize = 4.0

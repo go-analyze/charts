@@ -92,9 +92,9 @@ func (ya YAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 	var tx int
 	switch ya.AxisType {
 	case YAxisPrimary:
-		tx = canvasBox.Right + DefaultYAxisMargin
+		tx = canvasBox.Right + defaultYAxisMargin
 	case YAxisSecondary:
-		tx = canvasBox.Left - DefaultYAxisMargin
+		tx = canvasBox.Left - defaultYAxisMargin
 	}
 
 	ya.TickStyle.InheritFrom(ya.Style.InheritFrom(defaults)).WriteToRenderer(r)
@@ -111,23 +111,23 @@ func (ya YAxis) Measure(r Renderer, canvasBox Box, ra Range, defaults Style, tic
 			finalTextX = tx - tb.Width()
 		}
 
-		maxTextHeight = MaxInt(tb.Height(), maxTextHeight)
+		maxTextHeight = max(tb.Height(), maxTextHeight)
 
 		switch ya.AxisType {
 		case YAxisPrimary:
 			minx = canvasBox.Right
-			maxx = MaxInt(maxx, tx+tb.Width())
+			maxx = max(maxx, tx+tb.Width())
 		case YAxisSecondary:
-			minx = MinInt(minx, finalTextX)
-			maxx = MaxInt(maxx, tx)
+			minx = min(minx, finalTextX)
+			maxx = max(maxx, tx)
 		}
 
-		miny = MinInt(miny, ly-tbh2)
-		maxy = MaxInt(maxy, ly+tbh2)
+		miny = min(miny, ly-tbh2)
+		maxy = max(maxy, ly+tbh2)
 	}
 
 	if !ya.NameStyle.Hidden && len(ya.Name) > 0 {
-		maxx += DefaultYAxisMargin + maxTextHeight
+		maxx += defaultYAxisMargin + maxTextHeight
 	}
 
 	return Box{
@@ -151,10 +151,10 @@ func (ya YAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 	switch ya.AxisType {
 	case YAxisPrimary:
 		lx = canvasBox.Right + int(sw)
-		tx = lx + DefaultYAxisMargin
+		tx = lx + defaultYAxisMargin
 	case YAxisSecondary:
 		lx = canvasBox.Left - int(sw)
-		tx = lx - DefaultYAxisMargin
+		tx = lx - defaultYAxisMargin
 	}
 
 	r.MoveTo(lx, canvasBox.Bottom)
@@ -190,9 +190,9 @@ func (ya YAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 		r.MoveTo(lx, ly)
 		switch ya.AxisType {
 		case YAxisPrimary:
-			r.LineTo(lx+DefaultHorizontalTickWidth, ly)
+			r.LineTo(lx+defaultHorizontalTickWidth, ly)
 		case YAxisSecondary:
-			r.LineTo(lx-DefaultHorizontalTickWidth, ly)
+			r.LineTo(lx-defaultHorizontalTickWidth, ly)
 		}
 		r.Stroke()
 
@@ -207,9 +207,9 @@ func (ya YAxis) Render(r Renderer, canvasBox Box, ra Range, defaults Style, tick
 		var tx int
 		switch ya.AxisType {
 		case YAxisPrimary:
-			tx = canvasBox.Right + int(sw) + DefaultYAxisMargin + maxTextWidth + DefaultYAxisMargin
+			tx = canvasBox.Right + int(sw) + defaultYAxisMargin + maxTextWidth + defaultYAxisMargin
 		case YAxisSecondary:
-			tx = canvasBox.Left - (DefaultYAxisMargin + int(sw) + maxTextWidth + DefaultYAxisMargin)
+			tx = canvasBox.Left - (defaultYAxisMargin + int(sw) + maxTextWidth + defaultYAxisMargin)
 		}
 
 		var ty int

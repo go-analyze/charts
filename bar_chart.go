@@ -2,8 +2,6 @@ package charts
 
 import (
 	"math"
-
-	"github.com/golang/freetype/truetype"
 )
 
 type barChart struct {
@@ -30,7 +28,6 @@ func NewBarChartOptionWithSeries(sl BarSeriesList) BarChartOption {
 		SeriesList:     sl,
 		Padding:        defaultPadding,
 		Theme:          GetDefaultTheme(),
-		Font:           GetDefaultFont(),
 		YAxis:          make([]YAxisOption, getSeriesYAxisCount(sl)),
 		ValueFormatter: defaultValueFormatter,
 	}
@@ -42,8 +39,6 @@ type BarChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListBar.
 	SeriesList BarSeriesList
 	// StackSeries when *true renders series stacked within one bar.
@@ -216,10 +211,6 @@ func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 						}
 					}
 				}
-				if fontStyle.Font == nil {
-					fontStyle.Font = opt.Font
-				}
-
 				labelPainter.Add(labelValue{
 					vertical:  true, // label is vertically oriented
 					index:     index,
@@ -249,7 +240,7 @@ func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 					fillColor:      seriesColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    seriesColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      seriesMarks,
 					seriesValues:   series.Values,
 					axisRange:      yRange,
@@ -264,7 +255,7 @@ func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 					fillColor:      defaultGlobalMarkFillColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
 					strokeColor:    defaultGlobalMarkFillColor,
-					font:           getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:           series.Label.FontStyle.Font,
 					marklines:      globalMarks,
 					seriesValues:   globalSeriesData,
 					axisRange:      yRange,
@@ -284,7 +275,7 @@ func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 			if len(seriesMarks) > 0 {
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          seriesColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					markpoints:         seriesMarks,
 					seriesValues:       series.Values,
@@ -299,7 +290,7 @@ func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
-					font:               getPreferredFont(series.Label.FontStyle.Font, opt.Font),
+					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					markpoints:         globalMarks,
 					seriesValues:       globalSeriesData,

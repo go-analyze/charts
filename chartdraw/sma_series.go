@@ -4,12 +4,9 @@ import (
 	"errors"
 )
 
-// TODO - remove internal defaults from public API
 const (
-	// Deprecated: DefaultSimpleMovingAveragePeriod is deprecated, it's not expected to be used externally. If you
-	// use this field, open a new issue to prevent it from being made internal.
-	// DefaultSimpleMovingAveragePeriod is the default number of values to average.
-	DefaultSimpleMovingAveragePeriod = 16
+	// defaultSimpleMovingAveragePeriod is the default number of values to average.
+	defaultSimpleMovingAveragePeriod = 16
 )
 
 // Interface Assertions.
@@ -55,7 +52,7 @@ func (sma SMASeries) GetPeriod(defaults ...int) int {
 		if len(defaults) > 0 {
 			return defaults[0]
 		}
-		return DefaultSimpleMovingAveragePeriod
+		return defaultSimpleMovingAveragePeriod
 	}
 	return sma.Period
 }
@@ -97,7 +94,7 @@ func (sma SMASeries) GetLastValues() (x, y float64) {
 
 func (sma SMASeries) getAverage(index int) float64 {
 	period := sma.GetPeriod()
-	floor := MaxInt(0, index-period)
+	floor := max(0, index-period)
 	var accum float64
 	var count float64
 	for x := index; x >= floor; x-- {

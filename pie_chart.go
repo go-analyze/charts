@@ -5,7 +5,6 @@ import (
 	"math"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/freetype/truetype"
 
 	"github.com/go-analyze/charts/chartdraw"
 )
@@ -23,7 +22,6 @@ func NewPieChartOptionWithData(data []float64) PieChartOption {
 		SeriesList: NewSeriesListPie(data),
 		Padding:    defaultPadding,
 		Theme:      GetDefaultTheme(),
-		Font:       GetDefaultFont(),
 	}
 }
 
@@ -33,8 +31,6 @@ type PieChartOption struct {
 	Theme ColorPalette
 	// Padding specifies the padding around the chart.
 	Padding Box
-	// Deprecated: Font is deprecated, instead the font needs to be set on the SeriesLabel, or other specific elements.
-	Font *truetype.Font
 	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListPie.
 	SeriesList PieSeriesList
 	// Title contains options for rendering the chart title.
@@ -45,8 +41,6 @@ type PieChartOption struct {
 	Radius string
 	// SegmentGap provides the gap between each pie slice.
 	SegmentGap float64
-	// Deprecated: ValueFormatter is deprecated, instead set the ValueFormatter at `SeriesList[*].Label.ValueFormatter`.
-	ValueFormatter ValueFormatter
 }
 
 // newPieChart returns a pie chart renderer.
@@ -72,7 +66,7 @@ type sector struct {
 }
 
 func newSector(radius float64, index int, value, currentValue, totalValue float64,
-	label string, seriesLabel SeriesLabel, altFormatter ValueFormatter, color Color) sector {
+	label string, seriesLabel SeriesLabel, color Color) sector {
 	s := sector{
 		value:       value,
 		radius:      radius,
@@ -100,12 +94,6 @@ func newSector(radius float64, index int, value, currentValue, totalValue float6
 		percent := value / totalValue
 		if seriesLabel.LabelFormatter != nil {
 			s.label, s.labelStyle = seriesLabel.LabelFormatter(index, label, s.value)
-		} else if seriesLabel.FormatTemplate != "" {
-			valueFormatter := seriesLabel.ValueFormatter
-			if valueFormatter == nil {
-				valueFormatter = altFormatter
-			}
-			s.label = labelFormatPie(label, seriesLabel.FormatTemplate, valueFormatter, s.value, percent)
 		} else if seriesLabel.ValueFormatter != nil {
 			s.label = seriesLabel.ValueFormatter(s.value)
 		} else { // default label
@@ -163,7 +151,7 @@ func (s *sector) calculateAdjustedOuterLabelPosition(cx, cy int, outerRadius, la
 func circleChartPosition(painter *Painter) (int, int, float64) {
 	cx := painter.Width() >> 1
 	cy := painter.Height() >> 1
-	diameter := chartdraw.MinInt(painter.Width(), painter.Height())
+	diameter := min(painter.Width(), painter.Height())
 	return cx, cy, float64(diameter)
 }
 
@@ -201,13 +189,12 @@ func (p *pieChart) renderChart(result *defaultRenderResult) (Box, error) {
 	}
 
 	_, err := renderPie(seriesPainter, cx, cy, diameter, radius, total, true, opt.SeriesList,
-		opt.Theme, opt.SegmentGap, defaultPieRadiusFactor, opt.ValueFormatter, opt.Font)
+		opt.Theme, opt.SegmentGap, defaultPieRadiusFactor)
 	return p.p.box, err
 }
 
 func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabels bool, seriesList PieSeriesList,
-	theme ColorPalette, sliceGap, defaultRadiusFactor float64,
-	valueFormatter ValueFormatter, fallbackFont *truetype.Font) ([]sector, error) {
+	theme ColorPalette, sliceGap, defaultRadiusFactor float64) ([]sector, error) {
 	if len(seriesList) == 0 {
 		return nil, nil
 	} else if total <= 0 {
@@ -232,7 +219,7 @@ func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabel
 		}
 		color := theme.GetSeriesColor(index)
 		s := newSector(seriesRadius, index, series.Value, currentSum, total,
-			seriesNames[index], series.Label, valueFormatter, color)
+			seriesNames[index], series.Label, color)
 
 		switch s.quadrant {
 		case 1:
@@ -288,7 +275,7 @@ func renderPie(p *Painter, cx, cy int, space, radius, total float64, renderLabel
 			}
 		}
 		fontStyle := fillFontStyleDefaults(s.seriesLabel.FontStyle,
-			defaultLabelFontSize, theme.GetLabelTextColor(), fallbackFont, p.font)
+			defaultLabelFontSize, theme.GetLabelTextColor(), p.font)
 		textBox := p.MeasureText(s.label, 0, fontStyle)
 		// for outer labels use the adjusted positions
 		lsX, lsY, lbX, lbY, leX, leY, textX, textY :=

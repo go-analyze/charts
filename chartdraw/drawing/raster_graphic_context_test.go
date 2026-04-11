@@ -144,13 +144,15 @@ func TestRasterGraphicContext(t *testing.T) {
 		require.NoError(t, err)
 		assert.GreaterOrEqual(t, cursor, 0.0)
 
-		cursor, err = ctx.FillStringAt("World", 30, 40)
+		cursor, err = ctx.CreateStringPath("World", 30, 40)
 		require.NoError(t, err)
 		assert.GreaterOrEqual(t, cursor, 0.0)
+		ctx.Fill()
 
-		cursor, err = ctx.StrokeStringAt("StrokeAt", 50, 60)
+		cursor, err = ctx.CreateStringPath("StrokeAt", 50, 60)
 		require.NoError(t, err)
 		assert.GreaterOrEqual(t, cursor, 0.0)
+		ctx.Stroke()
 	})
 
 	t.Run("fill_rect_clear", func(t *testing.T) {
@@ -282,7 +284,7 @@ func TestRasterCreateStringPathAndBounds(t *testing.T) {
 	assert.InDelta(t, bottom, pbBottom, 0.001)
 }
 
-func TestRasterFillAndStrokeStringAt(t *testing.T) {
+func TestRasterFillAndStrokeString(t *testing.T) {
 	t.Parallel()
 
 	f := getTestFont(t)
@@ -296,8 +298,9 @@ func TestRasterFillAndStrokeStringAt(t *testing.T) {
 	left, top, right, bottom, err := rgc.GetStringBounds("A")
 	require.NoError(t, err)
 	x, y := 10.0, 30.0
-	_, err = rgc.FillStringAt("A", x, y)
+	_, err = rgc.CreateStringPath("A", x, y)
 	require.NoError(t, err)
+	rgc.Fill()
 
 	x1 := int(math.Floor(left + x))
 	y1 := int(math.Floor(top + y))
@@ -318,8 +321,9 @@ func TestRasterFillAndStrokeStringAt(t *testing.T) {
 	rgc2.SetFontSize(10)
 	rgc2.SetStrokeColor(color.White)
 
-	_, err = rgc2.StrokeStringAt("A", x, y)
+	_, err = rgc2.CreateStringPath("A", x, y)
 	require.NoError(t, err)
+	rgc2.Stroke()
 	found = false
 	for yy := y1; yy < int(math.Ceil(bottom+y)) && !found; yy++ {
 		for xx := x1; xx < int(math.Ceil(right+x)) && !found; xx++ {

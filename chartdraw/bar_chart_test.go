@@ -50,7 +50,7 @@ func TestBarChartProps(t *testing.T) {
 
 	bc := BarChart{}
 
-	assert.InDelta(t, DefaultDPI, bc.GetDPI(), 0)
+	assert.InDelta(t, defaultDPI, bc.GetDPI(), 0)
 	bc.DPI = 100
 	assert.InDelta(t, float64(100), bc.GetDPI(), 0)
 
