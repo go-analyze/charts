@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -138,7 +139,7 @@ func NewViolinChartOptionWithSamples(samples [][]float64, pointCount int, normal
 			continue
 		}
 
-		maxDensity := maxFloatSlice(density)
+		maxDensity := slices.Max(density)
 		densities[i] = densitySeries{values: density, max: maxDensity}
 		if maxDensity > globalMax {
 			globalMax = maxDensity
@@ -198,17 +199,14 @@ func parseViolinSampleOptions(options []string) (string, *float64, error) {
 			continue
 		}
 
-		// TODO - v0.6 - Use strings.CutPrefix with go update
-		var valueText string
-		var ok bool
-		if strings.HasPrefix(option, "bandwidth=") {
-			valueText = option[len("bandwidth="):]
-			ok = true
-		} else if strings.HasPrefix(option, "bw=") {
-			valueText = option[len("bw="):]
-			ok = true
-		}
-		if ok {
+		if valueText, ok := strings.CutPrefix(option, "bandwidth="); ok {
+			bandwidth, err := strconv.ParseFloat(strings.TrimSpace(valueText), 64)
+			if err != nil || bandwidth <= 0 || math.IsNaN(bandwidth) || math.IsInf(bandwidth, 0) {
+				return "", nil, errors.New("invalid bandwidth override")
+			}
+			bandwidthOverride = &bandwidth
+			continue
+		} else if valueText, ok := strings.CutPrefix(option, "bw="); ok {
 			bandwidth, err := strconv.ParseFloat(strings.TrimSpace(valueText), 64)
 			if err != nil || bandwidth <= 0 || math.IsNaN(bandwidth) || math.IsInf(bandwidth, 0) {
 				return "", nil, errors.New("invalid bandwidth override")
@@ -260,19 +258,6 @@ func gaussianKDE(samples []float64, pointCount int, bandwidthOverride *float64) 
 		values[i] = norm * sum
 	}
 	return values
-}
-
-func maxFloatSlice(values []float64) float64 {
-	if len(values) == 0 {
-		return 0
-	}
-	maxVal := values[0]
-	for _, value := range values[1:] {
-		if value > maxVal {
-			maxVal = value
-		}
-	}
-	return maxVal
 }
 
 func (v *violinChart) renderChart(result *defaultRenderResult) (Box, error) {
@@ -533,7 +518,7 @@ func violinResolveAxisBounds(absMax float64, limitOpt *float64, labelCount int, 
 		extent = float64(zeroSpanAdjustment)
 	}
 	if limitOpt != nil {
-		extent = math.Max(extent, math.Abs(*limitOpt))
+		extent = max(extent, math.Abs(*limitOpt))
 		return -extent, extent
 	}
 	stepsFromZero := (violinEnsureZeroLabelCount(labelCount) - 1) / 2

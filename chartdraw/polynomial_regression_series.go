@@ -46,7 +46,7 @@ func (prs *PolynomialRegressionSeries) GetYAxis() YAxisType {
 
 // Len returns the number of elements in the series.
 func (prs *PolynomialRegressionSeries) Len() int {
-	return MinInt(prs.GetLimit(), prs.InnerSeries.Len()-prs.GetOffset())
+	return min(prs.GetLimit(), prs.InnerSeries.Len()-prs.GetOffset())
 }
 
 // GetLimit returns the window size.
@@ -61,7 +61,7 @@ func (prs *PolynomialRegressionSeries) GetLimit() int {
 func (prs *PolynomialRegressionSeries) GetEndIndex() int {
 	windowEnd := prs.GetOffset() + prs.GetLimit()
 	innerSeriesLastIndex := prs.InnerSeries.Len() - 1
-	return MinInt(windowEnd, innerSeriesLastIndex)
+	return min(windowEnd, innerSeriesLastIndex)
 }
 
 // GetOffset returns the data offset.

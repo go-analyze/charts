@@ -62,10 +62,10 @@ func (as AnnotationSeries) Measure(r Renderer, canvasBox Box, xrange, yrange Ran
 			lx := canvasBox.Left + xrange.Translate(a.XValue)
 			ly := canvasBox.Bottom - yrange.Translate(a.YValue)
 			ab := Draw.MeasureAnnotation(r, style, lx, ly, a.Label)
-			box.Top = MinInt(box.Top, ab.Top)
-			box.Left = MinInt(box.Left, ab.Left)
-			box.Right = MaxInt(box.Right, ab.Right)
-			box.Bottom = MaxInt(box.Bottom, ab.Bottom)
+			box.Top = min(box.Top, ab.Top)
+			box.Left = min(box.Left, ab.Left)
+			box.Right = max(box.Right, ab.Right)
+			box.Bottom = max(box.Bottom, ab.Bottom)
 		}
 	}
 	return box

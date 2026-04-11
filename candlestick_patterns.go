@@ -425,8 +425,8 @@ func detectHammerAt(data []OHLCData, index int, options CandlestickPatternConfig
 	}
 
 	bodySize := math.Abs(ohlc.Close - ohlc.Open)
-	lowerShadow := math.Min(ohlc.Open, ohlc.Close) - ohlc.Low
-	upperShadow := ohlc.High - math.Max(ohlc.Open, ohlc.Close)
+	lowerShadow := min(ohlc.Open, ohlc.Close) - ohlc.Low
+	upperShadow := ohlc.High - max(ohlc.Open, ohlc.Close)
 
 	// Hammer: long lower shadow, short upper shadow, small body
 	return lowerShadow >= shadowRatio*bodySize && upperShadow <= lowerShadow*0.3
@@ -445,8 +445,8 @@ func detectInvertedHammerAt(data []OHLCData, index int, options CandlestickPatte
 	}
 
 	bodySize := math.Abs(ohlc.Close - ohlc.Open)
-	lowerShadow := math.Min(ohlc.Open, ohlc.Close) - ohlc.Low
-	upperShadow := ohlc.High - math.Max(ohlc.Open, ohlc.Close)
+	lowerShadow := min(ohlc.Open, ohlc.Close) - ohlc.Low
+	upperShadow := ohlc.High - max(ohlc.Open, ohlc.Close)
 
 	// Inverted hammer: long upper shadow, short lower shadow, small body
 	return upperShadow >= shadowRatio*bodySize && lowerShadow <= upperShadow*0.3
@@ -465,8 +465,8 @@ func detectShootingStarAt(data []OHLCData, index int, options CandlestickPattern
 	}
 
 	bodySize := math.Abs(ohlc.Close - ohlc.Open)
-	lowerShadow := math.Min(ohlc.Open, ohlc.Close) - ohlc.Low
-	upperShadow := ohlc.High - math.Max(ohlc.Open, ohlc.Close)
+	lowerShadow := min(ohlc.Open, ohlc.Close) - ohlc.Low
+	upperShadow := ohlc.High - max(ohlc.Open, ohlc.Close)
 
 	// Shooting star: long upper shadow, relatively small lower shadow, small body near the low
 	hasLongUpperShadow := upperShadow >= shadowRatio*bodySize
@@ -477,7 +477,7 @@ func detectShootingStarAt(data []OHLCData, index int, options CandlestickPattern
 	if totalRange == 0 {
 		return false
 	}
-	bodyPosition := (math.Min(ohlc.Open, ohlc.Close) - ohlc.Low) / totalRange
+	bodyPosition := (min(ohlc.Open, ohlc.Close) - ohlc.Low) / totalRange
 	isNearLow := bodyPosition <= 0.33
 
 	return hasLongUpperShadow && hasShortLowerShadow && isNearLow
@@ -570,8 +570,8 @@ func detectBullishMarubozuAt(data []OHLCData, index int, options CandlestickPatt
 	}
 
 	// Calculate shadow sizes
-	upper := ohlc.High - math.Max(ohlc.Open, ohlc.Close)
-	lower := math.Min(ohlc.Open, ohlc.Close) - ohlc.Low
+	upper := ohlc.High - max(ohlc.Open, ohlc.Close)
+	lower := min(ohlc.Open, ohlc.Close) - ohlc.Low
 	body := math.Abs(ohlc.Close - ohlc.Open)
 	total := ohlc.High - ohlc.Low
 
@@ -601,8 +601,8 @@ func detectBearishMarubozuAt(data []OHLCData, index int, options CandlestickPatt
 	}
 
 	// Calculate shadow sizes
-	upper := ohlc.High - math.Max(ohlc.Open, ohlc.Close)
-	lower := math.Min(ohlc.Open, ohlc.Close) - ohlc.Low
+	upper := ohlc.High - max(ohlc.Open, ohlc.Close)
+	lower := min(ohlc.Open, ohlc.Close) - ohlc.Low
 	body := math.Abs(ohlc.Close - ohlc.Open)
 	total := ohlc.High - ohlc.Low
 
@@ -639,10 +639,10 @@ func detectBullishEngulfingAt(data []OHLCData, index int, options CandlestickPat
 	currentBody := math.Abs(current.Close - current.Open)
 
 	// Current candle must engulf previous candle's body
-	prevTop := math.Max(prev.Open, prev.Close)
-	prevBottom := math.Min(prev.Open, prev.Close)
-	currentTop := math.Max(current.Open, current.Close)
-	currentBottom := math.Min(current.Open, current.Close)
+	prevTop := max(prev.Open, prev.Close)
+	prevBottom := min(prev.Open, prev.Close)
+	currentTop := max(current.Open, current.Close)
+	currentBottom := min(current.Open, current.Close)
 
 	isEngulfing := currentTop > prevTop && currentBottom < prevBottom
 	isSizeSignificant := currentBody >= minSize*prevBody
@@ -678,10 +678,10 @@ func detectBearishEngulfingAt(data []OHLCData, index int, options CandlestickPat
 	currentBody := math.Abs(current.Close - current.Open)
 
 	// Current candle must engulf previous candle's body
-	prevTop := math.Max(prev.Open, prev.Close)
-	prevBottom := math.Min(prev.Open, prev.Close)
-	currentTop := math.Max(current.Open, current.Close)
-	currentBottom := math.Min(current.Open, current.Close)
+	prevTop := max(prev.Open, prev.Close)
+	prevBottom := min(prev.Open, prev.Close)
+	currentTop := max(current.Open, current.Close)
+	currentBottom := min(current.Open, current.Close)
 
 	isEngulfing := currentTop > prevTop && currentBottom < prevBottom
 	isSizeSignificant := currentBody >= minSize*prevBody
@@ -783,7 +783,7 @@ func detectMorningStarAt(data []OHLCData, index int, _ CandlestickPatternConfig)
 	}
 	thirdBody := third.Close - third.Open
 	// Gap up: third candle should open above second candle's body (allow some overlap)
-	if third.Open <= math.Max(second.Open, second.Close) {
+	if third.Open <= max(second.Open, second.Close) {
 		return false
 	}
 	// Third candle should close well into first candle's body
@@ -827,7 +827,7 @@ func detectEveningStarAt(data []OHLCData, index int, _ CandlestickPatternConfig)
 	}
 	thirdBody := third.Open - third.Close
 	// Gap down: third candle should open below second candle's body (allow some overlap)
-	if third.Open >= math.Min(second.Open, second.Close) {
+	if third.Open >= min(second.Open, second.Close) {
 		return false
 	}
 	// Third candle should close well into first candle's body

@@ -31,26 +31,19 @@ func (tr *Matrix) TransformPoint(x, y float64) (xres, yres float64) {
 	return xres, yres
 }
 
-func minMax(x, y float64) (min, max float64) {
-	if x > y {
-		return y, x
-	}
-	return x, y
-}
-
 // TransformRectangle applies the transformation matrix to the rectangle represented by the min and the max point of the rectangle.
 func (tr *Matrix) TransformRectangle(x0, y0, x2, y2 float64) (nx0, ny0, nx2, ny2 float64) {
 	points := []float64{x0, y0, x2, y0, x2, y2, x0, y2}
 	tr.Transform(points)
-	points[0], points[2] = minMax(points[0], points[2])
-	points[4], points[6] = minMax(points[4], points[6])
-	points[1], points[3] = minMax(points[1], points[3])
-	points[5], points[7] = minMax(points[5], points[7])
+	points[0], points[2] = min(points[0], points[2]), max(points[0], points[2])
+	points[4], points[6] = min(points[4], points[6]), max(points[4], points[6])
+	points[1], points[3] = min(points[1], points[3]), max(points[1], points[3])
+	points[5], points[7] = min(points[5], points[7]), max(points[5], points[7])
 
-	nx0 = math.Min(points[0], points[4])
-	ny0 = math.Min(points[1], points[5])
-	nx2 = math.Max(points[2], points[6])
-	ny2 = math.Max(points[3], points[7])
+	nx0 = min(points[0], points[4])
+	ny0 = min(points[1], points[5])
+	nx2 = max(points[2], points[6])
+	ny2 = max(points[3], points[7])
 	return nx0, ny0, nx2, ny2
 }
 
