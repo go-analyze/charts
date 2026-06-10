@@ -2,8 +2,6 @@ package charts
 
 import (
 	"math"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 type lineChart struct {
@@ -115,7 +113,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	if opt.XAxis.BoundaryGap != nil {
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
-	xDivideCount := chartdraw.MaxInt(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels))
+	xDivideCount := max(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels))
 	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= boundaryGapDefaultThreshold {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment.
 		// Although label changes can be forced to center, this behavior is unconditional for the line

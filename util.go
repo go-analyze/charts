@@ -94,16 +94,14 @@ func IntSliceToFloat64(slice []int) []float64 {
 func sliceMaxLen[T any](values ...[]T) int {
 	result := 0
 	for _, slice := range values {
-		if len(slice) > result {
-			result = len(slice)
-		}
+		result = max(result, len(slice))
 	}
 	return result
 }
 
 func parseFlexibleValue(value string, percentTotal float64) (float64, error) {
-	if strings.HasSuffix(value, "%") {
-		percent, err := strconv.ParseFloat(strings.TrimSuffix(value, "%"), 64)
+	if percentStr, ok := strings.CutSuffix(value, "%"); ok {
+		percent, err := strconv.ParseFloat(percentStr, 64)
 		if err != nil {
 			return 0, err
 		}

@@ -325,8 +325,8 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 			openY := yRange.getRestHeight(ohlc.Open)
 			closeY := yRange.getRestHeight(ohlc.Close)
 
-			bodyTop := int(math.Min(float64(openY), float64(closeY)))
-			bodyBottom := int(math.Max(float64(openY), float64(closeY)))
+			bodyTop := min(openY, closeY)
+			bodyBottom := max(openY, closeY)
 
 			// Determine colors and style
 			isBullish := ohlc.Close >= ohlc.Open

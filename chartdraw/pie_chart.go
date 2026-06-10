@@ -112,7 +112,7 @@ func (pc PieChart) drawTitle(r Renderer) {
 
 func (pc PieChart) drawSlices(r Renderer, canvasBox Box, values []Value) {
 	cx, cy := canvasBox.Center()
-	diameter := MinInt(canvasBox.Width(), canvasBox.Height())
+	diameter := min(canvasBox.Width(), canvasBox.Height())
 	radius := float64(diameter >> 1)
 	labelRadius := (radius * 2.0) / 3.0
 
@@ -180,7 +180,7 @@ func (pc PieChart) getDefaultCanvasBox() Box {
 }
 
 func (pc PieChart) getCircleAdjustedCanvasBox(canvasBox Box) Box {
-	circleDiameter := MinInt(canvasBox.Width(), canvasBox.Height())
+	circleDiameter := min(canvasBox.Width(), canvasBox.Height())
 
 	square := Box{
 		Right:  circleDiameter,
@@ -221,7 +221,7 @@ func (pc PieChart) stylePieChartValue(index int) Style {
 }
 
 func (pc PieChart) getScaledFontSize() float64 {
-	effectiveDimension := MinInt(pc.GetWidth(), pc.GetHeight())
+	effectiveDimension := min(pc.GetWidth(), pc.GetHeight())
 	if effectiveDimension >= 2048 {
 		return 48.0
 	} else if effectiveDimension >= 1024 {
@@ -264,7 +264,7 @@ func (pc PieChart) styleDefaultsTitle() Style {
 }
 
 func (pc PieChart) getTitleFontSize() float64 {
-	effectiveDimension := MinInt(pc.GetWidth(), pc.GetHeight())
+	effectiveDimension := min(pc.GetWidth(), pc.GetHeight())
 	if effectiveDimension >= 2048 {
 		return 48
 	} else if effectiveDimension >= 1024 {

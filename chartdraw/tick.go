@@ -50,8 +50,8 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 		vf = FloatValueFormatter
 	}
 
-	min, max := ra.GetMin(), ra.GetMax()
-	minLabel := vf(min)
+	rangeMin, rangeMax := ra.GetMin(), ra.GetMax()
+	minLabel := vf(rangeMin)
 	style.GetTextOptions().WriteToRenderer(r)
 	labelBox := r.MeasureText(minLabel)
 
@@ -66,30 +66,30 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 	domainRemainder := domain - (tickSize * 2)
 	intermediateTickCount := int(math.Floor(domainRemainder / tickSize))
 
-	rangeDelta := math.Abs(max - min)
+	rangeDelta := math.Abs(rangeMax - rangeMin)
 	tickStep := rangeDelta / float64(intermediateTickCount)
 
 	roundTo := GetRoundToForDelta(rangeDelta) / 10
-	intermediateTickCount = MinInt(intermediateTickCount, defaultTickCountSanityCheck)
+	intermediateTickCount = min(intermediateTickCount, defaultTickCountSanityCheck)
 
 	ticks := make([]Tick, 0, intermediateTickCount+2)
 	if ra.IsDescending() {
 		ticks = append(ticks, Tick{
-			Value: max,
-			Label: vf(max),
+			Value: rangeMax,
+			Label: vf(rangeMax),
 		})
 	} else {
 		ticks = append(ticks, Tick{
-			Value: min,
-			Label: vf(min),
+			Value: rangeMin,
+			Label: vf(rangeMin),
 		})
 	}
 	for x := 1; x < intermediateTickCount; x++ {
 		var tickValue float64
 		if ra.IsDescending() {
-			tickValue = max - RoundUp(tickStep*float64(x), roundTo)
+			tickValue = rangeMax - RoundUp(tickStep*float64(x), roundTo)
 		} else {
-			tickValue = min + RoundUp(tickStep*float64(x), roundTo)
+			tickValue = rangeMin + RoundUp(tickStep*float64(x), roundTo)
 		}
 		ticks = append(ticks, Tick{
 			Value: tickValue,
@@ -99,13 +99,13 @@ func GenerateContinuousTicks(r Renderer, ra Range, isVertical bool, style Style,
 
 	if ra.IsDescending() {
 		ticks = append(ticks, Tick{
-			Value: min,
-			Label: vf(min),
+			Value: rangeMin,
+			Label: vf(rangeMin),
 		})
 	} else {
 		ticks = append(ticks, Tick{
-			Value: max,
-			Label: vf(max),
+			Value: rangeMax,
+			Label: vf(rangeMax),
 		})
 	}
 

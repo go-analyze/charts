@@ -14,7 +14,7 @@ const (
 // NewValueBuffer creates a new value buffer with an optional set of values.
 func NewValueBuffer(values ...float64) *ValueBuffer {
 	var tail int
-	array := make([]float64, MaxInt(len(values), bufferDefaultCapacity))
+	array := make([]float64, max(len(values), bufferDefaultCapacity))
 	if len(values) > 0 {
 		copy(array, values)
 		tail = len(values)

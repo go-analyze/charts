@@ -70,7 +70,7 @@ func (r *LogarithmicRange) Translate(value float64) int {
 	if value < 1 {
 		return 0
 	}
-	normalized := math.Max(value-r.Min, 1)
+	normalized := max(value-r.Min, 1)
 	ratio := math.Log10(normalized) / math.Log10(r.GetDelta())
 
 	if r.IsDescending() {
@@ -82,8 +82,8 @@ func (r *LogarithmicRange) Translate(value float64) int {
 
 // GetTicks calculates the needed ticks for the axis, in log scale. Only supports Y values > 0.
 func (r *LogarithmicRange) GetTicks(vf ValueFormatter) []Tick {
-	exponentStart := int64(math.Max(0, math.Floor(math.Log10(r.Min)))) // one below min
-	exponentEnd := int64(math.Max(0, math.Ceil(math.Log10(r.Max))))    // one above max
+	exponentStart := int64(max(0, math.Floor(math.Log10(r.Min)))) // one below min
+	exponentEnd := int64(max(0, math.Ceil(math.Log10(r.Max))))    // one above max
 	ticks := make([]Tick, 0, exponentEnd-exponentStart+1)
 	for exp := exponentStart; exp <= exponentEnd; exp++ {
 		tickVal := math.Pow(10, float64(exp))
