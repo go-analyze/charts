@@ -136,7 +136,7 @@ func makeDenseScatterChartOption() ScatterChartOption {
 
 	return ScatterChartOption{
 		SeriesList: NewSeriesListScatterMultiValue(values, ScatterSeriesOption{
-			TrendLine: NewTrendLine(SeriesMarkTypeAverage),
+			TrendLine: NewTrendLine(SeriesTrendTypeLinear),
 			Label: SeriesLabel{
 				ValueFormatter: func(f float64) string {
 					return FormatValueHumanizeShort(f, 0, false)

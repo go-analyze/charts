@@ -7,26 +7,27 @@ import (
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
-const (
-	// TODO - v0.6 - Move these constants to types, or builder pattern on structs similar to CandlestickPatternConfig
+// SeriesTrendType identifies the trend line calculation applied to a series.
+type SeriesTrendType string
 
+const (
 	// SeriesTrendTypeLinear represents a linear regression trend line that fits a straight line through the data points.
-	SeriesTrendTypeLinear = "linear"
+	SeriesTrendTypeLinear SeriesTrendType = "linear"
 	// SeriesTrendTypeCubic represents a cubic polynomial (degree 3) regression trend line that fits a curved line through the data points.
-	SeriesTrendTypeCubic = "cubic"
+	SeriesTrendTypeCubic SeriesTrendType = "cubic"
 	// SeriesTrendTypeSMA represents a Simple Moving Average trend line that smooths data using a sliding window average.
-	SeriesTrendTypeSMA = "sma"
+	SeriesTrendTypeSMA SeriesTrendType = "sma"
 	// SeriesTrendTypeEMA represents an Exponential Moving Average trend line that gives more weight to recent data points.
-	SeriesTrendTypeEMA = "ema"
+	SeriesTrendTypeEMA SeriesTrendType = "ema"
 	// SeriesTrendTypeBollingerUpper represents the upper Bollinger Band (SMA + 2 * standard deviation).
 	// Designed for financial time-series analysis to identify volatility boundaries around price movements.
-	SeriesTrendTypeBollingerUpper = "bollinger_upper"
+	SeriesTrendTypeBollingerUpper SeriesTrendType = "bollinger_upper"
 	// SeriesTrendTypeBollingerLower represents the lower Bollinger Band (SMA - 2 * standard deviation).
 	// Designed for financial time-series analysis to identify volatility boundaries around price movements.
-	SeriesTrendTypeBollingerLower = "bollinger_lower"
+	SeriesTrendTypeBollingerLower SeriesTrendType = "bollinger_lower"
 	// SeriesTrendTypeRSI represents the Relative Strength Index momentum oscillator (0-100 scale).
 	// Measures momentum by analyzing sequential price changes, designed for financial time-series analysis.
-	SeriesTrendTypeRSI = "rsi"
+	SeriesTrendTypeRSI SeriesTrendType = "rsi"
 )
 
 // SeriesTrendLine describes the rendered trend line style.
@@ -39,8 +40,8 @@ type SeriesTrendLine struct {
 	LineColor Color
 	// DashedLine indicates if the trend line will be a dashed line. Default depends on chart type.
 	DashedLine *bool
-	// Type specifies the trend line type: "linear", "cubic", "sma", "ema", "rsi".
-	Type string
+	// Type specifies the trend line type, one of the SeriesTrendType* constants.
+	Type SeriesTrendType
 	// Period specifies the number of data points to consider for trend calculations.
 	// Used by moving averages (SMA, EMA), Bollinger Bands, RSI, and other indicators.
 	// For example, Period=20 calculates a 20-period moving average.
@@ -48,7 +49,7 @@ type SeriesTrendLine struct {
 }
 
 // NewTrendLine returns a trend line for the provided type. Set on a specific Series instance.
-func NewTrendLine(trendType string) []SeriesTrendLine {
+func NewTrendLine(trendType SeriesTrendType) []SeriesTrendLine {
 	return []SeriesTrendLine{
 		{
 			Type: trendType,
@@ -116,7 +117,7 @@ func (t *trendLinePainter) Render() (Box, error) {
 			case SeriesTrendTypeRSI:
 				fitted, err = rsiTrend(opt.seriesValues, trend.Period)
 			default:
-				err = errors.New("unknown trend type: " + trend.Type)
+				err = errors.New("unknown trend type: " + string(trend.Type))
 			}
 			if err != nil {
 				return BoxZero, err
