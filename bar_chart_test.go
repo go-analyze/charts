@@ -164,7 +164,7 @@ func TestBarChart(t *testing.T) {
 				opt := makeBasicBarChartOption()
 				opt.CategoryAxis.Show = Ptr(false)
 				opt.ValueAxis[0].Show = Ptr(false)
-				opt.BarSize = 1000
+				opt.BarSize = 2.0 // exceeds the slot, limited to fit
 				return opt
 			},
 			pngCRC: 0x78126afc,
@@ -173,7 +173,7 @@ func TestBarChart(t *testing.T) {
 			name: "bar_width_thin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalBarChartOption()
-				opt.BarSize = 2
+				opt.BarSize = 0.018 // ~2px wide
 				return opt
 			},
 			pngCRC: 0xa9ef8762,
@@ -191,7 +191,7 @@ func TestBarChart(t *testing.T) {
 			name: "bar_margin_wide",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalBarChartOption()
-				opt.BarMargin = Ptr(1000.0) // will be limited to fit graph
+				opt.BarMargin = Ptr(5.0) // will be limited to fit graph
 				return opt
 			},
 			pngCRC: 0x2f5d0556,
@@ -200,7 +200,7 @@ func TestBarChart(t *testing.T) {
 			name: "bar_width_and_narrow_margin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalBarChartOption()
-				opt.BarSize = 10
+				opt.BarSize = 0.075 // ~10px wide
 				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
@@ -210,8 +210,8 @@ func TestBarChart(t *testing.T) {
 			name: "bar_width_and_wide_margin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalBarChartOption()
-				opt.BarSize = 10
-				opt.BarMargin = Ptr(1000.0) // will be limited for readability
+				opt.BarSize = 0.075      // ~10px wide
+				opt.BarMargin = Ptr(5.0) // will be limited for readability
 				return opt
 			},
 			pngCRC: 0xea22413e,
@@ -403,15 +403,15 @@ func validateBarChartRender(t *testing.T, svgP, pngP *Painter, opt BarChartOptio
 	assertEqualPNGCRC(t, expectedCRC, rdata)
 }
 
-func TestCalculateBarMarginsAndSize(t *testing.T) {
+func TestCalculateGroupMarginsAndSize(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name            string
 		seriesCount     int
 		space           int
-		barWidth        int
-		barMargin       *float64
+		size            int
+		margin          *float64
 		expectedMargin  int
 		expectedSpacing int
 		expectedSize    int
@@ -436,8 +436,8 @@ func TestCalculateBarMarginsAndSize(t *testing.T) {
 			name:            "custom_width_and_margin",
 			seriesCount:     2,
 			space:           90,
-			barWidth:        20,
-			barMargin:       Ptr(4.0),
+			size:            20,
+			margin:          Ptr(4.0),
 			expectedMargin:  23,
 			expectedSpacing: 4,
 			expectedSize:    20,
@@ -446,8 +446,8 @@ func TestCalculateBarMarginsAndSize(t *testing.T) {
 			name:            "width_too_wide",
 			seriesCount:     2,
 			space:           40,
-			barWidth:        20,
-			barMargin:       Ptr(1.0),
+			size:            20,
+			margin:          Ptr(1.0),
 			expectedMargin:  5,
 			expectedSpacing: 3,
 			expectedSize:    13,
@@ -464,8 +464,8 @@ func TestCalculateBarMarginsAndSize(t *testing.T) {
 			name:            "single_series_custom",
 			seriesCount:     1,
 			space:           50,
-			barWidth:        10,
-			barMargin:       Ptr(0.0),
+			size:            10,
+			margin:          Ptr(0.0),
 			expectedMargin:  20,
 			expectedSpacing: 0,
 			expectedSize:    10,
@@ -474,7 +474,7 @@ func TestCalculateBarMarginsAndSize(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			margin, spacing, size := calculateBarMarginsAndSize(tt.seriesCount, tt.space, tt.barWidth, tt.barMargin)
+			margin, spacing, size := calculateGroupMarginsAndSize(tt.seriesCount, tt.space, tt.size, tt.margin)
 			assert.Equal(t, tt.expectedMargin, margin)
 			assert.Equal(t, tt.expectedSpacing, spacing)
 			assert.Equal(t, tt.expectedSize, size)
@@ -653,7 +653,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.ValueAxis = []ValueAxisOption{{Show: Ptr(false)}}
 				opt.CategoryAxis.Show = Ptr(false)
 				opt.Legend.Show = Ptr(false)
-				opt.BarSize = 1000
+				opt.BarSize = 2.0 // exceeds the slot, limited to fit
 				return opt
 			},
 			pngCRC: 0xb35224f4,
@@ -673,7 +673,7 @@ func TestBarChartHorizontal(t *testing.T) {
 			name: "bar_size_thin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalHorizontalBarOption()
-				opt.BarSize = 2
+				opt.BarSize = 0.028 // ~2px tall
 				return opt
 			},
 			pngCRC: 0xedf8c602,
@@ -691,7 +691,7 @@ func TestBarChartHorizontal(t *testing.T) {
 			name: "bar_margin_wide",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalHorizontalBarOption()
-				opt.BarMargin = Ptr(1000.0) // will be limited to fit graph
+				opt.BarMargin = Ptr(5.0) // will be limited to fit graph
 				return opt
 			},
 			pngCRC: 0xe22b0ccd,
@@ -700,7 +700,7 @@ func TestBarChartHorizontal(t *testing.T) {
 			name: "bar_size_and_narrow_margin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalHorizontalBarOption()
-				opt.BarSize = 10
+				opt.BarSize = 0.117 // ~10px tall
 				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
@@ -710,8 +710,8 @@ func TestBarChartHorizontal(t *testing.T) {
 			name: "bar_size_and_wide_margin",
 			makeOptions: func() BarChartOption {
 				opt := makeMinimalHorizontalBarOption()
-				opt.BarSize = 10
-				opt.BarMargin = Ptr(1000.0) // will be limited for readability
+				opt.BarSize = 0.117      // ~10px tall
+				opt.BarMargin = Ptr(5.0) // will be limited for readability
 				return opt
 			},
 			pngCRC: 0x56436af8,

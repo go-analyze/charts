@@ -44,9 +44,11 @@ type ChartOption struct {
 	FillArea *bool
 	// FillOpacity is the opacity or alpha channel (0-255) of the area fill in line charts.
 	FillOpacity uint8
-	// BarSize represents the width of bars, or height for horizontal bar charts.
-	BarSize int
-	// BarMargin specifies the margin between grouped bars. BarSize takes priority over margin.
+	// BarSize sets each bar's thickness as a ratio of the slot space allotted to it
+	// (0.0–1.0, auto by default), scaling width for vertical bars and height for horizontal bars.
+	BarSize float64
+	// BarMargin sets the spacing between grouped bars as a ratio of the category slot
+	// (0.0–1.0, auto by default). BarSize takes priority over margin.
 	BarMargin *float64
 
 	// TODO - ChartOption does not yet expose violin-specific options: ShowSpine, SpineWidth, ViolinWidth

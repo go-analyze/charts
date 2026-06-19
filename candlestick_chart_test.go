@@ -938,12 +938,8 @@ func computeCenters(r *defaultRenderResult, opt CandlestickChartOption, seriesIn
 		if seriesCount == 1 {
 			cWidth = candleWidthPerSeries
 		} else {
-			var candleMarginFloat *float64
-			if opt.CandleMargin != nil {
-				marginPixels := float64(sectionWidth) * (*opt.CandleMargin)
-				candleMarginFloat = &marginPixels
-			}
-			groupMargin, candleMargin, cWidth = calculateCandleMarginsAndSize(seriesCount, sectionWidth, candleWidthPerSeries, candleMarginFloat)
+			groupMargin, candleMargin, cWidth = calculateGroupMarginsAndSize(seriesCount, sectionWidth,
+				candleWidthPerSeries, resolveBarMarginPixels(opt.CandleMargin, sectionWidth))
 		}
 		var center int
 		if seriesCount == 1 {

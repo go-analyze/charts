@@ -289,7 +289,7 @@ func (v *violinChart) renderChart(result *defaultRenderResult) (Box, error) {
 			parsedViolinWidth = int(w)
 		}
 	}
-	margin, _, violinWidth := calculateBarMarginsAndSize(1, slotSize, parsedViolinWidth, nil)
+	margin, _, violinWidth := calculateGroupMarginsAndSize(1, slotSize, parsedViolinWidth, nil)
 	divideValues := categoryRange.autoDivide()
 
 	// Resolve style defaults

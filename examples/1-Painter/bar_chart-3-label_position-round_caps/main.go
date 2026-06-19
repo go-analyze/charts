@@ -31,7 +31,7 @@ func main() {
 	opt.CategoryAxis.Labels = []string{
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	}
-	opt.BarMargin = charts.Ptr(1.0) // TODO - v0.6 - Update to percentage
+	opt.BarMargin = charts.Ptr(0.02) // tight spacing between bars
 	for i := range opt.SeriesList {
 		opt.SeriesList[i].Label.Show = charts.Ptr(true)
 		opt.SeriesList[i].Label.ValueFormatter = func(f float64) string {

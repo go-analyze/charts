@@ -113,41 +113,6 @@ func createPatternAwareLabelFormatter(originalSeries *CandlestickSeries, seriesI
 	}
 }
 
-// TODO - v0.6 - attempt to de-duplicate with calculateBarMarginsAndSize
-// calculateCandleMarginsAndSize calculates margins and candle sizes similar to bar charts.
-func calculateCandleMarginsAndSize(seriesCount, space int, configuredCandleSize int, configuredCandleMargin *float64) (int, int, int) {
-	// default margins, adjusted below with config and series count
-	margin := 10      // margin between each series group
-	candleMargin := 5 // margin between each candle
-	if space < 20 {
-		margin = 2
-		candleMargin = 2
-	} else if space < 50 {
-		margin = 5
-		candleMargin = 3
-	}
-	// check margin configuration if candle size allows margin
-	if configuredCandleSize+candleMargin < space/seriesCount {
-		// CandleWidth is in range that we should also consider an optional margin configuration
-		if configuredCandleMargin != nil {
-			candleMargin = int(math.Round(*configuredCandleMargin))
-			if candleMargin+configuredCandleSize > space/seriesCount {
-				candleMargin = (space / seriesCount) - configuredCandleSize
-			}
-		}
-	} // else, candle width is out of range.  Ignore margin config
-
-	candleSize := (space - 2*margin - candleMargin*(seriesCount-1)) / seriesCount
-	// check candle size configuration, limited by the series count and space available
-	if configuredCandleSize > 0 && configuredCandleSize < candleSize {
-		candleSize = configuredCandleSize
-		// recalculate margin
-		margin = (space - seriesCount*candleSize - candleMargin*(seriesCount-1)) / 2
-	}
-
-	return margin, candleMargin, candleSize
-}
-
 func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error) {
 	p := k.p
 	opt := k.opt
@@ -281,18 +246,9 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 				candleWidth = candleWidthPerSeries
 			} else {
 				// Multiple series: use bar chart margin calculation logic
-				// Convert CandleMargin percentage to pixels
-				var candleMarginFloat *float64
-				if opt.CandleMargin != nil {
-					// Convert percentage to absolute pixels
-					marginPixels := float64(sectionWidth) * (*opt.CandleMargin)
-					candleMarginFloat = &marginPixels
-				}
-
-				// Use bar chart logic: calculateBarMarginsAndSize equivalent
 				groupMargin, candleMargin, candleWidth =
-					calculateCandleMarginsAndSize(seriesList.len(),
-						sectionWidth, candleWidthPerSeries, candleMarginFloat)
+					calculateGroupMarginsAndSize(seriesList.len(), sectionWidth,
+						candleWidthPerSeries, resolveBarMarginPixels(opt.CandleMargin, sectionWidth))
 			}
 
 			var centerX int

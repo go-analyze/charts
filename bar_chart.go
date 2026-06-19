@@ -59,10 +59,13 @@ type BarChartOption struct {
 	Title TitleOption
 	// Legend contains options for the data legend.
 	Legend LegendOption
-	// BarSize sets the bar thickness, width in vertical orientation, height in horizontal orientation.
-	BarSize int // TODO - v0.6 - Update to float64 to represent a percent
-	// BarMargin specifies the margin between grouped bars. BarSize takes priority over a set margin.
-	BarMargin *float64 // TODO - v0.6 - Update to be percent based
+	// BarSize sets each bar's thickness as a ratio of the slot space allotted to it
+	// (0.0–1.0, auto by default). With multiple series the slot is shared evenly, so the
+	// ratio applies per bar. Vertical bars scale width, horizontal bars scale height.
+	BarSize float64
+	// BarMargin sets the spacing between grouped bars as a ratio of the category slot
+	// (0.0–1.0, auto by default). BarSize takes priority over a set margin.
+	BarMargin *float64
 	// RoundedBarCaps when *true draws bars with rounded corners on the value-end of the bar.
 	RoundedBarCaps *bool
 	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
@@ -106,38 +109,57 @@ func normalizeBarAxisPositions(horizontal bool, catAxis *CategoryAxisOption, val
 	}
 }
 
-// TODO - v0.6 - calculateBarMarginsAndSize should handle percents and maybe de-duplicate with calculateCandleMarginsAndSize
-func calculateBarMarginsAndSize(seriesCount, space int, configuredBarSize int, configuredBarMargin *float64) (int, int, int) {
+// calculateGroupMarginsAndSize returns the group margin, inter-element margin, and element
+// size in pixels for seriesCount elements sharing a slot of the given pixel space, honoring
+// the optional configured pixel size and margin.
+func calculateGroupMarginsAndSize(seriesCount, space int, configuredSize int, configuredMargin *float64) (int, int, int) {
 	// default margins, adjusted below with config and series count
-	margin := 10   // margin between each series block
-	barMargin := 5 // margin between each bar
+	margin := 10       // margin between each series group
+	elementMargin := 5 // margin between each element
 	if space < 20 {
 		margin = 2
-		barMargin = 2
+		elementMargin = 2
 	} else if space < 50 {
 		margin = 5
-		barMargin = 3
+		elementMargin = 3
 	}
-	// check margin configuration if bar size allows margin
-	if configuredBarSize+barMargin < space/seriesCount {
-		// BarWidth is in range that we should also consider an optional margin configuration
-		if configuredBarMargin != nil {
-			barMargin = int(math.Round(*configuredBarMargin))
-			if barMargin+configuredBarSize > space/seriesCount {
-				barMargin = (space / seriesCount) - configuredBarSize
+	// check margin configuration if element size allows margin
+	if configuredSize+elementMargin < space/seriesCount {
+		// element size is in range that we should also consider an optional margin configuration
+		if configuredMargin != nil {
+			elementMargin = int(math.Round(*configuredMargin))
+			if elementMargin+configuredSize > space/seriesCount {
+				elementMargin = (space / seriesCount) - configuredSize
 			}
 		}
-	} // else, bar width is out of range.  Ignore margin config
+	} // else, element size is out of range.  Ignore margin config
 
-	barSize := (space - 2*margin - barMargin*(seriesCount-1)) / seriesCount
-	// check bar size configuration, limited by the series count and space available
-	if configuredBarSize > 0 && configuredBarSize < barSize {
-		barSize = configuredBarSize
+	size := (space - 2*margin - elementMargin*(seriesCount-1)) / seriesCount
+	// check size configuration, limited by the series count and space available
+	if configuredSize > 0 && configuredSize < size {
+		size = configuredSize
 		// recalculate margin
-		margin = (space - seriesCount*barSize - barMargin*(seriesCount-1)) / 2
+		margin = (space - seriesCount*size - elementMargin*(seriesCount-1)) / 2
 	}
 
-	return margin, barMargin, barSize
+	return margin, elementMargin, size
+}
+
+// resolveBarSizePixels converts a slot-ratio bar size to a per-bar pixel size, returning 0 (auto) when unset.
+func resolveBarSizePixels(barSize float64, space, count int) int {
+	if barSize <= 0 {
+		return 0
+	}
+	return int(float64(space) * barSize / float64(count))
+}
+
+// resolveBarMarginPixels converts a slot-ratio margin to pixels, returning nil (auto) when unset.
+func resolveBarMarginPixels(barMargin *float64, space int) *float64 {
+	if barMargin == nil {
+		return nil
+	}
+	px := float64(space) * *barMargin
+	return &px
 }
 
 func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
@@ -172,10 +194,12 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 		if barCount == 1 {
 			configuredMargin = nil // no margin needed with a single bar
 		}
-		margin, _, barWidth = calculateBarMarginsAndSize(barCount, width, barSize, configuredMargin)
+		margin, _, barWidth = calculateGroupMarginsAndSize(barCount, width,
+			resolveBarSizePixels(barSize, width, barCount), resolveBarMarginPixels(configuredMargin, width))
 		accumulatedHeights = make([]int, result.categoryAxisRange.divideCount)
 	} else {
-		margin, barMargin, barWidth = calculateBarMarginsAndSize(seriesCount, width, barSize, opt.BarMargin)
+		margin, barMargin, barWidth = calculateGroupMarginsAndSize(seriesCount, width,
+			resolveBarSizePixels(barSize, width, seriesCount), resolveBarMarginPixels(opt.BarMargin, width))
 	}
 
 	markPointPainter := newMarkPointPainter(seriesPainter)
@@ -421,9 +445,11 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 	var margin, barMargin, barHeight int
 	if stackedSeries {
 		accumulatedWidths = make([]int, yRange.divideCount)
-		margin, _, barHeight = calculateBarMarginsAndSize(1, height, barSize, nil)
+		margin, _, barHeight = calculateGroupMarginsAndSize(1, height,
+			resolveBarSizePixels(barSize, height, 1), nil)
 	} else {
-		margin, barMargin, barHeight = calculateBarMarginsAndSize(seriesCount, height, barSize, opt.BarMargin)
+		margin, barMargin, barHeight = calculateGroupMarginsAndSize(seriesCount, height,
+			resolveBarSizePixels(barSize, height, seriesCount), resolveBarMarginPixels(opt.BarMargin, height))
 	}
 
 	seriesNames := opt.SeriesList.names()
