@@ -128,15 +128,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	theme := getPreferredTheme(opt.theme, p.theme)
 	fillThemeDefaults(theme, &opt.title, opt.legend, opt.categoryAxis, opt.valueAxis)
 	opt.categoryAxis = opt.categoryAxis.prep(theme, opt.categoryY)
-	// TODO - this is a hack, we need to update the yaxis based on the markpoint state
-	if opt.seriesList.hasMarkPoint() {
-		// adjust padding scale to give space for mark point (if not specified by user)
-		for i := range opt.valueAxis {
-			if opt.valueAxis[i].RangeValuePaddingScale == nil {
-				opt.valueAxis[i].RangeValuePaddingScale = Ptr(2.5)
-			}
-		}
-	}
 	if !opt.backgroundIsFilled {
 		p.drawBackground(opt.theme.GetBackgroundColor())
 	}
@@ -366,6 +357,12 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		var entries []yAxisEntry
 		var valuePreps []*valueAxisPrep
 		var valuePrepIndices []int
+		// reserve fixed pixel headroom above the data max so mark point pins are not clipped;
+		// the pin head outer edge sits 5*symbolSize/4 above the data point
+		var markPointClearance int
+		if symSize := opt.seriesList.markPointSize(); symSize > 0 {
+			markPointClearance = 5 * symSize / 4
+		}
 		if yAxisCount > 0 {
 			entries = make([]yAxisEntry, yAxisCount)
 			for yIndex := 0; yIndex < yAxisCount; yIndex++ {
@@ -383,6 +380,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 					opt.seriesList, yIndex, opt.stackSeries,
 					valueFormatter, yAxisOption.LabelRotation, yAxisOption.LabelFontStyle,
 					yAxisOption.PreferNiceIntervals)
+				prep.maxClearancePx = markPointClearance
 				entries[yIndex].prep = &prep
 				valuePreps = append(valuePreps, entries[yIndex].prep)
 				valuePrepIndices = append(valuePrepIndices, yIndex)

@@ -165,13 +165,12 @@ func (g GenericSeriesList) getSeriesSymbol(i int) Symbol {
 	return ""
 }
 
-func (g GenericSeriesList) hasMarkPoint() bool {
+func (g GenericSeriesList) markPointSize() int {
+	var size int
 	for _, s := range g {
-		if len(s.MarkPoint.Points) > 0 {
-			return true
-		}
+		size = max(size, s.MarkPoint.effectiveSymbolSize())
 	}
-	return false
+	return size
 }
 
 func (g GenericSeriesList) setSeriesName(index int, name string) {
@@ -273,13 +272,12 @@ func (l LineSeriesList) getSeriesSymbol(index int) Symbol {
 	return l[index].Symbol
 }
 
-func (l LineSeriesList) hasMarkPoint() bool {
+func (l LineSeriesList) markPointSize() int {
+	var size int
 	for _, s := range l {
-		if len(s.MarkPoint.Points) > 0 {
-			return true
-		}
+		size = max(size, s.MarkPoint.effectiveSymbolSize())
 	}
-	return false
+	return size
 }
 
 func (l LineSeriesList) setSeriesName(index int, name string) {
@@ -404,8 +402,8 @@ func (s ScatterSeriesList) getSeriesSymbol(index int) Symbol {
 	return s[index].Symbol
 }
 
-func (s ScatterSeriesList) hasMarkPoint() bool {
-	return false
+func (s ScatterSeriesList) markPointSize() int {
+	return 0
 }
 
 func (s ScatterSeriesList) setSeriesName(index int, name string) {
@@ -523,13 +521,12 @@ func (b BarSeriesList) getSeriesSymbol(_ int) Symbol {
 	return ""
 }
 
-func (b BarSeriesList) hasMarkPoint() bool {
+func (b BarSeriesList) markPointSize() int {
+	var size int
 	for _, s := range b {
-		if len(s.MarkPoint.Points) > 0 {
-			return true
-		}
+		size = max(size, s.MarkPoint.effectiveSymbolSize())
 	}
-	return false
+	return size
 }
 
 func (b BarSeriesList) setSeriesName(index int, name string) {
@@ -618,8 +615,8 @@ func (f FunnelSeriesList) getSeriesSymbol(_ int) Symbol {
 	return ""
 }
 
-func (f FunnelSeriesList) hasMarkPoint() bool {
-	return false // not supported on this chart type
+func (f FunnelSeriesList) markPointSize() int {
+	return 0 // not supported on this chart type
 }
 
 func (f FunnelSeriesList) setSeriesName(index int, name string) {
@@ -726,8 +723,8 @@ func (p PieSeriesList) getSeriesSymbol(_ int) Symbol {
 	return ""
 }
 
-func (p PieSeriesList) hasMarkPoint() bool {
-	return false // not supported on this chart type
+func (p PieSeriesList) markPointSize() int {
+	return 0 // not supported on this chart type
 }
 
 func (p PieSeriesList) setSeriesName(index int, name string) {
@@ -835,8 +832,8 @@ func (d DoughnutSeriesList) getSeriesSymbol(_ int) Symbol {
 	return ""
 }
 
-func (d DoughnutSeriesList) hasMarkPoint() bool {
-	return false // not supported on this chart type
+func (d DoughnutSeriesList) markPointSize() int {
+	return 0 // not supported on this chart type
 }
 
 func (d DoughnutSeriesList) setSeriesName(index int, name string) {
@@ -931,8 +928,8 @@ func (r RadarSeriesList) getSeriesSymbol(_ int) Symbol {
 	return ""
 }
 
-func (r RadarSeriesList) hasMarkPoint() bool {
-	return false // not supported on this chart type
+func (r RadarSeriesList) markPointSize() int {
+	return 0 // not supported on this chart type
 }
 
 func (r RadarSeriesList) setSeriesName(index int, name string) {
@@ -974,7 +971,7 @@ type seriesList interface {
 	getSeriesValues(index int) []float64
 	getSeriesLen(i int) int
 	names() []string
-	hasMarkPoint() bool
+	markPointSize() int // largest mark point pin width across series, 0 when none
 	setSeriesName(index int, name string)
 	sortByNameIndex(dict map[string]int)
 	getSeriesSymbol(index int) Symbol
@@ -1717,13 +1714,13 @@ func (k CandlestickSeriesList) getSeriesSymbol(_ int) Symbol {
 	return "" // no need to set symbol here, configured globally in candlestick_chart.go before defaultRender
 }
 
-func (k CandlestickSeriesList) hasMarkPoint() bool {
+func (k CandlestickSeriesList) markPointSize() int {
+	var size int
 	for _, s := range k {
-		if len(s.OpenMarkPoint.Points) > 0 || len(s.HighMarkPoint.Points) > 0 || len(s.LowMarkPoint.Points) > 0 || len(s.CloseMarkPoint.Points) > 0 {
-			return true
-		}
+		size = max(size, s.OpenMarkPoint.effectiveSymbolSize(), s.HighMarkPoint.effectiveSymbolSize(),
+			s.LowMarkPoint.effectiveSymbolSize(), s.CloseMarkPoint.effectiveSymbolSize())
 	}
-	return false
+	return size
 }
 
 func (k CandlestickSeriesList) setSeriesName(index int, name string) {
@@ -2035,8 +2032,8 @@ func (vl ViolinSeriesList) getSeriesSymbol(_ int) Symbol {
 	return ""
 }
 
-func (vl ViolinSeriesList) hasMarkPoint() bool {
-	return false
+func (vl ViolinSeriesList) markPointSize() int {
+	return 0
 }
 
 func (vl ViolinSeriesList) setSeriesName(index int, name string) {

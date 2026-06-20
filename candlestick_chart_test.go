@@ -182,7 +182,7 @@ func TestCandlestickChart(t *testing.T) {
 					SeriesList: CandlestickSeriesList{series},
 				}
 			},
-			pngCRC: 0x6b77ca34,
+			pngCRC: 0xbc192418,
 		},
 		{
 			name: "mark_point",
@@ -219,7 +219,7 @@ func TestCandlestickChart(t *testing.T) {
 					SeriesList: CandlestickSeriesList{series},
 				}
 			},
-			pngCRC: 0xcc29a5ee,
+			pngCRC: 0xe3545759,
 		},
 		{
 			name: "patterns_replace_mode",
@@ -252,7 +252,7 @@ func TestCandlestickChart(t *testing.T) {
 					SeriesList: CandlestickSeriesList{series},
 				}
 			},
-			pngCRC: 0x19705ad3,
+			pngCRC: 0x25e415cb,
 		},
 		{
 			name: "large_dataset",
@@ -276,7 +276,7 @@ func TestCandlestickChart(t *testing.T) {
 					SeriesList: CandlestickSeriesList{{Data: data}},
 				}
 			},
-			pngCRC: 0x1d24c9ce,
+			pngCRC: 0x51444a60,
 		},
 		{
 			name: "multiple_series",
@@ -319,7 +319,7 @@ func TestCandlestickChart(t *testing.T) {
 					Padding: NewBoxEqual(10),
 				}
 			},
-			pngCRC: 0x757d9850,
+			pngCRC: 0xaf137cea,
 		},
 		{
 			name: "bollinger_bands",
@@ -437,7 +437,7 @@ func TestCandlestickChart(t *testing.T) {
 					Padding: NewBoxEqual(10),
 				}
 			},
-			pngCRC: 0xbf3e486e,
+			pngCRC: 0x3f36c2df,
 		},
 		{
 			name: "series_styles",
@@ -474,7 +474,7 @@ func TestCandlestickChart(t *testing.T) {
 					Padding: NewBoxEqual(10),
 				}
 			},
-			pngCRC: 0xbe1f2123,
+			pngCRC: 0xb9328ee6,
 		},
 		{
 			name: "candle_margin_zero",
@@ -504,7 +504,7 @@ func TestCandlestickChart(t *testing.T) {
 					Padding:      NewBoxEqual(10),
 				}
 			},
-			pngCRC: 0xf0237e81,
+			pngCRC: 0xdac99326,
 		},
 		{
 			name: "null_values",

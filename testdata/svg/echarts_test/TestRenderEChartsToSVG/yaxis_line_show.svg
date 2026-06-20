@@ -2,36 +2,40 @@
 L 600 0
 L 600 400
 L 0 400
-L 0 0" style="stroke:none;fill:white"/><path d="M 69 20
-L 69 355" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 20
-L 69 20" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 57
-L 69 57" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 94
-L 69 94" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 131
-L 69 131" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 168
-L 69 168" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 206
-L 69 206" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 243
-L 69 243" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 280
-L 69 280" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 317
-L 69 317" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 64 355
-L 69 355" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><text x="28" y="26" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">15.5</text><text x="19" y="63" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">14.33</text><text x="19" y="100" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">13.17</text><text x="41" y="137" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">12</text><text x="19" y="174" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">10.83</text><text x="28" y="211" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">9.67</text><text x="37" y="248" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">8.5</text><text x="28" y="285" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">7.33</text><text x="28" y="322" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">6.17</text><text x="50" y="359" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">5</text><path d="M 65 20
-L 580 20" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 57
-L 580 57" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 94
-L 580 94" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 131
-L 580 131" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 168
-L 580 168" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 206
-L 580 206" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 243
-L 580 243" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 280
-L 580 280" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 65 317
-L 580 317" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 70 355
-L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 70 360
-L 70 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 325 360
-L 325 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 360
-L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="193" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="448" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><path d="M 80 355
-L 315 355
-L 315 354
-L 80 354
-L 80 355" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 335 36
-L 570 36
+L 0 0" style="stroke:none;fill:white"/><path d="M 47 20
+L 47 355" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 20
+L 47 20" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 50
+L 47 50" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 80
+L 47 80" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 111
+L 47 111" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 141
+L 47 141" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 172
+L 47 172" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 202
+L 47 202" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 233
+L 47 233" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 263
+L 47 263" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 294
+L 47 294" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 324
+L 47 324" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><path d="M 42 355
+L 47 355" style="stroke-width:1;stroke:rgba(255,0,0,0.8);fill:none"/><text x="19" y="26" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">16</text><text x="19" y="56" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">15</text><text x="19" y="86" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">14</text><text x="19" y="116" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">13</text><text x="19" y="147" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">12</text><text x="19" y="177" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">11</text><text x="19" y="207" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">10</text><text x="28" y="237" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">9</text><text x="28" y="268" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">8</text><text x="28" y="298" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">7</text><text x="28" y="328" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">6</text><text x="28" y="359" style="stroke:none;fill:rgba(255,0,0,0.8);font-size:15.3px;font-family:'Roboto Medium',sans-serif">5</text><path d="M 43 20
+L 580 20" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 50
+L 580 50" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 80
+L 580 80" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 111
+L 580 111" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 141
+L 580 141" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 172
+L 580 172" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 202
+L 580 202" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 233
+L 580 233" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 263
+L 580 263" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 294
+L 580 294" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 43 324
+L 580 324" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 355
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 48 360
+L 48 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 314 360
+L 314 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 360
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="177" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="443" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><path d="M 58 355
+L 304 355
+L 304 354
+L 58 354
+L 58 355" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 324 51
+L 570 51
 L 570 354
-L 335 354
-L 335 36" style="stroke:none;fill:rgb(84,112,198)"/></svg>
+L 324 354
+L 324 51" style="stroke:none;fill:rgb(84,112,198)"/></svg>

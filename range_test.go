@@ -86,8 +86,8 @@ func (tsl testSeriesList) names() []string {
 	return result
 }
 
-func (tsl testSeriesList) hasMarkPoint() bool {
-	return false
+func (tsl testSeriesList) markPointSize() int {
+	return 0
 }
 
 func (tsl testSeriesList) setSeriesName(_ int, _ string) {
@@ -142,9 +142,9 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			nil, 0, 5, 2,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
-		assert.Equal(t, 8, ar.labelCount)
+		assert.Equal(t, 13, ar.labelCount)
 		assert.InDelta(t, 0.0, ar.min, 0.0)
-		assert.InDelta(t, 105.0, ar.max, 0.0)
+		assert.InDelta(t, 120.0, ar.max, 0.0)
 	})
 
 	t.Run("label_unit_adjusted_negative", func(t *testing.T) {
@@ -216,7 +216,7 @@ func TestCalculateValueAxisRange(t *testing.T) {
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
 
 		assert.InDelta(t, 1.0, ar.min, 0.0)
-		assert.InDelta(t, 5.0, ar.max, 0.0)
+		assert.InDelta(t, 3.5, ar.max, 0.0)
 		assert.Equal(t, 6, ar.labelCount)
 	})
 
@@ -322,18 +322,18 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		series := testSeries{yAxisIndex: 0, values: []float64{0, 50}}
 		tsl := testSeriesList{series}
 
-		// without PreferNiceIntervals the flex logic is not triggered
+		// nice intervals are enabled by default, producing nicer intervals
 		arDefault := calculateValueAxisRange(p, true, 800, nil, nil, nil,
 			nil, 0, 0, 0,
 			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
-		// with PreferNiceIntervals the flex logic produces nicer intervals
-		arNice := calculateValueAxisRange(p, true, 800, nil, nil, nil,
+		// PreferNiceIntervals=false opts out, disabling the flex logic
+		arDisabled := calculateValueAxisRange(p, true, 800, nil, nil, nil,
 			nil, 0, 0, 0,
-			tsl, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
+			tsl, 0, false, defaultValueFormatter, 0, fs, Ptr(false))
 
-		assert.NotEqual(t, arDefault.max, arNice.max)
-		// verify the nice interval produces a round interval
-		interval := (arNice.max - arNice.min) / float64(arNice.labelCount-1)
+		assert.NotEqual(t, arDisabled.max, arDefault.max)
+		// verify the default nice interval produces a round interval
+		interval := (arDefault.max - arDefault.min) / float64(arDefault.labelCount-1)
 		niceInterval := niceNum(interval)
 		assert.InDelta(t, niceInterval, interval, 1e-10)
 	})
@@ -1191,10 +1191,10 @@ func TestAxisLabelQuality(t *testing.T) {
 			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
 		assert.Equal(t, len(axisQualitySizes)*axisQualitySampleCount, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
-		assert.Equal(t, 14, s.goodLabelCount)
-		assert.Equal(t, 2538, s.topClose)
+		assert.Equal(t, 768, s.goodLabelCount)
+		assert.Equal(t, 1282, s.topClose)
 		assert.Equal(t, 4000, s.bottomClose)
-		assert.Equal(t, 800, s.friendlyInterval)
+		assert.Equal(t, 3132, s.friendlyInterval)
 	})
 
 	t.Run("expand_bottom_to_zero", func(t *testing.T) {
@@ -1207,10 +1207,10 @@ func TestAxisLabelQuality(t *testing.T) {
 			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
 		assert.Equal(t, len(axisQualitySizes)*axisQualitySampleCount, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
-		assert.Equal(t, 14, s.goodLabelCount)
-		assert.Equal(t, 3982, s.topClose)
+		assert.Equal(t, 30, s.goodLabelCount)
+		assert.Equal(t, 3894, s.topClose)
 		assert.Equal(t, 3008, s.bottomClose)
-		assert.Equal(t, 2, s.friendlyInterval)
+		assert.Equal(t, 78, s.friendlyInterval)
 	})
 
 	t.Run("cross_zero_independent", func(t *testing.T) {
@@ -1226,10 +1226,10 @@ func TestAxisLabelQuality(t *testing.T) {
 			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
 		assert.Equal(t, 12800, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
-		assert.Equal(t, 2, s.goodLabelCount)
-		assert.Equal(t, 8758, s.topClose)
+		assert.Equal(t, 3024, s.goodLabelCount)
+		assert.Equal(t, 3906, s.topClose)
 		assert.Equal(t, 9266, s.bottomClose)
-		assert.Equal(t, 1600, s.friendlyInterval)
+		assert.Equal(t, 7804, s.friendlyInterval)
 	})
 
 	t.Run("asymmetric_offset_width", func(t *testing.T) {
@@ -1245,10 +1245,10 @@ func TestAxisLabelQuality(t *testing.T) {
 			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
 		assert.Equal(t, 840, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
-		assert.Equal(t, 42, s.goodLabelCount)
-		assert.Equal(t, 436, s.topClose)
+		assert.Equal(t, 206, s.goodLabelCount)
+		assert.Equal(t, 244, s.topClose)
 		assert.Equal(t, 760, s.bottomClose)
-		assert.Equal(t, 192, s.friendlyInterval)
+		assert.Equal(t, 648, s.friendlyInterval)
 	})
 
 	t.Run("asymmetric_offset_width_negative", func(t *testing.T) {
@@ -1264,10 +1264,10 @@ func TestAxisLabelQuality(t *testing.T) {
 			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
 		assert.Equal(t, 840, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
-		assert.Equal(t, 42, s.goodLabelCount)
-		assert.Equal(t, 554, s.topClose)
+		assert.Equal(t, 238, s.goodLabelCount)
+		assert.Equal(t, 318, s.topClose)
 		assert.Equal(t, 566, s.bottomClose)
-		assert.Equal(t, 194, s.friendlyInterval)
+		assert.Equal(t, 588, s.friendlyInterval)
 	})
 
 	t.Run("magnitude_sweep", func(t *testing.T) {
@@ -1284,10 +1284,10 @@ func TestAxisLabelQuality(t *testing.T) {
 			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
 		assert.Equal(t, 2574, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
-		assert.Equal(t, 496, s.goodLabelCount)
-		assert.Equal(t, 1104, s.topClose)
+		assert.Equal(t, 874, s.goodLabelCount)
+		assert.Equal(t, 794, s.topClose)
 		assert.Equal(t, 2574, s.bottomClose)
-		assert.Equal(t, 350, s.friendlyInterval)
+		assert.Equal(t, 1858, s.friendlyInterval)
 	})
 
 	t.Run("decimal_small_ranges", func(t *testing.T) {
@@ -1305,9 +1305,9 @@ func TestAxisLabelQuality(t *testing.T) {
 			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
 		assert.Equal(t, 4200, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
-		assert.Equal(t, 4200, s.goodLabelCount)
-		assert.Equal(t, 0, s.topClose)
+		assert.Equal(t, 4164, s.goodLabelCount)
+		assert.Equal(t, 630, s.topClose)
 		assert.Equal(t, 2458, s.bottomClose)
-		assert.Equal(t, 4, s.friendlyInterval)
+		assert.Equal(t, 0, s.friendlyInterval)
 	})
 }

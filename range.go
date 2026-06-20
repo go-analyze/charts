@@ -38,6 +38,7 @@ type valueAxisPrep struct {
 	minPadScale, maxPadScale float64
 	padLabelCount            int // estimated label count after collision check
 	maxLabelCount            int // max labels that fit the axis pixel size
+	maxClearancePx           int // fixed pixel headroom reserved above the data max (e.g. mark point pins)
 	preferNice               *bool
 	// carry-through for resolution and finalization
 	labelsCfg      []string
@@ -126,6 +127,7 @@ func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		}
 		if maxLabelCount < padLabelCount {
 			padLabelCount = max(maxLabelCount, minimumAxisLabels)
+			maxLabelCount = padLabelCount // never leave the flex cap below the floor (labels wider than the axis)
 		}
 		if labelUnit > 0 && padLabelCount > minimumAxisLabels {
 			// reduce padLabelCount to ensure it remains within the max count if we have to add one to meet unit expectations
@@ -170,6 +172,16 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 		prep.minPadScale, prep.maxPadScale)
 	labelCount := padLabelCount
 
+	// Pixel-space clearance reserves room above the data max for mark point pins. Their size is fixed
+	// in pixels, so the required headroom cannot be expressed as a data-span padding ratio; we convert
+	// the pixel reservation to a data-space floor against the current scale.
+	var clearanceFloor float64
+	if prep.maxClearancePx > 0 && prep.maxPadScale > 0 && // respect an explicit max / forced no-padding
+		prep.axisSize > prep.maxClearancePx && prep.maxVal > minPadded {
+		clearanceFloor = minPadded +
+			(prep.maxVal-minPadded)*float64(prep.axisSize)/float64(prep.axisSize-prep.maxClearancePx)
+	}
+
 	// Preserve the pre-refactor behavior: flexing the label count / max padding (PreferNiceIntervals)
 	// only applied when max padding was enabled and the input data had a real span.
 	// Previously this was enforced by padRange(...) returning early before any flex attempt.
@@ -183,6 +195,15 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 			prep.maxVal+spanIncrement*scaledMaxPadPercentMax*1.4,
 			maxPadded+baselineExcess*8,
 		)
+		if prep.maxClearancePx > 0 && clearanceFloor > minPadRequired {
+			// raise the search floor so flex rounds up to a nice max above the reserved headroom,
+			// widening the limit if needed so the nearest nice number stays reachable
+			minPadRequired = clearanceFloor
+			interval := (clearanceFloor - minPadded) / float64(max(padLabelCount-1, 1))
+			if lim := clearanceFloor + interval; lim > maxPadLimit {
+				maxPadLimit = lim
+			}
+		}
 		t1Max, t1Count, t1Found := flexNiceSearch(minPadded, prep.maxVal, minPadRequired, maxPadLimit,
 			padLabelCount, maxLabelCount, func(v float64) float64 { return niceNum(v) })
 		if !t1Found {
@@ -195,6 +216,11 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 			maxPadded = t1Max
 			labelCount = t1Count
 		}
+	}
+
+	// guarantee the reserved headroom even when flex is disabled or found no nice fit
+	if prep.maxClearancePx > 0 && clearanceFloor > maxPadded {
+		maxPadded = clearanceFloor
 	}
 
 	// if the user set only a unit, we may need to refine again after padding to meet the unit
@@ -352,7 +378,7 @@ func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
 	if n == 0 {
 		return nil
 	} else if n == 1 {
-		flexCount := flagIs(true, preps[0].preferNice)
+		flexCount := preps[0].labelCountCfg == 0 && !flagIs(false, preps[0].preferNice)
 		mn, mx, count := resolveValueAxisRange(preps[0], flexCount, 0)
 		return []axisRange{finalizeValueAxisRange(p, preps[0], mn, mx, count)}
 	}
@@ -361,7 +387,7 @@ func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
 	resolveAllPreps := func(targetCount int) []axisRange {
 		result := make([]axisRange, n)
 		for i, prep := range preps {
-			flex := targetCount == 0 && flagIs(true, prep.preferNice)
+			flex := targetCount == 0 && prep.labelCountCfg == 0 && !flagIs(false, prep.preferNice)
 			mn, mx, count := resolveValueAxisRange(prep, flex, targetCount)
 			result[i] = finalizeValueAxisRange(p, prep, mn, mx, count)
 		}
@@ -388,13 +414,13 @@ func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
 	}
 
 	// resolve primary axis independently
-	primaryFlex := flagIs(true, preps[0].preferNice)
+	primaryFlex := preps[0].labelCountCfg == 0 && !flagIs(false, preps[0].preferNice)
 	primaryMin, primaryMax, primaryCount := resolveValueAxisRange(preps[0], primaryFlex, 0)
 
-	// check if any secondary axis opts into coordination via PreferNiceIntervals
+	// check if any secondary axis flexes (nice intervals on by default, unless an explicit count or opt-out)
 	var anySecondaryNice bool
 	for i := 1; i < n; i++ {
-		if flagIs(true, preps[i].preferNice) {
+		if preps[i].labelCountCfg == 0 && !flagIs(false, preps[i].preferNice) {
 			anySecondaryNice = true
 			break
 		}
@@ -418,7 +444,7 @@ func coordinateValueAxisRanges(p *Painter, preps []*valueAxisPrep) []axisRange {
 	naturals := make([]naturalResult, n)
 	naturals[0] = naturalResult{primaryMin, primaryMax, primaryCount}
 	for i := 1; i < n; i++ {
-		flexCount := flagIs(true, preps[i].preferNice)
+		flexCount := preps[i].labelCountCfg == 0 && !flagIs(false, preps[i].preferNice)
 		mn, mx, count := resolveValueAxisRange(preps[i], flexCount, 0)
 		naturals[i] = naturalResult{mn, mx, count}
 	}
@@ -568,8 +594,7 @@ func calculateValueAxisRange(p *Painter, isVertical bool, axisSize int,
 		seriesList, yAxisIndex, stackSeries,
 		valueFormatter, labelRotation, fontStyle,
 		preferNiceIntervals)
-	// TODO - in v0.6.0 default flexCount if labelCountCfg == 0 && !flagIs(false, preferNiceIntervals)
-	flexCount := flagIs(true, preferNiceIntervals)
+	flexCount := labelCountCfg == 0 && !flagIs(false, preferNiceIntervals)
 	minPadded, maxPadded, labelCount := resolveValueAxisRange(&prep, flexCount, 0)
 	return finalizeValueAxisRange(p, &prep, minPadded, maxPadded, labelCount)
 }
@@ -849,7 +874,8 @@ func flexNiceSearch(minResult, max, minPadRequired, maxPadLimit float64,
 		absDelta := int(math.Abs(float64(delta)))
 		excess := candidateMax - max
 		// prefer candidates close to the original count (absDelta <= 1) over far ones,
-		// then minimize absDelta within far candidates, then minimize excess
+		// then minimize absDelta within far candidates, then minimize excess,
+		// finally prefer the count closest to the original on an excess tie
 		var isBetter bool
 		if !found {
 			isBetter = true
@@ -857,8 +883,10 @@ func flexNiceSearch(minResult, max, minPadRequired, maxPadLimit float64,
 			isBetter = absDelta <= 1 // close tier always beats far tier
 		} else if absDelta > 1 && absDelta != bestAbsDelta {
 			isBetter = absDelta < bestAbsDelta // within far tier, smaller delta wins
+		} else if math.Abs(excess-bestExcess) > 1e-10 {
+			isBetter = excess < bestExcess // less excess wins
 		} else {
-			isBetter = excess < bestExcess-1e-10 // same tier and delta group, less excess wins
+			isBetter = absDelta < bestAbsDelta // excess tie: prefer count closest to original
 		}
 		if isBetter {
 			bestAbsDelta = absDelta

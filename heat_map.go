@@ -290,8 +290,8 @@ func (h heatMapFakeSeries) names() []string {
 	return []string{"Heat Map"}
 }
 
-func (h heatMapFakeSeries) hasMarkPoint() bool {
-	return false
+func (h heatMapFakeSeries) markPointSize() int {
+	return 0
 }
 
 func (h heatMapFakeSeries) setSeriesName(_ int, _ string) {

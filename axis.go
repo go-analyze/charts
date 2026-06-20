@@ -107,7 +107,7 @@ type ValueAxisOption struct {
 	// Negative values result in cleaner graphs; positive values may cause text collisions.
 	LabelCountAdjustment int
 	// PreferNiceIntervals allows the label count to flex slightly to produce rounder axis intervals.
-	// TODO - reconsider default for v0.6.0 (possibly with padding default changes)
+	// Enabled by default when no explicit LabelCount is set; set to *false to disable.
 	PreferNiceIntervals *bool
 	// LabelSkipCount specifies a qty of lines between labels that show only horizontal lines without labels.
 	LabelSkipCount int

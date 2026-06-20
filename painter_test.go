@@ -359,7 +359,7 @@ func TestPainterExternal(t *testing.T) {
 				opt.Theme = GetDefaultTheme().WithBackgroundColor(ColorTransparent)
 				_ = p.LineChart(opt)
 			},
-			pngCRC: 0xc3dc7021,
+			pngCRC: 0xb8fe3999,
 		},
 	}
 

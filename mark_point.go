@@ -34,6 +34,17 @@ func NewMarkPoint(markPointTypes ...string) SeriesMarkPoint {
 	}
 }
 
+// effectiveSymbolSize returns the rendered pin width (configured SymbolSize, or the default when set
+// without an explicit size), or 0 when no points are configured.
+func (m *SeriesMarkPoint) effectiveSymbolSize() int {
+	if len(m.Points) == 0 {
+		return 0
+	} else if m.SymbolSize > 0 {
+		return m.SymbolSize
+	}
+	return 28
+}
+
 type markPointPainter struct {
 	p       *Painter
 	options []markPointRenderOption

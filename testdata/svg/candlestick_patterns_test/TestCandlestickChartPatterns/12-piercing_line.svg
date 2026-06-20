@@ -2,63 +2,62 @@
 L 800 0
 L 800 600
 L 0 600
-L 0 0" style="stroke:none;fill:white"/><text x="30" y="16" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">130</text><text x="9" y="77" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">125.56</text><text x="9" y="138" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">121.11</text><text x="9" y="200" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">116.67</text><text x="9" y="261" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">112.22</text><text x="9" y="323" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">107.78</text><text x="9" y="384" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">103.33</text><text x="17" y="446" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">98.89</text><text x="17" y="507" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">94.44</text><text x="39" y="569" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">90</text><path d="M 63 10
-L 790 10" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 71
-L 790 71" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 133
-L 790 133" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 195
-L 790 195" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 256
-L 790 256" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 318
-L 790 318" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 380
-L 790 380" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 441
-L 790 441" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 63 503
-L 790 503" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 67 565
-L 790 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 67 570
-L 67 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 247 570
-L 247 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 428 570
-L 428 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 609 570
-L 609 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 790 570
-L 790 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="153" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="333" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><text x="514" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">3</text><text x="695" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">4</text><path d="M 157 288
-L 157 357" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 157 427
-L 157 496" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 121 288
-L 193 288" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 121 496
-L 193 496" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 85 357
-L 229 357
-L 229 427
-L 85 427
-L 85 357" style="stroke:none;fill:rgb(34,197,94)"/><path d="M 337 135
-L 337 149" style="stroke-width:1;stroke:rgb(239,68,68);fill:none"/><path d="M 301 135
-L 373 135" style="stroke-width:1;stroke:rgb(239,68,68);fill:none"/><path d="M 301 219
-L 373 219" style="stroke-width:1;stroke:rgb(239,68,68);fill:none"/><path d="M 265 149
-L 409 149
-L 409 219
-L 265 219
-L 265 149" style="stroke:none;fill:rgb(239,68,68)"/><path d="M 518 163
-L 518 177" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 518 260
-L 518 274" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 482 163
-L 554 163" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 482 274
-L 554 274" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 446 177
-L 590 177
-L 590 260
-L 446 260
-L 446 177" style="stroke:none;fill:rgb(34,197,94)"/><path d="M 699 80
-L 699 121" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 699 177
-L 699 205" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 663 80
-L 735 80" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 663 205
-L 735 205" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 627 121
+L 0 0" style="stroke:none;fill:white"/><text x="9" y="16" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">130</text><text x="9" y="85" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">125</text><text x="9" y="154" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">120</text><text x="9" y="223" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">115</text><text x="9" y="292" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">110</text><text x="9" y="361" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">105</text><text x="9" y="430" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">100</text><text x="18" y="499" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">95</text><text x="18" y="569" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">90</text><path d="M 42 10
+L 790 10" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 42 79
+L 790 79" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 42 148
+L 790 148" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 42 218
+L 790 218" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 42 287
+L 790 287" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 42 356
+L 790 356" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 42 426
+L 790 426" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 42 495
+L 790 495" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 46 565
+L 790 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 46 570
+L 46 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 232 570
+L 232 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 418 570
+L 418 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 604 570
+L 604 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 790 570
+L 790 565" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="135" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="321" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><text x="507" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">3</text><text x="693" y="588" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">4</text><path d="M 139 288
+L 139 357" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 139 427
+L 139 496" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 102 288
+L 176 288" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 102 496
+L 176 496" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 65 357
+L 213 357
+L 213 427
+L 65 427
+L 65 357" style="stroke:none;fill:rgb(34,197,94)"/><path d="M 325 135
+L 325 149" style="stroke-width:1;stroke:rgb(239,68,68);fill:none"/><path d="M 288 135
+L 362 135" style="stroke-width:1;stroke:rgb(239,68,68);fill:none"/><path d="M 288 219
+L 362 219" style="stroke-width:1;stroke:rgb(239,68,68);fill:none"/><path d="M 251 149
+L 399 149
+L 399 219
+L 251 219
+L 251 149" style="stroke:none;fill:rgb(239,68,68)"/><path d="M 511 163
+L 511 177" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 511 260
+L 511 274" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 474 163
+L 548 163" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 474 274
+L 548 274" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 437 177
+L 585 177
+L 585 260
+L 437 260
+L 437 177" style="stroke:none;fill:rgb(34,197,94)"/><path d="M 697 80
+L 697 121" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 697 177
+L 697 205" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 660 80
+L 734 80" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 660 205
+L 734 205" style="stroke-width:1;stroke:rgb(34,197,94);fill:none"/><path d="M 623 121
 L 771 121
 L 771 177
-L 627 177
-L 627 121" style="stroke:none;fill:rgb(34,197,94)"/><path d="M 523 164
-L 604 164
-L 604 164
-A 4 4 90.00 0 1 608 168
-L 608 181
-L 608 181
-A 4 4 90.00 0 1 604 185
-L 523 185
-L 523 185
-A 4 4 90.00 0 1 519 181
-L 519 168
-L 519 168
-A 4 4 90.00 0 1 523 164
-Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="523" y="181" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">| Piercing Line</text></svg>
+L 623 177
+L 623 121" style="stroke:none;fill:rgb(34,197,94)"/><path d="M 516 164
+L 597 164
+L 597 164
+A 4 4 90.00 0 1 601 168
+L 601 181
+L 601 181
+A 4 4 90.00 0 1 597 185
+L 516 185
+L 516 185
+A 4 4 90.00 0 1 512 181
+L 512 168
+L 512 168
+A 4 4 90.00 0 1 516 164
+Z" style="stroke-width:1.2;stroke:rgb(34,197,94);fill:rgba(255,255,255,0.7)"/><text x="516" y="181" style="stroke:none;fill:rgb(12,75,35);font-size:12.8px;font-family:'Roboto Medium',sans-serif">| Piercing Line</text></svg>

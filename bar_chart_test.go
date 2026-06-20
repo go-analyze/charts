@@ -114,7 +114,7 @@ func TestBarChart(t *testing.T) {
 				opt.RoundedBarCaps = Ptr(true)
 				return opt
 			},
-			pngCRC: 0xb177bec7,
+			pngCRC: 0x8523cb0f,
 		},
 		{
 			name: "custom_font",
@@ -176,7 +176,7 @@ func TestBarChart(t *testing.T) {
 				opt.BarSize = 0.018 // ~2px wide
 				return opt
 			},
-			pngCRC: 0xa9ef8762,
+			pngCRC: 0x5561e961,
 		},
 		{
 			name: "bar_margin_narrow",
@@ -185,7 +185,7 @@ func TestBarChart(t *testing.T) {
 				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
-			pngCRC: 0x83daa059,
+			pngCRC: 0x625488de,
 		},
 		{
 			name: "bar_margin_wide",
@@ -194,7 +194,7 @@ func TestBarChart(t *testing.T) {
 				opt.BarMargin = Ptr(5.0) // will be limited to fit graph
 				return opt
 			},
-			pngCRC: 0x2f5d0556,
+			pngCRC: 0x7ea8b5bb,
 		},
 		{
 			name: "bar_width_and_narrow_margin",
@@ -204,7 +204,7 @@ func TestBarChart(t *testing.T) {
 				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
-			pngCRC: 0x882b6b42,
+			pngCRC: 0x2cd0c5e6,
 		},
 		{
 			name: "bar_width_and_wide_margin",
@@ -214,7 +214,7 @@ func TestBarChart(t *testing.T) {
 				opt.BarMargin = Ptr(5.0) // will be limited for readability
 				return opt
 			},
-			pngCRC: 0xea22413e,
+			pngCRC: 0x11f1be5c,
 		},
 		{
 			name: "dual_yaxis",
@@ -239,7 +239,7 @@ func TestBarChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0x88db720a,
+			pngCRC: 0x825725a1,
 		},
 		{
 			name: "mark_point",
@@ -250,12 +250,12 @@ func TestBarChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0x71230483,
+			pngCRC: 0x46d0902,
 		},
 		{
 			name:        "stack_series",
 			makeOptions: makeFullBarChartStackedOption,
-			pngCRC:      0x6aa0df43,
+			pngCRC:      0x855ffac5,
 		},
 		{
 			name: "stack_series_capped_bar",
@@ -275,7 +275,7 @@ func TestBarChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0xf882ee3a,
+			pngCRC: 0xe32e452a,
 		},
 		{
 			name: "stack_series_global_mark_point",
@@ -298,7 +298,7 @@ func TestBarChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0xaaa0a156,
+			pngCRC: 0x14521e2c,
 		},
 		{
 			name: "stack_series_simple",
@@ -331,7 +331,7 @@ func TestBarChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x4b03be9b,
+			pngCRC: 0xa7c8dbb8,
 		},
 		{
 			name: "empty_series",
@@ -599,7 +599,7 @@ func TestBarChartHorizontal(t *testing.T) {
 			name:        "basic_themed",
 			themed:      true,
 			makeOptions: makeBasicHorizontalBarOption,
-			pngCRC:      0xfb168012,
+			pngCRC:      0xf27d8d42,
 		},
 		{
 			name: "custom_fonts",
@@ -612,7 +612,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.Title.FontStyle = customFont
 				return opt
 			},
-			pngCRC: 0x7d773c06,
+			pngCRC: 0x216be35d,
 		},
 		{
 			name: "value_labels",
@@ -627,7 +627,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0xdda92f8,
+			pngCRC: 0xaaa09e64,
 		},
 		{
 			name: "value_formatter",
@@ -643,7 +643,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0xd72c917f,
+			pngCRC: 0xd2977ce7,
 		},
 		{
 			name: "bar_size_truncate",
@@ -656,7 +656,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.BarSize = 2.0 // exceeds the slot, limited to fit
 				return opt
 			},
-			pngCRC: 0xb35224f4,
+			pngCRC: 0x2aa51c50,
 		},
 		{
 			name: "mark_line",
@@ -667,7 +667,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x56386ea2,
+			pngCRC: 0xb04ecd33,
 		},
 		{
 			name: "bar_size_thin",
@@ -676,7 +676,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.BarSize = 0.028 // ~2px tall
 				return opt
 			},
-			pngCRC: 0xedf8c602,
+			pngCRC: 0x1c0932ef,
 		},
 		{
 			name: "bar_margin_narrow",
@@ -685,7 +685,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
-			pngCRC: 0x62e361ae,
+			pngCRC: 0xc0b82a32,
 		},
 		{
 			name: "bar_margin_wide",
@@ -694,7 +694,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.BarMargin = Ptr(5.0) // will be limited to fit graph
 				return opt
 			},
-			pngCRC: 0xe22b0ccd,
+			pngCRC: 0x76c61fe0,
 		},
 		{
 			name: "bar_size_and_narrow_margin",
@@ -704,7 +704,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.BarMargin = Ptr(0.0)
 				return opt
 			},
-			pngCRC: 0x8a6043ab,
+			pngCRC: 0x134a9d3c,
 		},
 		{
 			name: "bar_size_and_wide_margin",
@@ -714,12 +714,12 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.BarMargin = Ptr(5.0) // will be limited for readability
 				return opt
 			},
-			pngCRC: 0x56436af8,
+			pngCRC: 0xd92bcab2,
 		},
 		{
 			name:        "stack_series",
 			makeOptions: makeFullHorizontalBarStackedOption,
-			pngCRC:      0xf75e263c,
+			pngCRC:      0xec9a6543,
 		},
 		{
 			name: "stack_series_simple",
@@ -744,7 +744,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x2e00befd,
+			pngCRC: 0x9425c0a7,
 		},
 		{
 			name: "empty_series",
@@ -772,7 +772,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.RoundedBarCaps = Ptr(true)
 				return opt
 			},
-			pngCRC: 0x67f32f81,
+			pngCRC: 0xc758a0a0,
 		},
 		{
 			name: "mark_point",
@@ -782,7 +782,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x9159ccd2,
+			pngCRC: 0xde15ffec,
 		},
 		{
 			name: "mark_point_axis_right",
@@ -793,7 +793,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x85c256fc,
+			pngCRC: 0xa4c035f6,
 		},
 		{
 			name: "category_axis_right",
@@ -802,7 +802,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.CategoryAxis.Position = PositionRight
 				return opt
 			},
-			pngCRC: 0xbf72d741,
+			pngCRC: 0xc3a78173,
 		},
 		{
 			name: "category_axis_right_with_mark_line",
@@ -812,7 +812,7 @@ func TestBarChartHorizontal(t *testing.T) {
 				opt.SeriesList[0].MarkLine = NewMarkLine(SeriesMarkTypeMax, SeriesMarkTypeAverage)
 				return opt
 			},
-			pngCRC: 0x5a5c8b24,
+			pngCRC: 0x6f4575e6,
 		},
 	}
 

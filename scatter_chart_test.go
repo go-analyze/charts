@@ -193,7 +193,7 @@ func TestScatterChart(t *testing.T) {
 			name:        "basic_themed",
 			themed:      true,
 			makeOptions: makeFullScatterChartOption,
-			pngCRC:      0xfab51933,
+			pngCRC:      0x43fd010a,
 		},
 		{
 			name: "boundary_gap_enable",
@@ -203,7 +203,7 @@ func TestScatterChart(t *testing.T) {
 				opt.XAxis.BoundaryGap = Ptr(true)
 				return opt
 			},
-			pngCRC: 0x540701a7,
+			pngCRC: 0x1f0ed350,
 		},
 		{
 			name: "dual_yaxis",
@@ -219,7 +219,7 @@ func TestScatterChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x5052d2db,
+			pngCRC: 0x18c09cdb,
 		},
 		{
 			name: "no_nice_interval",
@@ -283,7 +283,7 @@ func TestScatterChart(t *testing.T) {
 				opt.SeriesList[1].Values[2] = []float64{GetNullValue()}
 				return opt
 			},
-			pngCRC: 0x4013efa,
+			pngCRC: 0xd72d45ab,
 		},
 		{
 			name: "mark_line",
@@ -300,7 +300,7 @@ func TestScatterChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0xb8cf192f,
+			pngCRC: 0x1cfae600,
 		},
 		{
 			name: "series_label",
@@ -320,7 +320,7 @@ func TestScatterChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0xc9444c55,
+			pngCRC: 0xb3570d48,
 		},
 		{
 			name: "symbol_dot",
@@ -338,7 +338,7 @@ func TestScatterChart(t *testing.T) {
 				opt.YAxis[0].Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x8d7439f2,
+			pngCRC: 0x1569a71a,
 		},
 		{
 			name: "symbol_circle",
@@ -356,7 +356,7 @@ func TestScatterChart(t *testing.T) {
 				opt.YAxis[0].Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0xc65ea0c8,
+			pngCRC: 0x49a13488,
 		},
 		{
 			name: "symbol_square",
@@ -374,7 +374,7 @@ func TestScatterChart(t *testing.T) {
 				opt.YAxis[0].Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x11891d83,
+			pngCRC: 0xd385429a,
 		},
 		{
 			name: "symbol_diamond",
@@ -392,7 +392,7 @@ func TestScatterChart(t *testing.T) {
 				opt.YAxis[0].Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x5caf6eb3,
+			pngCRC: 0x8e351e73,
 		},
 		{
 			name:   "symbol_mixed",
@@ -477,7 +477,7 @@ func TestScatterChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0xc56b52c,
+			pngCRC: 0xe3214041,
 		},
 		{
 			name: "with_conditional_labels",
@@ -530,7 +530,7 @@ func TestScatterChart(t *testing.T) {
 					},
 				}
 			},
-			pngCRC: 0xbd9f53a,
+			pngCRC: 0x85f827ec,
 		},
 		{
 			name: "bollinger",
@@ -545,7 +545,7 @@ func TestScatterChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0xb5c50ea9,
+			pngCRC: 0xdda03647,
 		},
 		{
 			name: "rsi",
@@ -557,7 +557,7 @@ func TestScatterChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x178936f4,
+			pngCRC: 0x2d1bf6cb,
 		},
 		{
 			name: "empty_series",
