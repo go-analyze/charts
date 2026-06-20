@@ -1113,3 +1113,201 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		}
 	})
 }
+
+func TestAxisLabelQuality(t *testing.T) {
+	t.Parallel()
+
+	const axisQualityLabelMin = 3    // ideal minimum label count
+	const axisQualityLabelMax = 8    // ideal maximum label count
+	const axisQualityClosePct = 0.10 // data extreme must sit within this fraction of the data range from the axis bound
+	const axisQualityFloatEps = 1e-6
+	const axisQualitySampleCount = 2000
+	// representative vertical axis pixel sizes; every sample is scored at each size
+	axisQualitySizes := [...]int{600, 800}
+
+	// axisQualityScore accumulates how many sweep samples satisfy each quality aspect.
+	type axisQualityScore struct {
+		total            int
+		coverageMiss     int // axis range failed to contain the data (correctness invariant: must be 0)
+		goodLabelCount   int // labelCount within [axisQualityLabelMin, axisQualityLabelMax]
+		topClose         int // data max within axisQualityClosePct of data range below the axis max
+		bottomClose      int // data min within axisQualityClosePct of data range above the axis min
+		friendlyInterval int // integer interval with a 1/2/5 leading digit
+	}
+
+	p := NewPainter(PainterOptions{Width: 800, Height: 600})
+
+	// isFriendlyInterval reports whether interval is a whole number whose leading significant digit is 1, 2, or 5.
+	isFriendlyInterval := func(interval float64) bool {
+		r := math.Round(interval)
+		if r < 1 || math.Abs(interval-r) > axisQualityFloatEps {
+			return false // zero/negative or has a fractional component
+		}
+		exp := math.Floor(math.Log10(r) + 1e-9)
+		mantissa := r / math.Pow(10, exp)
+		mr := math.Round(mantissa)
+		return math.Abs(mantissa-mr) < 1e-9 && (mr == 1 || mr == 2 || mr == 5)
+	}
+
+	// scoreAxisSample resolves the axis range for a single [low, high] data sample at each axis size,
+	// recording its quality (each size is a separate observation).
+	scoreAxisSample := func(p *Painter, s *axisQualityScore, low, high float64) {
+		tsl := testSeriesList{testSeries{yAxisIndex: 0, values: []float64{low, high}}}
+		dataRange := high - low
+		closeBand := dataRange * axisQualityClosePct
+		for _, size := range axisQualitySizes {
+			ar := calculateValueAxisRange(p, true, size, nil, nil, nil,
+				nil, 0, 0, 0, tsl, 0, false, defaultValueFormatter, 0, FontStyle{FontSize: 12, FontColor: ColorBlack}, nil)
+
+			s.total++
+			if ar.min-low > axisQualityFloatEps || high-ar.max > axisQualityFloatEps {
+				s.coverageMiss++ // axis must fully contain the data range
+			}
+			if ar.labelCount >= axisQualityLabelMin && ar.labelCount <= axisQualityLabelMax {
+				s.goodLabelCount++
+			}
+			if ar.max-high <= closeBand+axisQualityFloatEps {
+				s.topClose++
+			}
+			if low-ar.min <= closeBand+axisQualityFloatEps {
+				s.bottomClose++
+			}
+			if ar.labelCount > 1 {
+				interval := (ar.max - ar.min) / float64(ar.labelCount-1)
+				if isFriendlyInterval(interval) {
+					s.friendlyInterval++
+				}
+			}
+		}
+	}
+
+	t.Run("expand_top_from_zero", func(t *testing.T) {
+		// data [0, n] for n = 1..2000
+		var s axisQualityScore
+		for n := 1; n <= axisQualitySampleCount; n++ {
+			scoreAxisSample(p, &s, 0, float64(n))
+		}
+		t.Logf("total=%d cover=%d good=%d top=%d bottom=%d friendly=%d",
+			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
+		assert.Equal(t, len(axisQualitySizes)*axisQualitySampleCount, s.total)
+		assert.Equal(t, 0, s.coverageMiss)
+		assert.Equal(t, 14, s.goodLabelCount)
+		assert.Equal(t, 2538, s.topClose)
+		assert.Equal(t, 4000, s.bottomClose)
+		assert.Equal(t, 800, s.friendlyInterval)
+	})
+
+	t.Run("expand_bottom_to_zero", func(t *testing.T) {
+		// data [-n, 0] for n = 1..2000
+		var s axisQualityScore
+		for n := 1; n <= axisQualitySampleCount; n++ {
+			scoreAxisSample(p, &s, float64(-n), 0)
+		}
+		t.Logf("total=%d cover=%d good=%d top=%d bottom=%d friendly=%d",
+			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
+		assert.Equal(t, len(axisQualitySizes)*axisQualitySampleCount, s.total)
+		assert.Equal(t, 0, s.coverageMiss)
+		assert.Equal(t, 14, s.goodLabelCount)
+		assert.Equal(t, 3982, s.topClose)
+		assert.Equal(t, 3008, s.bottomClose)
+		assert.Equal(t, 2, s.friendlyInterval)
+	})
+
+	t.Run("cross_zero_independent", func(t *testing.T) {
+		// data [-i, j] with the negative and positive extremes varied independently (asymmetric and
+		// symmetric ranges that span zero)
+		var s axisQualityScore
+		for i := 1; i <= axisQualitySampleCount; i += 25 {
+			for j := 1; j <= axisQualitySampleCount; j += 25 {
+				scoreAxisSample(p, &s, float64(-i), float64(j))
+			}
+		}
+		t.Logf("total=%d cover=%d good=%d top=%d bottom=%d friendly=%d",
+			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
+		assert.Equal(t, 12800, s.total)
+		assert.Equal(t, 0, s.coverageMiss)
+		assert.Equal(t, 2, s.goodLabelCount)
+		assert.Equal(t, 8758, s.topClose)
+		assert.Equal(t, 9266, s.bottomClose)
+		assert.Equal(t, 1600, s.friendlyInterval)
+	})
+
+	t.Run("asymmetric_offset_width", func(t *testing.T) {
+		// data [offset, offset+width] with offset and width varied independently: positive,
+		// non-zero-anchored, less symmetric ranges with a wide spread of width-to-offset ratios.
+		var s axisQualityScore
+		for offset := 0; offset <= 2000; offset += 100 {
+			for width := 1; width <= 2000; width += 100 {
+				scoreAxisSample(p, &s, float64(offset), float64(offset+width))
+			}
+		}
+		t.Logf("total=%d cover=%d good=%d top=%d bottom=%d friendly=%d",
+			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
+		assert.Equal(t, 840, s.total)
+		assert.Equal(t, 0, s.coverageMiss)
+		assert.Equal(t, 42, s.goodLabelCount)
+		assert.Equal(t, 436, s.topClose)
+		assert.Equal(t, 760, s.bottomClose)
+		assert.Equal(t, 192, s.friendlyInterval)
+	})
+
+	t.Run("asymmetric_offset_width_negative", func(t *testing.T) {
+		// data [-(offset+width), -offset]: the negative mirror of asymmetric_offset_width
+		// All-negative, non-zero-anchored ranges where the flex logic must round the bottom
+		var s axisQualityScore
+		for offset := 0; offset <= 2000; offset += 100 {
+			for width := 1; width <= 2000; width += 100 {
+				scoreAxisSample(p, &s, float64(-(offset + width)), float64(-offset))
+			}
+		}
+		t.Logf("total=%d cover=%d good=%d top=%d bottom=%d friendly=%d",
+			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
+		assert.Equal(t, 840, s.total)
+		assert.Equal(t, 0, s.coverageMiss)
+		assert.Equal(t, 42, s.goodLabelCount)
+		assert.Equal(t, 554, s.topClose)
+		assert.Equal(t, 566, s.bottomClose)
+		assert.Equal(t, 194, s.friendlyInterval)
+	})
+
+	t.Run("magnitude_sweep", func(t *testing.T) {
+		// data [0, mantissa*10^exp] sweeping mantissa 1..99 across exponents -3..9, covering tiny
+		// fractional through very large ranges to surface scale-dependent rounding/precision issues.
+		var s axisQualityScore
+		for exp := -3; exp <= 9; exp++ {
+			scale := math.Pow(10, float64(exp))
+			for mantissa := 1; mantissa <= 99; mantissa++ {
+				scoreAxisSample(p, &s, 0, float64(mantissa)*scale)
+			}
+		}
+		t.Logf("total=%d cover=%d good=%d top=%d bottom=%d friendly=%d",
+			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
+		assert.Equal(t, 2574, s.total)
+		assert.Equal(t, 0, s.coverageMiss)
+		assert.Equal(t, 496, s.goodLabelCount)
+		assert.Equal(t, 1104, s.topClose)
+		assert.Equal(t, 2574, s.bottomClose)
+		assert.Equal(t, 350, s.friendlyInterval)
+	})
+
+	t.Run("decimal_small_ranges", func(t *testing.T) {
+		// data centered across [-1, 1] with spans concentrated at very small values (quadratic ramp
+		// from 0.0001 up to 1.0), exercising decimal label selection on tight ranges.
+		var s axisQualityScore
+		for centerI := -10; centerI <= 10; centerI++ {
+			center := float64(centerI) / 10.0
+			for j := 1; j <= 100; j++ {
+				span := float64(j) * float64(j) / 10000.0
+				scoreAxisSample(p, &s, center-span/2, center+span/2)
+			}
+		}
+		t.Logf("total=%d cover=%d good=%d top=%d bottom=%d friendly=%d",
+			s.total, s.coverageMiss, s.goodLabelCount, s.topClose, s.bottomClose, s.friendlyInterval)
+		assert.Equal(t, 4200, s.total)
+		assert.Equal(t, 0, s.coverageMiss)
+		assert.Equal(t, 4200, s.goodLabelCount)
+		assert.Equal(t, 0, s.topClose)
+		assert.Equal(t, 2458, s.bottomClose)
+		assert.Equal(t, 4, s.friendlyInterval)
+	})
+}
