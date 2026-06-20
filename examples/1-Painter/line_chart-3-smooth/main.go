@@ -37,7 +37,7 @@ func main() {
 		"Email", "Union Ads", "Video Ads", "Direct", "Search Engine",
 	}
 	opt.Legend.Show = charts.Ptr(false)
-	opt.Symbol = charts.SymbolNone
+	opt.Symbol.Shape = charts.SymbolNone
 	opt.LineStrokeWidth = 4.0
 	opt.StrokeSmoothingTension = 0.9
 

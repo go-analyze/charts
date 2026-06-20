@@ -12,7 +12,7 @@ const (
 )
 
 // iconWidthForSymbol returns the width used by a legend icon for the given symbol.
-func iconWidthForSymbol(symbol Symbol) int {
+func iconWidthForSymbol(symbol SymbolShape) int {
 	switch symbol {
 	case SymbolNone:
 		return 0
@@ -48,15 +48,14 @@ type LegendOption struct {
 	Align string
 	// Vertical when set to *true makes the legend orientation vertical.
 	Vertical *bool
-	// Symbol defines the icon shape next to each label. Options: 'square', 'dot', 'diamond', 'circle'.
-	Symbol Symbol // TODO - should Symbol configuration be changed now that we support per-series symbols
-	// TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
+	// Symbol overrides the legend icon shape. Empty (default) mirrors the series/chart symbols.
+	Symbol SymbolShape
 	// OverlayChart when set to *true renders the legend over the chart. Ignored if Vertical is true (Vertical always forces overlay).
 	OverlayChart *bool
 	// BorderWidth can be set to a non-zero value to render a box around the legend.
 	BorderWidth float64
 	// seriesSymbols provides custom symbols for each series.
-	seriesSymbols []Symbol
+	seriesSymbols []SymbolShape
 }
 
 // IsEmpty checks if the legend is empty.
@@ -354,7 +353,7 @@ func (l *legendPainter) Render() (Box, error) {
 }
 
 // makeIconDrawer returns a function that draws the legend icon for a series.
-func (l *legendPainter) makeIconDrawer(p *Painter, theme ColorPalette, index int, symbol Symbol) func(top, left int) {
+func (l *legendPainter) makeIconDrawer(p *Painter, theme ColorPalette, index int, symbol SymbolShape) func(top, left int) {
 	switch symbol {
 	case SymbolSquare:
 		return func(top, left int) {

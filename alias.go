@@ -203,15 +203,3 @@ const (
 	AlignRight  = "right"
 	AlignCenter = "center"
 )
-
-// Symbol defines the shape used for data points and legends.
-type Symbol string
-
-const (
-	SymbolNone        = "none"
-	SymbolCircle      = "circle"
-	SymbolDot         = "dot"
-	SymbolSquare      = "square"
-	SymbolDiamond     = "diamond"
-	symbolCandlestick = "candlestick" // internal only, set automatically
-)

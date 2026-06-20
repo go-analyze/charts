@@ -302,7 +302,7 @@ func (h heatMapFakeSeries) sortByNameIndex(_ map[string]int) {
 	// no-op
 }
 
-func (h heatMapFakeSeries) getSeriesSymbol(_ int) Symbol {
+func (h heatMapFakeSeries) getSeriesSymbol(_ int) SymbolShape {
 	return ""
 }
 

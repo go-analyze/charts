@@ -48,7 +48,7 @@ func main() {
 					Max: charts.Ptr(2000.0),
 				},
 			}
-			opt.Symbol = charts.SymbolCircle
+			opt.Symbol.Shape = charts.SymbolCircle
 			opt.LineStrokeWidth = 1.2
 			opt.ValueFormatter = func(f float64) string {
 				return charts.FormatValueHumanize(f, 1, true)

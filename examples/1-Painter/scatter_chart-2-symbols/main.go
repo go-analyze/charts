@@ -37,11 +37,11 @@ func main() {
 	opt.Legend.SeriesNames = []string{
 		"Email", "Union Ads", "Video Ads", "Direct",
 	}
-	opt.SymbolSize = 4
-	opt.SeriesList[0].Symbol = charts.SymbolCircle
-	opt.SeriesList[1].Symbol = charts.SymbolDiamond
-	opt.SeriesList[2].Symbol = charts.SymbolSquare
-	opt.SeriesList[3].Symbol = charts.SymbolDot
+	opt.Symbol.Size = 4
+	opt.SeriesList[0].Symbol.Shape = charts.SymbolCircle
+	opt.SeriesList[1].Symbol.Shape = charts.SymbolDiamond
+	opt.SeriesList[2].Symbol.Shape = charts.SymbolSquare
+	opt.SeriesList[3].Symbol.Shape = charts.SymbolDot
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,

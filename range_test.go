@@ -98,7 +98,7 @@ func (tsl testSeriesList) sortByNameIndex(_ map[string]int) {
 	panic("not implemented")
 }
 
-func (tsl testSeriesList) getSeriesSymbol(_ int) Symbol {
+func (tsl testSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	panic("not implemented")
 }
 

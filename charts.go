@@ -160,7 +160,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			opt.seriesList.sortByNameIndex(nameIndexDict)
 		}
 	}
-	opt.legend.seriesSymbols = make([]Symbol, opt.seriesList.len())
+	opt.legend.seriesSymbols = make([]SymbolShape, opt.seriesList.len())
 	for index := range opt.legend.seriesSymbols {
 		opt.legend.seriesSymbols[index] = opt.seriesList.getSeriesSymbol(index)
 	}

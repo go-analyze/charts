@@ -56,9 +56,9 @@ type LineChartOption struct {
 	Title TitleOption
 	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Symbol specifies the symbol to draw at data points. Empty (default) varies by dataset.
-	// Options: 'none', 'circle', 'dot', 'square', 'diamond'. Can be overridden per series.
-	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
+	// Symbol specifies the shape and size drawn at data points, overridable per series.
+	// Shape defaults to SymbolCircle (SymbolNone for dense or smoothed lines); Size defaults from LineStrokeWidth.
+	Symbol Symbol
 	// LineStrokeWidth is the width of the rendered line.
 	LineStrokeWidth float64
 	// StrokeSmoothingTension controls line smoothing (0-1). 0 creates straight lines, 1 creates heavily smoothed curves.
@@ -131,15 +131,15 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 		strokeWidth = defaultStrokeWidth
 	}
 	symbol := opt.Symbol
-	if symbol == "" {
+	if symbol.Shape == "" {
 		showSymbol := dataCount < showSymbolDefaultThreshold // default enable when data count is reasonable
 		if opt.StrokeSmoothingTension > 0 {
 			showSymbol = false // default disable symbols on curved lines since the dots won't hit the line exactly
 		}
 		if showSymbol {
-			symbol = SymbolCircle
+			symbol.Shape = SymbolCircle
 		} else {
-			symbol = SymbolNone
+			symbol.Shape = SymbolNone
 		}
 	}
 
@@ -248,31 +248,45 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 
 		// Draw symbols if enabled
 		seriesSymbol := symbol
-		if series.Symbol != "" {
-			seriesSymbol = series.Symbol
+		if series.Symbol.Shape != "" {
+			seriesSymbol.Shape = series.Symbol.Shape
 		}
-		switch seriesSymbol {
+		symbolSize := series.Symbol.Size
+		if symbolSize <= 0 {
+			symbolSize = symbol.Size
+		}
+		switch seriesSymbol.Shape {
 		case SymbolCircle:
-			radius := 1.2
-			if strokeWidth > 1 {
-				radius = strokeWidth * 1.2
+			radius := symbolSize
+			if radius <= 0 {
+				radius = 1.2
+				if strokeWidth > 1 {
+					radius = strokeWidth * 1.2
+				}
 			}
 			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1, radius)
 		case SymbolDot:
-			radius := 1.5
-			if strokeWidth > 1 {
-				radius = strokeWidth * 1.5
+			radius := symbolSize
+			if radius <= 0 {
+				radius = 1.5
+				if strokeWidth > 1 {
+					radius = strokeWidth * 1.5
+				}
 			}
 			seriesPainter.Dots(points, seriesColor, seriesColor, 1, radius)
 		case SymbolSquare:
-			size := 2
-			if strokeWidth > 1 {
+			var size int
+			if symbolSize > 0 {
+				size = ceilFloatToInt(symbolSize * 2.0)
+			} else if size = 2; strokeWidth > 1 {
 				size = ceilFloatToInt(strokeWidth * 2.8)
 			}
 			seriesPainter.squares(points, seriesColor, seriesColor, 1, size)
 		case SymbolDiamond:
-			size := 4
-			if strokeWidth > 1 {
+			var size int
+			if symbolSize > 0 {
+				size = ceilFloatToInt(symbolSize * 2.8)
+			} else if size = 4; strokeWidth > 1 {
 				size = ceilFloatToInt(strokeWidth * 4.0)
 			}
 			seriesPainter.diamonds(points, seriesColor, seriesColor, 1, size)
@@ -391,13 +405,13 @@ func (l *lineChart) Render() (Box, error) {
 		l.opt.XAxis.BoundaryGap = &boundaryGap
 	}
 	if opt.Legend.Symbol == "" {
-		switch opt.Symbol {
+		switch opt.Symbol.Shape {
 		case "":
 			opt.Legend.Symbol = SymbolCircle
 		case SymbolNone:
 			opt.Legend.Symbol = SymbolDot
 		default:
-			opt.Legend.Symbol = opt.Symbol
+			opt.Legend.Symbol = opt.Symbol.Shape
 		}
 	}
 

@@ -164,7 +164,7 @@ func TestScatterRender(t *testing.T) {
 			"A", "B", "C", "D", "E",
 		}),
 		func(opt *ChartOption) {
-			opt.Symbol = SymbolSquare
+			opt.Symbol.Shape = SymbolSquare
 			opt.Legend.Symbol = SymbolSquare
 		},
 	)

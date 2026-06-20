@@ -46,7 +46,7 @@ func main() {
 		SeriesList: series,
 		Padding:    charts.NewBoxEqual(16).WithRight(32),
 		Theme:      charts.GetTheme(charts.ThemeVividLight),
-		SymbolSize: 0.5,
+		Symbol:     charts.Symbol{Size: 0.5},
 		Title: charts.TitleOption{
 			Text:   "Dense Scatter Chart Demo",
 			Offset: charts.OffsetCenter,

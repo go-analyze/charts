@@ -42,8 +42,7 @@ func main() {
 	opt.Legend.Padding = charts.Box{
 		Left: 100,
 	}
-	opt.Symbol = charts.SymbolDot
-	opt.SymbolSize = 4
+	opt.Symbol = charts.Symbol{Shape: charts.SymbolDot, Size: 4}
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,

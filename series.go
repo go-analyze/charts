@@ -158,7 +158,7 @@ func (g GenericSeriesList) getSeriesLen(index int) int {
 	}
 }
 
-func (g GenericSeriesList) getSeriesSymbol(i int) Symbol {
+func (g GenericSeriesList) getSeriesSymbol(i int) SymbolShape {
 	if g[i].Type == ChartTypeCandlestick {
 		return symbolCandlestick // return type here so captured for defaultRender in ChartOptions render
 	}
@@ -208,8 +208,8 @@ type LineSeries struct {
 	MarkLine SeriesMarkLine
 	// TrendLine provides configurations for trend lines for this series.
 	TrendLine []SeriesTrendLine
-	// Symbol specifies a custom symbol for the series.
-	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
+	// Symbol specifies a custom shape and size for the series.
+	Symbol Symbol
 
 	// absThemeIndex represents the series index when combined with other chart types.
 	absThemeIndex *int
@@ -268,8 +268,8 @@ func (l LineSeriesList) getSeriesLen(index int) int {
 	return len(l[index].Values)
 }
 
-func (l LineSeriesList) getSeriesSymbol(index int) Symbol {
-	return l[index].Symbol
+func (l LineSeriesList) getSeriesSymbol(index int) SymbolShape {
+	return l[index].Symbol.Shape
 }
 
 func (l LineSeriesList) markPointSize() int {
@@ -328,8 +328,8 @@ type ScatterSeries struct {
 	MarkLine SeriesMarkLine
 	// TrendLine provides configurations for trend lines for this series.
 	TrendLine []SeriesTrendLine
-	// Symbol specifies a custom symbol for the series.
-	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
+	// Symbol specifies a custom shape and size for the series.
+	Symbol Symbol
 
 	// absThemeIndex represents the series index when combined with other chart types.
 	absThemeIndex *int
@@ -398,8 +398,8 @@ func (s ScatterSeriesList) getSeriesLen(index int) int {
 	return len(s[index].Values)
 }
 
-func (s ScatterSeriesList) getSeriesSymbol(index int) Symbol {
-	return s[index].Symbol
+func (s ScatterSeriesList) getSeriesSymbol(index int) SymbolShape {
+	return s[index].Symbol.Shape
 }
 
 func (s ScatterSeriesList) markPointSize() int {
@@ -517,7 +517,7 @@ func (b BarSeriesList) getSeriesLen(index int) int {
 	return len(b[index].Values)
 }
 
-func (b BarSeriesList) getSeriesSymbol(_ int) Symbol {
+func (b BarSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return ""
 }
 
@@ -611,7 +611,7 @@ func (f FunnelSeriesList) getSeriesLen(_ int) int {
 	return 1
 }
 
-func (f FunnelSeriesList) getSeriesSymbol(_ int) Symbol {
+func (f FunnelSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return ""
 }
 
@@ -719,7 +719,7 @@ func (p PieSeriesList) getSeriesLen(_ int) int {
 	return 1
 }
 
-func (p PieSeriesList) getSeriesSymbol(_ int) Symbol {
+func (p PieSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return ""
 }
 
@@ -828,7 +828,7 @@ func (d DoughnutSeriesList) getSeriesLen(_ int) int {
 	return 1
 }
 
-func (d DoughnutSeriesList) getSeriesSymbol(_ int) Symbol {
+func (d DoughnutSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return ""
 }
 
@@ -924,7 +924,7 @@ func (r RadarSeriesList) getSeriesLen(index int) int {
 	return len(r[index].Values)
 }
 
-func (r RadarSeriesList) getSeriesSymbol(_ int) Symbol {
+func (r RadarSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return ""
 }
 
@@ -974,7 +974,7 @@ type seriesList interface {
 	markPointSize() int // largest mark point pin width across series, 0 when none
 	setSeriesName(index int, name string)
 	sortByNameIndex(dict map[string]int)
-	getSeriesSymbol(index int) Symbol
+	getSeriesSymbol(index int) SymbolShape
 	//SetSeriesLabels(label SeriesLabel) // informally included in interface (not used internally in interface)
 }
 
@@ -1710,7 +1710,7 @@ func (k CandlestickSeriesList) getSeriesLen(index int) int {
 	return len(k[index].Data)
 }
 
-func (k CandlestickSeriesList) getSeriesSymbol(_ int) Symbol {
+func (k CandlestickSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return "" // no need to set symbol here, configured globally in candlestick_chart.go before defaultRender
 }
 
@@ -2028,7 +2028,7 @@ func (vl ViolinSeriesList) getSeriesLen(index int) int {
 	return len(vl[index].Data)
 }
 
-func (vl ViolinSeriesList) getSeriesSymbol(_ int) Symbol {
+func (vl ViolinSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return ""
 }
 

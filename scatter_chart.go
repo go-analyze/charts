@@ -53,11 +53,9 @@ type ScatterChartOption struct {
 	Title TitleOption
 	// Legend contains options for the data legend.
 	Legend LegendOption
-	// Symbol specifies the default shape for each data point. Default is 'dot'.
-	// Options: 'circle', 'dot', 'square', 'diamond'. Can be overridden per series.
-	Symbol Symbol // TODO - v0.6 - consider combining symbol with size into a SymbolStyle struct
-	// SymbolSize specifies the size for each data point. Default is 2.0.
-	SymbolSize float64
+	// Symbol specifies the shape and size for each data point, overridable per series.
+	// Shape defaults to SymbolDot; Size defaults to 2.0.
+	Symbol Symbol
 	// ValueFormatter defines how float values are rendered to strings, notably for numeric axis labels.
 	ValueFormatter ValueFormatter
 }
@@ -73,10 +71,6 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 	}
 	seriesPainter := result.seriesPainter
 
-	symbolSize := defaultSymbolSize
-	if opt.SymbolSize > 0 {
-		symbolSize = opt.SymbolSize
-	}
 	xValues := boundaryGapAxisPositions(seriesPainter.Width(), flagIs(true, opt.XAxis.BoundaryGap),
 		max(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels)))
 
@@ -88,8 +82,15 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 	var points []Point
 	for index, series := range opt.SeriesList {
 		seriesSymbol := series.Symbol
-		if seriesSymbol == "" {
-			seriesSymbol = opt.Symbol
+		if seriesSymbol.Shape == "" {
+			seriesSymbol.Shape = opt.Symbol.Shape
+		}
+		symbolSize := seriesSymbol.Size
+		if symbolSize <= 0 {
+			symbolSize = opt.Symbol.Size
+		}
+		if symbolSize <= 0 {
+			symbolSize = defaultSymbolSize
 		}
 		seriesThemeIndex := index
 		if series.absThemeIndex != nil {
@@ -136,7 +137,7 @@ func (s *scatterChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 
 		// Draw points
-		switch seriesSymbol {
+		switch seriesSymbol.Shape {
 		case SymbolCircle:
 			seriesPainter.Dots(points, opt.Theme.GetBackgroundColor(), seriesColor, 1.0, symbolSize)
 		case SymbolSquare:
@@ -189,10 +190,10 @@ func (s *scatterChart) Render() (Box, error) {
 		opt.XAxis.BoundaryGap = Ptr(false)
 	}
 	if opt.Legend.Symbol == "" {
-		if opt.Symbol == "" {
+		if opt.Symbol.Shape == "" {
 			opt.Legend.Symbol = SymbolDot
 		} else {
-			opt.Legend.Symbol = opt.Symbol
+			opt.Legend.Symbol = opt.Symbol.Shape
 		}
 	}
 

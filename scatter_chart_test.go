@@ -290,7 +290,7 @@ func TestScatterChart(t *testing.T) {
 			makeOptions: func() ScatterChartOption {
 				opt := makeMinimalMultiValueScatterChartOption()
 				opt.Padding = NewBoxEqual(40)
-				opt.SymbolSize = 4.5
+				opt.Symbol.Size = 4.5
 				for i := range opt.SeriesList {
 					markLine := NewMarkLine("min", "max", "average")
 					markLine.ValueFormatter = func(f float64) string {
@@ -330,8 +330,8 @@ func TestScatterChart(t *testing.T) {
 				for i := range opt.SeriesList {
 					opt.SeriesList[i].Values = opt.SeriesList[i].Values[:5]
 				}
-				opt.SymbolSize = 4.5
-				opt.Symbol = SymbolDot
+				opt.Symbol.Size = 4.5
+				opt.Symbol.Shape = SymbolDot
 				opt.Legend.Symbol = SymbolDot
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -348,8 +348,8 @@ func TestScatterChart(t *testing.T) {
 				for i := range opt.SeriesList {
 					opt.SeriesList[i].Values = opt.SeriesList[i].Values[:5]
 				}
-				opt.SymbolSize = 4.5
-				opt.Symbol = SymbolCircle
+				opt.Symbol.Size = 4.5
+				opt.Symbol.Shape = SymbolCircle
 				opt.Legend.Symbol = SymbolCircle
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -366,8 +366,8 @@ func TestScatterChart(t *testing.T) {
 				for i := range opt.SeriesList {
 					opt.SeriesList[i].Values = opt.SeriesList[i].Values[:5]
 				}
-				opt.SymbolSize = 4.5
-				opt.Symbol = SymbolSquare
+				opt.Symbol.Size = 4.5
+				opt.Symbol.Shape = SymbolSquare
 				opt.Legend.Symbol = SymbolSquare
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -384,8 +384,8 @@ func TestScatterChart(t *testing.T) {
 				for i := range opt.SeriesList {
 					opt.SeriesList[i].Values = opt.SeriesList[i].Values[:5]
 				}
-				opt.SymbolSize = 4.5
-				opt.Symbol = SymbolDiamond
+				opt.Symbol.Size = 4.5
+				opt.Symbol.Shape = SymbolDiamond
 				opt.Legend.Symbol = SymbolDiamond
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -403,11 +403,11 @@ func TestScatterChart(t *testing.T) {
 				for i := range opt.SeriesList {
 					opt.SeriesList[i].Values = opt.SeriesList[i].Values[:5]
 				}
-				opt.SymbolSize = 4.0
-				opt.SeriesList[0].Symbol = SymbolCircle
-				opt.SeriesList[1].Symbol = SymbolSquare
-				opt.SeriesList[2].Symbol = SymbolDiamond
-				opt.SeriesList[3].Symbol = SymbolDot
+				opt.Symbol.Size = 4.0
+				opt.SeriesList[0].Symbol.Shape = SymbolCircle
+				opt.SeriesList[1].Symbol.Shape = SymbolSquare
+				opt.SeriesList[2].Symbol.Shape = SymbolDiamond
+				opt.SeriesList[3].Symbol.Shape = SymbolDot
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
 				opt.YAxis[0].Show = Ptr(false)
@@ -573,6 +573,25 @@ func TestScatterChart(t *testing.T) {
 				return opt
 			},
 			pngCRC: 0xff2e2e71,
+		},
+		{
+			name: "symbol_per_series_size",
+			makeOptions: func() ScatterChartOption {
+				opt := makeBasicScatterChartOption()
+				opt.XAxis.Labels = opt.XAxis.Labels[:5]
+				for i := range opt.SeriesList {
+					opt.SeriesList[i].Values = opt.SeriesList[i].Values[:5]
+				}
+				opt.Symbol.Shape = SymbolCircle
+				opt.SeriesList[0].Symbol.Size = 2
+				opt.SeriesList[1].Symbol.Size = 8
+				opt.Legend.Symbol = SymbolCircle
+				opt.Title.Show = Ptr(false)
+				opt.XAxis.Show = Ptr(false)
+				opt.YAxis[0].Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0x25bd8a42,
 		},
 	}
 

@@ -37,7 +37,7 @@ func main() {
 	opt.Legend.SeriesNames = []string{
 		"Email", "Direct", "Search Engine",
 	}
-	opt.Symbol = charts.SymbolCircle
+	opt.Symbol.Shape = charts.SymbolCircle
 	opt.LineStrokeWidth = 1.2
 	for i := range opt.SeriesList {
 		opt.SeriesList[i].MarkPoint.AddPoints(charts.SeriesMarkTypeMax)

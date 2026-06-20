@@ -78,7 +78,7 @@ func makeMinimalLineChartOption() LineChartOption {
 			Symbol: SymbolDot,
 		},
 		YAxis:      make([]YAxisOption, 1),
-		Symbol:     SymbolNone,
+		Symbol:     Symbol{Shape: SymbolNone},
 		SeriesList: NewSeriesListLine(values),
 	}
 }
@@ -608,7 +608,7 @@ func TestLineChart(t *testing.T) {
 			name: "line_gap_dot",
 			makeOptions: func() LineChartOption {
 				opt := makeMinimalLineChartOption()
-				opt.Symbol = SymbolDot
+				opt.Symbol.Shape = SymbolDot
 				opt.SeriesList[0].Values[3] = GetNullValue()
 				opt.SeriesList[0].Values[5] = GetNullValue()
 				return opt
@@ -676,7 +676,7 @@ func TestLineChart(t *testing.T) {
 				opt.FillOpacity = 100
 				opt.XAxis.BoundaryGap = Ptr(true)
 				// disable extra
-				opt.Symbol = SymbolNone
+				opt.Symbol.Shape = SymbolNone
 				opt.Title.Show = Ptr(false)
 				opt.Legend.Show = Ptr(false)
 				opt.YAxis[0].Show = Ptr(false)
@@ -850,7 +850,7 @@ func TestLineChart(t *testing.T) {
 			name: "symbol_dot",
 			makeOptions: func() LineChartOption {
 				opt := makeBasicLineChartOption()
-				opt.Symbol = SymbolDot
+				opt.Symbol.Shape = SymbolDot
 				opt.Legend.Symbol = SymbolDot
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -863,7 +863,7 @@ func TestLineChart(t *testing.T) {
 			name: "symbol_circle",
 			makeOptions: func() LineChartOption {
 				opt := makeBasicLineChartOption()
-				opt.Symbol = SymbolCircle
+				opt.Symbol.Shape = SymbolCircle
 				opt.Legend.Symbol = SymbolCircle
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -876,7 +876,7 @@ func TestLineChart(t *testing.T) {
 			name: "symbol_square",
 			makeOptions: func() LineChartOption {
 				opt := makeBasicLineChartOption()
-				opt.Symbol = SymbolSquare
+				opt.Symbol.Shape = SymbolSquare
 				opt.Legend.Symbol = SymbolSquare
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -889,7 +889,7 @@ func TestLineChart(t *testing.T) {
 			name: "symbol_diamond",
 			makeOptions: func() LineChartOption {
 				opt := makeBasicLineChartOption()
-				opt.Symbol = SymbolDiamond
+				opt.Symbol.Shape = SymbolDiamond
 				opt.Legend.Symbol = SymbolDiamond
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
@@ -906,11 +906,11 @@ func TestLineChart(t *testing.T) {
 				for i := range opt.SeriesList {
 					opt.SeriesList[i].Values = opt.SeriesList[i].Values[:5]
 				}
-				opt.Symbol = SymbolNone
-				opt.SeriesList[0].Symbol = SymbolCircle
-				opt.SeriesList[1].Symbol = SymbolSquare
-				opt.SeriesList[2].Symbol = SymbolDiamond
-				opt.SeriesList[3].Symbol = SymbolDot
+				opt.Symbol.Shape = SymbolNone
+				opt.SeriesList[0].Symbol.Shape = SymbolCircle
+				opt.SeriesList[1].Symbol.Shape = SymbolSquare
+				opt.SeriesList[2].Symbol.Shape = SymbolDiamond
+				opt.SeriesList[3].Symbol.Shape = SymbolDot
 				opt.Title.Show = Ptr(false)
 				opt.XAxis.Show = Ptr(false)
 				opt.YAxis[0].Show = Ptr(false)
@@ -1085,6 +1085,19 @@ func TestLineChart(t *testing.T) {
 				return opt
 			},
 			pngCRC: 0xe7e75e6c,
+		},
+		{
+			name: "symbol_large_size",
+			makeOptions: func() LineChartOption {
+				opt := makeBasicLineChartOption()
+				opt.Symbol = Symbol{Shape: SymbolCircle, Size: 12}
+				opt.Legend.Symbol = SymbolCircle
+				opt.Title.Show = Ptr(false)
+				opt.XAxis.Show = Ptr(false)
+				opt.YAxis[0].Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0xf3df345b,
 		},
 	}
 

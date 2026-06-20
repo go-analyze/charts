@@ -74,7 +74,7 @@ func main() {
 		},
 	}
 	opt.Legend.Show = charts.Ptr(false)
-	opt.Symbol = charts.SymbolNone
+	opt.Symbol.Shape = charts.SymbolNone
 	opt.LineStrokeWidth = 1.5
 
 	p := charts.NewPainter(charts.PainterOptions{

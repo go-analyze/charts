@@ -37,7 +37,7 @@ func main() {
 		"A", "B", "C", "D", "E", "F",
 	}
 	opt.Legend.Show = charts.Ptr(false)
-	opt.Symbol = charts.SymbolCircle
+	opt.Symbol.Shape = charts.SymbolCircle
 
 	p := charts.NewPainter(charts.PainterOptions{
 		OutputFormat: charts.ChartOutputPNG,
