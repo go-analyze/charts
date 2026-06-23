@@ -1099,6 +1099,82 @@ func TestLineChart(t *testing.T) {
 			},
 			pngCRC: 0xf3df345b,
 		},
+		{
+			name: "legend_collision",
+			makeOptions: func() LineChartOption {
+				return LineChartOption{
+					Padding: NewBoxEqual(10),
+					XAxis: XAxisOption{
+						Labels: []string{"A", "B", "C", "D", "E", "F", "G", "H"},
+					},
+					YAxis: []YAxisOption{
+						{
+							RangeValuePaddingScale: Ptr(0.1), // force collision
+						},
+					},
+					Legend: LegendOption{
+						SeriesNames: []string{"First Series", "Second Series"},
+						Vertical:    Ptr(true),
+						Offset:      OffsetRight,
+					},
+					SeriesList: NewSeriesListLine([][]float64{
+						{1, 2, 4, 8, 16, 32, 64, 128},
+						{1, 2, 3, 4, 5, 6, 7, 8},
+					}),
+				}
+			},
+			pngCRC: 0xfce4a185,
+		},
+		{
+			name: "legend_collision_stacked",
+			makeOptions: func() LineChartOption {
+				return LineChartOption{
+					Padding: NewBoxEqual(10),
+					XAxis: XAxisOption{
+						Labels: []string{"A", "B", "C", "D", "E", "F", "G", "H"},
+					},
+					YAxis: []YAxisOption{
+						{
+							RangeValuePaddingScale: Ptr(0.1), // force collision
+						},
+					},
+					Legend: LegendOption{
+						SeriesNames: []string{"First Series", "Second Series"},
+						Vertical:    Ptr(true),
+						Offset:      OffsetRight,
+					},
+					StackSeries: Ptr(true),
+					SeriesList: NewSeriesListLine([][]float64{
+						{1, 2, 3, 4, 5, 6, 7, 8},
+						{1, 2, 3, 4, 5, 6, 7, 8},
+					}),
+				}
+			},
+			pngCRC: 0xfa2e7856,
+		},
+		{
+			name: "legend_collision_markpoint",
+			makeOptions: func() LineChartOption {
+				sl := NewSeriesListLine([][]float64{
+					{2, 4, 6, 8, 10, 12, 14, 16},
+					{1, 2, 3, 4, 5, 6, 7, 8},
+				})
+				sl[0].MarkPoint.AddPoints(SeriesMarkTypeMax)
+				return LineChartOption{
+					Padding: NewBoxEqual(10),
+					XAxis: XAxisOption{
+						Labels: []string{"A", "B", "C", "D", "E", "F", "G", "H"},
+					},
+					Legend: LegendOption{
+						SeriesNames: []string{"First Series", "Second Series"},
+						Vertical:    Ptr(true),
+						Offset:      OffsetRight,
+					},
+					SeriesList: sl,
+				}
+			},
+			pngCRC: 0x1a686a7b,
+		},
 	}
 
 	for i, tt := range tests {

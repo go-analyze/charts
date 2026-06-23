@@ -227,6 +227,17 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		return nil, err
 	}
 
+	// snapshot the pre-title frame the legend was measured against; the collision test below
+	// translates the legend box from this frame into the later, title-childed plot frame.
+	// flag a vertical overlay legend in the top area covering <=1/4 of the chart as a collision
+	// candidate; the position-aware test runs after ranging.
+	legendFrameTop, legendFrameLeft := p.box.Top, p.box.Left
+	legendFrameW, legendFrameH := p.Width(), p.Height()
+	legendTopOverlay := flagIs(true, legendOpt.Vertical) && !flagIs(false, legendOpt.OverlayChart) &&
+		!opt.categoryY && !legendResult.IsZero() && !legendAtBottom &&
+		legendResult.Bottom < legendFrameH/2 &&
+		legendResult.Width()*legendResult.Height() <= legendFrameW*legendFrameH/4
+
 	// reserve space for the legend if not in overlay mode
 	// - horizontal legends reserve space (top or bottom)
 	// - vertical legends always overlay from the side
@@ -395,6 +406,28 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			}
 		}
 
+		// vertical overlay legend: if data (or a mark point pin) under the legend's horizontal span
+		// would collide with it, reserve top headroom to push the chart below the legend.
+		// single value axis only; dual axes share a label count, so re-resolving one shifts the other.
+		if legendTopOverlay && len(valuePreps) == 1 {
+			legendBottomRel := legendResult.Bottom - (p.box.Top - legendFrameTop)
+			leftOffset := p.box.Left - legendFrameLeft
+			n := getSeriesMaxDataCount(opt.seriesList)
+			if lo, hi, ok := legendIndexSpan(legendResult.Left-leftOffset, legendResult.Right-leftOffset, p.Width(), n); ok {
+				if localMax, ok := localMaxOverIndices(opt.seriesList, 0, lo, hi, opt.stackSeries); ok {
+					if entries[0].r.getRestHeight(localMax)-markPointClearance < legendBottomRel {
+						if needed := legendBottomRel + markPointClearance; needed > entries[0].prep.maxClearancePx {
+							entries[0].prep.maxClearancePx = needed
+							ranges := coordinateValueAxisRanges(p, valuePreps)
+							for i, yIndex := range valuePrepIndices {
+								entries[yIndex].r = ranges[i]
+							}
+						}
+					}
+				}
+			}
+		}
+
 		// render y-axes (reverse order so mark lines from left axis don't extend into right axis)
 		for yIndex := yAxisCount - 1; yIndex >= 0; yIndex-- {
 			entry := entries[yIndex]
@@ -463,6 +496,88 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		IsSet:  true,
 	}))
 	return &result, nil
+}
+
+// legendIndexSpan maps a legend's horizontal pixel span to an inclusive data index range [lo, hi]
+// over n points across plotWidth. ok is false when there are no points or no overlap.
+func legendIndexSpan(legendLeft, legendRight, plotWidth, n int) (int, int, bool) {
+	if n <= 0 || plotWidth <= 0 || legendRight < 0 || legendLeft > plotWidth {
+		return 0, 0, false
+	} else if n == 1 {
+		return 0, 0, true
+	}
+	if legendLeft < 0 {
+		legendLeft = 0
+	}
+	if legendRight > plotWidth {
+		legendRight = plotWidth
+	}
+	last := n - 1
+	lo := legendLeft * last / plotWidth
+	hi := (legendRight*last + plotWidth - 1) / plotWidth // ceil toward the right edge
+	if hi > last {
+		hi = last
+	}
+	if lo > hi {
+		lo = hi
+	}
+	return lo, hi, true
+}
+
+// localMaxOverIndices returns the max plotted value among series on yaxisIndex over the inclusive
+// index range [lo, hi]. When stackSeries, per-index values are summed across series on that axis.
+// Invalid (NaN/null) values are skipped; the bool is false when no valid value falls in the range.
+func localMaxOverIndices(sl seriesList, yaxisIndex, lo, hi int, stackSeries bool) (float64, bool) {
+	if lo > hi {
+		return 0, false
+	}
+	max := -math.MaxFloat64
+	var found bool
+	if stackSeries {
+		sums := make([]float64, hi-lo+1)
+		valid := make([]bool, hi-lo+1)
+		for i := 0; i < sl.len(); i++ {
+			series := sl.getSeries(i)
+			if series.getYAxisIndex() != yaxisIndex {
+				continue
+			}
+			values := series.getValues()
+			for idx := lo; idx <= hi && idx < len(values); idx++ {
+				if !isValidExtent(values[idx]) {
+					continue
+				}
+				sums[idx-lo] += values[idx]
+				valid[idx-lo] = true
+			}
+		}
+		for j, ok := range valid {
+			if ok && sums[j] > max {
+				max = sums[j]
+				found = true
+			}
+		}
+	} else {
+		for i := 0; i < sl.len(); i++ {
+			series := sl.getSeries(i)
+			if series.getYAxisIndex() != yaxisIndex {
+				continue
+			}
+			values := series.getValues()
+			for idx := lo; idx <= hi && idx < len(values); idx++ {
+				if !isValidExtent(values[idx]) {
+					continue
+				}
+				if values[idx] > max {
+					max = values[idx]
+					found = true
+				}
+			}
+		}
+	}
+	if !found {
+		return 0, false
+	}
+	return max, true
 }
 
 func doRender(renderers ...renderer) error {
