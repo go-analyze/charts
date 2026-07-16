@@ -1,6 +1,6 @@
 export GO111MODULE = on
 
-.PHONY: default test test-update test-cover bench lint
+.PHONY: default test test-update test-cover bench fmt-changed lint
 
 # Packages to test, exclude packages without tests to avoid example noise
 CODE_PKGS := $(shell go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./...)
@@ -19,6 +19,12 @@ bench:
 	$(eval CORES_HALF := $(shell expr `getconf _NPROCESSORS_ONLN` / 2))
 	go test -parallel=$(CORES_HALF) --benchmem -benchtime=20s -bench='Benchmark.*Render' -run='^$$'
 
-lint:
+fmt-changed:
+	@files=$$( { git diff --name-only --diff-filter=d HEAD -- '*.go'; git ls-files --others --exclude-standard -- '*.go'; } | sort -u); \
+	if [ -n "$$files" ]; then \
+		gofmt -w $$files; \
+	fi
+
+lint: fmt-changed
 	golangci-lint run --timeout=600s
 	go vet ./...
