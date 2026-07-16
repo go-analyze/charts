@@ -154,15 +154,7 @@ func (t *titlePainter) Render() (Box, error) {
 	}
 
 	if opt.BorderWidth > 0 {
-		boxPad := 10 // built in adjustment for possible measure vs render variations
-		boxPoints := []Point{
-			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
-			{X: result.Left - boxPad, Y: result.Top - boxPad},
-			{X: result.Left + result.Width() + boxPad, Y: result.Top - boxPad},
-			{X: result.Left + result.Width() + boxPad, Y: result.Bottom + boxPad},
-			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
-		}
-		p.LineStroke(boxPoints, theme.GetTitleBorderColor(), opt.BorderWidth)
+		drawBorderBox(p, result, theme.GetTitleBorderColor(), opt.BorderWidth)
 	}
 	return result, nil
 }

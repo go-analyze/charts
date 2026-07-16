@@ -199,14 +199,11 @@ func parseViolinSampleOptions(options []string) (string, *float64, error) {
 			continue
 		}
 
-		if valueText, ok := strings.CutPrefix(option, "bandwidth="); ok {
-			bandwidth, err := strconv.ParseFloat(strings.TrimSpace(valueText), 64)
-			if err != nil || bandwidth <= 0 || math.IsNaN(bandwidth) || math.IsInf(bandwidth, 0) {
-				return "", nil, errors.New("invalid bandwidth override")
-			}
-			bandwidthOverride = &bandwidth
-			continue
-		} else if valueText, ok := strings.CutPrefix(option, "bw="); ok {
+		valueText, ok := strings.CutPrefix(option, "bandwidth=")
+		if !ok {
+			valueText, ok = strings.CutPrefix(option, "bw=")
+		}
+		if ok {
 			bandwidth, err := strconv.ParseFloat(strings.TrimSpace(valueText), 64)
 			if err != nil || bandwidth <= 0 || math.IsNaN(bandwidth) || math.IsInf(bandwidth, 0) {
 				return "", nil, errors.New("invalid bandwidth override")
@@ -462,30 +459,19 @@ func violinConfigureRenderOption(sl ViolinSeriesList, horizontal bool, limit *fl
 	catAxis.Show = Ptr(false)
 	catAxis.Labels = categoryLabels
 
-	if horizontal {
-		// Horizontal: category on X (hidden), value on Y
-		valueAxisLabelCount :=
-			violinResolveValueAxisLabelCount(valAxis.LabelCount, valAxis.LabelCountAdjustment)
-		axisMin, axisMax := violinResolveAxisBounds(absMax, limit, valueAxisLabelCount, valAxis.Unit)
-		valAxis.Min = &axisMin
-		valAxis.Max = &axisMax
-		valAxis.LabelCount = valueAxisLabelCount
-		valAxis.LabelCountAdjustment = 0
-		valAxis.ValueFormatter = absoluteValueFormatter
-		valAxis.RangeValuePaddingScale = Ptr(0.0)
-	} else {
-		// Vertical: category on Y (hidden), value on X
+	// Horizontal: category on X (hidden), value on Y; Vertical: category on Y (hidden), value on X
+	if !horizontal {
 		valAxis.Labels = nil
-		valueAxisLabelCount :=
-			violinResolveValueAxisLabelCount(valAxis.LabelCount, valAxis.LabelCountAdjustment)
-		valAxis.LabelCountAdjustment = 0
-		valAxis.ValueFormatter = absoluteValueFormatter
-		axisMin, axisMax := violinResolveAxisBounds(absMax, limit, valueAxisLabelCount, valAxis.Unit)
-		valAxis.Min = &axisMin
-		valAxis.Max = &axisMax
-		valAxis.LabelCount = valueAxisLabelCount
-		valAxis.RangeValuePaddingScale = Ptr(0.0)
 	}
+	valueAxisLabelCount :=
+		violinResolveValueAxisLabelCount(valAxis.LabelCount, valAxis.LabelCountAdjustment)
+	axisMin, axisMax := violinResolveAxisBounds(absMax, limit, valueAxisLabelCount, valAxis.Unit)
+	valAxis.Min = &axisMin
+	valAxis.Max = &axisMax
+	valAxis.LabelCount = valueAxisLabelCount
+	valAxis.LabelCountAdjustment = 0
+	valAxis.ValueFormatter = absoluteValueFormatter
+	valAxis.RangeValuePaddingScale = Ptr(0.0)
 	return catAxis, valAxis
 }
 

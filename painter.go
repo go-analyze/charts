@@ -288,21 +288,41 @@ func (p *Painter) Circle(radius float64, x, y int, fillColor, strokeColor Color,
 // Points with values of math.MaxInt32 are skipped, resulting in a gap.
 // Single or isolated points result in just a dot being drawn at the point.
 func (p *Painter) LineStroke(points []Point, strokeColor Color, strokeWidth float64) {
+	eachPointSegment(points, func(segment []Point) {
+		p.drawStraightPath(segment, true)
+		p.stroke(strokeColor, strokeWidth)
+	})
+}
+
+// drawBorderBox strokes a border around box, padded outward to allow for measure vs render variations.
+func drawBorderBox(p *Painter, box Box, borderColor Color, borderWidth float64) {
+	boxPad := 10
+	boxPoints := []Point{
+		{X: box.Left - boxPad, Y: box.Bottom + boxPad},
+		{X: box.Left - boxPad, Y: box.Top - boxPad},
+		{X: box.Right + boxPad, Y: box.Top - boxPad},
+		{X: box.Right + boxPad, Y: box.Bottom + boxPad},
+		{X: box.Left - boxPad, Y: box.Bottom + boxPad},
+	}
+	p.LineStroke(boxPoints, borderColor, borderWidth)
+}
+
+// eachPointSegment invokes render for each contiguous run of points, splitting on
+// math.MaxInt32 break markers. The final segment is always rendered to match the
+// draw-remaining-points behavior of the stroke/fill methods.
+func eachPointSegment(points []Point, render func(segment []Point)) {
 	valid := make([]Point, 0, len(points))
 	for _, pt := range points {
 		if pt.Y == math.MaxInt32 {
-			// If we encounter a break, draw the accumulated segment
 			if len(valid) > 0 {
-				p.drawStraightPath(valid, true)
-				p.stroke(strokeColor, strokeWidth)
-				valid = valid[:0] // reset
+				render(valid)
+				valid = valid[:0]
 			}
 			continue
 		}
 		valid = append(valid, pt)
 	}
-	p.drawStraightPath(valid, true)
-	p.stroke(strokeColor, strokeWidth)
+	render(valid)
 }
 
 // drawStraightPath draws a simple (non-curved) path for the given points.
@@ -336,22 +356,10 @@ func (p *Painter) SmoothLineStroke(points []Point, tension float64, strokeColor 
 		tension = 1
 	}
 
-	valid := make([]Point, 0, len(points)) // Slice to hold valid points between breaks
-	for _, pt := range points {
-		if pt.Y == math.MaxInt32 {
-			// When a line break is found, draw the curve for the accumulated valid points if any
-			if len(valid) > 0 {
-				p.drawSmoothCurve(valid, tension, true)
-				p.stroke(strokeColor, strokeWidth)
-				valid = valid[:0] // reset
-			}
-			continue
-		}
-		valid = append(valid, pt)
-	}
-	// draw any remaining points collected
-	p.drawSmoothCurve(valid, tension, true)
-	p.stroke(strokeColor, strokeWidth)
+	eachPointSegment(points, func(segment []Point) {
+		p.drawSmoothCurve(segment, tension, true)
+		p.stroke(strokeColor, strokeWidth)
+	})
 }
 
 // drawSmoothCurve handles the actual path drawing (MoveTo/LineTo/QuadCurveTo)
@@ -386,21 +394,10 @@ func (p *Painter) drawSmoothCurve(points []Point, tension float64, dotForSingleP
 // DashedLineStroke draws line segments through the provided points with dashed strokes.
 // Points with values of math.MaxInt32 are skipped, resulting in a gap.
 func (p *Painter) DashedLineStroke(points []Point, strokeColor Color, strokeWidth float64, strokeDashArray []float64) {
-	valid := make([]Point, 0, len(points))
-	for _, pt := range points {
-		if pt.Y == math.MaxInt32 {
-			// If we encounter a break, draw the accumulated segment
-			if len(valid) > 0 {
-				p.drawStraightPath(valid, true)
-				p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
-				valid = valid[:0] // reset
-			}
-			continue
-		}
-		valid = append(valid, pt)
-	}
-	p.drawStraightPath(valid, true)
-	p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+	eachPointSegment(points, func(segment []Point) {
+		p.drawStraightPath(segment, true)
+		p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+	})
 }
 
 // SmoothDashedLineStroke draws a smooth dashed curve through the given points.
@@ -412,21 +409,10 @@ func (p *Painter) SmoothDashedLineStroke(points []Point, tension float64, stroke
 		tension = 1
 	}
 
-	valid := make([]Point, 0, len(points))
-	for _, pt := range points {
-		if pt.Y == math.MaxInt32 {
-			// If we encounter a break, draw the accumulated segment
-			if len(valid) > 0 {
-				p.drawSmoothCurve(valid, tension, true)
-				p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
-				valid = valid[:0] // reset
-			}
-			continue
-		}
-		valid = append(valid, pt)
-	}
-	p.drawSmoothCurve(valid, tension, true)
-	p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+	eachPointSegment(points, func(segment []Point) {
+		p.drawSmoothCurve(segment, tension, true)
+		p.dashedStroke(strokeColor, strokeWidth, strokeDashArray)
+	})
 }
 
 // dashedStroke applies the stroke with the given dash array.
@@ -673,23 +659,10 @@ func (p *Painter) FillArea(points []Point, fillColor Color) {
 		return
 	}
 
-	valid := make([]Point, 0, len(points))
-	for _, pt := range points {
-		if pt.Y == math.MaxInt32 {
-			// If we encounter a break, fill the accumulated segment
-			if len(valid) > 0 {
-				p.drawStraightPath(valid, false)
-				p.fill(fillColor)
-				valid = valid[:0] // reset
-			}
-			continue
-		}
-		valid = append(valid, pt)
-	}
-
-	// Fill the last segment if there is one
-	p.drawStraightPath(valid, false)
-	p.fill(fillColor)
+	eachPointSegment(points, func(segment []Point) {
+		p.drawStraightPath(segment, false)
+		p.fill(fillColor)
+	})
 }
 
 // smoothFillChartArea draws a smooth curve for the "top" portion of points but uses straight lines for

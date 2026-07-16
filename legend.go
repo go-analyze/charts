@@ -338,15 +338,7 @@ func (l *legendPainter) Render() (Box, error) {
 
 	if opt.BorderWidth > 0 {
 		// TODO - if drawn over the chart this can look awkward, we should try to draw this first
-		boxPad := 10 // built in adjustment for possible measure vs render variations
-		boxPoints := []Point{
-			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
-			{X: result.Left - boxPad, Y: result.Top - boxPad},
-			{X: result.Left + result.Width() + boxPad, Y: result.Top - boxPad},
-			{X: result.Left + result.Width() + boxPad, Y: result.Bottom + boxPad},
-			{X: result.Left - boxPad, Y: result.Bottom + boxPad},
-		}
-		p.LineStroke(boxPoints, theme.GetLegendBorderColor(), opt.BorderWidth)
+		drawBorderBox(p, result, theme.GetLegendBorderColor(), opt.BorderWidth)
 	}
 
 	return result, nil

@@ -113,14 +113,14 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	if opt.XAxis.BoundaryGap != nil {
 		boundaryGap = *opt.XAxis.BoundaryGap
 	}
-	xDivideCount := max(getSeriesMaxDataCount(opt.SeriesList), len(opt.XAxis.Labels))
+	dataCount := getSeriesMaxDataCount(opt.SeriesList)
+	xDivideCount := max(dataCount, len(opt.XAxis.Labels))
 	if boundaryGap && xDivideCount > 1 && seriesPainter.Width()/xDivideCount <= boundaryGapDefaultThreshold {
 		// boundary gap would be so small it's visually better to disable the line spacing adjustment.
 		// Although label changes can be forced to center, this behavior is unconditional for the line
 		boundaryGap = false
 	}
 	xValues := boundaryGapAxisPositions(seriesPainter.Width(), boundaryGap, xDivideCount)
-	dataCount := getSeriesMaxDataCount(opt.SeriesList)
 	// accumulatedValues is used for stacking: it holds the summed data values at each X index
 	var accumulatedValues []float64
 	if stackedSeries {
