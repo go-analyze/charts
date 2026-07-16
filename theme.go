@@ -824,6 +824,16 @@ func makeColorPalette(o ThemeOption) *themeColorPalette {
 	if o.TitleBorderColor.IsZero() {
 		o.TitleBorderColor = ColorBlack
 	}
+	if len(o.SeriesColors) == 0 { // fall back to the default theme to avoid an empty palette
+		dt := GetDefaultTheme()
+		if tcp, ok := dt.(*themeColorPalette); ok {
+			o.SeriesColors = tcp.seriesColors
+		} else {
+			o.SeriesColors = []Color{
+				dt.GetSeriesColor(0), dt.GetSeriesColor(1), dt.GetSeriesColor(2), dt.GetSeriesColor(3),
+			}
+		}
+	}
 	for i := len(o.SeriesTrendColors); i < len(o.SeriesColors); i++ {
 		o.SeriesTrendColors = append(o.SeriesTrendColors, autoSeriesTrendColor(o.SeriesColors[i]))
 	}
