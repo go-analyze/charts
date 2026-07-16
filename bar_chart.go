@@ -287,6 +287,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 				labelPainter.Add(labelValue{
 					vertical:  true, // label is vertically oriented
 					index:     index,
+					dataIndex: j,
 					value:     item,
 					fontStyle: fontStyle,
 					x:         x + (barWidth >> 1),
@@ -550,6 +551,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 				labelPainter.Add(labelValue{
 					vertical:  false, // horizontal label
 					index:     index,
+					dataIndex: j,
 					value:     item,
 					x:         labelX,
 					y:         labelY,

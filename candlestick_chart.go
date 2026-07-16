@@ -382,7 +382,8 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 			// Add label if enabled (pattern logic is now handled in the label formatter)
 			if labelPainter != nil {
 				labelPainter.Add(labelValue{
-					index:     j,          // Data point index (candlestick position), not series index
+					index:     j, // Data point index (candlestick position), not series index
+					dataIndex: j,
 					value:     ohlc.Close, // Use close price for label
 					x:         centerX,
 					y:         closeY,

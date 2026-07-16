@@ -243,6 +243,7 @@ func interpolateMultipleColors(colors []Color, factor float64) Color {
 type labelRenderValue struct {
 	text            string
 	fontStyle       FontStyle
+	dataIndex       int
 	x               int
 	y               int
 	radians         float64
@@ -254,6 +255,7 @@ type labelRenderValue struct {
 
 type labelValue struct {
 	index     int
+	dataIndex int // series data index, used to correlate mark point label suppression
 	value     float64
 	x         int
 	y         int
@@ -342,6 +344,7 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 	renderValue := labelRenderValue{
 		text:      text,
 		fontStyle: labelFontStyle,
+		dataIndex: value.dataIndex,
 		x:         value.x,
 		y:         value.y,
 		radians:   value.radians,

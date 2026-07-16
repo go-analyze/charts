@@ -1175,6 +1175,26 @@ func TestLineChart(t *testing.T) {
 			},
 			pngCRC: 0x1a686a7b,
 		},
+		{
+			// Threshold formatter hides some labels, shortening the label slice below the data length
+			name: "mark_point_threshold_labels",
+			makeOptions: func() LineChartOption {
+				return LineChartOption{
+					Padding: NewBoxEqual(20),
+					SeriesList: NewSeriesListLine([][]float64{{5, 900, 15, 300, 200}}, LineSeriesOption{
+						Label: SeriesLabel{
+							Show:           Ptr(true),
+							LabelFormatter: LabelFormatterThresholdMin(100),
+						},
+						MarkPoint: NewMarkPoint(SeriesMarkTypeMax),
+					}),
+					XAxis:  XAxisOption{Labels: []string{"a", "b", "c", "d", "e"}},
+					YAxis:  []YAxisOption{{Show: Ptr(false)}},
+					Legend: LegendOption{Show: Ptr(false)},
+				}
+			},
+			pngCRC: 0xa131d49d,
+		},
 	}
 
 	for i, tt := range tests {

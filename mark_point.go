@@ -109,9 +109,13 @@ func (m *markPointPainter) Render() (Box, error) {
 			}
 			p := opt.points[index]
 			if opt.seriesLabelPainter != nil {
-				// the series label has been replaced by our MarkPoint
-				// This is why MarkPoints must be rendered BEFORE series labels
-				opt.seriesLabelPainter.values[index].text = ""
+				// blank the label the MarkPoint replaces (rendered before series labels)
+				for i := range opt.seriesLabelPainter.values {
+					if opt.seriesLabelPainter.values[i].dataIndex == index {
+						opt.seriesLabelPainter.values[i].text = ""
+						break
+					}
+				}
 			}
 
 			// In the default (down-pointing) pin, the anchor passed to MarkPin is the base of

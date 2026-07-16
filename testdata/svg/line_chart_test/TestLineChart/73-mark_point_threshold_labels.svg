@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 20 355
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 20 360
+L 20 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 132 360
+L 132 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 244 360
+L 244 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 356 360
+L 356 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 468 360
+L 468 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 360
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="72" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">a</text><text x="184" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">b</text><text x="296" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">c</text><text x="408" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">d</text><text x="520" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">e</text><path d="M 76 354
+L 188 81
+L 300 351
+L 412 264
+L 524 295" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><circle cx="76" cy="354" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="188" cy="81" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="300" cy="351" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="412" cy="264" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><circle cx="524" cy="295" r="2" style="stroke-width:1;stroke:rgb(84,112,198);fill:white"/><path d="M 184 74
+A 14 14 330.00 1 1 192 74
+L 188 60
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 174 60
+Q188,95 202,60
+Z" style="stroke:none;fill:rgb(84,112,198)"/><text x="177" y="65" style="stroke:none;fill:rgb(238,238,238);font-size:12.8px;font-family:'Roboto Medium',sans-serif">900</text><text x="417" y="268" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">300</text><text x="529" y="299" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">200</text></svg>

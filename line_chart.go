@@ -184,10 +184,11 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 
 			if labelPainter != nil {
 				labelPainter.Add(labelValue{
-					index: index,
-					value: item,
-					x:     points[i].X,
-					y:     points[i].Y,
+					index:     index,
+					dataIndex: i,
+					value:     item,
+					x:         points[i].X,
+					y:         points[i].Y,
 				})
 			}
 		}
