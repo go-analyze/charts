@@ -163,8 +163,8 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 	padLabelCount := prep.padLabelCount
 	maxLabelCount := prep.maxLabelCount
 	if targetLabelCount > 0 {
-		padLabelCount = targetLabelCount
-		maxLabelCount = targetLabelCount
+		padLabelCount = max(targetLabelCount, minimumAxisLabels)
+		maxLabelCount = padLabelCount
 		flexCount = false
 	}
 

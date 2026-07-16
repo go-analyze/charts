@@ -1004,6 +1004,25 @@ func TestCoordinateValueAxisRanges(t *testing.T) {
 		assert.Equal(t, 5, results[1].labelCount)
 	})
 
+	t.Run("forced_count_one", func(t *testing.T) {
+		// LabelCount:1 must clamp to minimumAxisLabels, else padRange divides by zero and hangs
+		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+		leftSeries := testSeriesList{{values: []float64{0, 100}}}
+		leftPrep := prepareValueAxisRange(p, true, 500,
+			nil, nil, nil, nil, 1, 0, 0,
+			leftSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
+		rightSeries := testSeriesList{{values: []float64{0, 200}}}
+		rightPrep := prepareValueAxisRange(p, true, 500,
+			nil, nil, nil, nil, 0, 0, 0,
+			rightSeries, 0, false, defaultValueFormatter, 0, fs, Ptr(true))
+
+		results := coordinateValueAxisRanges(p, []*valueAxisPrep{&leftPrep, &rightPrep})
+
+		assert.Len(t, results, 2)
+		assert.GreaterOrEqual(t, results[0].labelCount, minimumAxisLabels)
+		assert.GreaterOrEqual(t, results[1].labelCount, minimumAxisLabels)
+	})
+
 	t.Run("conflicting_counts", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 800, Height: 600})
 		leftSeries := testSeriesList{{values: []float64{0, 100}}}
