@@ -133,6 +133,19 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		assert.Equal(t, []string{"0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"}, ar.labels)
 	})
 
+	t.Run("label_unit_extreme", func(t *testing.T) {
+		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+		series := testSeries{yAxisIndex: 0, values: []float64{0, 1e6}}
+		tsl := testSeriesList{series}
+
+		ar := calculateValueAxisRange(p, true, 600, nil, nil, nil,
+			nil, 0, 0.001, 0,
+			tsl, 0, false, defaultValueFormatter, 0, fs, nil)
+
+		assert.GreaterOrEqual(t, ar.labelCount, minimumAxisLabels)
+		assert.Less(t, ar.labelCount, 100) // bounded, not ~1e9
+	})
+
 	t.Run("label_unit_adjusted_positive", func(t *testing.T) {
 		p := NewPainter(PainterOptions{Width: 1200, Height: 600})
 		series := testSeries{yAxisIndex: 0, values: []float64{10, 100}}

@@ -96,7 +96,8 @@ func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	initialLabelCount := labelCountCfg
 	if initialLabelCount < 1 {
 		if labelUnit > 0 {
-			initialLabelCount = int((maxVal-minVal)/labelUnit) + 1
+			// bound by axisSize so a tiny unit can't request more labels than pixels
+			initialLabelCount = int(min((maxVal-minVal)/labelUnit, float64(axisSize))) + 1
 		} else {
 			initialLabelCount =
 				min(max(int(maxVal-minVal)+1, defaultYAxisLabelCountLow),
