@@ -532,6 +532,9 @@ func (p *Painter) VerticalMarkLine(x, y, height int, fillColor, strokeColor Colo
 
 // Polygon draws a polygon with the specified center, radius, and number of sides.
 func (p *Painter) Polygon(center Point, radius float64, sides int, strokeColor Color, strokeWidth float64) {
+	if sides < 3 {
+		return // a polygon needs at least 3 vertices
+	}
 	points := getPolygonPoints(center, radius, sides)
 	p.drawStraightPath(points, false)
 	p.lineTo(points[0].X, points[0].Y)
