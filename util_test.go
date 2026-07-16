@@ -107,20 +107,6 @@ func TestGetFlexibleRadius(t *testing.T) {
 	assert.InDelta(t, 40.0, getFlexibleRadius(100, defaultPieRadiusFactor, ""), 0)
 }
 
-func TestReverseSlice(t *testing.T) {
-	t.Parallel()
-
-	arr := []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
-	reverseSlice(arr)
-	assert.Equal(t, []string{
-		"Sun", "Sat", "Fri", "Thu", "Wed", "Tue", "Mon",
-	}, arr)
-
-	numbers := []int{1, 3, 5, 7, 9}
-	reverseSlice(numbers)
-	assert.Equal(t, []int{9, 7, 5, 3, 1}, numbers)
-}
-
 func TestSliceToFloat64(t *testing.T) {
 	t.Parallel()
 

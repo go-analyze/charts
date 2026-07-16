@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"slices"
 )
 
 const (
@@ -277,8 +278,7 @@ func (m *Matrix) Augment(m2 *Matrix) (*Matrix, error) {
 
 // Copy returns a duplicate of a given matrix.
 func (m *Matrix) Copy() *Matrix {
-	m2 := &Matrix{stride: m.stride, epsilon: m.epsilon, elements: make([]float64, len(m.elements))}
-	copy(m2.elements, m.elements)
+	m2 := &Matrix{stride: m.stride, epsilon: m.epsilon, elements: slices.Clone(m.elements)}
 	return m2
 }
 

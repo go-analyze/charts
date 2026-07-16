@@ -75,12 +75,6 @@ func autoDivideSpans(max, size int, spans []int) []int {
 	return values
 }
 
-func reverseSlice[T any](s []T) {
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
-	}
-}
-
 // SliceToFloat64 converts a slice of arbitrary types to float64 using the provided conversion function.
 func SliceToFloat64[T any](slice []T, conversion func(T) float64) []float64 {
 	return bulk.SliceTransform(conversion, slice)

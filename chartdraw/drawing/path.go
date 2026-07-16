@@ -3,6 +3,7 @@ package drawing
 import (
 	"fmt"
 	"math"
+	"slices"
 )
 
 // PathBuilder describes the interface for path drawing.
@@ -142,10 +143,8 @@ func (p *Path) Close() {
 // Copy make a clone of the current path and return it.
 func (p *Path) Copy() (dest *Path) {
 	dest = new(Path)
-	dest.Components = make([]PathComponent, len(p.Components))
-	copy(dest.Components, p.Components)
-	dest.Points = make([]float64, len(p.Points))
-	copy(dest.Points, p.Points)
+	dest.Components = slices.Clone(p.Components)
+	dest.Points = slices.Clone(p.Points)
 	dest.x, dest.y = p.x, p.y
 	return dest
 }

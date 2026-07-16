@@ -67,12 +67,9 @@ func (m SeriesMarkList) filterGlobal(global bool) SeriesMarkList {
 }
 
 func hasMarkType(seriesMarks []SeriesMark, global bool, typeStr string) bool {
-	for _, sm := range seriesMarks {
-		if sm.Global == global && sm.Type == typeStr {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(seriesMarks, func(sm SeriesMark) bool {
+		return sm.Global == global && sm.Type == typeStr
+	})
 }
 
 // GenericSeries references a population of data for any chart type. Chart-specific fields are only active

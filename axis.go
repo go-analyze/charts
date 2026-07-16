@@ -2,6 +2,7 @@ package charts
 
 import (
 	"math"
+	"slices"
 )
 
 type CategoryAxisOption struct {
@@ -337,10 +338,8 @@ func (a *axisPainter) Render() (Box, error) {
 	// vertical: reverse to match multitext expectations (draws from top down)
 	// horizontal + reversed: right-anchored value axis runs max-to-min left-to-right
 	if isVertical || opt.aRange.reversed {
-		// TODO - replace copy with slices.Clone with go update
-		rangeLabels = make([]string, len(opt.aRange.labels))
-		copy(rangeLabels, opt.aRange.labels)
-		reverseSlice(rangeLabels)
+		rangeLabels = slices.Clone(opt.aRange.labels)
+		slices.Reverse(rangeLabels)
 	}
 
 	// Decide whether to center the labels between ticks or align them

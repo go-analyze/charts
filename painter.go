@@ -717,8 +717,8 @@ func (p *Painter) smoothFillChartArea(points []Point, tension float64, fillColor
 
 	// Add sharp lines to close the shape at the bottom
 	// The path is currently at the last top point we drew. Now we need to draw to corner1 -> corner2 -> firstTopAgain
-	for i := 0; i < len(bottom); i++ {
-		p.lineTo(bottom[i].X, bottom[i].Y)
+	for _, pt := range bottom {
+		p.lineTo(pt.X, pt.Y)
 	}
 	p.fill(fillColor)
 }

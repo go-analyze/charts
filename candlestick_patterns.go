@@ -2,6 +2,7 @@ package charts
 
 import (
 	"math"
+	"slices"
 	"strings"
 )
 
@@ -90,13 +91,11 @@ func (c *CandlestickPatternConfig) MergePatterns(other *CandlestickPatternConfig
 		return nil
 	} else if c == nil {
 		result := *other // Return a copy of other
-		result.EnabledPatterns = make([]string, len(other.EnabledPatterns))
-		copy(result.EnabledPatterns, other.EnabledPatterns)
+		result.EnabledPatterns = slices.Clone(other.EnabledPatterns)
 		return &result
 	} else if other == nil {
 		result := *c // Return a copy of c
-		result.EnabledPatterns = make([]string, len(c.EnabledPatterns))
-		copy(result.EnabledPatterns, c.EnabledPatterns)
+		result.EnabledPatterns = slices.Clone(c.EnabledPatterns)
 		return &result
 	}
 
@@ -159,10 +158,8 @@ type PatternDetectionResult struct {
 
 // addPattern is a helper to add a pattern to the list if not already present.
 func (c *CandlestickPatternConfig) addPattern(pattern string) {
-	for _, p := range c.EnabledPatterns {
-		if p == pattern {
-			return
-		}
+	if slices.Contains(c.EnabledPatterns, pattern) {
+		return
 	}
 	c.EnabledPatterns = append(c.EnabledPatterns, pattern)
 }

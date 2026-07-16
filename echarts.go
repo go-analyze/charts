@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -190,7 +191,7 @@ func (eb *EChartsPadding) UnmarshalJSON(data []byte) error {
 	if len(data) == 0 {
 		return nil
 	}
-	arr := make([]int, 0)
+	var arr []int
 	if err := json.Unmarshal(data, &arr); err != nil {
 		return err
 	}
@@ -271,7 +272,7 @@ func (emd *EChartsMarkData) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 	data = convertToArray(data)
-	ds := make([]*_EChartsMarkData, 0)
+	var ds []*_EChartsMarkData
 	if err := json.Unmarshal(data, &ds); err != nil {
 		return err
 	}
@@ -538,13 +539,9 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			}
 		}
 	}
-	var isHorizontalChart bool
-	for _, item := range eo.XAxis.Data {
-		if item.Type == "value" {
-			isHorizontalChart = true
-			break
-		}
-	}
+	isHorizontalChart := slices.ContainsFunc(eo.XAxis.Data, func(item EChartsXAxisData) bool {
+		return item.Type == "value"
+	})
 	if isHorizontalChart {
 		for index := range o.SeriesList {
 			switch o.SeriesList[index].Type {

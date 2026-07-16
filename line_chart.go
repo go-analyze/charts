@@ -2,6 +2,7 @@ package charts
 
 import (
 	"math"
+	"slices"
 )
 
 type lineChart struct {
@@ -194,8 +195,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 
 		if (series.YAxisIndex == 0 && fillAreaY0) || fillAreaY1 {
-			areaPoints := make([]Point, len(points))
-			copy(areaPoints, points)
+			areaPoints := slices.Clone(points)
 			for i, p := range areaPoints {
 				if p.Y != math.MaxInt32 {
 					if i > 0 {

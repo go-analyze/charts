@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"math"
+	"slices"
 
 	"github.com/golang/freetype/truetype"
 )
@@ -386,23 +387,16 @@ func (c Chart) setRangeDomains(canvasBox Box, xr, yr, yra Range) (Range, Range, 
 }
 
 func (c Chart) hasAnnotationSeries() bool {
-	for _, s := range c.Series {
-		if as, isAnnotationSeries := s.(AnnotationSeries); isAnnotationSeries {
-			if !as.GetStyle().Hidden {
-				return true
-			}
-		}
-	}
-	return false
+	return slices.ContainsFunc(c.Series, func(s Series) bool {
+		as, ok := s.(AnnotationSeries)
+		return ok && !as.GetStyle().Hidden
+	})
 }
 
 func (c Chart) hasSecondarySeries() bool {
-	for _, s := range c.Series {
-		if s.GetYAxis() == YAxisSecondary {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(c.Series, func(s Series) bool {
+		return s.GetYAxis() == YAxisSecondary
+	})
 }
 
 func (c Chart) getAnnotationAdjustedCanvasBox(r Renderer, canvasBox Box, xr, yr, yra Range) Box {

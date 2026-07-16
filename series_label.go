@@ -113,8 +113,7 @@ func LabelFormatterTopN(values []float64, n int) SeriesLabelFormatter {
 	}
 
 	// Sort values in ascending order to find the nth highest
-	sortedValues := make([]float64, len(values))
-	copy(sortedValues, values)
+	sortedValues := slices.Clone(values)
 	slices.Sort(sortedValues)
 
 	// set threshold to the nth highest (from the end of ascending sorted slice)

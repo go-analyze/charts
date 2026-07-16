@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 	"math"
+	"slices"
 )
 
 type candlestickChart struct {
@@ -59,8 +60,7 @@ func NewCandlestickOptionWithData(data ...[]OHLCData) CandlestickChartOption {
 
 // NewCandlestickOptionWithSeries returns an initialized CandlestickChartOption with the provided Series.
 func NewCandlestickOptionWithSeries(series ...CandlestickSeries) CandlestickChartOption {
-	seriesList := make(CandlestickSeriesList, len(series))
-	copy(seriesList, series)
+	seriesList := CandlestickSeriesList(slices.Clone(series))
 	return CandlestickChartOption{
 		SeriesList:     seriesList,
 		Padding:        defaultPadding,
