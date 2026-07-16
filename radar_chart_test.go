@@ -87,6 +87,33 @@ func TestRadarChart(t *testing.T) {
 			},
 			pngCRC: 0xb796d25a,
 		},
+		{
+			name: "empty_values_series_skipped",
+			makeOptions: func() RadarChartOption {
+				opt := makeBasicRadarChartOption()
+				opt.SeriesList = append(opt.SeriesList, RadarSeries{Name: "Empty"})
+				return opt
+			},
+			pngCRC: 0x961a40e4,
+		},
+		{
+			name: "all_series_empty_values",
+			makeOptions: func() RadarChartOption {
+				return NewRadarChartOptionWithData([][]float64{{}},
+					[]string{"Sales", "Admin", "IT"}, []float64{100, 200, 300})
+			},
+			pngCRC: 0xdc6e49d1,
+		},
+		{
+			name: "values_longer_than_indicators",
+			makeOptions: func() RadarChartOption {
+				opt := NewRadarChartOptionWithData([][]float64{{100, 200, 300, 400}},
+					[]string{"Sales", "Admin", "IT"}, []float64{100, 200, 300})
+				opt.SeriesList.SetSeriesLabels(SeriesLabel{Show: Ptr(true)})
+				return opt
+			},
+			pngCRC: 0x69d38bc5,
+		},
 	}
 
 	for i, tt := range tests {

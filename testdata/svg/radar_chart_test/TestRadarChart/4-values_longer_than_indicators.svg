@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 20 20
+L 580 20
+L 580 380
+L 20 380
+L 20 20" style="stroke:none;fill:white"/><path d="M 300 175
+L 321 212
+L 279 212
+L 300 175" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 150
+L 343 224
+L 257 225
+L 300 150" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 125
+L 364 237
+L 236 237
+L 300 125" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 100
+L 386 249
+L 214 250
+L 300 100" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 75
+L 408 262
+L 192 262
+L 300 75" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 200
+L 300 75" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 200
+L 408 262" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 200
+L 192 262" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><text x="284" y="67" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Sales</text><text x="413" y="267" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">Admin</text><text x="175" y="267" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">IT</text><path d="M 300 75
+L 408 262
+L 192 262
+L 300 75" style="stroke-width:2;stroke:rgb(84,112,198);fill:none"/><path d="M 300 75
+L 408 262
+L 192 262
+L 300 75" style="stroke:none;fill:rgba(84,112,198,0.1)"/><circle cx="300" cy="75" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><text x="289" y="75" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">100</text><circle cx="408" cy="262" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><text x="397" y="262" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">200</text><circle cx="192" cy="262" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/><text x="181" y="262" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">300</text><circle cx="300" cy="75" r="2" style="stroke-width:2;stroke:rgb(84,112,198);fill:white"/></svg>

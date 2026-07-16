@@ -187,6 +187,9 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 			p := getPolygonPoint(center, r, angles[j])
 			linePoints = append(linePoints, p)
 		}
+		if len(linePoints) == 0 {
+			continue // no values to render
+		}
 		color := theme.GetSeriesColor(index)
 		dotFillColor := ColorWhite
 		if theme.IsDark() {
@@ -198,7 +201,7 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 		dotWith := defaultDotWidth
 		for index, point := range linePoints {
 			seriesPainter.Circle(dotWith, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
-			if flagIs(true, series.Label.Show) && index < len(series.Values) {
+			if flagIs(true, series.Label.Show) && index < len(linePoints)-1 {
 				fontStyle := fillFontStyleDefaults(series.Label.FontStyle,
 					defaultLabelFontSize, theme.GetLabelTextColor(), seriesPainter.font)
 				valueStr := valueFormatter(series.Values[index])
