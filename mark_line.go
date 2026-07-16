@@ -72,6 +72,9 @@ func (m *markLinePainter) Render() (Box, error) {
 			continue
 		}
 		summary := resolveMarkLineSummary(opt)
+		if summary.MaxIndex < 0 {
+			continue // no valid data (all null)
+		}
 		fontStyle := FontStyle{
 			Font:      getPreferredFont(opt.font),
 			FontColor: opt.fontColor,

@@ -32,6 +32,25 @@ func TestMarkPoint(t *testing.T) {
 				return p.Bytes()
 			},
 		},
+		{ // all-null series must not panic and renders no mark point
+			render: func(p *Painter) ([]byte, error) {
+				markPoint := newMarkPointPainter(p)
+				markPoint.add(markPointRenderOption{
+					fillColor:    ColorBlack,
+					seriesValues: []float64{GetNullValue(), GetNullValue(), GetNullValue()},
+					markpoints:   NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeMin),
+					points: []Point{
+						{X: 10, Y: 10},
+						{X: 30, Y: 30},
+						{X: 50, Y: 50},
+					},
+				})
+				if _, err := markPoint.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+		},
 	}
 
 	for i, tt := range tests {

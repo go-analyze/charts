@@ -30,6 +30,23 @@ func TestMarkLine(t *testing.T) {
 				return p.Bytes()
 			},
 		},
+		{ // all-null series renders no mark line
+			render: func(p *Painter) ([]byte, error) {
+				markLine := newMarkLinePainter(p)
+				markLine.add(markLineRenderOption{
+					fillColor:    ColorBlack,
+					fontColor:    ColorBlack,
+					strokeColor:  ColorBlack,
+					seriesValues: []float64{GetNullValue(), GetNullValue(), GetNullValue()},
+					marklines:    NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeAverage, SeriesMarkTypeMin),
+					axisRange:    newTestRange(p.Height(), 6, 0.0, 5.0, 0.0, 0.0),
+				})
+				if _, err := markLine.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+		},
 	}
 
 	for i, tt := range tests {

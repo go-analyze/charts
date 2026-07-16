@@ -104,6 +104,9 @@ func (m *markPointPainter) Render() (Box, error) {
 				index = summary.MaxIndex
 				value = summary.Max
 			}
+			if index < 0 {
+				continue // no valid data (all null)
+			}
 			p := opt.points[index]
 			if opt.seriesLabelPainter != nil {
 				// the series label has been replaced by our MarkPoint
