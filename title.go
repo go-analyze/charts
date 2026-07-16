@@ -106,8 +106,6 @@ func (t *titlePainter) Render() (Box, error) {
 		measureOptions[index].height = h
 		measureOptions[index].width = w
 	}
-	width := textMaxWidth
-
 	offset := opt.Offset
 	var titleX int
 	switch offset.Left {
@@ -149,7 +147,7 @@ func (t *titlePainter) Render() (Box, error) {
 		Top:    startY,
 		Bottom: titleY,
 		Left:   titleX,
-		Right:  titleX + width,
+		Right:  titleX + textMaxWidth,
 		IsSet:  true,
 	}
 

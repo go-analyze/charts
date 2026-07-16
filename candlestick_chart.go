@@ -219,23 +219,11 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 		seriesCenterValues[seriesIndex] = make([]int, len(series.Data))
 		// Render each candlestick in this series
 		for j, ohlc := range series.Data {
-			if j >= maxDataCount || j >= len(divideValues) {
+			if j >= len(divideValues)-1 {
 				continue
 			}
-
-			// Position calculation: center candlesticks in each time period
-			// Calculate the center of each time period section
-			var sectionWidth int
-			if j < len(divideValues)-1 {
-				sectionWidth = divideValues[j+1] - divideValues[j]
-			} else {
-				// Last section uses same width as previous
-				if j > 0 {
-					sectionWidth = divideValues[j] - divideValues[j-1]
-				} else {
-					sectionWidth = seriesPainter.Width() / maxDataCount
-				}
-			}
+			// center candlesticks in each time period section
+			sectionWidth := divideValues[j+1] - divideValues[j]
 
 			// Calculate margins and positioning exactly like bar charts
 			var groupMargin, candleMargin, candleWidth int

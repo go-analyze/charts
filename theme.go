@@ -77,6 +77,8 @@ type ColorPalette interface {
 	WithLabelTextColor(Color) ColorPalette
 	// WithLegendTextColor returns a new ColorPalette with the specified legend text color.
 	WithLegendTextColor(Color) ColorPalette
+	// WithTextColor returns a new ColorPalette with the specified color applied to all text (title, mark, label, legend, and axes).
+	WithTextColor(Color) ColorPalette
 	// WithAxisSplitLineColor returns a new ColorPalette with the specified axis split line color.
 	WithAxisSplitLineColor(Color) ColorPalette
 	// WithXAxisTextColor returns a new ColorPalette with the specified x-axis label color.

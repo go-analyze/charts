@@ -806,31 +806,9 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		}
 		if len(violinSeriesList) != 0 {
 			vOpt.SeriesList = violinSeriesList
-			// vertical: X is the value axis
-			vOpt.ValueAxis.Show = opt.XAxis.Show
-			vOpt.ValueAxis.Title = opt.XAxis.Title
-			vOpt.ValueAxis.TitleFontStyle = opt.XAxis.TitleFontStyle
-			vOpt.ValueAxis.LabelFontStyle = opt.XAxis.LabelFontStyle
-			vOpt.ValueAxis.LabelRotation = opt.XAxis.LabelRotation
-			vOpt.ValueAxis.Unit = opt.XAxis.Unit
-			vOpt.ValueAxis.LabelCount = opt.XAxis.LabelCount
-			vOpt.ValueAxis.LabelCountAdjustment = opt.XAxis.LabelCountAdjustment
 		} else {
 			vOpt.Horizontal = true
 			vOpt.SeriesList = horizontalViolinSeriesList
-			// horizontal: Y is the value axis
-			if len(opt.YAxis) > 0 {
-				ya := opt.YAxis[0]
-				vOpt.ValueAxis.Show = ya.Show
-				vOpt.ValueAxis.Title = ya.Title
-				vOpt.ValueAxis.TitleFontStyle = ya.TitleFontStyle
-				vOpt.ValueAxis.LabelFontStyle = ya.LabelFontStyle
-				vOpt.ValueAxis.LabelRotation = ya.LabelRotation
-				vOpt.ValueAxis.Unit = ya.Unit
-				vOpt.ValueAxis.LabelCount = ya.LabelCount
-				vOpt.ValueAxis.LabelCountAdjustment = ya.LabelCountAdjustment
-				vOpt.ValueAxis.PreferNiceIntervals = ya.PreferNiceIntervals
-			}
 		}
 		handler.Add(func() error {
 			_, err := newViolinChart(p, vOpt).renderChart(renderResult)

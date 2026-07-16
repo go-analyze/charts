@@ -223,7 +223,6 @@ func (t *tableChart) render() (*renderInfo, error) {
 		Font:      fontStyle.Font,
 	}
 
-	// textAligns := opt.TextAligns
 	getTextAlign := func(index int) string {
 		if len(opt.TextAligns) <= index {
 			return ""
