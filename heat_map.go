@@ -185,7 +185,7 @@ func computeMinMax(values [][]float64, numCol int) (float64, float64) {
 			max = rowMax
 		}
 		if len(row) < numCol { // ensure range considers potential default values
-			if min < 0 {
+			if min > 0 {
 				min = 0
 			}
 			if max < 0 {

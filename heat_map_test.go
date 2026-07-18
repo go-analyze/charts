@@ -295,7 +295,7 @@ func TestComputeMinMax(t *testing.T) {
 				{4},
 			},
 			numCol:      3,
-			expectedMin: 1,
+			expectedMin: 0,
 			expectedMax: 4,
 		},
 		{
@@ -309,14 +309,44 @@ func TestComputeMinMax(t *testing.T) {
 			expectedMax: -1,
 		},
 		{
-			name: "default_column_padding",
+			name: "default_column_padding", // real -1 stays in range alongside the default 0
 			values: [][]float64{
 				{-1},
 				{},
 			},
 			numCol:      1,
-			expectedMin: 0,
+			expectedMin: -1,
 			expectedMax: 0,
+		},
+		{
+			name: "ragged_negative",
+			values: [][]float64{
+				{-5, -3},
+				{-2},
+			},
+			numCol:      2,
+			expectedMin: -5,
+			expectedMax: 0,
+		},
+		{
+			name: "ragged_positive",
+			values: [][]float64{
+				{5, 8},
+				{3},
+			},
+			numCol:      2,
+			expectedMin: 0,
+			expectedMax: 8,
+		},
+		{
+			name: "ragged_mixed_sign",
+			values: [][]float64{
+				{-2, 4},
+				{1},
+			},
+			numCol:      2,
+			expectedMin: -2,
+			expectedMax: 4,
 		},
 	}
 
