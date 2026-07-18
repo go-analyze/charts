@@ -6,8 +6,6 @@ import (
 	"slices"
 
 	"github.com/go-analyze/bulk"
-
-	"github.com/go-analyze/charts/chartdraw"
 )
 
 const (
@@ -350,7 +348,19 @@ func (s *ScatterSeries) getValues() []float64 {
 func (s *ScatterSeries) avgValues() []float64 {
 	values := make([]float64, len(s.Values))
 	for i, v := range s.Values {
-		values[i] = chartdraw.MeanFloat64(v...)
+		var sum float64
+		var count int
+		for _, x := range v {
+			if isValidExtent(x) {
+				sum += x
+				count++
+			}
+		}
+		if count == 0 {
+			values[i] = GetNullValue() // no valid samples at this point
+		} else {
+			values[i] = sum / float64(count)
+		}
 	}
 	return values
 }
@@ -1091,7 +1101,7 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 					result = append(result, *v)
 				case *GenericSeries:
 					result = append(result, PieSeries{
-						Value:  chartdraw.SumFloat64(v.Values...),
+						Value:  sumValidValues(v.Values),
 						Label:  v.Label,
 						Name:   v.Name,
 						Radius: v.Radius,
@@ -1110,7 +1120,7 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 					result = append(result, *v)
 				case *GenericSeries:
 					result = append(result, DoughnutSeries{
-						Value:  chartdraw.SumFloat64(v.Values...),
+						Value:  sumValidValues(v.Values),
 						Label:  v.Label,
 						Name:   v.Name,
 						Radius: v.Radius,
@@ -1147,7 +1157,7 @@ func filterSeriesList[T any](sl seriesList, chartType string) T {
 					result = append(result, *v)
 				case *GenericSeries:
 					result = append(result, FunnelSeries{
-						Value: chartdraw.SumFloat64(v.Values...),
+						Value: sumValidValues(v.Values),
 						Label: v.Label,
 						Name:  v.Name,
 					})
@@ -1974,6 +1984,17 @@ func isValidExtent(v float64) bool {
 	return v != GetNullValue() && !math.IsNaN(v) && !math.IsInf(v, 0)
 }
 
+// sumValidValues returns the sum of values, skipping null/NaN/Inf.
+func sumValidValues(values []float64) float64 {
+	var total float64
+	for _, v := range values {
+		if isValidExtent(v) {
+			total += v
+		}
+	}
+	return total
+}
+
 func expandViolinValues(pairCount int, pairAt func(index int) (float64, float64)) []float64 {
 	// 0 for spine + up to 4 values per pair when both sides are valid.
 	result := make([]float64, 0, 1+pairCount*4)
@@ -2227,16 +2248,9 @@ func seriesNames(sl seriesList) []string {
 }
 
 func sumSeries(sl seriesList) []float64 {
-	seriesLen := sl.len()
-	sumValues := make([]float64, seriesLen)
-	for i := 0; i < seriesLen; i++ {
-		var total float64
-		for _, v := range sl.getSeriesValues(i) {
-			if v != GetNullValue() {
-				total += v
-			}
-		}
-		sumValues[i] = total
+	sumValues := make([]float64, sl.len())
+	for i := range sumValues {
+		sumValues[i] = sumValidValues(sl.getSeriesValues(i))
 	}
 	return sumValues
 }
@@ -2250,7 +2264,7 @@ func sumSeriesData(sl seriesList, yaxisIndex int) []float64 {
 	case 1:
 		s := sl.getSeries(0)
 		if yaxisIndex < 0 || s.getYAxisIndex() == yaxisIndex {
-			return s.getValues()
+			return s.getValues() // single series needs no summing
 		}
 	}
 
@@ -2261,7 +2275,7 @@ func sumSeriesData(sl seriesList, yaxisIndex int) []float64 {
 			continue
 		}
 		for i2, f := range s.getValues() {
-			if f != GetNullValue() {
+			if isValidExtent(f) {
 				sumValues[i2] += f
 			}
 		}

@@ -60,6 +60,30 @@ func TestFilterSeriesListCandlestick(t *testing.T) {
 	assert.InDelta(t, 2.0, filtered[0].Data[1].Close, 0)
 }
 
+func TestFilterSeriesListSumConversion(t *testing.T) {
+	t.Parallel()
+
+	values := []float64{2, GetNullValue(), math.NaN(), math.Inf(1), 3} // valid sum is 5
+
+	pie := filterSeriesList[PieSeriesList](GenericSeriesList{
+		{Values: values, Type: ChartTypePie},
+	}, ChartTypePie)
+	require.Len(t, pie, 1)
+	assert.InDelta(t, 5.0, pie[0].Value, 0)
+
+	doughnut := filterSeriesList[DoughnutSeriesList](GenericSeriesList{
+		{Values: values, Type: ChartTypeDoughnut},
+	}, ChartTypeDoughnut)
+	require.Len(t, doughnut, 1)
+	assert.InDelta(t, 5.0, doughnut[0].Value, 0)
+
+	funnel := filterSeriesList[FunnelSeriesList](GenericSeriesList{
+		{Values: values, Type: ChartTypeFunnel},
+	}, ChartTypeFunnel)
+	require.Len(t, funnel, 1)
+	assert.InDelta(t, 5.0, funnel[0].Value, 0)
+}
+
 func TestFilterSeriesListUnknownType(t *testing.T) {
 	t.Parallel()
 
@@ -352,6 +376,15 @@ func TestSumSeries(t *testing.T) {
 			},
 			expected: []float64{5, 10},
 		},
+		{
+			name: "nan_inf_values",
+			values: [][]float64{
+				{math.NaN(), 2, 3},
+				{4, math.Inf(1), 6},
+				{math.Inf(-1), GetNullValue(), 1},
+			},
+			expected: []float64{5, 10, 1},
+		},
 	}
 
 	for _, typeCase := range testTypes {
@@ -405,6 +438,11 @@ func TestSumSeriesValues(t *testing.T) {
 			expected: []float64{1.5, 2.5},
 		},
 		{
+			name:     "single_null_passthrough",
+			values:   [][]float64{{1.5, GetNullValue(), 2.5}},
+			expected: []float64{1.5, GetNullValue(), 2.5},
+		},
+		{
 			name: "multiple",
 			values: [][]float64{
 				{1, 2, 3},
@@ -427,6 +465,22 @@ func TestSumSeriesValues(t *testing.T) {
 				{4, GetNullValue(), 6},
 			},
 			expected: []float64{4, 2, 9},
+		},
+		{
+			name: "nan_inf_values",
+			values: [][]float64{
+				{math.NaN(), 2, 3},
+				{4, math.Inf(1), 6},
+			},
+			expected: []float64{4, 2, 9},
+		},
+		{
+			name: "all_invalid_column",
+			values: [][]float64{
+				{GetNullValue(), 2},
+				{math.NaN(), 4},
+			},
+			expected: []float64{0, 6},
 		},
 	}
 
@@ -455,6 +509,33 @@ func TestSumSeriesDataAndMaxCount(t *testing.T) {
 	assert.Equal(t, []float64{7, 2, 0}, sumSeriesData(seriesList, 0))
 	assert.Equal(t, []float64{3, 4, 5}, sumSeriesData(seriesList, 1))
 	assert.Equal(t, 3, getSeriesMaxDataCount(seriesList))
+
+	invalidList := LineSeriesList{
+		{Values: []float64{math.NaN(), 2, math.NaN()}, YAxisIndex: 0},
+		{Values: []float64{3, math.Inf(1), GetNullValue()}, YAxisIndex: 0},
+		{Values: []float64{GetNullValue(), GetNullValue(), math.Inf(-1)}, YAxisIndex: 0},
+	}
+	assert.Equal(t, []float64{3, 2, 0}, sumSeriesData(invalidList, -1))
+
+	nullSingle := LineSeriesList{{Values: []float64{1, GetNullValue(), 3}}}
+	assert.Equal(t, []float64{1, GetNullValue(), 3}, sumSeriesData(nullSingle, -1)) // passthrough preserves nulls
+}
+
+func TestScatterSeriesAvgValues(t *testing.T) {
+	t.Parallel()
+
+	seriesList := NewSeriesListScatterMultiValue([][][]float64{
+		{
+			{2, 4},                       // avg 3
+			{5, GetNullValue()},          // skip null
+			{math.NaN(), math.Inf(1), 8}, // skip nan/inf
+			{GetNullValue(), math.NaN()}, // no valid samples
+		},
+	})
+
+	expected := []float64{3, 5, 8, GetNullValue()}
+	assert.Equal(t, expected, seriesList[0].avgValues())
+	assert.Equal(t, expected, seriesList.ToGenericSeriesList()[0].Values)
 }
 
 func TestSeriesSummary(t *testing.T) {
