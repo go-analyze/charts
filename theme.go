@@ -1042,14 +1042,11 @@ func (t *themeColorPalette) WithSeriesColors(colors []Color) ColorPalette {
 	}
 	copy.name += "-series_mod"
 	copy.seriesColors = colors
+	trendColors := make([]Color, len(colors))
 	for i, c := range colors {
-		trendColor := autoSeriesTrendColor(c)
-		if i < len(copy.seriesTrendColors) {
-			copy.seriesTrendColors[i] = trendColor
-		} else {
-			copy.seriesTrendColors = append(copy.seriesTrendColors, trendColor)
-		}
+		trendColors[i] = autoSeriesTrendColor(c)
 	}
+	copy.seriesTrendColors = trendColors
 	return &copy
 }
 

@@ -344,6 +344,33 @@ func TestWithSeriesColors(t *testing.T) {
 		assert.Equal(t, ColorYellow, blackCP.GetYAxisStrokeColor())
 		assert.Equal(t, ColorYellow, blackCP.GetBackgroundColor())
 		assert.Equal(t, ColorBlack, blackCP.GetSeriesColor(0))
+		assert.Equal(t, autoSeriesTrendColor(ColorBlack), blackCP.GetSeriesTrendColor(0))
+	})
+	t.Run("no_source_mutation", func(t *testing.T) {
+		src := &themeColorPalette{
+			name:              t.Name(),
+			seriesColors:      []Color{ColorYellow, ColorYellow},
+			seriesTrendColors: []Color{ColorYellow, ColorYellow},
+		}
+
+		src.WithSeriesColors([]Color{ColorRed, ColorBlue})
+
+		assert.Equal(t, []Color{ColorYellow, ColorYellow}, src.seriesTrendColors)
+	})
+	t.Run("trend_matches_series", func(t *testing.T) {
+		src := &themeColorPalette{
+			name:              t.Name(),
+			seriesColors:      []Color{ColorYellow, ColorYellow, ColorYellow},
+			seriesTrendColors: []Color{ColorYellow, ColorYellow, ColorYellow},
+		}
+		colors := []Color{ColorRed, ColorBlue}
+
+		cp := src.WithSeriesColors(colors).(*themeColorPalette)
+
+		require.Len(t, cp.seriesTrendColors, len(colors))
+		for i, c := range colors {
+			assert.Equal(t, autoSeriesTrendColor(c), cp.seriesTrendColors[i])
+		}
 	})
 }
 
