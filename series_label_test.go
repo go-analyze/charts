@@ -1067,6 +1067,20 @@ func TestInterpolateColor(t *testing.T) {
 			factor:   0.5,
 			expected: ColorBlue,
 		},
+		{
+			name:     "semi_transparent_start", // straight RGB preserved, not alpha-premultiplied
+			color1:   ColorRed.WithAlpha(128),
+			color2:   ColorBlue.WithAlpha(128),
+			factor:   0,
+			expected: ColorRed.WithAlpha(128),
+		},
+		{
+			name:     "semi_transparent_alpha_blend",
+			color1:   ColorWhite.WithAlpha(0),
+			color2:   ColorWhite.WithAlpha(255),
+			factor:   0.5,
+			expected: ColorWhite.WithAlpha(127),
+		},
 	}
 
 	for _, tt := range tests {

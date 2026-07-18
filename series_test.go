@@ -473,8 +473,10 @@ func TestSeriesSummary(t *testing.T) {
 
 	t.Run("empty_series", func(t *testing.T) {
 		assert.Equal(t, PopulationSummary{
-			MaxIndex: -1,
-			MinIndex: -1,
+			MaxFirstIndex: -1,
+			MaxIndex:      -1,
+			MinFirstIndex: -1,
+			MinIndex:      -1,
 		}, summarizePopulationData(nil))
 	})
 	t.Run("one_value", func(t *testing.T) {
@@ -554,8 +556,10 @@ func TestSeriesSummary(t *testing.T) {
 	})
 	t.Run("null_only", func(t *testing.T) {
 		assert.Equal(t, PopulationSummary{
-			MaxIndex: -1,
-			MinIndex: -1,
+			MaxFirstIndex: -1,
+			MaxIndex:      -1,
+			MinFirstIndex: -1,
+			MinIndex:      -1,
 		}, seriesList[5].Summary())
 	})
 	t.Run("value_null", func(t *testing.T) {
@@ -688,6 +692,41 @@ func BenchmarkSeriesMarkListFilterGlobal(b *testing.B) {
 		_ = pure.filterGlobal(false)
 		_ = mixed.filterGlobal(false)
 	}
+}
+
+func TestAggregateCandlestick(t *testing.T) {
+	t.Parallel()
+
+	series := CandlestickSeries{
+		Data: []OHLCData{
+			{Open: 100, High: 110, Low: 95, Close: 105},
+			{Open: 105, High: 115, Low: 100, Close: 112},
+			{Open: 112, High: 118, Low: 108, Close: 115},
+			{Open: 115, High: 120, Low: 110, Close: 118},
+		},
+		Name:           "1-Period",
+		ShowWicks:      Ptr(false),
+		CandleStyle:    CandleStyleOutline,
+		OpenMarkLine:   NewMarkLine(SeriesMarkTypeMax),
+		CloseTrendLine: []SeriesTrendLine{{Type: SeriesTrendTypeSMA, Period: 2}},
+		PatternConfig:  (&CandlestickPatternConfig{}).WithDoji(),
+	}
+
+	t.Run("factor_carries_config", func(t *testing.T) {
+		aggregated := AggregateCandlestick(series, 2)
+
+		require.Len(t, aggregated.Data, 2)
+		assert.Equal(t, OHLCData{Open: 100, High: 115, Low: 95, Close: 112}, aggregated.Data[0])
+		assert.Equal(t, series.Name, aggregated.Name)
+		assert.Equal(t, series.ShowWicks, aggregated.ShowWicks)
+		assert.Equal(t, series.CandleStyle, aggregated.CandleStyle)
+		assert.Equal(t, series.OpenMarkLine, aggregated.OpenMarkLine)
+		assert.Equal(t, series.CloseTrendLine, aggregated.CloseTrendLine)
+		assert.Equal(t, series.PatternConfig, aggregated.PatternConfig)
+	})
+	t.Run("factor_below_two_unchanged", func(t *testing.T) {
+		assert.Equal(t, series, AggregateCandlestick(series, 1))
+	})
 }
 
 func TestCandlestickGenericBidirectionalConversion(t *testing.T) {

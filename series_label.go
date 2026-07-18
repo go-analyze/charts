@@ -181,21 +181,15 @@ func interpolateColor(color1, color2 Color, factor float64) Color {
 	} else if factor > 1 {
 		factor = 1
 	}
-
-	r1, g1, b1, a1 := color1.RGBA()
-	r2, g2, b2, a2 := color2.RGBA()
-
-	// Convert from 16-bit to 8-bit values
-	r1, g1, b1, a1 = r1>>8, g1>>8, b1>>8, a1>>8
-	r2, g2, b2, a2 = r2>>8, g2>>8, b2>>8, a2>>8
-
-	// Interpolate each component
-	r := uint8(float64(r1) + factor*float64(int(r2)-int(r1)))
-	g := uint8(float64(g1) + factor*float64(int(g2)-int(g1)))
-	b := uint8(float64(b1) + factor*float64(int(b2)-int(b1)))
-	a := uint8(float64(a1) + factor*float64(int(a2)-int(a1)))
-
-	return Color{R: r, G: g, B: b, A: a}
+	lerp := func(a, b uint8) uint8 {
+		return uint8(float64(a) + factor*(float64(b)-float64(a)))
+	}
+	return Color{
+		R: lerp(color1.R, color2.R),
+		G: lerp(color1.G, color2.G),
+		B: lerp(color1.B, color2.B),
+		A: lerp(color1.A, color2.A),
+	}
 }
 
 // interpolateMultipleColors interpolates between multiple colors based on a factor (0.0 to 1.0).

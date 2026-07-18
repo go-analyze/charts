@@ -1928,15 +1928,9 @@ func AggregateCandlestick(data CandlestickSeries, factor int) CandlestickSeries 
 		})
 	}
 
-	return CandlestickSeries{
-		Data:           aggregated,
-		YAxisIndex:     data.YAxisIndex,
-		Label:          data.Label,
-		Name:           data.Name,
-		CloseMarkPoint: data.CloseMarkPoint,
-		CloseMarkLine:  data.CloseMarkLine,
-		CandleStyle:    data.CandleStyle,
-	}
+	result := data
+	result.Data = aggregated
+	return result
 }
 
 // ViolinSeries references a population of data for violin charts.
@@ -2158,8 +2152,10 @@ func summarizePopulationData(data []float64) PopulationSummary {
 	ni := len(sortedData)
 	if ni == 0 {
 		return PopulationSummary{
-			MinIndex: -1,
-			MaxIndex: -1,
+			MinFirstIndex: -1,
+			MinIndex:      -1,
+			MaxFirstIndex: -1,
+			MaxIndex:      -1,
 		}
 	}
 	nf := float64(ni)
