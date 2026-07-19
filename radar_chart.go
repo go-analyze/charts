@@ -198,13 +198,13 @@ func (r *radarChart) renderChart(result *defaultRenderResult) (Box, error) {
 		linePoints = append(linePoints, linePoints[0])
 		seriesPainter.LineStroke(linePoints, color, defaultStrokeWidth)
 		seriesPainter.FillArea(linePoints, color.WithAlpha(20))
-		dotWith := defaultDotWidth
-		for index, point := range linePoints {
-			seriesPainter.Circle(dotWith, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
-			if flagIs(true, series.Label.Show) && index < len(linePoints)-1 {
+		dotWidth := defaultDotWidth
+		for pointIndex, point := range linePoints {
+			seriesPainter.Circle(dotWidth, point.X, point.Y, dotFillColor, color, defaultStrokeWidth)
+			if flagIs(true, series.Label.Show) && pointIndex < len(linePoints)-1 {
 				fontStyle := fillFontStyleDefaults(series.Label.FontStyle,
 					defaultLabelFontSize, theme.GetLabelTextColor(), seriesPainter.font)
-				valueStr := valueFormatter(series.Values[index])
+				valueStr := valueFormatter(series.Values[pointIndex])
 				b := seriesPainter.MeasureText(valueStr, 0, fontStyle)
 				seriesPainter.Text(valueStr, point.X-b.Width()/2, point.Y, 0, fontStyle)
 			}

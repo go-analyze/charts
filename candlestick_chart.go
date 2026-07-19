@@ -142,13 +142,13 @@ func (k *candlestickChart) renderChart(result *defaultRenderResult) (Box, error)
 	} else if candleWidthRatio > 1 {
 		candleWidthRatio = 1
 	}
-	candleWidth := int(float64(width) * candleWidthRatio / float64(maxDataCount))
-	if candleWidth < 1 {
-		candleWidth = 1
+	groupCandleWidth := int(float64(width) * candleWidthRatio / float64(maxDataCount))
+	if groupCandleWidth < 1 {
+		groupCandleWidth = 1
 	}
 
 	// Calculate candleWidthPerSeries for body rendering
-	candleWidthPerSeries := candleWidth / seriesCount
+	candleWidthPerSeries := groupCandleWidth / seriesCount
 	if candleWidthPerSeries < 1 {
 		candleWidthPerSeries = 1
 	}

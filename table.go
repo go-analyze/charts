@@ -168,7 +168,7 @@ func (t *tableChart) render() (*renderInfo, error) {
 	}
 	opt := t.opt
 	if len(opt.Header) == 0 {
-		return nil, errors.New("header can not be nil")
+		return nil, errors.New("header must not be empty")
 	}
 	fontStyle := opt.FontStyle
 	if fontStyle.FontSize <= 0 {

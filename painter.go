@@ -345,7 +345,7 @@ func (p *Painter) drawStraightPath(points []Point, dotForSinglePoint bool) {
 }
 
 // SmoothLineStroke draws a smooth curve through the given points using Quadratic Bézier segments and a
-// tension parameter in [0..1] with 0 providing straight lines between midpoints and 1 providing a smoother line.
+// tension parameter in [0..1] with 0 providing straight lines through the data points and 1 providing a smoother line.
 // Because tension smooths out the line, the line no longer hits the provided points exactly. The more variable
 // the points and the higher the tension, the more the line deviates.
 func (p *Painter) SmoothLineStroke(points []Point, tension float64, strokeColor Color, strokeWidth float64) {

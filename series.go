@@ -91,7 +91,7 @@ type GenericSeries struct {
 	// MarkPoint provides a mark point configuration for this series. If Label is enabled, MarkPoint
 	// replaces the label where rendered.
 	MarkPoint SeriesMarkPoint
-	// MarkLine provides amark line configuration for this series. When using MarkLine, configure
+	// MarkLine provides a mark line configuration for this series. When using MarkLine, configure
 	// padding on the chart's right side to ensure space for the values.
 	MarkLine SeriesMarkLine
 }
@@ -432,14 +432,14 @@ func (s ScatterSeriesList) SetSeriesLabels(label SeriesLabel) {
 
 func (s ScatterSeriesList) ToGenericSeriesList() GenericSeriesList {
 	result := make([]GenericSeries, len(s))
-	for i, s := range s {
+	for i, series := range s {
 		result[i] = GenericSeries{
-			Values:     s.avgValues(),
-			YAxisIndex: s.YAxisIndex,
-			Label:      s.Label,
-			Name:       s.Name,
+			Values:     series.avgValues(),
+			YAxisIndex: series.YAxisIndex,
+			Label:      series.Label,
+			Name:       series.Name,
 			Type:       ChartTypeScatter,
-			MarkLine:   s.MarkLine,
+			MarkLine:   series.MarkLine,
 		}
 	}
 	return result
@@ -693,13 +693,13 @@ func (p PieSeriesList) SumSeries() float64 {
 
 // MaxValue returns the maximum value within the series, or MinInt64 if no values.
 func (p PieSeriesList) MaxValue() float64 {
-	max := float64(math.MinInt64)
+	maxValue := float64(math.MinInt64)
 	for _, s := range p {
-		if s.Value > max {
-			max = s.Value
+		if s.Value > maxValue {
+			maxValue = s.Value
 		}
 	}
-	return max
+	return maxValue
 }
 
 func (p PieSeriesList) names() []string {
@@ -802,13 +802,13 @@ func (d DoughnutSeriesList) SumSeries() float64 {
 
 // MaxValue returns the maximum value within the series, or MinInt64 if no values.
 func (d DoughnutSeriesList) MaxValue() float64 {
-	max := float64(math.MinInt64)
+	maxValue := float64(math.MinInt64)
 	for _, s := range d {
-		if s.Value > max {
-			max = s.Value
+		if s.Value > maxValue {
+			maxValue = s.Value
 		}
 	}
-	return max
+	return maxValue
 }
 
 func (d DoughnutSeriesList) names() []string {
@@ -1271,8 +1271,8 @@ func getSeriesYAxisCount(sl seriesList) int {
 // This is a higher performance option for internal use. calcSum provides an optimization to
 // only calculate the sumMax if it will be used.
 func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64, float64, float64) {
-	min := math.MaxFloat64
-	max := -math.MaxFloat64
+	minValue := math.MaxFloat64
+	maxValue := -math.MaxFloat64
 	var sums []float64
 	if calcSum {
 		sums = make([]float64, getSeriesMaxDataCount(sl))
@@ -1287,11 +1287,11 @@ func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64
 				continue
 			}
 
-			if item > max {
-				max = item
+			if item > maxValue {
+				maxValue = item
 			}
-			if item < min {
-				min = item
+			if item < minValue {
+				minValue = item
 			}
 			if calcSum {
 				if valueIndex >= len(sums) {
@@ -1301,7 +1301,7 @@ func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64
 			}
 		}
 	}
-	maxSum := max
+	maxSum := maxValue
 	if calcSum {
 		for _, val := range sums {
 			if val > maxSum {
@@ -1312,10 +1312,10 @@ func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64
 	// If min was not updated then there were no valid data points. Return
 	// zeros to avoid propagating sentinel values like math.MaxFloat64 which
 	// can corrupt downstream range calculations.
-	if min == math.MaxFloat64 && max == -math.MaxFloat64 {
+	if minValue == math.MaxFloat64 && maxValue == -math.MaxFloat64 {
 		return 0, 0, 0
 	}
-	return min, max, maxSum
+	return minValue, maxValue, maxSum
 }
 
 // NewSeriesListGeneric returns a Generic series list for the given values and chart type (used in ChartOption).
@@ -2183,7 +2183,7 @@ func summarizePopulationData(data []float64) PopulationSummary {
 
 	// Compute average (mean)
 	mean := sum / nf
-	// Compute median: copy the data and sort
+	// Compute median
 	var median float64
 	mid := ni / 2
 	if ni%2 == 0 {

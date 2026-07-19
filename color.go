@@ -107,7 +107,7 @@ var (
 	ColorAquaAlt1 = chartdraw.ColorCyan
 	// ColorAquaAlt2 is the echarts shade of aqua: R: 115, G: 192, B: 222.
 	ColorAquaAlt2 = Color{R: 115, G: 192, B: 222, A: 255}
-	// ColorSageGreen is a more neutral green, R: 158, G: 188, B: 169.
+	// ColorSageGreen is a more neutral green, R: 156, G: 175, B: 136.
 	ColorSageGreen = Color{R: 156, G: 175, B: 136, A: 255}
 	// ColorGreenAlt1 is lighter green: R: 0, G: 217, B: 101.
 	ColorGreenAlt1 = chartdraw.ColorGreen
@@ -115,7 +115,7 @@ var (
 	ColorGreenAlt2 = chartdraw.ColorAlternateGreen
 	// ColorGreenAlt3 is darker green: R: 59, G: 162, B: 114.
 	ColorGreenAlt3 = Color{R: 59, G: 162, B: 114, A: 255}
-	// ColorGreenAlt4 is darker green: R: 80, G: 134, B: 66.
+	// ColorGreenAlt4 is darker green: R: 80, G: 143, B: 66.
 	ColorGreenAlt4 = Color{R: 80, G: 143, B: 66, A: 255}
 	// ColorGreenAlt5 is a brighter green: R: 34, G: 197, B: 94.
 	ColorGreenAlt5 = Color{R: 34, G: 197, B: 94, A: 255}
