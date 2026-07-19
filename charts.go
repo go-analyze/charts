@@ -646,6 +646,18 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 		return nil, errors.New("horizontal violin can not mix other charts")
 	}
 
+	// boundary gap must be resolved here as it's shared between the axis and the chart handlers
+	// TODO - BoundaryGap behavior may not be accurate for chart types which conditionally select the default behavior
+	if opt.XAxis.BoundaryGap == nil {
+		if len(barSeriesList) != 0 || len(candlestickSeries) != 0 {
+			if len(lineSeriesList) != 0 || len(scatterSeriesList) != 0 {
+				opt.XAxis.BoundaryGap = Ptr(true) // align points to the bar / candle slot centers
+			}
+		} else if len(scatterSeriesList) != 0 {
+			opt.XAxis.BoundaryGap = Ptr(false)
+		}
+	}
+
 	categoryY := len(horizontalBarSeriesList) != 0 || len(violinSeriesList) != 0
 	renderOpt := defaultRenderOption{
 		theme:          opt.Theme,
