@@ -357,7 +357,7 @@ func (t *tableChart) renderWithInfo(info *renderInfo) (Box, error) {
 						Left:  left + padding.Left,
 						IsSet: true,
 					}))
-					w := info.columnWidths[j] - padding.Left - padding.Top
+					w := info.columnWidths[j] - padding.Left - padding.Right
 					h := heights[i] - padding.Top - padding.Bottom
 					child.FilledRect(0, 0, w, h, tc.FillColor, tc.FillColor, 0.0)
 				}

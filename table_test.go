@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -136,6 +137,32 @@ func TestTableChart(t *testing.T) {
 			validateTableChartRender(t, p, opt, tt.errorExpected)
 		})
 	}
+}
+
+func TestTableChartCellFillPadding(t *testing.T) {
+	t.Parallel()
+
+	opt := makeDefaultTableChartOptions()
+	opt.Padding = Box{Top: 20, Left: 10, Right: 4, Bottom: 6, IsSet: true}
+	opt.CellModifier = func(tc TableCell) TableCell {
+		if tc.Column == 0 {
+			tc.FillColor = ColorAqua
+		}
+		return tc
+	}
+
+	p := NewPainter(PainterOptions{
+		OutputFormat: ChartOutputSVG,
+		Width:        600,
+		Height:       400,
+	})
+	require.NoError(t, p.TableChart(opt))
+	data, err := p.Bytes()
+	require.NoError(t, err)
+
+	// column width 600/5, fill inset by Left and Right
+	assert.Contains(t, string(data), "M 10 20\nL 116 20")
+	assert.NotContains(t, string(data), "M 10 20\nL 100 20")
 }
 
 func validateTableChartRender(t *testing.T, p *Painter, opt TableChartOption, errorExpected bool) {
