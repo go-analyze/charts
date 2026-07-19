@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 	"math"
+	"slices"
 	"strconv"
 
 	"github.com/go-analyze/charts/chartdraw"
@@ -19,8 +20,8 @@ type HeatMapOption struct {
 	Padding Box
 	// Title contains options for rendering the chart title.
 	Title TitleOption
-	// Values provides the 2D data for the heat map.
-	// The outer slice represents the rows (y-axis) and the inner slice represents the columns (x-axis).
+	// Values provides the 2D data for the heat map. The outer slice represents the rows (y-axis), rendered
+	// top to bottom, and the inner slice represents the columns (x-axis), rendered left to right.
 	Values [][]float64
 	// XAxis contains configuration options for the x-axis.
 	XAxis HeatMapAxis
@@ -105,11 +106,12 @@ func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 	}
 
 	baseColor := opt.Theme.GetSeriesColor(opt.BaseColorIndex)
-	cellWidth := seriesPainter.Width() / numCols
-	cellHeight := seriesPainter.Height() / numRows
-	if cellWidth < 2 || cellHeight < 2 {
+	if seriesPainter.Width()/numCols < 2 || seriesPainter.Height()/numRows < 2 {
 		return BoxZero, errors.New("insufficient space for heat map cells")
 	}
+	// divide the same way the axes do so cells line up with their labels
+	xValues := autoDivide(seriesPainter.Width(), numCols)
+	yValues := autoDivide(seriesPainter.Height(), numRows)
 
 	// Draw each cell, using the ratio to adjust the lightness of the base color.
 	for y := range opt.Values {
@@ -126,12 +128,8 @@ func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 			}
 			cellColor := baseColor.WithAdjustHSL(0, satDelta, lightDelta)
 
-			x1 := x * cellWidth
-			y1 := y * cellHeight
-			x2 := x1 + cellWidth
-			y2 := y1 + cellHeight
-
-			seriesPainter.FilledRect(x1, y1, x2, y2, cellColor, cellColor, 0)
+			seriesPainter.FilledRect(xValues[x], yValues[y], xValues[x+1], yValues[y+1],
+				cellColor, cellColor, 0)
 		}
 	}
 
@@ -147,13 +145,11 @@ func (h *heatMap) renderChart(result *defaultRenderResult) (Box, error) {
 				if x < len(opt.Values[y]) {
 					value = opt.Values[y][x]
 				}
-				xCenter := x*cellWidth + cellWidth/2
-				yCenter := y*cellHeight + cellHeight/2
 				labelPainter.Add(labelValue{
 					index:     0,
 					value:     value,
-					x:         xCenter,
-					y:         yCenter,
+					x:         (xValues[x] + xValues[x+1]) >> 1,
+					y:         (yValues[y] + yValues[y+1]) >> 1,
 					fontStyle: opt.ValuesLabel.FontStyle,
 				})
 			}
@@ -226,28 +222,26 @@ func (h *heatMap) Render() (Box, error) {
 	for len(opt.YAxis.Labels) < numRows {
 		opt.YAxis.Labels = append(opt.YAxis.Labels, strconv.Itoa(len(opt.YAxis.Labels)))
 	}
+	// the vertical axis renders its labels bottom-up, reverse so Labels[0] lands on the top row
+	yLabels := slices.Clone(opt.YAxis.Labels)
+	slices.Reverse(yLabels)
+
 	yAxisOption := []YAxisOption{{
-		Title:                  opt.YAxis.Title,
-		TitleFontStyle:         opt.YAxis.TitleFontStyle,
-		Labels:                 opt.YAxis.Labels,
-		LabelFontStyle:         opt.YAxis.LabelFontStyle,
-		LabelRotation:          opt.YAxis.LabelRotation,
-		LabelCountAdjustment:   opt.YAxis.LabelCountAdjustment,
-		LabelCount:             opt.YAxis.LabelCount,
-		Min:                    Ptr(0.0),
-		Max:                    Ptr(float64(numRows - 1)),
-		RangeValuePaddingScale: Ptr(0.0),
-		// TODO - isCategoryAxis is a hack so this Y-position category axis renders with
-		// category styling in the valueAxis slot. Remove when defaultRender supports dual category axes.
+		Title:                opt.YAxis.Title,
+		TitleFontStyle:       opt.YAxis.TitleFontStyle,
+		Labels:               yLabels,
+		LabelFontStyle:       opt.YAxis.LabelFontStyle,
+		LabelRotation:        opt.YAxis.LabelRotation,
+		LabelCountAdjustment: opt.YAxis.LabelCountAdjustment,
+		LabelCount:           opt.YAxis.LabelCount,
+		// TODO - remove when defaultRender supports dual category axes
 		isCategoryAxis: true,
 	}}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
-		theme:   opt.Theme,
-		padding: opt.Padding,
-		seriesList: heatMapFakeSeries{
-			rows: numRows,
-		},
+		theme:        opt.Theme,
+		padding:      opt.Padding,
+		seriesList:   heatMapFakeSeries{},
 		stackSeries:  false,
 		categoryAxis: &xAxisOption,
 		valueAxis:    yAxisOption,
@@ -262,9 +256,7 @@ func (h *heatMap) Render() (Box, error) {
 }
 
 // heatMapFakeSeries is a dummy series type used solely to satisfy defaultRender's needs and notably drive axis rendering.
-type heatMapFakeSeries struct {
-	rows int
-}
+type heatMapFakeSeries struct{}
 
 func (h heatMapFakeSeries) len() int {
 	return 1
@@ -315,5 +307,5 @@ func (h heatMapFakeSeries) getYAxisIndex() int {
 }
 
 func (h heatMapFakeSeries) getValues() []float64 {
-	return []float64{0, float64(h.rows)} // fake series data to get y-axis values set correctly
+	return nil // not used, both axes are category axes driven by the configured labels
 }

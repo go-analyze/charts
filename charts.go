@@ -390,6 +390,14 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 				}
 				yAxisOption = *yAxisOption.prep(getPreferredTheme(yAxisOption.Theme, theme), true)
 				entries[yIndex].option = yAxisOption
+				if yAxisOption.isCategoryAxis { // TODO - remove when dual category axes are supported
+					entries[yIndex].r = calculateCategoryAxisRange(p, rangeHeight, true, false,
+						yAxisOption.Labels,
+						yAxisOption.LabelCount, yAxisOption.LabelCountAdjustment, yAxisOption.Unit,
+						opt.seriesList,
+						yAxisOption.LabelRotation, yAxisOption.LabelFontStyle)
+					continue
+				}
 				valueFormatter := getPreferredValueFormatter(yAxisOption.ValueFormatter, opt.valueFormatter)
 				prep := prepareValueAxisRange(p, true, rangeHeight,
 					yAxisOption.Min, yAxisOption.Max, yAxisOption.RangeValuePaddingScale,

@@ -4,11 +4,10 @@ L 600 400
 L 0 400
 L 0 0" style="stroke:none;fill:rgb(40,40,40)"/><text x="0" y="16" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Heat Map</text><text x="14" y="216" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif" transform="rotate(270.00,14,216)">Y-Axis</text><path d="M 68 31
 L 68 357" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 31
-L 68 31" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 112
-L 68 112" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 194
-L 68 194" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 275
-L 68 275" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 357
-L 68 357" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><text x="49" y="77" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">3</text><text x="19" y="158" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row3</text><text x="19" y="239" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row2</text><text x="19" y="320" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row1</text><text x="312" y="396" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">X-Axis</text><path d="M 69 357
+L 68 31" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 139
+L 68 139" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 248
+L 68 248" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 63 357
+L 68 357" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><text x="19" y="91" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row1</text><text x="19" y="199" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row2</text><text x="19" y="307" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">Row3</text><text x="312" y="396" style="stroke:none;fill:rgb(238,238,238);font-size:15.3px;font-family:'Roboto Medium',sans-serif">X-Axis</text><path d="M 69 357
 L 600 357" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 69 362
 L 69 357" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 246 362
 L 246 357" style="stroke-width:1;stroke:rgb(185,184,206);fill:none"/><path d="M 423 362
@@ -22,8 +21,8 @@ L 422 32
 L 422 140
 L 246 140
 L 246 32" style="stroke:none;fill:rgb(176,0,0)"/><path d="M 422 32
-L 598 32
-L 598 140
+L 599 32
+L 599 140
 L 422 140
 L 422 32" style="stroke:none;fill:rgb(201,0,0)"/><path d="M 70 140
 L 246 140
@@ -34,8 +33,8 @@ L 422 140
 L 422 248
 L 246 248
 L 246 140" style="stroke:none;fill:rgb(252,0,0)"/><path d="M 422 140
-L 598 140
-L 598 248
+L 599 140
+L 599 248
 L 422 248
 L 422 140" style="stroke:none;fill:rgb(254,23,23)"/><path d="M 70 248
 L 246 248
@@ -46,7 +45,7 @@ L 422 248
 L 422 356
 L 246 356
 L 246 248" style="stroke:none;fill:rgb(255,74,74)"/><path d="M 422 248
-L 598 248
-L 598 356
+L 599 248
+L 599 356
 L 422 356
 L 422 248" style="stroke:none;fill:rgb(255,99,99)"/></svg>
