@@ -226,6 +226,8 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 		for j, item := range series.Values {
 			if j >= result.categoryAxisRange.divideCount {
 				break
+			} else if !isValidExtent(item) {
+				continue // skip null values, leaving a gap
 			}
 
 			// Compute bar placement differently for stacked vs non-stacked.
@@ -478,6 +480,8 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 		for j, item := range series.Values {
 			if j >= yRange.divideCount {
 				break
+			} else if !isValidExtent(item) {
+				continue // skip null values, leaving a gap
 			}
 			// Reverse the category index for drawing from top to bottom
 			reversedJ := yRange.divideCount - j - 1

@@ -618,6 +618,34 @@ func TestPainterRoundedRect(t *testing.T) {
 	}
 }
 
+func TestPainterSymbolsSkipBreakPoints(t *testing.T) {
+	t.Parallel()
+
+	valid := []Point{{X: 10, Y: 10}, {X: 30, Y: 30}}
+	withBreak := []Point{{X: 10, Y: 10}, {X: 20, Y: math.MaxInt32}, {X: 30, Y: 30}}
+	tests := []struct {
+		name string
+		fn   func(*Painter, []Point)
+	}{
+		{"dots", func(p *Painter, pts []Point) { p.Dots(pts, ColorBlue, ColorBlue, 1, 2) }},
+		{"squares", func(p *Painter, pts []Point) { p.squares(pts, ColorBlue, ColorBlue, 1, 4) }},
+		{"diamonds", func(p *Painter, pts []Point) { p.diamonds(pts, ColorBlue, ColorBlue, 1, 4) }},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			render := func(pts []Point) string {
+				p := NewPainter(PainterOptions{Width: 100, Height: 100, OutputFormat: ChartOutputSVG})
+				tc.fn(p, pts)
+				buf, err := p.Bytes()
+				require.NoError(t, err)
+				return string(buf)
+			}
+			assert.Equal(t, render(valid), render(withBreak))
+		})
+	}
+}
+
 func TestPainterMeasureText(t *testing.T) {
 	t.Parallel()
 

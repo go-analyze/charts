@@ -962,18 +962,23 @@ func textRotationHeightAdjustment(textWidth, textHeight int, radians float64) in
 }
 
 // Dots prints filled circles for the given points.
+// Points with a Y of math.MaxInt32 are skipped.
 func (p *Painter) Dots(points []Point, fillColor, strokeColor Color, strokeWidth float64, dotRadius float64) {
 	defer p.render.ResetStyle()
 	p.render.SetFillColor(fillColor)
 	p.render.SetStrokeColor(strokeColor)
 	p.render.SetStrokeWidth(strokeWidth)
 	for _, item := range points {
+		if item.Y == math.MaxInt32 {
+			continue
+		}
 		p.render.Circle(dotRadius, item.X+p.box.Left, item.Y+p.box.Top)
 	}
 	p.render.FillStroke()
 }
 
 // squares prints filled squares for the given points.
+// Points with a Y of math.MaxInt32 are skipped.
 func (p *Painter) squares(points []Point, fillColor, strokeColor Color, strokeWidth float64, size int) {
 	defer p.render.ResetStyle()
 	p.render.SetFillColor(fillColor)
@@ -981,6 +986,9 @@ func (p *Painter) squares(points []Point, fillColor, strokeColor Color, strokeWi
 	p.render.SetStrokeWidth(strokeWidth)
 	halfSize := int(math.Round(float64(size) / 2.0))
 	for _, item := range points {
+		if item.Y == math.MaxInt32 {
+			continue
+		}
 		x1 := item.X - halfSize
 		y1 := item.Y - halfSize
 		p.rectMoveLine(x1, y1, x1+size, y1+size)
@@ -989,12 +997,16 @@ func (p *Painter) squares(points []Point, fillColor, strokeColor Color, strokeWi
 }
 
 // diamonds prints filled diamonds for the given points.
+// Points with a Y of math.MaxInt32 are skipped.
 func (p *Painter) diamonds(points []Point, fillColor, strokeColor Color, strokeWidth float64, size int) {
 	defer p.render.ResetStyle()
 	p.render.SetFillColor(fillColor)
 	p.render.SetStrokeColor(strokeColor)
 	p.render.SetStrokeWidth(strokeWidth)
 	for _, item := range points {
+		if item.Y == math.MaxInt32 {
+			continue
+		}
 		p.diamondMoveLine(item.X, item.Y, size, size)
 	}
 	p.render.FillStroke()

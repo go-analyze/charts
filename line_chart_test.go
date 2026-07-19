@@ -1195,6 +1195,16 @@ func TestLineChart(t *testing.T) {
 			},
 			pngCRC: 0xa131d49d,
 		},
+		{
+			name: "line_gap_label",
+			makeOptions: func() LineChartOption {
+				opt := makeMinimalLineChartOption()
+				opt.SeriesList[0].Label.Show = Ptr(true)
+				opt.SeriesList[0].Values[3] = GetNullValue()
+				return opt
+			},
+			pngCRC: 0xae12cc16,
+		},
 	}
 
 	for i, tt := range tests {

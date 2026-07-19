@@ -348,6 +348,25 @@ func TestBarChart(t *testing.T) {
 			},
 			pngCRC: 0x135c35e9,
 		},
+		{
+			name: "null_values",
+			makeOptions: func() BarChartOption {
+				opt := makeBasicBarChartOption()
+				opt.SeriesList[0].Values[1] = GetNullValue()
+				opt.SeriesList[1].Values[7] = GetNullValue()
+				return opt
+			},
+			pngCRC: 0x87546925,
+		},
+		{
+			name: "stack_series_null",
+			makeOptions: func() BarChartOption {
+				opt := makeFullBarChartStackedOption()
+				opt.SeriesList[0].Values[3] = GetNullValue()
+				return opt
+			},
+			pngCRC: 0xd29b2287,
+		},
 	}
 
 	for i, tt := range tests {
@@ -813,6 +832,28 @@ func TestBarChartHorizontal(t *testing.T) {
 				return opt
 			},
 			pngCRC: 0x6f4575e6,
+		},
+		{
+			name: "null_values",
+			makeOptions: func() BarChartOption {
+				opt := makeBasicHorizontalBarOption()
+				for i := range opt.SeriesList {
+					opt.SeriesList[i].Label.Show = Ptr(true)
+				}
+				opt.SeriesList[0].Values[2] = GetNullValue()
+				opt.SeriesList[1].Values[4] = GetNullValue()
+				return opt
+			},
+			pngCRC: 0x529da371,
+		},
+		{
+			name: "stack_series_null",
+			makeOptions: func() BarChartOption {
+				opt := makeFullHorizontalBarStackedOption()
+				opt.SeriesList[1].Values[3] = GetNullValue()
+				return opt
+			},
+			pngCRC: 0xae387012,
 		},
 	}
 

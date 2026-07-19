@@ -168,7 +168,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 
 		for i, item := range series.Values {
-			if item == GetNullValue() {
+			if !isValidExtent(item) {
 				points[i] = Point{X: xValues[i], Y: math.MaxInt32}
 			} else if stackSeries {
 				accumulatedValues[i] += item
@@ -183,7 +183,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 				}
 			}
 
-			if labelPainter != nil {
+			if labelPainter != nil && isValidExtent(item) {
 				labelPainter.Add(labelValue{
 					index:     index,
 					dataIndex: i,
