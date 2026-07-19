@@ -1324,3 +1324,17 @@ func TestBoundaryGapAxisPositions(t *testing.T) {
 	assert.Equal(t, 1, got[0])
 	assert.Equal(t, 8, got[len(got)-1])
 }
+
+func TestLineChartOptionNotMutated(t *testing.T) {
+	t.Parallel()
+
+	opt := NewLineChartOptionWithData([][]float64{{1, 2, 3}})
+	opt.YAxis = []YAxisOption{{}, {}}
+
+	p := NewPainter(PainterOptions{Width: 600, Height: 400}, PainterThemeOption(GetTheme(ThemeLight)))
+	require.NoError(t, p.LineChart(opt))
+
+	// theme must stay unset so a later render can apply its own painter theme
+	assert.Nil(t, opt.YAxis[0].Theme)
+	assert.Nil(t, opt.YAxis[1].Theme)
+}

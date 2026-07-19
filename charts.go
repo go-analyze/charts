@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 	"math"
+	"slices"
 	"strconv"
 )
 
@@ -124,6 +125,8 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	if len(opt.valueAxis) > 1 && opt.categoryY {
 		return nil, errors.New("multiple value axes with categoryY is not supported") // TODO - future support for two continuous value axes
 	}
+
+	opt.valueAxis = slices.Clone(opt.valueAxis) // callers may share the backing array
 
 	theme := getPreferredTheme(opt.theme, p.theme)
 	fillThemeDefaults(theme, &opt.title, opt.legend, opt.categoryAxis, opt.valueAxis)
@@ -290,7 +293,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	var xAxisOpts axisOption
 	var xValueAxis ValueAxisOption // prepped X-slot value axis; only populated when categoryY
 	if opt.categoryY {             // X is value axis
-		xValueAxis = opt.valueAxis[0] // value copy avoids mutating caller's slice
+		xValueAxis = opt.valueAxis[0]
 		xValueAxis.prep(getPreferredTheme(xValueAxis.Theme, theme), false)
 		xAxisRange := calculateValueAxisRange(p, false, p.Width(),
 			xValueAxis.Min, xValueAxis.Max, xValueAxis.RangeValuePaddingScale,

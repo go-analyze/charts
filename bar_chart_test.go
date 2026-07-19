@@ -893,3 +893,29 @@ func TestBarChartHorizontal(t *testing.T) {
 		}
 	}
 }
+
+func TestBarChartOptionNotMutated(t *testing.T) {
+	t.Parallel()
+
+	t.Run("vertical_value_axis", func(t *testing.T) {
+		opt := NewBarChartOptionWithData([][]float64{{1, 2, 3}})
+		opt.ValueAxis = []ValueAxisOption{{Position: PositionTop}}
+
+		p := NewPainter(PainterOptions{Width: 600, Height: 400})
+		require.NoError(t, p.BarChart(opt))
+
+		assert.Equal(t, PositionTop, opt.ValueAxis[0].Position)
+		assert.Nil(t, opt.ValueAxis[0].Theme)
+	})
+	t.Run("horizontal_value_axis", func(t *testing.T) {
+		opt := NewBarChartOptionWithData([][]float64{{1, 2, 3}})
+		opt.Horizontal = true
+		opt.ValueAxis = []ValueAxisOption{{Position: PositionLeft}}
+
+		p := NewPainter(PainterOptions{Width: 600, Height: 400})
+		require.NoError(t, p.BarChart(opt))
+
+		assert.Equal(t, PositionLeft, opt.ValueAxis[0].Position)
+		assert.Nil(t, opt.ValueAxis[0].Theme)
+	})
+}

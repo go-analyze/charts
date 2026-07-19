@@ -3,6 +3,7 @@ package charts
 import (
 	"errors"
 	"math"
+	"slices"
 )
 
 type barChart struct {
@@ -399,7 +400,7 @@ func (b *barChart) Render() (Box, error) {
 	if opt.Horizontal && len(opt.ValueAxis) > 1 {
 		return BoxZero, errors.New("dual value axes with horizontal bars is not supported")
 	}
-	valueAxis := opt.ValueAxis
+	valueAxis := slices.Clone(opt.ValueAxis) // cloned so normalization doesn't modify the caller's slice
 	if len(valueAxis) == 0 {
 		valueAxis = []ValueAxisOption{{}}
 	}
