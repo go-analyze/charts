@@ -1056,7 +1056,7 @@ func TestLineChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0x43325e15,
+			pngCRC: 0x4600b14,
 		},
 		{
 			name: "rsi",

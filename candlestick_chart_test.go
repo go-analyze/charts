@@ -358,7 +358,7 @@ func TestCandlestickChart(t *testing.T) {
 					Padding: NewBoxEqual(10),
 				}
 			},
-			pngCRC: 0x31482a2a,
+			pngCRC: 0x7d55e3da,
 		},
 		{
 			name: "aggregation",

@@ -352,39 +352,22 @@ func TestTrendLine_WithNullValues(t *testing.T) {
 		}
 	})
 
-	t.Run("bollinger_upper_with_nulls", func(t *testing.T) {
+	t.Run("bollinger_with_nulls", func(t *testing.T) {
 		input := []float64{10, 20, nv, 30, 40, 50}
-		result, err := bollingerUpperTrend(input, 3)
+		upper, err := bollingerUpperTrend(input, 3)
+		require.NoError(t, err)
+		lower, err := bollingerLowerTrend(input, 3)
 		require.NoError(t, err)
 
-		// Verify nulls preserved
-		assert.InDelta(t, nv, result[2], 0)
-
-		// Verify non-null values and upper band > SMA
-		sma, _ := movingAverageTrend(input, 3)
-		for i, v := range result {
-			if v != nv && sma[i] != nv {
-				assert.False(t, math.IsNaN(v), "Bollinger upper produced NaN at index %d", i)
-				assert.GreaterOrEqual(t, v, sma[i], "Upper band should be >= SMA at index %d", i)
-			}
+		// warm-up covers the first two non-null values, the null is preserved
+		for i := 0; i < 3; i++ {
+			assert.InDelta(t, nv, upper[i], 0)
+			assert.InDelta(t, nv, lower[i], 0)
 		}
-	})
-
-	t.Run("bollinger_lower_with_nulls", func(t *testing.T) {
-		input := []float64{10, 20, nv, 30, 40, 50}
-		result, err := bollingerLowerTrend(input, 3)
-		require.NoError(t, err)
-
-		// Verify nulls preserved
-		assert.InDelta(t, nv, result[2], 0)
-
-		// Verify non-null values and lower band < SMA
-		sma, _ := movingAverageTrend(input, 3)
-		for i, v := range result {
-			if v != nv && sma[i] != nv {
-				assert.False(t, math.IsNaN(v), "Bollinger lower produced NaN at index %d", i)
-				assert.LessOrEqual(t, v, sma[i], "Lower band should be <= SMA at index %d", i)
-			}
+		for i := 3; i < len(input); i++ {
+			assert.False(t, math.IsNaN(upper[i]), "Bollinger upper produced NaN at index %d", i)
+			assert.False(t, math.IsNaN(lower[i]), "Bollinger lower produced NaN at index %d", i)
+			assert.Less(t, lower[i], upper[i])
 		}
 	})
 
@@ -616,63 +599,151 @@ func TestLinearTrendWithNulls(t *testing.T) {
 func TestBollingerUpperTrend(t *testing.T) {
 	t.Parallel()
 
-	values := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	result, err := bollingerUpperTrend(values, 3)
-
-	require.NoError(t, err)
-	require.Len(t, result, 10)
-
-	// With centered window, all values should be calculated
-	// Upper band should be greater than or equal to SMA
-	sma, err := movingAverageTrend(values, 3)
-	require.NoError(t, err)
 	nv := GetNullValue()
-	for i := 0; i < len(result); i++ {
-		if result[i] != nv && sma[i] != nv {
-			assert.GreaterOrEqual(t, result[i], sma[i])
+	// stddev over any trailing window of three consecutive integers is sqrt(2/3)
+	offset := math.Sqrt(2.0/3.0) * 2
+
+	t.Run("trailing_window", func(t *testing.T) {
+		values := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		result, err := bollingerUpperTrend(values, 3)
+		require.NoError(t, err)
+		require.Len(t, result, len(values))
+
+		assert.InDelta(t, nv, result[0], 0)
+		assert.InDelta(t, nv, result[1], 0)
+		for i := 2; i < len(result); i++ {
+			assert.InDelta(t, float64(i)+offset, result[i], 0.001)
 		}
-	}
+	})
+
+	t.Run("period_exceeds_data", func(t *testing.T) {
+		values := []float64{10, 12, 11, 13, 12}
+		result, err := bollingerUpperTrend(values, 50)
+		require.NoError(t, err)
+		require.Len(t, result, len(values))
+
+		// falls back to a period of 2, warming up for a single point
+		assert.InDelta(t, nv, result[0], 0)
+		for i := 1; i < len(result); i++ {
+			assert.NotEqual(t, nv, result[i])
+			assert.NotZero(t, result[i])
+		}
+	})
+
+	t.Run("insufficient_data", func(t *testing.T) {
+		result, err := bollingerUpperTrend([]float64{10}, 3)
+		require.NoError(t, err)
+		assert.InDelta(t, nv, result[0], 0)
+	})
+
+	t.Run("leading_nulls", func(t *testing.T) {
+		values := []float64{nv, nv, 1, 2, 3, 4, 5}
+		result, err := bollingerUpperTrend(values, 3)
+		require.NoError(t, err)
+		require.Len(t, result, len(values))
+
+		// window is measured over non-null values only
+		for i := 0; i < 4; i++ {
+			assert.InDelta(t, nv, result[i], 0)
+		}
+		for i := 4; i < len(result); i++ {
+			assert.InDelta(t, float64(i-2)+offset, result[i], 0.001)
+		}
+	})
 }
 
 func TestBollingerLowerTrend(t *testing.T) {
 	t.Parallel()
 
-	values := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	result, err := bollingerLowerTrend(values, 3)
-
-	require.NoError(t, err)
-	require.Len(t, result, 10)
-
-	// With centered window, all values should be calculated
-	// Lower band should be less than or equal to SMA
-	sma, err := movingAverageTrend(values, 3)
-	require.NoError(t, err)
 	nv := GetNullValue()
-	for i := 0; i < len(result); i++ {
-		if result[i] != nv && sma[i] != nv {
-			assert.LessOrEqual(t, result[i], sma[i])
+	offset := math.Sqrt(2.0/3.0) * 2
+
+	t.Run("trailing_window", func(t *testing.T) {
+		values := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		result, err := bollingerLowerTrend(values, 3)
+		require.NoError(t, err)
+		require.Len(t, result, len(values))
+
+		assert.InDelta(t, nv, result[0], 0)
+		assert.InDelta(t, nv, result[1], 0)
+		for i := 2; i < len(result); i++ {
+			assert.InDelta(t, float64(i)-offset, result[i], 0.001)
 		}
-	}
+	})
+
+	t.Run("brackets_upper", func(t *testing.T) {
+		values := []float64{5, 9, 3, 12, 7, 15, 4, 11}
+		lower, err := bollingerLowerTrend(values, 3)
+		require.NoError(t, err)
+		upper, err := bollingerUpperTrend(values, 3)
+		require.NoError(t, err)
+
+		for i := range values {
+			if lower[i] != nv {
+				assert.Less(t, lower[i], upper[i])
+			}
+		}
+	})
+
+	t.Run("insufficient_data", func(t *testing.T) {
+		result, err := bollingerLowerTrend([]float64{10}, 3)
+		require.NoError(t, err)
+		assert.InDelta(t, nv, result[0], 0)
+	})
 }
 
 func TestRsiTrend(t *testing.T) {
 	t.Parallel()
 
-	// Create test data with known gains/losses
-	values := []float64{44, 44.5, 43.8, 44.2, 44.5, 43.9, 44.5, 44.9, 44.5, 44.8}
-	result, err := rsiTrend(values, 3)
+	nv := GetNullValue()
 
-	require.NoError(t, err)
-	require.Len(t, result, 10)
-
-	// First three values should be null
-	for i := 0; i < 3; i++ {
-		assert.InDelta(t, GetNullValue(), result[i], 0.001)
+	assertValidRSI := func(t *testing.T, result []float64, firstIndex int) {
+		t.Helper()
+		for i := 0; i < firstIndex; i++ {
+			assert.InDelta(t, nv, result[i], 0)
+		}
+		for i := firstIndex; i < len(result); i++ {
+			assert.GreaterOrEqual(t, result[i], 0.0)
+			assert.LessOrEqual(t, result[i], 100.0)
+		}
 	}
 
-	// RSI values should be between 0 and 100
-	for i := 3; i < len(result); i++ {
-		assert.GreaterOrEqual(t, result[i], 0.0)
-		assert.LessOrEqual(t, result[i], 100.0)
-	}
+	t.Run("explicit_period", func(t *testing.T) {
+		values := []float64{44, 44.5, 43.8, 44.2, 44.5, 43.9, 44.5, 44.9, 44.5, 44.8}
+		result, err := rsiTrend(values, 3)
+		require.NoError(t, err)
+		require.Len(t, result, len(values))
+
+		assertValidRSI(t, result, 3)
+	})
+
+	t.Run("default_period", func(t *testing.T) {
+		values := make([]float64, 16)
+		for i := range values {
+			values[i] = float64(10 + i)
+		}
+		result, err := rsiTrend(values, 0)
+		require.NoError(t, err)
+		require.Len(t, result, len(values))
+
+		assertValidRSI(t, result, 3) // default period of max(2, 16/5)
+	})
+
+	t.Run("leading_null", func(t *testing.T) {
+		values := []float64{nv, 44, 44.5, 43.8, 44.2, 44.5, 43.9, 44.5, 44.9}
+		result, err := rsiTrend(values, 3)
+		require.NoError(t, err)
+		require.Len(t, result, len(values))
+
+		assertValidRSI(t, result, 4) // period counted from the first non-null
+	})
+
+	t.Run("insufficient_data", func(t *testing.T) {
+		result, err := rsiTrend([]float64{44, 44.5}, 3)
+		require.NoError(t, err)
+
+		for i := range result {
+			assert.InDelta(t, nv, result[i], 0)
+		}
+	})
 }

@@ -545,7 +545,7 @@ func TestScatterChart(t *testing.T) {
 				opt.Legend.Show = Ptr(false)
 				return opt
 			},
-			pngCRC: 0xdda03647,
+			pngCRC: 0x3ccb43d4,
 		},
 		{
 			name: "rsi",

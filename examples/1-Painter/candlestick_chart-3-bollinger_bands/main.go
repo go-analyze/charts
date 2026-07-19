@@ -34,9 +34,9 @@ func main() {
 		SeriesList: []charts.CandlestickSeries{{
 			Data: ohlcData,
 			CloseTrendLine: []charts.SeriesTrendLine{
-				{Type: charts.SeriesTrendTypeBollingerUpper, Period: 10},
-				{Type: charts.SeriesTrendTypeSMA, Period: 10}, // Middle band
-				{Type: charts.SeriesTrendTypeBollingerLower, Period: 10},
+				{Type: charts.SeriesTrendTypeBollingerUpper, Period: 5},
+				{Type: charts.SeriesTrendTypeSMA, Period: 5}, // Middle band
+				{Type: charts.SeriesTrendTypeBollingerLower, Period: 5},
 			},
 		}},
 		Title: charts.TitleOption{

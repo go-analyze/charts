@@ -3,7 +3,9 @@ package charts
 import (
 	"errors"
 	"math"
+	"slices"
 
+	"github.com/go-analyze/charts/chartdraw"
 	"github.com/go-analyze/charts/chartdraw/matrix"
 )
 
@@ -19,10 +21,12 @@ const (
 	SeriesTrendTypeSMA SeriesTrendType = "sma"
 	// SeriesTrendTypeEMA represents an Exponential Moving Average trend line that gives more weight to recent data points.
 	SeriesTrendTypeEMA SeriesTrendType = "ema"
-	// SeriesTrendTypeBollingerUpper represents the upper Bollinger Band (SMA + 2 * standard deviation).
+	// SeriesTrendTypeBollingerUpper represents the upper Bollinger Band, the trailing Period moving
+	// average plus 2 standard deviations.
 	// Designed for financial time-series analysis to identify volatility boundaries around price movements.
 	SeriesTrendTypeBollingerUpper SeriesTrendType = "bollinger_upper"
-	// SeriesTrendTypeBollingerLower represents the lower Bollinger Band (SMA - 2 * standard deviation).
+	// SeriesTrendTypeBollingerLower represents the lower Bollinger Band, the trailing Period moving
+	// average minus 2 standard deviations.
 	// Designed for financial time-series analysis to identify volatility boundaries around price movements.
 	SeriesTrendTypeBollingerLower SeriesTrendType = "bollinger_lower"
 	// SeriesTrendTypeRSI represents the Relative Strength Index momentum oscillator (0-100 scale).
@@ -44,7 +48,8 @@ type SeriesTrendLine struct {
 	Type SeriesTrendType
 	// Period specifies the number of data points to consider for trend calculations.
 	// Used by moving averages (SMA, EMA), Bollinger Bands, RSI, and other indicators.
-	// For example, Period=20 calculates a 20-period moving average.
+	// For example, Period=20 calculates a 20-period moving average. If unset, or larger than the
+	// number of data points, a default derived from the data size is used.
 	Period int
 }
 
@@ -186,21 +191,24 @@ func extractNonNullData(y []float64) ([]float64, []int) {
 	return cleanData, cleanIndices
 }
 
-// initResultWithNulls creates a result array preserving null positions from the input.
-func initResultWithNulls(y []float64) []float64 {
-	result := make([]float64, len(y))
-	for i, v := range y {
-		if !isValidExtent(v) {
-			result[i] = GetNullValue()
-		}
+// newNullValues returns a slice of the given size filled with the null value.
+func newNullValues(size int) []float64 {
+	return slices.Repeat([]float64{GetNullValue()}, size)
+}
+
+// resolveTrendPeriod returns the period to use for a trend calculation, falling back to a size based
+// default when the period is unset or larger than the available data.
+func resolveTrendPeriod(period, count int) int {
+	if period <= 0 || period > count {
+		return max(2, count/5)
 	}
-	return result
+	return period
 }
 
 // linearTrend computes a linear trend over the data, preserving null positions.
 func linearTrend(y []float64) ([]float64, error) {
 	cleanData, cleanIndices := extractNonNullData(y)
-	result := initResultWithNulls(y)
+	result := newNullValues(len(y))
 
 	if len(cleanData) == 0 {
 		return result, nil // All nulls
@@ -243,7 +251,7 @@ func computeLinearTrend(result, data, cleanData []float64, cleanIndices []int) (
 func cubicTrend(y []float64) ([]float64, error) {
 	cleanData, cleanIndices := extractNonNullData(y)
 	n := len(cleanData)
-	result := initResultWithNulls(y)
+	result := newNullValues(len(y))
 
 	if n == 0 {
 		return result, nil // All nulls
@@ -307,7 +315,7 @@ func cubicTrend(y []float64) ([]float64, error) {
 func exponentialMovingAverageTrend(y []float64, window int) ([]float64, error) {
 	cleanData, cleanIndices := extractNonNullData(y)
 	nonNullCount := len(cleanData)
-	result := initResultWithNulls(y)
+	result := newNullValues(len(y))
 
 	if nonNullCount == 0 {
 		return result, nil // All nulls
@@ -318,10 +326,7 @@ func exponentialMovingAverageTrend(y []float64, window int) ([]float64, error) {
 		return computeLinearTrend(result, y, cleanData, cleanIndices) // Fall back to linear for less than 4 points
 	}
 
-	if window <= 0 {
-		window = max(2, nonNullCount/5)
-	}
-
+	window = resolveTrendPeriod(window, nonNullCount)
 	multiplier := 2.0 / (float64(window) + 1.0)
 
 	// Calculate EMA only for non-null positions
@@ -388,7 +393,7 @@ func solveLinearSystem(mat [][]float64) ([]float64, error) {
 func movingAverageTrend(y []float64, window int) ([]float64, error) {
 	cleanData, cleanIndices := extractNonNullData(y)
 	nonNullCount := len(cleanData)
-	result := initResultWithNulls(y)
+	result := newNullValues(len(y))
 
 	if nonNullCount == 0 {
 		return result, nil // All nulls
@@ -399,9 +404,7 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 		return computeLinearTrend(result, y, cleanData, cleanIndices) // Fall back to linear for less than 4 points
 	}
 
-	if window <= 0 {
-		window = max(2, nonNullCount/5)
-	}
+	window = resolveTrendPeriod(window, nonNullCount)
 
 	// Compute moving average for non-null positions
 	halfWindow := window / 2
@@ -430,65 +433,40 @@ func movingAverageTrend(y []float64, window int) ([]float64, error) {
 	return result, nil
 }
 
-// bollingerBand computes a Bollinger Band (SMA ± multiplier * standard deviation).
+// bollingerBand computes a Bollinger Band over a trailing period window, the moving average offset by
+// multiplier standard deviations. Positions before the window is filled, and null inputs, are null.
 func bollingerBand(y []float64, period int, multiplier float64) ([]float64, error) {
-	cleanData, _ := extractNonNullData(y)
-	nonNullCount := len(cleanData)
-	result := initResultWithNulls(y)
+	cleanData, cleanIndices := extractNonNullData(y)
+	result := newNullValues(len(y))
 
-	if nonNullCount < 2 {
-		return result, nil // Not enough data
+	if len(cleanData) < 2 {
+		return result, nil
 	}
-	if period <= 0 {
-		period = max(2, nonNullCount/5)
-	}
-	if period > nonNullCount {
-		return result, nil // Period too large
-	}
+	period = resolveTrendPeriod(period, len(cleanData))
 
-	// Calculate SMA first (already handles nulls)
-	sma, err := movingAverageTrend(y, period)
-	if err != nil {
-		return nil, err
-	}
+	for i := period - 1; i < len(cleanData); i++ {
+		window := cleanData[i-period+1 : i+1]
+		mean := chartdraw.MeanFloat64(window...)
 
-	// Compute Bollinger bands with centered window
-	halfWindow := period / 2
-	for i, v := range y {
-		if !isValidExtent(v) || !isValidExtent(sma[i]) {
-			continue
-		}
-
-		// Calculate standard deviation for centered window
-		mean := sma[i]
 		var variance float64
-		var count int
-		start := max(0, i-halfWindow)
-		end := min(len(y)-1, i+halfWindow)
-
-		for j := start; j <= end; j++ {
-			if isValidExtent(y[j]) {
-				diff := y[j] - mean
-				variance += diff * diff
-				count++
-			}
+		for _, v := range window {
+			diff := v - mean
+			variance += diff * diff
 		}
+		stddev := math.Sqrt(variance / float64(period))
 
-		if count > 0 {
-			stddev := math.Sqrt(variance / float64(count))
-			result[i] = mean + (stddev * multiplier)
-		}
+		result[cleanIndices[i]] = mean + (stddev * multiplier)
 	}
 
 	return result, nil
 }
 
-// bollingerUpperTrend computes the upper Bollinger Band (SMA + 2 * standard deviation), preserving null positions.
+// bollingerUpperTrend computes the upper Bollinger Band (moving average + 2 * standard deviation), preserving null positions.
 func bollingerUpperTrend(y []float64, period int) ([]float64, error) {
 	return bollingerBand(y, period, 2.0)
 }
 
-// bollingerLowerTrend computes the lower Bollinger Band (SMA - 2 * standard deviation), preserving null positions.
+// bollingerLowerTrend computes the lower Bollinger Band (moving average - 2 * standard deviation), preserving null positions.
 func bollingerLowerTrend(y []float64, period int) ([]float64, error) {
 	return bollingerBand(y, period, -2.0)
 }
@@ -496,17 +474,12 @@ func bollingerLowerTrend(y []float64, period int) ([]float64, error) {
 // rsiTrend computes the Relative Strength Index momentum oscillator, preserving null positions.
 func rsiTrend(y []float64, period int) ([]float64, error) {
 	cleanData, cleanIndices := extractNonNullData(y)
-	result := initResultWithNulls(y)
-	for i := 0; i < period && i < len(result); i++ {
-		result[i] = GetNullValue() // set start up to period as null since it can't be calculated
-	}
+	result := newNullValues(len(y))
 
 	if len(cleanData) < 2 {
 		return result, nil // Not enough non-null data
 	}
-	if period <= 0 {
-		period = max(2, len(cleanData)/5)
-	}
+	period = resolveTrendPeriod(period, len(cleanData))
 	if len(cleanData) < period+1 {
 		return result, nil // Insufficient data for RSI
 	}

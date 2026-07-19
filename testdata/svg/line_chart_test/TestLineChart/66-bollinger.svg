@@ -31,16 +31,12 @@ L 241 166
 L 319 158
 L 396 79
 L 473 70
-L 551 73" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/><circle cx="87" cy="184" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="164" cy="159" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="241" cy="166" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="319" cy="158" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="396" cy="79" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="473" cy="70" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="551" cy="73" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><path stroke-dasharray="9.0, 7.2" d="M 87 340
-L 164 345
-L 241 345
-L 319 350
-L 396 358
-L 473 354
-L 551 321" style="stroke-width:2;stroke:rgb(46,80,184);fill:none"/><path stroke-dasharray="9.0, 7.2" d="M 87 146
-L 164 148
-L 241 154
-L 319 56
-L 396 24
-L 473 67
-L 551 69" style="stroke-width:2;stroke:rgb(111,202,67);fill:none"/></svg>
+L 551 73" style="stroke-width:2;stroke:rgb(145,204,117);fill:none"/><circle cx="87" cy="184" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="164" cy="159" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="241" cy="166" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="319" cy="158" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="396" cy="79" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="473" cy="70" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><circle cx="551" cy="73" r="2" style="stroke-width:1;stroke:rgb(145,204,117);fill:white"/><path stroke-dasharray="9.0, 7.2" d="M 241 345
+L 319 345
+L 396 350
+L 473 358
+L 551 354" style="stroke-width:2;stroke:rgb(46,80,184);fill:none"/><path stroke-dasharray="9.0, 7.2" d="M 241 148
+L 319 154
+L 396 56
+L 473 24
+L 551 67" style="stroke-width:2;stroke:rgb(111,202,67);fill:none"/></svg>
