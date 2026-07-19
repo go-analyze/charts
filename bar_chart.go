@@ -50,8 +50,8 @@ type BarChartOption struct {
 	// SeriesList provides the data population for the chart. Typically constructed using NewSeriesListBar.
 	SeriesList BarSeriesList
 	// StackSeries when *true renders series stacked within one bar.
-	// This ignores some options including BarMargin and SeriesLabelPosition.
-	// MarkLine only renders for the first series and stacking only applies to the first y-axis.
+	// This ignores SeriesLabelPosition, and BarMargin unless a second y-axis places bars beside the stack.
+	// Only the first y-axis is stacked, and MarkLine only renders for the first series on it.
 	StackSeries *bool
 	// SeriesLabelPosition specifies the label position for the series.
 	// Vertical bars: "top" or "bottom". Horizontal bars: "left" or "right".
@@ -189,13 +189,22 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 	barSize := opt.BarSize
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
+	var barLanes []int           // stacked lane position per series, the stack shares lane zero
 	if stackedSeries {
-		barCount := getSeriesYAxisCount(opt.SeriesList) // only two bars if two y-axis
+		barLanes = make([]int, seriesCount)
+		barCount := 1 // the stack occupies a single bar, unstacked series each need their own
+		for i, s := range opt.SeriesList {
+			if s.YAxisIndex == 0 {
+				continue
+			}
+			barLanes[i] = barCount
+			barCount++
+		}
 		configuredMargin := opt.BarMargin
 		if barCount == 1 {
 			configuredMargin = nil // no margin needed with a single bar
 		}
-		margin, _, barWidth = calculateGroupMarginsAndSize(barCount, width,
+		margin, barMargin, barWidth = calculateGroupMarginsAndSize(barCount, width,
 			resolveBarSizePixels(barSize, width, barCount), resolveBarMarginPixels(configuredMargin, width))
 		accumulatedHeights = make([]int, result.categoryAxisRange.divideCount)
 	} else {
@@ -208,8 +217,15 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 	// render list must start with the markPointPainter, as it can influence label painters (if enabled)
 	rendererList := []renderer{markPointPainter, markLinePainter}
 
+	// stacking is limited to the first y-axis, so the bounds may not be the first and last series
+	firstStackedIndex, lastStackedIndex := stackedSeriesBounds(opt.SeriesList)
+
 	for index, series := range opt.SeriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
+		lane := index
+		if barLanes != nil {
+			lane = barLanes[index]
+		}
 		yRange := result.valueAxisRanges[series.YAxisIndex]
 		seriesThemeIndex := index
 		if series.absThemeIndex != nil {
@@ -232,24 +248,22 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 			}
 
 			// Compute bar placement differently for stacked vs non-stacked.
-			var x, top, bottom int
+			var top, bottom int
 			h := yRange.getHeight(item)
+			x := divideValues[j] + margin + lane*(barWidth+barMargin)
 
 			if stackSeries {
 				// Use accumulatedHeights to stack
-				x = divideValues[j] + margin
 				top = barMaxHeight - (accumulatedHeights[j] + h)
 				bottom = barMaxHeight - accumulatedHeights[j]
 				accumulatedHeights[j] += h
 			} else {
-				// Non-stacked: offset each series in its own lane
-				x = divideValues[j] + margin + index*(barWidth+barMargin)
 				top = barMaxHeight - h
 				bottom = barMaxHeight - 1 // or -0, depending on your style
 			}
 
-			// In stacked mode, only round caps on the last series
-			if flagIs(true, opt.RoundedBarCaps) && (!stackSeries || index == seriesCount-1) {
+			// In stacked mode, only round caps on the last stacked series
+			if flagIs(true, opt.RoundedBarCaps) && (!stackSeries || index == lastStackedIndex) {
 				seriesPainter.roundedRect(
 					Box{Top: top, Left: x, Right: x + barWidth, Bottom: bottom, IsSet: true},
 					barWidth, roundTopLeft|roundTopRight, seriesColor, seriesColor, 0.0)
@@ -276,8 +290,10 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 					var testColor Color
 					if labelBottom {
 						testColor = seriesColor
-					} else if stackSeries && index+1 < seriesCount {
-						testColor = opt.Theme.GetSeriesColor(index + 1)
+					} else if stackSeries {
+						if next := nextStackedSeriesIndex(opt.SeriesList, index); next > 0 {
+							testColor = opt.Theme.GetSeriesColor(next) // color of the bar stacked above
+						}
 					}
 					if !testColor.IsZero() {
 						if isLightColor(testColor) {
@@ -306,13 +322,13 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 			markLineValueFormatter := getPreferredValueFormatter(series.MarkLine.ValueFormatter,
 				series.Label.ValueFormatter, opt.ValueFormatter)
 			var seriesMarks, globalMarks SeriesMarkList
-			if stackSeries && index == seriesCount-1 { // global is only allowed when stacked and on the last series
+			if stackSeries && index == lastStackedIndex { // global is only allowed on the last stacked series
 				seriesMarks, globalMarks = series.MarkLine.Lines.splitGlobal()
 			} else {
 				seriesMarks = series.MarkLine.Lines.filterGlobal(false)
 			}
-			if len(seriesMarks) > 0 && (!stackSeries || index == 0) {
-				// in stacked mode we only support the line painter for the first series
+			if len(seriesMarks) > 0 && (!stackSeries || index == firstStackedIndex) {
+				// in stacked mode we only support the line painter for the first stacked series
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      seriesColor,
 					fontColor:      opt.Theme.GetMarkTextColor(),
@@ -344,7 +360,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 			markPointValueFormatter := getPreferredValueFormatter(series.MarkPoint.ValueFormatter,
 				series.Label.ValueFormatter, opt.ValueFormatter)
 			var seriesMarks, globalMarks SeriesMarkList
-			if stackSeries && index == seriesCount-1 { // global is only allowed when stacked and on the last series
+			if stackSeries && index == lastStackedIndex { // global is only allowed on the last stacked series
 				seriesMarks, globalMarks = series.MarkPoint.Points.splitGlobal()
 			} else {
 				seriesMarks = series.MarkPoint.Points.filterGlobal(false)

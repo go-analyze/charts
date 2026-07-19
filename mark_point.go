@@ -22,7 +22,7 @@ func (m *SeriesMarkPoint) AddPoints(markTypes ...string) {
 }
 
 // AddGlobalPoints adds "global" mark points, which reference the sum of all series. These marks
-// are only rendered when the Series is "Stacked" and the mark point is on the LAST Series of the SeriesList.
+// are only rendered when the Series is "Stacked" and the mark point is on the LAST stacked Series.
 func (m *SeriesMarkPoint) AddGlobalPoints(markTypes ...string) {
 	m.Points = appendMarks(m.Points, true, markTypes)
 }

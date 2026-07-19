@@ -1205,6 +1205,25 @@ func TestLineChart(t *testing.T) {
 			},
 			pngCRC: 0xae12cc16,
 		},
+		{
+			name: "stack_series_interleaved_marks",
+			makeOptions: func() LineChartOption {
+				opt := NewLineChartOptionWithData([][]float64{
+					{50, 500, 50, 500}, {1, 2, 3, 4}, {4, 3, 2, 1}, {500, 50, 500, 50},
+				})
+				opt.SeriesList[0].YAxisIndex = 1
+				opt.SeriesList[3].YAxisIndex = 1
+				opt.YAxis = make([]YAxisOption, 2)
+				opt.StackSeries = Ptr(true)
+				// marks are gated on the first and last stacked series, not the first and last series
+				opt.SeriesList[1].MarkLine = NewMarkLine(SeriesMarkTypeMax)
+				opt.SeriesList[2].MarkLine.AddGlobalLines(SeriesMarkTypeMax)
+				opt.XAxis.Labels = []string{"a", "b", "c", "d"}
+				opt.Legend.Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0x7d2f36b3,
+		},
 	}
 
 	for i, tt := range tests {

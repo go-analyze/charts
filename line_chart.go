@@ -47,7 +47,7 @@ type LineChartOption struct {
 	SeriesList LineSeriesList
 	// StackSeries when true layers each series so the last represents the cumulative sum.
 	// This forces FillArea and ignores options like StrokeSmoothingTension.
-	// MarkLine only renders for the first series, and only the first y-axis is stacked.
+	// Only the first y-axis is stacked, and MarkLine only renders for the first series on it.
 	StackSeries *bool
 	// XAxis contains options for the x-axis.
 	XAxis XAxisOption
@@ -151,6 +151,8 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 	rendererList := []renderer{markPointPainter, markLinePainter, trendLinePainter}
 
 	seriesNames := opt.SeriesList.names()
+	// stacking is limited to the first y-axis, so the bounds may not be the first and last series
+	firstStackedIndex, lastStackedIndex := stackedSeriesBounds(opt.SeriesList)
 	var priorSeriesPoints []Point
 	for index, series := range opt.SeriesList {
 		stackSeries := stackedSeries && series.YAxisIndex == 0
@@ -298,12 +300,12 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 			markLineValueFormatter := getPreferredValueFormatter(series.MarkLine.ValueFormatter,
 				series.Label.ValueFormatter, opt.ValueFormatter)
 			var seriesMarks, globalMarks SeriesMarkList
-			if stackSeries && index == seriesCount-1 { // global is only allowed when stacked and on the last series
+			if stackSeries && index == lastStackedIndex { // global is only allowed on the last stacked series
 				seriesMarks, globalMarks = series.MarkLine.Lines.splitGlobal()
 			} else {
 				seriesMarks = series.MarkLine.Lines.filterGlobal(false)
 			}
-			if len(seriesMarks) > 0 && (!stackSeries || index == 0) {
+			if len(seriesMarks) > 0 && (!stackSeries || index == firstStackedIndex) {
 				// In stacked mode we only support the line painter for the first series
 				markLinePainter.add(markLineRenderOption{
 					fillColor:      seriesColor,
@@ -336,7 +338,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 			markPointValueFormatter := getPreferredValueFormatter(series.MarkPoint.ValueFormatter,
 				series.Label.ValueFormatter, opt.ValueFormatter)
 			var seriesMarks, globalMarks SeriesMarkList
-			if stackSeries && index == seriesCount-1 { // global is only allowed when stacked and on the last series
+			if stackSeries && index == lastStackedIndex { // global is only allowed on the last stacked series
 				seriesMarks, globalMarks = series.MarkPoint.Points.splitGlobal()
 			} else {
 				seriesMarks = series.MarkPoint.Points.filterGlobal(false)
@@ -380,8 +382,10 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 			})
 		}
 
-		// Save these points as "priorSeriesPoints" for the next series to stack onto (if needed)
-		priorSeriesPoints = points
+		if stackSeries {
+			// Save these points as "priorSeriesPoints" for the next series to stack onto
+			priorSeriesPoints = points
+		}
 	}
 
 	if err := doRender(rendererList...); err != nil {

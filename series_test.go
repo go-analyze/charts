@@ -521,6 +521,52 @@ func TestSumSeriesDataAndMaxCount(t *testing.T) {
 	assert.Equal(t, []float64{1, GetNullValue(), 3}, sumSeriesData(nullSingle, -1)) // passthrough preserves nulls
 }
 
+func TestStackedSeriesBounds(t *testing.T) {
+	t.Parallel()
+
+	t.Run("single_axis", func(t *testing.T) {
+		first, last := stackedSeriesBounds(LineSeriesList{
+			{Values: []float64{1}}, {Values: []float64{2}}, {Values: []float64{3}},
+		})
+
+		assert.Equal(t, 0, first)
+		assert.Equal(t, 2, last)
+	})
+	t.Run("interleaved_axis", func(t *testing.T) {
+		first, last := stackedSeriesBounds(LineSeriesList{
+			{Values: []float64{1}, YAxisIndex: 1},
+			{Values: []float64{2}, YAxisIndex: 0},
+			{Values: []float64{3}, YAxisIndex: 0},
+			{Values: []float64{4}, YAxisIndex: 1},
+		})
+
+		assert.Equal(t, 1, first)
+		assert.Equal(t, 2, last)
+	})
+	t.Run("no_stacked_series", func(t *testing.T) {
+		first, last := stackedSeriesBounds(LineSeriesList{{Values: []float64{1}, YAxisIndex: 1}})
+
+		assert.Equal(t, -1, first)
+		assert.Equal(t, -1, last)
+	})
+}
+
+func TestNextStackedSeriesIndex(t *testing.T) {
+	t.Parallel()
+
+	seriesList := LineSeriesList{
+		{Values: []float64{1}, YAxisIndex: 0},
+		{Values: []float64{2}, YAxisIndex: 1},
+		{Values: []float64{3}, YAxisIndex: 0},
+		{Values: []float64{4}, YAxisIndex: 1},
+	}
+
+	assert.Equal(t, 2, nextStackedSeriesIndex(seriesList, 0))
+	assert.Equal(t, 2, nextStackedSeriesIndex(seriesList, 1))
+	assert.Equal(t, -1, nextStackedSeriesIndex(seriesList, 2))
+	assert.Equal(t, -1, nextStackedSeriesIndex(seriesList, 3))
+}
+
 func TestScatterSeriesAvgValues(t *testing.T) {
 	t.Parallel()
 

@@ -18,7 +18,7 @@ func (m *SeriesMarkLine) AddLines(markTypes ...string) {
 }
 
 // AddGlobalLines adds "global" mark lines, which reference the sum of all series. These marks
-// are only rendered when the Series is "Stacked" and the mark line is on the LAST Series of the SeriesList.
+// are only rendered when the Series is "Stacked" and the mark line is on the LAST stacked Series.
 func (m *SeriesMarkLine) AddGlobalLines(markTypes ...string) {
 	m.Lines = appendMarks(m.Lines, true, markTypes)
 }

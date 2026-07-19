@@ -395,7 +395,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 					yAxisOption.Min, yAxisOption.Max, yAxisOption.RangeValuePaddingScale,
 					yAxisOption.Labels,
 					yAxisOption.LabelCount, yAxisOption.Unit, yAxisOption.LabelCountAdjustment,
-					opt.seriesList, yIndex, opt.stackSeries,
+					opt.seriesList, yIndex, opt.stackSeries && yIndex == 0, // only the first y-axis stacks
 					valueFormatter, yAxisOption.LabelRotation, yAxisOption.LabelFontStyle,
 					yAxisOption.PreferNiceIntervals)
 				prep.maxClearancePx = markPointClearance

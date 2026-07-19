@@ -1267,6 +1267,32 @@ func getSeriesYAxisCount(sl seriesList) int {
 	return 1
 }
 
+// stackedSeriesBounds returns the first and last series index on the first y-axis, the only axis
+// which stacks. Both are -1 when no series are on the first y-axis.
+func stackedSeriesBounds(sl seriesList) (first, last int) {
+	first, last = -1, -1
+	for i := 0; i < sl.len(); i++ {
+		if sl.getSeries(i).getYAxisIndex() == 0 {
+			if first < 0 {
+				first = i
+			}
+			last = i
+		}
+	}
+	return first, last
+}
+
+// nextStackedSeriesIndex returns the series index stacked directly above the given index,
+// or -1 when nothing stacks above it.
+func nextStackedSeriesIndex(sl seriesList, index int) int {
+	for i := index + 1; i < sl.len(); i++ {
+		if sl.getSeries(i).getYAxisIndex() == 0 {
+			return i
+		}
+	}
+	return -1
+}
+
 // getSeriesMinMaxSumMax returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1).
 // This is a higher performance option for internal use. calcSum provides an optimization to
 // only calculate the sumMax if it will be used.
