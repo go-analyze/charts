@@ -162,7 +162,11 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	}
 	opt.legend.seriesSymbols = make([]SymbolShape, opt.seriesList.len())
 	for index := range opt.legend.seriesSymbols {
-		opt.legend.seriesSymbols[index] = opt.seriesList.getSeriesSymbol(index)
+		symbol := opt.seriesList.getSeriesSymbol(index)
+		if symbol == symbolCandlestick && opt.legend.Symbol == SymbolNone {
+			symbol = SymbolNone // icons disabled, don't force the candlestick default
+		}
+		opt.legend.seriesSymbols[index] = symbol
 	}
 
 	const legendTitlePadding = 15

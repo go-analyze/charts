@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -951,4 +952,54 @@ func computeCenters(r *defaultRenderResult, opt CandlestickChartOption, seriesIn
 		centers[j] = center + r.seriesPainter.box.Left
 	}
 	return centers
+}
+
+func TestCandlestickLegendSymbol(t *testing.T) {
+	t.Parallel()
+
+	renderPaintCount := func(symbol SymbolShape) int {
+		p := NewPainter(PainterOptions{OutputFormat: ChartOutputSVG, Width: 600, Height: 400})
+		opt := makeBasicCandlestickChartOption()
+		opt.Legend.Symbol = symbol
+		_, err := newCandlestickChart(p, opt).Render()
+		require.NoError(t, err)
+		svgBytes, err := p.Bytes()
+		require.NoError(t, err)
+		return strings.Count(string(svgBytes), "<path")
+	}
+
+	t.Run("painter_default", func(t *testing.T) {
+		// the candlestick icon is two arrow paths
+		assert.Equal(t, renderPaintCount(""), renderPaintCount(SymbolSquare))
+	})
+	t.Run("painter_none", func(t *testing.T) {
+		assert.Equal(t, renderPaintCount("")-2, renderPaintCount(SymbolNone))
+	})
+
+	genericSymbols := func(symbol SymbolShape) []SymbolShape {
+		p := NewPainter(PainterOptions{OutputFormat: ChartOutputSVG, Width: 600, Height: 400})
+		opt := ChartOption{
+			SeriesList: CandlestickSeriesList{{Data: makeBasicCandlestickData()}}.ToGenericSeriesList(),
+			XAxis:      XAxisOption{Labels: []string{"1", "2", "3", "4", "5"}},
+			YAxis:      make([]YAxisOption, 1),
+			Legend:     LegendOption{SeriesNames: []string{"Price"}, Symbol: symbol},
+		}
+		_, err := defaultRender(p, defaultRenderOption{
+			theme:        GetTheme(ThemeVividLight),
+			seriesList:   opt.SeriesList,
+			categoryAxis: &opt.XAxis,
+			valueAxis:    opt.YAxis,
+			legend:       &opt.Legend,
+		})
+		require.NoError(t, err)
+		return opt.Legend.seriesSymbols
+	}
+
+	t.Run("generic_default", func(t *testing.T) {
+		assert.Equal(t, []SymbolShape{symbolCandlestick}, genericSymbols(""))
+		assert.Equal(t, []SymbolShape{symbolCandlestick}, genericSymbols(SymbolSquare))
+	})
+	t.Run("generic_none", func(t *testing.T) {
+		assert.Equal(t, []SymbolShape{SymbolNone}, genericSymbols(SymbolNone))
+	})
 }

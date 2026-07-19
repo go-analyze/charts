@@ -504,7 +504,9 @@ func (k *candlestickChart) Render() (Box, error) {
 	if opt.Theme == nil {
 		opt.Theme = getPreferredTheme(p.theme)
 	}
-	opt.Legend.Symbol = symbolCandlestick
+	if opt.Legend.Symbol != SymbolNone { // candlestick icons show the up / down colors, only hiding can be configured
+		opt.Legend.Symbol = symbolCandlestick
+	}
 
 	renderResult, err := defaultRender(p, defaultRenderOption{
 		theme:          opt.Theme,
