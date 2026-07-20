@@ -24,6 +24,16 @@ func TestEChartsPosition(t *testing.T) {
 	assert.Equal(t, EChartsPosition("1"), p)
 	require.NoError(t, p.UnmarshalJSON([]byte(`"left"`)))
 	assert.Equal(t, EChartsPosition("left"), p)
+	require.NoError(t, p.UnmarshalJSON([]byte("-10")))
+	assert.Equal(t, EChartsPosition("-10"), p)
+	require.NoError(t, p.UnmarshalJSON([]byte("1.5")))
+	assert.Equal(t, EChartsPosition("1.5"), p)
+	require.NoError(t, p.UnmarshalJSON([]byte("1e3")))
+	assert.Equal(t, EChartsPosition("1e3"), p)
+
+	p = EChartsPosition("top")
+	require.NoError(t, p.UnmarshalJSON([]byte("null")))
+	assert.Equal(t, EChartsPosition("top"), p) // null leaves the value untouched
 }
 
 func TestEChartsSeriesDataValue(t *testing.T) {
@@ -36,6 +46,25 @@ func TestEChartsSeriesDataValue(t *testing.T) {
 	}, es)
 	assert.Equal(t, EChartsSeriesDataValue{values: []float64{1, 2}}, es)
 	assert.InDelta(t, 1.0, es.First(), 0)
+
+	require.NoError(t, es.UnmarshalJSON([]byte("1e3")))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{1000}}, es)
+
+	require.NoError(t, es.UnmarshalJSON([]byte("null")))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{GetNullValue()}}, es)
+
+	require.NoError(t, es.UnmarshalJSON([]byte(`"-"`)))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{GetNullValue()}}, es)
+
+	require.NoError(t, es.UnmarshalJSON([]byte(`[1, null, "-", 2]`)))
+	assert.Equal(t, EChartsSeriesDataValue{
+		values: []float64{1, GetNullValue(), GetNullValue(), 2},
+	}, es)
+
+	require.Error(t, es.UnmarshalJSON([]byte(`"foo"`)))
+
+	var empty EChartsSeriesDataValue
+	assert.InDelta(t, GetNullValue(), empty.First(), 0)
 }
 
 func TestEChartsSeriesData(t *testing.T) {
@@ -55,6 +84,25 @@ func TestEChartsSeriesData(t *testing.T) {
 		ItemStyle: EChartStyle{
 			Color: "#a90000",
 		},
+	}, es)
+
+	es = EChartsSeriesData{}
+	require.NoError(t, es.UnmarshalJSON([]byte("1e3")))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{1000}}, es.Value)
+
+	require.NoError(t, es.UnmarshalJSON([]byte("null")))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{GetNullValue()}}, es.Value)
+
+	require.NoError(t, es.UnmarshalJSON([]byte(`"-"`)))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{GetNullValue()}}, es.Value)
+
+	require.NoError(t, es.UnmarshalJSON([]byte(`[1, 2]`)))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{1, 2}}, es.Value)
+
+	require.NoError(t, es.UnmarshalJSON([]byte(`{"value":null,"name":"foo"}`)))
+	assert.Equal(t, EChartsSeriesData{
+		Name:  "foo",
+		Value: EChartsSeriesDataValue{values: []float64{GetNullValue()}},
 	}, es)
 }
 
@@ -162,8 +210,9 @@ func TestEChartsOption(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name   string
-		option string
+		name           string
+		option         string
+		expectedValues []float64 // values of the first series, verified when set
 	}{
 		{
 			option: `{
@@ -416,6 +465,24 @@ func TestEChartsOption(t *testing.T) {
 				"series": [{ "name": "Source", "type": "pie", "data": [{ "value": 100, "name": "Google" }] }]
 			}`,
 		},
+		{
+			name: "numeric_title_position",
+			option: `{
+				"title": { "text": "Offset Title", "left": -10, "top": 20 },
+				"xAxis": { "type": "category", "data": ["Mon", "Tue"] },
+				"yAxis": { "type": "value" },
+				"series": [{ "data": [120, 200], "type": "bar" }]
+			}`,
+		},
+		{
+			name: "null_and_exponent_data",
+			option: `{
+				"xAxis": { "type": "category", "data": ["Mon", "Tue", "Wed", "Thu"] },
+				"yAxis": { "type": "value" },
+				"series": [{ "data": [150, null, "-", 1e3], "type": "line" }]
+			}`,
+			expectedValues: []float64{150, GetNullValue(), GetNullValue(), 1000},
+		},
 	}
 
 	for i, tt := range tests {
@@ -427,7 +494,11 @@ func TestEChartsOption(t *testing.T) {
 			opt := EChartsOption{}
 			require.NoError(t, json.Unmarshal([]byte(tt.option), &opt))
 			assert.NotEmpty(t, opt.Series)
-			assert.NotEmpty(t, opt.ToOption().SeriesList)
+			seriesList := opt.ToOption().SeriesList
+			assert.NotEmpty(t, seriesList)
+			if tt.expectedValues != nil {
+				assert.Equal(t, tt.expectedValues, seriesList[0].Values)
+			}
 
 			if len(opt.XAxis.Data) > 0 {
 				assert.NotEmpty(t, opt.XAxis.Data[0].Data)

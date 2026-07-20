@@ -3,10 +3,7 @@ package charts
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"regexp"
 	"slices"
-	"strconv"
 	"strings"
 
 	"github.com/go-analyze/bulk"
@@ -29,11 +26,12 @@ type EChartsPosition string
 
 // UnmarshalJSON decodes a position JSON value that may be a string or number.
 func (p *EChartsPosition) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
 		return nil
 	}
-	if regexp.MustCompile(`^\d+`).Match(data) {
-		data = []byte(fmt.Sprintf(`"%s"`, string(data)))
+	if c := data[0]; c == '-' || c == '+' || c == '.' || (c >= '0' && c <= '9') {
+		data = append(append([]byte{'"'}, data...), '"')
 	}
 	s := (*string)(p)
 	return json.Unmarshal(data, s)
@@ -53,13 +51,37 @@ type EChartsSeriesDataValue struct {
 // UnmarshalJSON decodes a series data value that may be a single number or array.
 func (value *EChartsSeriesDataValue) UnmarshalJSON(data []byte) error {
 	data = convertToArray(data)
-	return json.Unmarshal(data, &value.values)
+	var raw []json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	values := make([]float64, len(raw))
+	for i, r := range raw {
+		v, err := parseSeriesValue(r)
+		if err != nil {
+			return err
+		}
+		values[i] = v
+	}
+	value.values = values
+	return nil
 }
 
-// First returns the first value or 0 when empty.
+// parseSeriesValue returns the number for a JSON value, with null or "-" returning GetNullValue.
+func parseSeriesValue(data []byte) (float64, error) {
+	switch string(bytes.TrimSpace(data)) {
+	case "", "null", `"-"`:
+		return GetNullValue(), nil
+	}
+	var f float64
+	err := json.Unmarshal(data, &f)
+	return f, err
+}
+
+// First returns the first value, or GetNullValue when empty.
 func (value *EChartsSeriesDataValue) First() float64 {
 	if len(value.values) == 0 {
-		return 0
+		return GetNullValue()
 	}
 	return value.values[0]
 }
@@ -72,25 +94,14 @@ type EChartsSeriesData struct {
 }
 type _EChartsSeriesData EChartsSeriesData
 
-var numericRep = regexp.MustCompile(`^[-+]?[0-9]+(?:\.[0-9]+)?$`)
-
 // UnmarshalJSON parses a series data item that may be a number or object.
 func (es *EChartsSeriesData) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
 		return nil
 	}
-	if numericRep.Match(data) {
-		v, err := strconv.ParseFloat(string(data), 64)
-		if err != nil {
-			return err
-		}
-		es.Value = EChartsSeriesDataValue{
-			values: []float64{
-				v,
-			},
-		}
-		return nil
+	if data[0] != '{' { // scalar, null or array value
+		return es.Value.UnmarshalJSON(data)
 	}
 	v := _EChartsSeriesData{}
 	if err := json.Unmarshal(data, &v); err != nil {
