@@ -854,6 +854,93 @@ func TestAggregateCandlestick(t *testing.T) {
 	t.Run("factor_below_two_unchanged", func(t *testing.T) {
 		assert.Equal(t, series, AggregateCandlestick(series, 1))
 	})
+
+	null := GetNullValue()
+	t.Run("invalid_middle_candle", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: 100, High: 110, Low: 95, Close: 105},
+			{Open: null, High: null, Low: null, Close: null},
+			{Open: 106, High: 118, Low: 104, Close: 115},
+		}}
+		aggregated := AggregateCandlestick(s, 3)
+
+		require.Len(t, aggregated.Data, 1)
+		assert.Equal(t, OHLCData{Open: 100, High: 118, Low: 95, Close: 115}, aggregated.Data[0])
+	})
+	t.Run("invalid_first_candle", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: math.NaN(), High: math.NaN(), Low: math.NaN(), Close: math.NaN()},
+			{Open: 105, High: 115, Low: 100, Close: 112},
+		}}
+		aggregated := AggregateCandlestick(s, 2)
+
+		require.Len(t, aggregated.Data, 1)
+		assert.Equal(t, OHLCData{Open: 105, High: 115, Low: 100, Close: 112}, aggregated.Data[0])
+	})
+	t.Run("invalid_last_candle", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: 100, High: 110, Low: 95, Close: 105},
+			{Open: 105, High: 115, Low: 100, Close: 112},
+			{Open: null, High: null, Low: null, Close: null},
+		}}
+		aggregated := AggregateCandlestick(s, 3)
+
+		require.Len(t, aggregated.Data, 1)
+		assert.Equal(t, OHLCData{Open: 100, High: 115, Low: 95, Close: 112}, aggregated.Data[0])
+	})
+	t.Run("all_invalid_group", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: 100, High: 110, Low: 95, Close: 105},
+			{Open: null, High: null, Low: null, Close: null},
+			{Open: null, High: null, Low: null, Close: null},
+		}}
+		aggregated := AggregateCandlestick(s, 2)
+
+		require.Len(t, aggregated.Data, 2)
+		assert.Equal(t, OHLCData{Open: 100, High: 110, Low: 95, Close: 105}, aggregated.Data[0])
+		assert.Equal(t, OHLCData{Open: null, High: null, Low: null, Close: null}, aggregated.Data[1])
+	})
+	t.Run("null_placeholder_values", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: null, High: null, Low: null, Close: null},
+			{Open: 105, High: 115, Low: 100, Close: 112},
+		}}
+		aggregated := AggregateCandlestick(s, 2)
+
+		require.Len(t, aggregated.Data, 1)
+		assert.Equal(t, OHLCData{Open: 105, High: 115, Low: 100, Close: 112}, aggregated.Data[0])
+	})
+	t.Run("nan_and_infinity", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: 100, High: math.Inf(1), Low: math.Inf(-1), Close: math.NaN()},
+			{Open: 105, High: 115, Low: 100, Close: 112},
+		}}
+		aggregated := AggregateCandlestick(s, 2)
+
+		require.Len(t, aggregated.Data, 1)
+		assert.Equal(t, OHLCData{Open: 105, High: 115, Low: 100, Close: 112}, aggregated.Data[0])
+	})
+	t.Run("high_low_only_candle", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: null, High: 120, Low: 80, Close: null},
+		}}
+		aggregated := AggregateCandlestick(s, 2)
+
+		require.Len(t, aggregated.Data, 1)
+		assert.Equal(t, OHLCData{Open: null, High: 120, Low: 80, Close: null}, aggregated.Data[0])
+	})
+	t.Run("uneven_tail_group", func(t *testing.T) {
+		s := CandlestickSeries{Data: []OHLCData{
+			{Open: 100, High: 110, Low: 95, Close: 105},
+			{Open: 105, High: 115, Low: 100, Close: 112},
+			{Open: 112, High: 118, Low: 108, Close: 115},
+		}}
+		aggregated := AggregateCandlestick(s, 2)
+
+		require.Len(t, aggregated.Data, 2)
+		assert.Equal(t, OHLCData{Open: 100, High: 115, Low: 95, Close: 112}, aggregated.Data[0])
+		assert.Equal(t, OHLCData{Open: 112, High: 118, Low: 108, Close: 115}, aggregated.Data[1])
+	})
 }
 
 func TestCandlestickGenericBidirectionalConversion(t *testing.T) {

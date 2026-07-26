@@ -2,7 +2,9 @@ package charts
 
 import (
 	"fmt"
+	"math"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -1002,4 +1004,45 @@ func TestCandlestickLegendSymbol(t *testing.T) {
 	t.Run("generic_none", func(t *testing.T) {
 		assert.Equal(t, []SymbolShape{SymbolNone}, genericSymbols(SymbolNone))
 	})
+}
+
+func TestCandlestickAggregateGapRender(t *testing.T) {
+	t.Parallel()
+
+	null := GetNullValue()
+	// middle group is all-invalid, aggregation must yield a null placeholder gap
+	source := CandlestickSeries{Data: []OHLCData{
+		{Open: 100, High: 110, Low: 95, Close: 105},
+		{Open: 105, High: 115, Low: 100, Close: 112},
+		{Open: null, High: null, Low: null, Close: null},
+		{Open: null, High: null, Low: null, Close: null},
+		{Open: 112, High: 118, Low: 108, Close: 115},
+		{Open: 115, High: 120, Low: 105, Close: 108},
+	}}
+	aggregated := AggregateCandlestick(source, 2)
+	require.Equal(t, []OHLCData{
+		{Open: 100, High: 115, Low: 95, Close: 112},
+		{Open: null, High: null, Low: null, Close: null},
+		{Open: 112, High: 120, Low: 105, Close: 108},
+	}, aggregated.Data)
+
+	renderSVG := func(data []OHLCData) string {
+		opt := makeMinimalCandlestickChartOption()
+		opt.SeriesList = CandlestickSeriesList{{Data: data}}
+		p := NewPainter(PainterOptions{OutputFormat: ChartOutputSVG, Width: 800, Height: 600})
+		require.NoError(t, p.CandlestickChart(opt))
+		bytes, err := p.Bytes()
+		require.NoError(t, err)
+		return string(bytes)
+	}
+
+	// invalid representation is irrelevant, both render as the same gap
+	nanGap := slices.Clone(aggregated.Data)
+	nanGap[1] = OHLCData{Open: math.NaN(), High: math.NaN(), Low: math.NaN(), Close: math.NaN()}
+	assert.Equal(t, renderSVG(nanGap), renderSVG(aggregated.Data))
+
+	// a real middle candle draws differently, confirming the null group is truly a gap
+	filled := slices.Clone(aggregated.Data)
+	filled[1] = OHLCData{Open: 112, High: 116, Low: 110, Close: 114}
+	assert.NotEqual(t, renderSVG(filled), renderSVG(aggregated.Data))
 }

@@ -1928,7 +1928,10 @@ func (k *CandlestickSeries) ExtractLowPrices() []float64 {
 	return result
 }
 
-// AggregateCandlestick aggregates OHLC data by the specified factor.
+// AggregateCandlestick combines each group of factor consecutive candles into one, keeping
+// the first open, last close, highest high, and lowest low. Invalid candles are skipped; a
+// group with no valid range becomes a null candle so positions stay aligned. A factor of 1
+// or less returns data unchanged.
 func AggregateCandlestick(data CandlestickSeries, factor int) CandlestickSeries {
 	if factor <= 1 {
 		return data
@@ -1936,32 +1939,44 @@ func AggregateCandlestick(data CandlestickSeries, factor int) CandlestickSeries 
 
 	aggregated := make([]OHLCData, 0, len(data.Data)/factor)
 	for i := 0; i < len(data.Data); i += factor {
-		end := i + factor
-		if end > len(data.Data) {
-			end = len(data.Data)
-		}
+		end := min(i+factor, len(data.Data))
 
-		// Aggregate OHLC for this period
-		open := data.Data[i].Open       // First open
-		close := data.Data[end-1].Close // Last close
-		high := data.Data[i].High       // Find max high
-		low := data.Data[i].Low         // Find min low
-
+		var agg OHLCData
+		var haveRange, haveOpen, haveClose bool
 		for j := i; j < end; j++ {
-			if data.Data[j].High > high {
-				high = data.Data[j].High
+			c := data.Data[j]
+			if validateOHLCHighLow(c) {
+				if !haveRange {
+					agg.High, agg.Low, haveRange = c.High, c.Low, true
+				} else {
+					if c.High > agg.High {
+						agg.High = c.High
+					}
+					if c.Low < agg.Low {
+						agg.Low = c.Low
+					}
+				}
 			}
-			if data.Data[j].Low < low {
-				low = data.Data[j].Low
+			if !haveOpen && validateOHLCOpen(c) {
+				agg.Open, haveOpen = c.Open, true
+			}
+			if validateOHLCClose(c) { // last valid close wins
+				agg.Close, haveClose = c.Close, true
 			}
 		}
 
-		aggregated = append(aggregated, OHLCData{
-			Open:  open,
-			High:  high,
-			Low:   low,
-			Close: close,
-		})
+		if !haveRange { // no valid range, emit null placeholder gap
+			null := GetNullValue()
+			agg = OHLCData{Open: null, High: null, Low: null, Close: null}
+		} else {
+			if !haveOpen {
+				agg.Open = GetNullValue()
+			}
+			if !haveClose {
+				agg.Close = GetNullValue()
+			}
+		}
+		aggregated = append(aggregated, agg)
 	}
 
 	result := data
