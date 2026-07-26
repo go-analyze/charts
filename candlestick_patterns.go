@@ -413,6 +413,8 @@ func detectHammerAt(data []OHLCData, index int, options CandlestickPatternConfig
 	ohlc := data[index]
 	if !validateOHLCData(ohlc) {
 		return false
+	} else if ohlc.High == ohlc.Low { // flat candle, no shadows to measure
+		return false
 	}
 
 	// Use configured ratio or default to standard 2:1
@@ -432,6 +434,8 @@ func detectHammerAt(data []OHLCData, index int, options CandlestickPatternConfig
 func detectInvertedHammerAt(data []OHLCData, index int, options CandlestickPatternConfig) bool {
 	ohlc := data[index]
 	if !validateOHLCData(ohlc) {
+		return false
+	} else if ohlc.High == ohlc.Low { // flat candle, no shadows to measure
 		return false
 	}
 

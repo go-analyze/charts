@@ -70,6 +70,10 @@ func TestHammerPattern(t *testing.T) {
 	notHammer2 := OHLCData{Open: 95, High: 107, Low: 94, Close: 96}
 	data = []OHLCData{notHammer2}
 	assert.False(t, detectHammerAt(data, 0, CandlestickPatternConfig{ShadowRatio: 2.0}))
+
+	// Invalid: flat candle
+	flat := OHLCData{Open: 100, High: 100, Low: 100, Close: 100}
+	assert.False(t, detectHammerAt([]OHLCData{flat}, 0, CandlestickPatternConfig{ShadowRatio: 2.0}))
 }
 
 func TestInvertedHammerPattern(t *testing.T) {
@@ -94,6 +98,10 @@ func TestInvertedHammerPattern(t *testing.T) {
 	// Invalid: short upper shadow
 	notInvertedHammer := OHLCData{Open: 95, High: 97, Low: 94, Close: 96}
 	assert.False(t, detectInvertedHammerAt([]OHLCData{notInvertedHammer}, 0, CandlestickPatternConfig{ShadowRatio: 2.0}))
+
+	// Invalid: flat candle
+	flat := OHLCData{Open: 100, High: 100, Low: 100, Close: 100}
+	assert.False(t, detectInvertedHammerAt([]OHLCData{flat}, 0, CandlestickPatternConfig{ShadowRatio: 2.0}))
 }
 
 func TestEngulfingPattern(t *testing.T) {
