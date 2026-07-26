@@ -128,9 +128,7 @@ func LegendOptionFunc(legend LegendOption) OptionFunc {
 // LegendLabelsOptionFunc sets the legend series name labels of the chart.
 func LegendLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.Legend = LegendOption{
-			SeriesNames: labels,
-		}
+		opt.Legend.SeriesNames = labels
 	}
 }
 
@@ -144,9 +142,7 @@ func XAxisOptionFunc(xAxisOption XAxisOption) OptionFunc {
 // XAxisLabelsOptionFunc sets the x-axis labels of the chart.
 func XAxisLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.XAxis = XAxisOption{
-			Labels: labels,
-		}
+		opt.XAxis.Labels = labels
 	}
 }
 
@@ -160,10 +156,10 @@ func YAxisOptionFunc(yAxisOption ...YAxisOption) OptionFunc {
 // YAxisLabelsOptionFunc sets the y-axis labels of the chart.
 func YAxisLabelsOptionFunc(labels []string) OptionFunc {
 	return func(opt *ChartOption) {
-		opt.YAxis = []YAxisOption{
-			{
-				Labels: labels,
-			},
+		if len(opt.YAxis) == 0 {
+			opt.YAxis = []YAxisOption{{Labels: labels}}
+		} else {
+			opt.YAxis[0].Labels = labels
 		}
 	}
 }
@@ -245,7 +241,7 @@ func (o *ChartOption) fillDefault() error {
 	}
 	fillThemeDefaults(o.Theme, &o.Title, &o.Legend, &o.XAxis, o.YAxis)
 
-	if o.Padding.IsZero() {
+	if !o.Padding.IsDefined() {
 		o.Padding = defaultPadding
 	}
 	return nil

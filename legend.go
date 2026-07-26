@@ -108,7 +108,7 @@ func (l *legendPainter) computeLayoutParams() (
 	}
 
 	padding = opt.Padding
-	if padding.IsZero() {
+	if !padding.IsDefined() {
 		padding.Top = 5
 	}
 	p = l.p.Child(PainterPaddingOption(padding))

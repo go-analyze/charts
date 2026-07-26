@@ -76,6 +76,11 @@ func (b Box) IsZero() bool {
 	return b.Top == 0 && b.Left == 0 && b.Right == 0 && b.Bottom == 0
 }
 
+// IsDefined returns true if the box was explicitly set or has any non-zero coordinate.
+func (b Box) IsDefined() bool {
+	return b.IsSet || !b.IsZero()
+}
+
 // String returns a string representation of the box.
 func (b Box) String() string {
 	return fmt.Sprintf("box(%d,%d,%d,%d)", b.Top, b.Left, b.Right, b.Bottom)

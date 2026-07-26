@@ -74,6 +74,54 @@ func TestChartOption(t *testing.T) {
 	})
 }
 
+func TestChartOptionPadding(t *testing.T) {
+	t.Parallel()
+
+	t.Run("unset_gets_default", func(t *testing.T) {
+		opt := ChartOption{}
+		require.NoError(t, opt.fillDefault())
+		assert.Equal(t, defaultPadding, opt.Padding)
+	})
+	t.Run("explicit_zero_preserved", func(t *testing.T) {
+		opt := ChartOption{Padding: NewBoxEqual(0)}
+		require.NoError(t, opt.fillDefault())
+		assert.Equal(t, NewBoxEqual(0), opt.Padding)
+	})
+}
+
+func TestChartOptionLabelsComposition(t *testing.T) {
+	t.Parallel()
+
+	t.Run("legend", func(t *testing.T) {
+		var opt ChartOption
+		LegendOptionFunc(LegendOption{Vertical: Ptr(true)})(&opt)
+		LegendLabelsOptionFunc([]string{"a", "b"})(&opt)
+		assert.Equal(t, []string{"a", "b"}, opt.Legend.SeriesNames)
+		assert.True(t, flagIs(true, opt.Legend.Vertical))
+	})
+	t.Run("xaxis", func(t *testing.T) {
+		var opt ChartOption
+		XAxisOptionFunc(XAxisOption{Title: "x"})(&opt)
+		XAxisLabelsOptionFunc([]string{"a", "b"})(&opt)
+		assert.Equal(t, []string{"a", "b"}, opt.XAxis.Labels)
+		assert.Equal(t, "x", opt.XAxis.Title)
+	})
+	t.Run("yaxis", func(t *testing.T) {
+		var opt ChartOption
+		YAxisOptionFunc(YAxisOption{Title: "y"})(&opt)
+		YAxisLabelsOptionFunc([]string{"a", "b"})(&opt)
+		require.Len(t, opt.YAxis, 1)
+		assert.Equal(t, []string{"a", "b"}, opt.YAxis[0].Labels)
+		assert.Equal(t, "y", opt.YAxis[0].Title)
+	})
+	t.Run("yaxis_empty", func(t *testing.T) {
+		var opt ChartOption
+		YAxisLabelsOptionFunc([]string{"a", "b"})(&opt)
+		require.Len(t, opt.YAxis, 1)
+		assert.Equal(t, []string{"a", "b"}, opt.YAxis[0].Labels)
+	})
+}
+
 func TestChartOptionSeriesShowLabel(t *testing.T) {
 	t.Parallel()
 

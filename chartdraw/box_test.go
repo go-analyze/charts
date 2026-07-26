@@ -60,6 +60,21 @@ func TestBoxWith(t *testing.T) {
 	})
 }
 
+func TestBoxIsDefined(t *testing.T) {
+	t.Parallel()
+
+	t.Run("unset", func(t *testing.T) {
+		assert.False(t, Box{}.IsDefined())
+	})
+	t.Run("explicit_zero", func(t *testing.T) {
+		assert.True(t, NewBox(0, 0, 0, 0).IsDefined())
+		assert.True(t, Box{IsSet: true}.IsDefined())
+	})
+	t.Run("nonzero_literal", func(t *testing.T) {
+		assert.True(t, Box{Top: 5}.IsDefined())
+	})
+}
+
 func TestBoxEquals(t *testing.T) {
 	t.Parallel()
 
