@@ -65,6 +65,7 @@ type markPointRenderOption struct {
 	font               *truetype.Font
 	symbolSize         int
 	rotationRadians    float64
+	pointRotations     []float64 // per-point rotation overrides, indexed like points
 	seriesValues       []float64
 	markpoints         []SeriesMark
 	seriesLabelPainter *seriesLabelPainter
@@ -120,6 +121,10 @@ func (m *markPointPainter) Render() (Box, error) {
 			if p.Y == math.MaxInt32 {
 				continue // skip null coordinate
 			}
+			rotation := opt.rotationRadians
+			if index < len(opt.pointRotations) {
+				rotation = opt.pointRotations[index]
+			}
 			if opt.seriesLabelPainter != nil {
 				// blank the label the MarkPoint replaces (rendered before series labels)
 				for i := range opt.seriesLabelPainter.values {
@@ -137,9 +142,9 @@ func (m *markPointPainter) Render() (Box, error) {
 			anchorOffsetX, anchorOffsetY := 0, -(opt.symbolSize >> 1)
 			headOuterOffsetX := 0
 			headOuterOffsetY := -(5 * opt.symbolSize) / 4
-			if opt.rotationRadians != 0 {
-				cos := math.Cos(opt.rotationRadians)
-				sin := math.Sin(opt.rotationRadians)
+			if rotation != 0 {
+				cos := math.Cos(rotation)
+				sin := math.Sin(rotation)
 				rotate := func(dx, dy int) (int, int) {
 					fx, fy := float64(dx), float64(dy)
 					return int(math.Round(cos*fx - sin*fy)),
@@ -150,7 +155,7 @@ func (m *markPointPainter) Render() (Box, error) {
 			}
 			drawnAnchorX, drawnAnchorY := p.X+anchorOffsetX, p.Y+anchorOffsetY
 			painter.MarkPin(drawnAnchorX, drawnAnchorY, opt.symbolSize,
-				opt.rotationRadians, opt.fillColor, opt.fillColor, 0.0)
+				rotation, opt.fillColor, opt.fillColor, 0.0)
 			text := opt.valueFormatter(value)
 			textBox := painter.MeasureText(text, 0, textStyle)
 			if textStyle.FontSize > smallLabelFontSize && textBox.Width() > opt.symbolSize {
@@ -159,10 +164,14 @@ func (m *markPointPainter) Render() (Box, error) {
 			}
 			const textInset = 2
 			var textX, textY int
-			if opt.rotationRadians == 0 {
+			if rotation == 0 {
 				// vertical pin: keep the horizontal centering on the head center
 				textX = drawnAnchorX - (textBox.Width() >> 1)
 				textY = drawnAnchorY - textInset
+			} else if rotation == math.Pi {
+				// flipped vertical pin (below the point): mirror of the default placement
+				textX = drawnAnchorX - (textBox.Width() >> 1)
+				textY = drawnAnchorY + textInset + textBox.Height()
 			} else {
 				// horizontal pin: anchor the text just inside the outer head curve
 				if headOuterOffsetX >= 0 {

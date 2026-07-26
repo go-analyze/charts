@@ -255,6 +255,7 @@ type labelValue struct {
 	radians   float64
 	fontStyle FontStyle
 	vertical  bool
+	flipped   bool // place label below (vertical) or left (horizontal) of the anchor, for negative bars
 	offset    OffsetInt
 }
 
@@ -352,19 +353,30 @@ func (o *seriesLabelPainter) Add(value labelValue) {
 	}
 	if value.vertical {
 		renderValue.x -= textBox.Width() >> 1
-		renderValue.y -= distance
+		if value.flipped {
+			renderValue.y += distance + textBox.Height()
+		} else {
+			renderValue.y -= distance
+		}
 	} else {
-		// Start with default positioning
-		renderValue.x += distance
+		if value.flipped {
+			renderValue.x -= distance + textBox.Width()
+			if renderValue.x < 0 {
+				renderValue.x = 0 // slide right to stay within bounds
+			}
+		} else {
+			// Start with default positioning
+			renderValue.x += distance
 
-		// Check if label would extend beyond painter width boundary and adjust if needed
-		// Allow labels to extend into the right padding space if configured
-		maxAllowedX := o.p.Width() + o.rightPadding
-		labelEndX := renderValue.x + textBox.Width()
-		if labelEndX > maxAllowedX {
-			// Slide label left just enough to keep it within bounds (including padding)
-			overhang := labelEndX - maxAllowedX
-			renderValue.x -= overhang
+			// Check if label would extend beyond painter width boundary and adjust if needed
+			// Allow labels to extend into the right padding space if configured
+			maxAllowedX := o.p.Width() + o.rightPadding
+			labelEndX := renderValue.x + textBox.Width()
+			if labelEndX > maxAllowedX {
+				// Slide label left just enough to keep it within bounds (including padding)
+				overhang := labelEndX - maxAllowedX
+				renderValue.x -= overhang
+			}
 		}
 
 		renderValue.y += textBox.Height() >> 1

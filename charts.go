@@ -288,6 +288,21 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		valueAxisRanges: make(map[int]axisRange),
 	}
 
+	// reserve fixed pixel headroom past the data extremes so mark point pins and series labels
+	// extending beyond the bars are not clipped; the pin head outer edge sits 5*symbolSize/4
+	// past the data point. Labels only need clearance toward the axis on negative extents,
+	// labels at the top or right render into the chart padding.
+	var markPointClearance, negativeClearance int
+	if symSize := opt.seriesList.markPointSize(); symSize > 0 {
+		markPointClearance = 5 * symSize / 4
+	}
+	negativeClearance = markPointClearance
+	if fontSize := opt.seriesList.labelFontSize(); fontSize > 0 {
+		labelClearance := 5 + // default label distance
+			p.MeasureText("0", 0, FontStyle{FontSize: fontSize, FontColor: ColorBlack}).Height()
+		negativeClearance = max(markPointClearance, labelClearance)
+	}
+
 	// calculate x-axis range and do a dry-render to find height
 	// we will render on the actual painter once we know the space the y-axis will occupy
 	var xAxisOpts axisOption
@@ -295,7 +310,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 	if opt.categoryY {             // X is value axis
 		xValueAxis = opt.valueAxis[0]
 		xValueAxis.prep(getPreferredTheme(xValueAxis.Theme, theme), false)
-		xAxisRange := calculateValueAxisRange(p, false, p.Width(),
+		xPrep := prepareValueAxisRange(p, false, p.Width(),
 			xValueAxis.Min, xValueAxis.Max, xValueAxis.RangeValuePaddingScale,
 			xValueAxis.Labels,
 			xValueAxis.LabelCount, xValueAxis.Unit, xValueAxis.LabelCountAdjustment,
@@ -303,6 +318,15 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 			getPreferredValueFormatter(xValueAxis.ValueFormatter, opt.valueFormatter),
 			xValueAxis.LabelRotation, xValueAxis.LabelFontStyle,
 			xValueAxis.PreferNiceIntervals)
+		if xPrep.minVal < 0 {
+			// clearance is historically not reserved on the x-axis; charts with negative extents
+			// enable it on both sides since pins can render at either bar tip
+			xPrep.maxClearancePx = markPointClearance
+			xPrep.minClearancePx = negativeClearance
+		}
+		flexCount := xValueAxis.LabelCount == 0 && !flagIs(false, xValueAxis.PreferNiceIntervals)
+		xMin, xMax, xLabelCount := resolveValueAxisRange(&xPrep, flexCount, 0)
+		xAxisRange := finalizeValueAxisRange(p, &xPrep, xMin, xMax, xLabelCount)
 		xAxisOpts = xValueAxis.toAxisOption(xAxisRange)
 	} else { // X is category axis (typical)
 		xAxisRange := calculateCategoryAxisRange(p, p.Width(), false, flagIs(false, opt.categoryAxis.BoundaryGap),
@@ -375,12 +399,6 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 		var entries []yAxisEntry
 		var valuePreps []*valueAxisPrep
 		var valuePrepIndices []int
-		// reserve fixed pixel headroom above the data max so mark point pins are not clipped;
-		// the pin head outer edge sits 5*symbolSize/4 above the data point
-		var markPointClearance int
-		if symSize := opt.seriesList.markPointSize(); symSize > 0 {
-			markPointClearance = 5 * symSize / 4
-		}
 		if yAxisCount > 0 {
 			entries = make([]yAxisEntry, yAxisCount)
 			for yIndex := 0; yIndex < yAxisCount; yIndex++ {
@@ -407,6 +425,7 @@ func defaultRender(p *Painter, opt defaultRenderOption) (*defaultRenderResult, e
 					valueFormatter, yAxisOption.LabelRotation, yAxisOption.LabelFontStyle,
 					yAxisOption.PreferNiceIntervals)
 				prep.maxClearancePx = markPointClearance
+				prep.minClearancePx = negativeClearance // only takes effect when the data min is negative
 				entries[yIndex].prep = &prep
 				valuePreps = append(valuePreps, entries[yIndex].prep)
 				valuePrepIndices = append(valuePrepIndices, yIndex)

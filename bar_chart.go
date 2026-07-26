@@ -206,8 +206,9 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 	stackedSeries := flagIs(true, opt.StackSeries)
 	barSize := opt.BarSize
 	var margin, barMargin, barWidth int
-	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
-	var barLanes []int           // bar lane per series when stacked
+	// diverging stacks: positive values accumulate above the baseline, negative values below
+	var accumulatedPos, accumulatedNeg []int // signed pixel offsets from the baseline
+	var barLanes []int                       // bar lane per series when stacked
 	if stackedSeries {
 		var barCount int
 		barLanes, barCount = stackedBarLanes(opt.SeriesList)
@@ -217,7 +218,8 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 		}
 		margin, barMargin, barWidth = calculateGroupMarginsAndSize(barCount, width,
 			resolveBarSizePixels(barSize, width, barCount), resolveBarMarginPixels(configuredMargin, width))
-		accumulatedHeights = make([]int, result.categoryAxisRange.divideCount)
+		accumulatedPos = make([]int, result.categoryAxisRange.divideCount)
+		accumulatedNeg = make([]int, result.categoryAxisRange.divideCount)
 	} else {
 		margin, barMargin, barWidth = calculateGroupMarginsAndSize(seriesCount, width,
 			resolveBarSizePixels(barSize, width, seriesCount), resolveBarMarginPixels(opt.BarMargin, width))
@@ -238,6 +240,8 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 			lane = barLanes[index]
 		}
 		yRange := result.valueAxisRanges[series.YAxisIndex]
+		baselineValue := max(min(0.0, yRange.max), yRange.min) // bars extend from zero, clamped to the axis range
+		basePx := yRange.getRestHeight(baselineValue)
 		seriesThemeIndex := index
 		if series.absThemeIndex != nil {
 			seriesThemeIndex = *series.absThemeIndex
@@ -251,6 +255,10 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 		}
 
 		points := make([]Point, len(series.Values)) // used for mark points
+		var pointRotations []float64
+		if len(series.MarkPoint.Points) > 0 {
+			pointRotations = make([]float64, len(series.Values))
+		}
 		for j, item := range series.Values {
 			if j >= result.categoryAxisRange.divideCount {
 				break
@@ -260,36 +268,60 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 
 			// Compute bar placement differently for stacked vs non-stacked.
 			var top, bottom int
-			h := yRange.getHeight(item)
+			var negativeBar bool // bar extends below the baseline
 			x := divideValues[j] + margin + lane*(barWidth+barMargin)
 
 			if stackSeries {
-				// Use accumulatedHeights to stack
-				top = barMaxHeight - (accumulatedHeights[j] + h)
-				bottom = barMaxHeight - accumulatedHeights[j]
-				accumulatedHeights[j] += h
+				negativeBar = item < 0
+				acc := accumulatedPos
+				if negativeBar {
+					acc = accumulatedNeg
+				}
+				h := yRange.getHeightDelta(item)
+				top = basePx - (acc[j] + h)
+				bottom = basePx - acc[j]
+				acc[j] += h
+				if top > bottom {
+					top, bottom = bottom, top
+				}
 			} else {
-				top = barMaxHeight - h
-				bottom = barMaxHeight - 1 // or -0, depending on your style
+				tipY := yRange.getRestHeight(item)
+				negativeBar = item < baselineValue
+				if negativeBar {
+					top, bottom = basePx+1, tipY
+				} else {
+					top, bottom = tipY, basePx-1
+				}
 			}
 
 			// In stacked mode, only round caps on the last stacked series
 			if flagIs(true, opt.RoundedBarCaps) && (!stackSeries || index == lastStackedIndex) {
+				corners := roundTopLeft | roundTopRight
+				if negativeBar {
+					corners = roundBottomLeft | roundBottomRight
+				}
 				seriesPainter.roundedRect(
 					Box{Top: top, Left: x, Right: x + barWidth, Bottom: bottom, IsSet: true},
-					barWidth, roundTopLeft|roundTopRight, seriesColor, seriesColor, 0.0)
+					barWidth, corners, seriesColor, seriesColor, 0.0)
 			} else {
 				seriesPainter.FilledRect(x, top, x+barWidth, bottom, seriesColor, seriesColor, 0.0)
 			}
 
+			tip := top
+			if negativeBar {
+				tip = bottom
+			}
 			// Prepare point for mark points
 			points[j] = Point{
 				X: x + (barWidth >> 1), // center of the bar horizontally
-				Y: top,                 // top of bar
+				Y: tip,                 // value end of bar
+			}
+			if pointRotations != nil && negativeBar {
+				pointRotations[j] = math.Pi // flip pin below the bar
 			}
 
 			if labelPainter != nil {
-				labelY := top
+				labelY := tip
 				var radians float64
 				fontStyle := series.Label.FontStyle
 				labelBottom := opt.SeriesLabelPosition == PositionBottom && !stackSeries
@@ -316,6 +348,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 				}
 				labelPainter.Add(labelValue{
 					vertical:  true, // label is vertically oriented
+					flipped:   negativeBar && !labelBottom,
 					index:     index,
 					dataIndex: j,
 					value:     item,
@@ -381,6 +414,7 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 					fillColor:          seriesColor,
 					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
+					pointRotations:     pointRotations,
 					markpoints:         seriesMarks,
 					seriesValues:       series.Values,
 					points:             points,
@@ -392,19 +426,26 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 				if globalSeriesData == nil {
 					globalSeriesData = sumSeriesData(opt.SeriesList, series.YAxisIndex)
 				}
-				// global marks anchor to the top of the combined stack, not this series' points
-				globalPoints := make([]Point, len(accumulatedHeights))
-				for j := range accumulatedHeights {
+				// global marks anchor to the stack's outer edge on the side of the net sum
+				globalPoints := make([]Point, len(accumulatedPos))
+				globalRotations := make([]float64, len(accumulatedPos))
+				for j := range accumulatedPos {
 					x := divideValues[j] + margin + lane*(barWidth+barMargin)
+					edge := accumulatedPos[j]
+					if accumulatedPos[j]+accumulatedNeg[j] < 0 {
+						edge = accumulatedNeg[j]
+						globalRotations[j] = math.Pi // flip pin below the stack
+					}
 					globalPoints[j] = Point{
 						X: x + (barWidth >> 1),
-						Y: barMaxHeight - accumulatedHeights[j],
+						Y: basePx - edge,
 					}
 				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
 					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
+					pointRotations:     globalRotations,
 					markpoints:         globalMarks,
 					seriesValues:       globalSeriesData,
 					points:             globalPoints,
@@ -471,20 +512,24 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 	height := int(y1 - y0)
 	stackedSeries := flagIs(true, opt.StackSeries)
 	// TODO - propagate per-axis reversed flag once horizontal bars support multiple value axes
-	reversed := result.valueAxisRanges[0].reversed // bars grow from the right when the category axis is on the right
-	plotWidth := seriesPainter.Width()
-	// baselineX is the value=0 edge; dir is the direction bars grow.
-	baselineX, dir := 0, 1
+	xRange := result.valueAxisRanges[0]
+	reversed := xRange.reversed // bars grow from the right when the category axis is on the right
+	// baselineX is the pixel of the zero value, clamped to the axis range; dir is the direction bars grow.
+	baselineValue := max(min(0.0, xRange.max), xRange.min)
+	baselineX := xRange.valuePosition(baselineValue)
+	dir := 1
 	if reversed {
-		baselineX, dir = plotWidth, -1
+		dir = -1
 	}
 	barSize := opt.BarSize
 
-	// if stacking, keep track of accumulated widths for each data index (after the "reverse" logic)
-	var accumulatedWidths []int
+	// if stacking, keep track of accumulated widths for each data index (after the "reverse" logic).
+	// diverging stacks: positive values accumulate past the baseline, negative values behind it
+	var accumulatedPos, accumulatedNeg []int // signed pixel offsets from the baseline
 	var margin, barMargin, barHeight int
 	if stackedSeries {
-		accumulatedWidths = make([]int, yRange.divideCount)
+		accumulatedPos = make([]int, yRange.divideCount)
+		accumulatedNeg = make([]int, yRange.divideCount)
 		margin, _, barHeight = calculateGroupMarginsAndSize(1, height,
 			resolveBarSizePixels(barSize, height, 1), nil)
 	} else {
@@ -514,6 +559,10 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 		}
 
 		points := make([]Point, len(series.Values))
+		var pointRotations []float64
+		if len(series.MarkPoint.Points) > 0 {
+			pointRotations = make([]float64, len(series.Values))
+		}
 		for j, item := range series.Values {
 			if j >= yRange.divideCount {
 				break
@@ -526,22 +575,28 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 			// Compute the top of this bar "row"
 			y := divideValues[reversedJ] + margin
 
-			// Determine the width (horizontal length) of the bar based on the data value
-			w := result.valueAxisRanges[0].getHeight(item)
-
 			// stackBase is the bar's category-axis-side edge; tipX is the value-end edge.
 			var stackBase, tipX int
+			var negativeBar bool // bar extends below the baseline
 			if stackedSeries {
-				stackBase = baselineX + dir*accumulatedWidths[reversedJ]
-				accumulatedWidths[reversedJ] += w
+				negativeBar = item < 0
+				acc := accumulatedPos
+				if negativeBar {
+					acc = accumulatedNeg
+				}
+				w := xRange.getHeightDelta(item)
+				stackBase = baselineX + dir*acc[reversedJ]
+				acc[reversedJ] += w
+				tipX = stackBase + dir*w
 			} else {
 				// Offset each series in its own lane
 				if index != 0 {
 					y += index * (barHeight + barMargin)
 				}
 				stackBase = baselineX
+				tipX = xRange.valuePosition(item)
+				negativeBar = item < baselineValue
 			}
-			tipX = stackBase + dir*w
 			left, right := stackBase, tipX
 			if left > right {
 				left, right = right, left
@@ -549,7 +604,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 
 			// In stacked mode, only round caps on the last series
 			roundedCorners := roundTopRight | roundBottomRight
-			if reversed {
+			if negativeBar != reversed { // rounded cap on the direction the bar grows
 				roundedCorners = roundTopLeft | roundBottomLeft
 			}
 			if flagIs(true, opt.RoundedBarCaps) && (!stackedSeries || index == seriesCount-1) {
@@ -564,6 +619,14 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 			points[j] = Point{
 				X: tipX,
 				Y: y + (barHeight >> 1), // vertical center of bar
+			}
+			if pointRotations != nil {
+				// pin tail points toward the bar growth direction (see markPointRotation below)
+				if negativeBar != reversed {
+					pointRotations[j] = -math.Pi / 2
+				} else {
+					pointRotations[j] = math.Pi / 2
+				}
 			}
 
 			if labelPainter != nil {
@@ -591,6 +654,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 				}
 				labelPainter.Add(labelValue{
 					vertical:  false, // horizontal label
+					flipped:   negativeBar && !reversed && !labelLeft,
 					index:     index,
 					dataIndex: j,
 					value:     item,
@@ -664,6 +728,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					rotationRadians:    markPointRotation,
+					pointRotations:     pointRotations,
 					markpoints:         seriesMarks,
 					seriesValues:       series.Values,
 					points:             points,
@@ -675,13 +740,21 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 				if globalSeriesData == nil {
 					globalSeriesData = sumSeriesData(opt.SeriesList, 0)
 				}
-				// global marks anchor to the value-end of the combined stack, not this series' points
-				globalPoints := make([]Point, len(accumulatedWidths))
-				for j := range accumulatedWidths {
+				// global marks anchor to the stack's outer edge on the side of the net sum
+				globalPoints := make([]Point, len(accumulatedPos))
+				globalRotations := make([]float64, len(accumulatedPos))
+				for j := range accumulatedPos {
 					reversedJ := yRange.divideCount - j - 1
 					y := divideValues[reversedJ] + margin
+					edge := accumulatedPos[reversedJ]
+					if accumulatedPos[reversedJ]+accumulatedNeg[reversedJ] < 0 {
+						edge = accumulatedNeg[reversedJ]
+						globalRotations[j] = -markPointRotation // pin flipped toward the stack tip
+					} else {
+						globalRotations[j] = markPointRotation
+					}
 					globalPoints[j] = Point{
-						X: baselineX + dir*accumulatedWidths[reversedJ],
+						X: baselineX + dir*edge,
 						Y: y + (barHeight >> 1),
 					}
 				}
@@ -690,6 +763,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					rotationRadians:    markPointRotation,
+					pointRotations:     globalRotations,
 					markpoints:         globalMarks,
 					seriesValues:       globalSeriesData,
 					points:             globalPoints,

@@ -286,6 +286,10 @@ func (h heatMapFakeSeries) markPointSize() int {
 	return 0
 }
 
+func (h heatMapFakeSeries) labelFontSize() float64 {
+	return 0
+}
+
 func (h heatMapFakeSeries) setSeriesName(_ int, _ string) {
 	// ignored
 }

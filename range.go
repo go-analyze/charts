@@ -38,7 +38,8 @@ type valueAxisPrep struct {
 	minPadScale, maxPadScale float64
 	padLabelCount            int // estimated label count after collision check
 	maxLabelCount            int // max labels that fit the axis pixel size
-	maxClearancePx           int // fixed pixel headroom reserved above the data max (e.g. mark point pins)
+	maxClearancePx           int // pixel headroom above the data max for mark point pins
+	minClearancePx           int // pixel headroom below a negative data min for pins and flipped labels
 	preferNice               *bool
 	// carry-through for resolution and finalization
 	labelsCfg      []string
@@ -63,12 +64,15 @@ func prepareValueAxisRange(p *Painter, isVertical bool, axisSize int,
 	valueFormatter ValueFormatter,
 	labelRotation float64, fontStyle FontStyle,
 	preferNice *bool) valueAxisPrep {
-	minVal, maxVal, sumMax := getSeriesMinMaxSumMax(seriesList, yAxisIndex, stackSeries)
-	if stackSeries { // If stacked, maxVal should be the max per-index sum across all series
+	minVal, maxVal, sumMin, sumMax := getSeriesMinMaxSumMax(seriesList, yAxisIndex, stackSeries)
+	if stackSeries { // If stacked, maxVal should be the max cumulative sum across all series
 		if minVal > 0 {
 			minVal-- // subtract to ensure that all series are represented as a small stacked bar (may otherwise have 0 height)
 		}
 		maxVal = sumMax
+		if sumMin < minVal {
+			minVal = sumMin // negative values can stack below the item min
+		}
 	}
 	minPadScale, maxPadScale := 1.0, 1.0
 	if rangeValuePaddingScale != nil {
@@ -224,6 +228,20 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 		maxPadded = clearanceFloor
 	}
 
+	// symmetric pixel clearance below the data min for marks on downward extending bars
+	var minClearanceFloor float64
+	if prep.minClearancePx > 0 && prep.minPadScale > 0 && prep.minVal < 0 &&
+		prep.axisSize > prep.minClearancePx && prep.minVal < maxPadded {
+		minClearanceFloor = maxPadded -
+			(maxPadded-prep.minVal)*float64(prep.axisSize)/float64(prep.axisSize-prep.minClearancePx)
+		if minClearanceFloor < minPadded {
+			minPadded = minClearanceFloor
+			if maxPadded-minPadded >= 10 {
+				minPadded = math.Floor(minPadded) // friendlier axis min when a whole unit is minor
+			}
+		}
+	}
+
 	// if the user set only a unit, we may need to refine again after padding to meet the unit
 	if prep.labelCountCfg == 0 && prep.labelUnit > 0 {
 		labelUnit := prep.labelUnit
@@ -342,7 +360,69 @@ func resolveValueAxisRange(prep *valueAxisPrep, flexCount bool, targetLabelCount
 		}
 	}
 
+	// when the padded range spans zero, align the interval grid so zero renders as a label
+	if prep.minCfg == nil && prep.maxCfg == nil && prep.labelUnit == 0 &&
+		prep.minPadScale > 0 && prep.maxPadScale > 0 && minPadded < 0 && maxPadded > 0 {
+		// clearance floors extend the covered extents so alignment retains the reserved headroom
+		alignMin := min(prep.minVal, minClearanceFloor)
+		alignMax := max(prep.maxVal, clearanceFloor)
+		minPadded, maxPadded = alignRangeToZero(minPadded, maxPadded, alignMin, alignMax, labelCount)
+	}
+
 	return minPadded, maxPadded, labelCount
+}
+
+// alignRangeToZero adjusts a zero-spanning padded range so zero lands exactly on the label
+// interval grid, keeping the label count fixed and never shrinking below the data extents.
+// When the data is entirely one-sided, the range is re-anchored so zero becomes the boundary.
+func alignRangeToZero(minPadded, maxPadded, dataMin, dataMax float64, labelCount int) (float64, float64) {
+	intervals := labelCount - 1
+	var required int // minimum intervals needed to cover each data side
+	if dataMin < 0 {
+		required++
+	}
+	if dataMax > 0 {
+		required++
+	}
+	if required == 0 || intervals < required {
+		return minPadded, maxPadded
+	}
+	interval := (maxPadded - minPadded) / float64(intervals)
+	if interval <= 0 {
+		return minPadded, maxPadded
+	}
+	if ratio := -minPadded / interval; math.Abs(ratio-math.Round(ratio)) < 1e-9 {
+		return minPadded, maxPadded // zero already on the grid
+	}
+	if dataMin < 0 && dataMax > 0 {
+		// with data on both sides the grid can absorb a friendlier interval without extreme
+		// padding, one-sided data instead keeps the tighter zero-anchored interval
+		interval = niceNumFrom(interval, extendedNiceNums[:])
+	}
+	// keep the current interval when the grid can cover the data, otherwise round the interval
+	// up to the next nice number until it fits
+	for {
+		var below, above int
+		if dataMin < 0 {
+			below = max(int(math.Ceil(-dataMin/interval-1e-9)), 1) // intervals below zero
+		}
+		if dataMax > 0 {
+			above = max(int(math.Ceil(dataMax/interval-1e-9)), 1) // intervals above zero
+		}
+		if below+above <= intervals {
+			for s := intervals - below - above; s > 0; s-- {
+				// surplus intervals go to the less padded side, one-sided data stays anchored at zero
+				if above == 0 || (below > 0 &&
+					float64(below)*interval+dataMin <= float64(above)*interval-dataMax) {
+					below++
+				} else {
+					above++
+				}
+			}
+			return -float64(below) * interval, float64(above) * interval
+		}
+		interval = niceNumFrom(interval*(1+1e-9), extendedNiceNums[:])
+	}
 }
 
 // finalizeValueAxisRange produces the final axisRange, regenerating labels if the range changed.
@@ -973,6 +1053,14 @@ func (r axisRange) getHeight(value float64) int {
 
 func (r axisRange) getRestHeight(value float64) int {
 	return r.size - r.getHeight(value)
+}
+
+// getHeightDelta returns the signed pixel span of a value delta, proportional to the range span.
+func (r axisRange) getHeightDelta(delta float64) int {
+	if r.max <= r.min {
+		return 0
+	}
+	return int(delta / (r.max - r.min) * float64(r.size))
 }
 
 // valuePosition returns the pixel offset (along the axis) of value, respecting r.reversed.
