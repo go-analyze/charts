@@ -104,10 +104,13 @@ func (m *markPointPainter) Render() (Box, error) {
 				index = summary.MaxIndex
 				value = summary.Max
 			}
-			if index < 0 {
-				continue // no valid data (all null)
+			if index < 0 || index >= len(opt.points) {
+				continue // no valid data or index beyond rendered points
 			}
 			p := opt.points[index]
+			if p.Y == math.MaxInt32 {
+				continue // skip null coordinate
+			}
 			if opt.seriesLabelPainter != nil {
 				// blank the label the MarkPoint replaces (rendered before series labels)
 				for i := range opt.seriesLabelPainter.values {

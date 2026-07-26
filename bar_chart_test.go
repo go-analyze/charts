@@ -367,6 +367,38 @@ func TestBarChart(t *testing.T) {
 			},
 			pngCRC: 0xd29b2287,
 		},
+		{
+			name: "stack_series_global_mark_point_null_last",
+			makeOptions: func() BarChartOption {
+				// combined max (index 1) and min (index 3) fall where the last series is null
+				opt := NewBarChartOptionWithData([][]float64{
+					{10, 40, 10, 5, 10},
+					{10, 40, 10, 5, 10},
+					{5, GetNullValue(), 5, GetNullValue(), 5},
+				})
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.AddGlobalPoints(SeriesMarkTypeMin, SeriesMarkTypeMax)
+				opt.Legend.Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0x4798176f,
+		},
+		{
+			name: "stack_series_global_mark_point_null_series",
+			makeOptions: func() BarChartOption {
+				// last stacked series is entirely null, marks anchor to the combined stack
+				opt := NewBarChartOptionWithData([][]float64{
+					{10, 40, 10, 5, 10},
+					{10, 40, 10, 5, 10},
+					{GetNullValue(), GetNullValue(), GetNullValue(), GetNullValue(), GetNullValue()},
+				})
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.AddGlobalPoints(SeriesMarkTypeMin, SeriesMarkTypeMax)
+				opt.Legend.Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0xe771f9b5,
+		},
 	}
 
 	for i, tt := range tests {
@@ -854,6 +886,40 @@ func TestBarChartHorizontal(t *testing.T) {
 				return opt
 			},
 			pngCRC: 0xae387012,
+		},
+		{
+			name: "stack_series_global_mark_point_null_last",
+			makeOptions: func() BarChartOption {
+				// combined max (index 1) and min (index 3) fall where the last series is null
+				opt := NewBarChartOptionWithData([][]float64{
+					{10, 40, 10, 5, 10},
+					{10, 40, 10, 5, 10},
+					{5, GetNullValue(), 5, GetNullValue(), 5},
+				})
+				opt.Horizontal = true
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.AddGlobalPoints(SeriesMarkTypeMin, SeriesMarkTypeMax)
+				opt.Legend.Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0xa99b41c6,
+		},
+		{
+			name: "stack_series_global_mark_point_null_series",
+			makeOptions: func() BarChartOption {
+				// last stacked series is entirely null, marks anchor to the combined stack
+				opt := NewBarChartOptionWithData([][]float64{
+					{10, 40, 10, 5, 10},
+					{10, 40, 10, 5, 10},
+					{GetNullValue(), GetNullValue(), GetNullValue(), GetNullValue(), GetNullValue()},
+				})
+				opt.Horizontal = true
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.AddGlobalPoints(SeriesMarkTypeMin, SeriesMarkTypeMax)
+				opt.Legend.Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0x4d2ba92c,
 		},
 	}
 

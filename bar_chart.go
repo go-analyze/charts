@@ -381,13 +381,22 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 				if globalSeriesData == nil {
 					globalSeriesData = sumSeriesData(opt.SeriesList, series.YAxisIndex)
 				}
+				// global marks anchor to the top of the combined stack, not this series' points
+				globalPoints := make([]Point, len(accumulatedHeights))
+				for j := range accumulatedHeights {
+					x := divideValues[j] + margin + lane*(barWidth+barMargin)
+					globalPoints[j] = Point{
+						X: x + (barWidth >> 1),
+						Y: barMaxHeight - accumulatedHeights[j],
+					}
+				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
 					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
 					markpoints:         globalMarks,
 					seriesValues:       globalSeriesData,
-					points:             points,
+					points:             globalPoints,
 					valueFormatter:     markPointValueFormatter,
 					seriesLabelPainter: labelPainter,
 				})
@@ -655,6 +664,16 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 				if globalSeriesData == nil {
 					globalSeriesData = sumSeriesData(opt.SeriesList, 0)
 				}
+				// global marks anchor to the value-end of the combined stack, not this series' points
+				globalPoints := make([]Point, len(accumulatedWidths))
+				for j := range accumulatedWidths {
+					reversedJ := yRange.divideCount - j - 1
+					y := divideValues[reversedJ] + margin
+					globalPoints[j] = Point{
+						X: baselineX + dir*accumulatedWidths[reversedJ],
+						Y: y + (barHeight >> 1),
+					}
+				}
 				markPointPainter.add(markPointRenderOption{
 					fillColor:          defaultGlobalMarkFillColor,
 					font:               series.Label.FontStyle.Font,
@@ -662,7 +681,7 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 					rotationRadians:    markPointRotation,
 					markpoints:         globalMarks,
 					seriesValues:       globalSeriesData,
-					points:             points,
+					points:             globalPoints,
 					valueFormatter:     markPointValueFormatter,
 					seriesLabelPainter: labelPainter,
 				})

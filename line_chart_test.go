@@ -1224,6 +1224,40 @@ func TestLineChart(t *testing.T) {
 			},
 			pngCRC: 0x7d2f36b3,
 		},
+		{
+			name: "stack_series_global_mark_point_null_last",
+			makeOptions: func() LineChartOption {
+				// combined max (index 1) and min (index 3) fall where the last series is null
+				opt := NewLineChartOptionWithData([][]float64{
+					{10, 40, 10, 5, 10},
+					{10, 40, 10, 5, 10},
+					{5, GetNullValue(), 5, GetNullValue(), 5},
+				})
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.AddGlobalPoints(SeriesMarkTypeMin, SeriesMarkTypeMax)
+				opt.XAxis.Labels = []string{"a", "b", "c", "d", "e"}
+				opt.Legend.Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0xe53aeff0,
+		},
+		{
+			name: "stack_series_global_mark_point_null_series",
+			makeOptions: func() LineChartOption {
+				// last stacked series is entirely null, marks anchor to the combined stack
+				opt := NewLineChartOptionWithData([][]float64{
+					{10, 40, 10, 5, 10},
+					{10, 40, 10, 5, 10},
+					{GetNullValue(), GetNullValue(), GetNullValue(), GetNullValue(), GetNullValue()},
+				})
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[len(opt.SeriesList)-1].MarkPoint.AddGlobalPoints(SeriesMarkTypeMin, SeriesMarkTypeMax)
+				opt.XAxis.Labels = []string{"a", "b", "c", "d", "e"}
+				opt.Legend.Show = Ptr(false)
+				return opt
+			},
+			pngCRC: 0xe00c8681,
+		},
 	}
 
 	for i, tt := range tests {

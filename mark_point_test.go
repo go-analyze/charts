@@ -1,6 +1,7 @@
 package charts
 
 import (
+	"math"
 	"strconv"
 	"testing"
 
@@ -44,6 +45,24 @@ func TestMarkPoint(t *testing.T) {
 						{X: 30, Y: 30},
 						{X: 50, Y: 50},
 					},
+				})
+				if _, err := markPoint.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+		},
+		{ // index beyond points and null point coordinates must not panic and render no mark point
+			render: func(p *Painter) ([]byte, error) {
+				markPoint := newMarkPointPainter(p)
+				markPoint.add(markPointRenderOption{
+					fillColor:    ColorBlack,
+					seriesValues: []float64{1, 2, 3},
+					markpoints:   NewSeriesMarkList(SeriesMarkTypeMax, SeriesMarkTypeMin),
+					points: []Point{
+						{X: 10, Y: math.MaxInt32}, // null point skipped
+						{X: 30, Y: 30},
+					}, // max index 2 is beyond points
 				})
 				if _, err := markPoint.Render(); err != nil {
 					return nil, err

@@ -196,19 +196,34 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 			}
 		}
 
+		var stackLinePoints []Point
+		if stackSeries {
+			// accumulated stack line, valid at every index even where this series is null
+			stackLinePoints = make([]Point, len(accumulatedValues))
+			for i, v := range accumulatedValues {
+				stackLinePoints[i] = Point{X: xValues[i], Y: yRange.getRestHeight(v)}
+			}
+		}
+
 		if (series.YAxisIndex == 0 && fillAreaY0) || fillAreaY1 {
-			areaPoints := slices.Clone(points)
-			for i, p := range areaPoints {
-				if p.Y != math.MaxInt32 {
-					if i > 0 {
-						areaPoints = areaPoints[i:] // truncate null points from array
+			var areaPoints []Point
+			if stackSeries {
+				// top edge follows the accumulated line so null values collapse onto the stack below
+				areaPoints = slices.Clone(stackLinePoints)
+			} else {
+				areaPoints = slices.Clone(points)
+				for i, p := range areaPoints {
+					if p.Y != math.MaxInt32 {
+						if i > 0 {
+							areaPoints = areaPoints[i:] // truncate null points from array
+						}
+						break
 					}
-					break
 				}
 			}
 			bottomY := yRange.getRestHeight(yRange.min)
 			if stackSeries && len(priorSeriesPoints) > 0 {
-				// Fill between current line (areaPoints) and priorSeriesPoints
+				// Fill between accumulated line (areaPoints) and priorSeriesPoints
 				for i := len(priorSeriesPoints) - 1; i >= 0; i-- {
 					areaPoints = append(areaPoints, priorSeriesPoints[i])
 				}
@@ -363,7 +378,7 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 					fillColor:          defaultGlobalMarkFillColor,
 					font:               series.Label.FontStyle.Font,
 					symbolSize:         series.MarkPoint.SymbolSize,
-					points:             points,
+					points:             stackLinePoints, // anchor to the combined stack, not this series' points
 					markpoints:         globalMarks,
 					seriesValues:       globalSeriesData,
 					valueFormatter:     markPointValueFormatter,
@@ -383,8 +398,8 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 
 		if stackSeries {
-			// Save these points as "priorSeriesPoints" for the next series to stack onto
-			priorSeriesPoints = points
+			// save the accumulated line for the next series to stack onto
+			priorSeriesPoints = stackLinePoints
 		}
 	}
 
