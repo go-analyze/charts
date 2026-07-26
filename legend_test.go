@@ -428,6 +428,23 @@ func TestLegendCalculateBox(t *testing.T) {
 			},
 		},
 		{
+			name: "horizontal_bottom_wrapped",
+			opt: LegendOption{
+				Theme:       GetDefaultTheme(),
+				SeriesNames: []string{"Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf"},
+				Offset: OffsetStr{
+					Top: PositionBottom,
+				},
+			},
+			expectedBox: Box{
+				Top:    354,
+				Bottom: 391,
+				Left:   0,
+				Right:  620,
+				IsSet:  true,
+			},
+		},
+		{
 			name: "vertical_left_default",
 			opt: LegendOption{
 				Theme:       GetDefaultTheme(),

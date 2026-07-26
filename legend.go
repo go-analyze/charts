@@ -173,7 +173,8 @@ func (l *legendPainter) computeLayoutParams() (
 	if vertical {
 		height = legendBuiltInSpacing * len(opt.SeriesNames)
 	} else {
-		height = legendIconHeight
+		rows := l.legendRowCount(p, measureList, iconWidths, left)
+		height = legendIconHeight + (rows-1)*itemMaxHeight
 	}
 	switch offset.Top {
 	case "", PositionTop:
@@ -208,7 +209,6 @@ func (l *legendPainter) iterateLegendLayout(
 	x0 := left
 	y0 := y
 
-	lastIndex := len(opt.SeriesNames) - 1
 	for index := range opt.SeriesNames {
 		iconWidth := iconWidths[index]
 		if vertical {
@@ -216,33 +216,10 @@ func (l *legendPainter) iterateLegendLayout(
 				// adjust x0 so that the text will start with a right alignment to the longest line
 				x0 += maxTextWidth - measureList[index].Width()
 			}
-		} else {
-			// check if item will overrun the right side boundary
-			itemWidth := x0 + measureList[index].Width() + legendTextOffset + legendBuiltInSpacing + iconWidth
-			if lastIndex == index {
-				itemWidth = x0 + measureList[index].Width() + iconWidth
-			}
-			if itemWidth > p.Width() {
-				newLineStart := left
-				if opt.Align == AlignCenter {
-					// calculate remaining width using pre-measured values
-					remainingCount := len(measureList) - index
-					var remainingWidth int
-					var remainingIconWidth int
-					for i2 := index; i2 < len(measureList); i2++ {
-						remainingWidth += measureList[i2].Width()
-						remainingIconWidth += iconWidths[i2]
-					}
-					remainingWidth += remainingIconWidth + (remainingCount-1)*(legendBuiltInSpacing+legendTextOffset)
-					newLineStart = left + (p.Width()-remainingWidth)>>1
-					if newLineStart < 0 {
-						newLineStart = 0
-					}
-				}
-				x0 = newLineStart
-				y += itemMaxHeight
-				y0 = y
-			}
+		} else if wrap, newStart := l.legendItemWraps(p, measureList, iconWidths, index, x0, left); wrap {
+			x0 = newStart
+			y += itemMaxHeight
+			y0 = y
 		}
 
 		if onItem != nil {
@@ -262,6 +239,49 @@ func (l *legendPainter) iterateLegendLayout(
 	}
 
 	return y0
+}
+
+// legendItemWraps reports whether the horizontal item at index overruns the current row,
+// returning the x0 the wrapped row starts at.
+func (l *legendPainter) legendItemWraps(p *Painter, measureList []Box, iconWidths []int, index, x0, left int) (bool, int) {
+	itemWidth := x0 + measureList[index].Width() + legendTextOffset + legendBuiltInSpacing + iconWidths[index]
+	if index == len(measureList)-1 {
+		itemWidth = x0 + measureList[index].Width() + iconWidths[index]
+	}
+	if itemWidth <= p.Width() {
+		return false, x0
+	}
+
+	newLineStart := left
+	if l.opt.Align == AlignCenter {
+		// center the wrapped row over its remaining items
+		remainingCount := len(measureList) - index
+		var remainingWidth, remainingIconWidth int
+		for i2 := index; i2 < len(measureList); i2++ {
+			remainingWidth += measureList[i2].Width()
+			remainingIconWidth += iconWidths[i2]
+		}
+		remainingWidth += remainingIconWidth + (remainingCount-1)*(legendBuiltInSpacing+legendTextOffset)
+		newLineStart = left + (p.Width()-remainingWidth)>>1
+		if newLineStart < 0 {
+			newLineStart = 0
+		}
+	}
+	return true, newLineStart
+}
+
+// legendRowCount returns the number of rows a horizontal legend wraps into.
+func (l *legendPainter) legendRowCount(p *Painter, measureList []Box, iconWidths []int, left int) int {
+	rows := 1
+	x0 := left
+	for index := range measureList {
+		if wrap, newStart := l.legendItemWraps(p, measureList, iconWidths, index, x0, left); wrap {
+			rows++
+			x0 = newStart
+		}
+		x0 += iconWidths[index] + legendTextOffset + measureList[index].Width() + legendBuiltInSpacing
+	}
+	return rows
 }
 
 // calculateBox returns the bounding box without rendering.
