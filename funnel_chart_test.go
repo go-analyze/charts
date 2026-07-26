@@ -160,17 +160,24 @@ func TestFunnelChart(t *testing.T) {
 			pngCRC: 0x94752d3e,
 		},
 		{
+			name: "unsorted",
+			makeOptions: func() FunnelChartOption {
+				return NewFunnelChartOptionWithData([]float64{50, 100, 25})
+			},
+			pngCRC: 0xe697d472,
+		},
+		{
 			name: "empty_series",
 			makeOptions: func() FunnelChartOption {
 				opt := NewFunnelChartOptionWithData([]float64{})
 				opt.Padding = NewBoxEqual(10)
 				opt.Legend = LegendOption{
 					Show:        Ptr(true),
-					SeriesNames: []string{"Series A", "Series B"},
+					SeriesNames: []string{"Series A"},
 				}
 				return opt
 			},
-			pngCRC: 0xcb4ecf0b,
+			pngCRC: 0x182d775d,
 		},
 	}
 

@@ -1,6 +1,8 @@
 package charts
 
 import (
+	"fmt"
+
 	"github.com/dustin/go-humanize"
 )
 
@@ -49,7 +51,14 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 	}
 	seriesPainter := result.seriesPainter
 	max := opt.SeriesList[0].Value
-	var min float64
+	for index, item := range opt.SeriesList {
+		if item.Value < 0 {
+			return BoxZero, fmt.Errorf("unsupported negative value for series index %d", index)
+		}
+		if item.Value > max {
+			max = item.Value
+		}
+	}
 	theme := opt.Theme
 	gap := 2
 	height := seriesPainter.Height()
@@ -62,20 +71,13 @@ func (f *funnelChart) renderChart(result *defaultRenderResult) (Box, error) {
 	textList := make([]string, seriesCount)
 	labelStyleList := make([]*LabelStyle, seriesCount)
 	seriesNames := opt.SeriesList.names()
-	offset := max - min
 	for index, item := range opt.SeriesList {
-		// if the maximum and minimum are consistent it's 100%
-		widthPercent := 100.0
-		if offset != 0 {
-			widthPercent = (item.Value - min) / offset
-		}
-		w := int(widthPercent * float64(width))
-		widthList[index] = w
-		// if the maximum value is 0, the proportion is 100%
+		// full width when the maximum value is 0
 		percent := 1.0
 		if max != 0 {
 			percent = item.Value / max
 		}
+		widthList[index] = int(percent * float64(width))
 		if !flagIs(false, item.Label.Show) {
 			if item.Label.LabelFormatter != nil {
 				textList[index], labelStyleList[index] = item.Label.LabelFormatter(index, seriesNames[index], item.Value)
