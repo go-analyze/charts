@@ -399,6 +399,45 @@ func TestBarChart(t *testing.T) {
 			},
 			pngCRC: 0xe771f9b5,
 		},
+		{
+			name: "stack_series_all_secondary_axis",
+			makeOptions: func() BarChartOption {
+				opt := makeBasicBarChartOption()
+				opt.StackSeries = Ptr(true)
+				for i := range opt.SeriesList {
+					opt.SeriesList[i].YAxisIndex = 1
+				}
+				opt.ValueAxis = append(opt.ValueAxis, opt.ValueAxis[0])
+				return opt
+			},
+			pngCRC: 0x8ead6ed4,
+		},
+		{
+			name: "stack_series_dual_yaxis",
+			makeOptions: func() BarChartOption {
+				opt := NewBarChartOptionWithData([][]float64{
+					{4.9, 23.2, 25.6, 102.6},
+					{9.0, 26.4, 28.7, 144.6},
+					{80.0, 40.4, 28.4, 28.8},
+				})
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[2].YAxisIndex = 1
+				opt.ValueAxis = append(opt.ValueAxis, opt.ValueAxis[0])
+				return opt
+			},
+			pngCRC: 0x53c3f2b0,
+		},
+		{
+			name: "stack_series_single_secondary",
+			makeOptions: func() BarChartOption {
+				opt := NewBarChartOptionWithData([][]float64{{4.0, 2.0, 3.0}})
+				opt.StackSeries = Ptr(true)
+				opt.SeriesList[0].YAxisIndex = 1
+				opt.ValueAxis = append(opt.ValueAxis, opt.ValueAxis[0])
+				return opt
+			},
+			pngCRC: 0x2c37070c,
+		},
 	}
 
 	for i, tt := range tests {
@@ -452,6 +491,60 @@ func validateBarChartRender(t *testing.T, svgP, pngP *Painter, opt BarChartOptio
 	rdata, err := pngP.Bytes()
 	require.NoError(t, err)
 	assertEqualPNGCRC(t, expectedCRC, rdata)
+}
+
+func TestStackedBarLanes(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name          string
+		axes          []int
+		expectedLanes []int
+		expectedCount int
+	}{
+		{
+			name:          "mixed_axes",
+			axes:          []int{0, 1},
+			expectedLanes: []int{0, 1},
+			expectedCount: 2,
+		},
+		{
+			name:          "all_secondary",
+			axes:          []int{1, 1},
+			expectedLanes: []int{0, 1},
+			expectedCount: 2,
+		},
+		{
+			name:          "single_secondary",
+			axes:          []int{1},
+			expectedLanes: []int{0},
+			expectedCount: 1,
+		},
+		{
+			name:          "all_primary",
+			axes:          []int{0, 0, 0},
+			expectedLanes: []int{0, 0, 0},
+			expectedCount: 1,
+		},
+		{
+			name:          "interleaved",
+			axes:          []int{1, 0, 1},
+			expectedLanes: []int{1, 0, 2},
+			expectedCount: 3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sl := make(BarSeriesList, len(tt.axes))
+			for i, axis := range tt.axes {
+				sl[i] = BarSeries{Values: []float64{1}, YAxisIndex: axis}
+			}
+			lanes, count := stackedBarLanes(sl)
+			assert.Equal(t, tt.expectedLanes, lanes)
+			assert.Equal(t, tt.expectedCount, count)
+		})
+	}
 }
 
 func TestCalculateGroupMarginsAndSize(t *testing.T) {

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="559" y="26" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">5</text><text x="559" y="192" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">3.5</text><text x="559" y="359" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><text x="19" y="26" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><text x="19" y="192" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="19" y="359" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><path d="M 34 20
+L 549 20" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 34 187
+L 549 187" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 38 355
+L 549 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 38 360
+L 38 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 208 360
+L 208 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 378 360
+L 378 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 549 360
+L 549 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="119" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">1</text><text x="289" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">2</text><text x="459" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">3</text><path d="M 48 132
+L 198 132
+L 198 354
+L 48 354
+L 48 132" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 218 355
+L 368 355
+L 368 354
+L 218 354
+L 218 355" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 388 244
+L 538 244
+L 538 354
+L 388 354
+L 388 244" style="stroke:none;fill:rgb(84,112,198)"/></svg>

@@ -163,6 +163,24 @@ func resolveBarMarginPixels(barMargin *float64, space int) *float64 {
 	return &px
 }
 
+// stackedBarLanes returns the bar lane for each series and the total lane count,
+// reserving lane zero for the primary-axis stack only when one exists.
+func stackedBarLanes(sl BarSeriesList) ([]int, int) {
+	lanes := make([]int, len(sl))
+	var barCount int
+	if first, _ := stackedSeriesBounds(sl); first >= 0 {
+		barCount = 1 // stack shares lane zero
+	}
+	for i, s := range sl {
+		if s.YAxisIndex == 0 {
+			continue
+		}
+		lanes[i] = barCount
+		barCount++
+	}
+	return lanes, barCount
+}
+
 func (b *barChart) renderChart(result *defaultRenderResult) (Box, error) {
 	if len(b.opt.SeriesList) == 0 {
 		result.renderNoData(b.opt.Theme)
@@ -189,17 +207,10 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 	barSize := opt.BarSize
 	var margin, barMargin, barWidth int
 	var accumulatedHeights []int // prior heights for stacking to avoid recalculating the heights
-	var barLanes []int           // stacked lane position per series, the stack shares lane zero
+	var barLanes []int           // bar lane per series when stacked
 	if stackedSeries {
-		barLanes = make([]int, seriesCount)
-		barCount := 1 // the stack occupies a single bar, unstacked series each need their own
-		for i, s := range opt.SeriesList {
-			if s.YAxisIndex == 0 {
-				continue
-			}
-			barLanes[i] = barCount
-			barCount++
-		}
+		var barCount int
+		barLanes, barCount = stackedBarLanes(opt.SeriesList)
 		configuredMargin := opt.BarMargin
 		if barCount == 1 {
 			configuredMargin = nil // no margin needed with a single bar
