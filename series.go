@@ -2162,8 +2162,12 @@ type PopulationSummary struct {
 	MinIndex int
 	// Average is the mean of all values in the series.
 	Average float64
+	// AverageIndex is the index of the value closest to the average. If the series is empty this value will be -1.
+	AverageIndex int
 	// Median is the middle value of the series when it is sorted in ascending order.
 	Median float64
+	// MedianIndex is the index of the value closest to the median. If the series is empty this value will be -1.
+	MedianIndex int
 	// StandardDeviation is a measure of the amount of variation or dispersion of a set of values. A low standard
 	// deviation indicates that the values tend to be close to the mean of the set, while a high standard deviation
 	// indicates that the values are spread out over a wider range.
@@ -2218,6 +2222,8 @@ func summarizePopulationData(data []float64) PopulationSummary {
 			MinIndex:      -1,
 			MaxFirstIndex: -1,
 			MaxIndex:      -1,
+			AverageIndex:  -1,
+			MedianIndex:   -1,
 		}
 	}
 	nf := float64(ni)
@@ -2231,6 +2237,23 @@ func summarizePopulationData(data []float64) PopulationSummary {
 		median = (sortedData[mid-1] + sortedData[mid]) / 2.0
 	} else {
 		median = sortedData[mid]
+	}
+
+	// locate the data points closest to the average and median
+	averageIndex, medianIndex := -1, -1
+	var averageDelta, medianDelta float64
+	for i, x := range data {
+		if !isValidExtent(x) {
+			continue
+		}
+		if d := math.Abs(x - mean); averageIndex < 0 || d < averageDelta {
+			averageIndex = i
+			averageDelta = d
+		}
+		if d := math.Abs(x - median); medianIndex < 0 || d < medianDelta {
+			medianIndex = i
+			medianDelta = d
+		}
 	}
 
 	// Compute population variance = E[X^2] - (E[X])^2
@@ -2272,7 +2295,9 @@ func summarizePopulationData(data []float64) PopulationSummary {
 		MinFirstIndex:     minFirstIndex,
 		MinIndex:          minIndex,
 		Average:           mean,
+		AverageIndex:      averageIndex,
 		Median:            median,
+		MedianIndex:       medianIndex,
 		StandardDeviation: stdDev,
 		Skewness:          skewness,
 		Kurtosis:          kurtosis,

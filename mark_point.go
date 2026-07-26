@@ -97,12 +97,21 @@ func (m *markPointPainter) Render() (Box, error) {
 		}
 		for _, markPointData := range opt.markpoints {
 			textStyle.FontSize = defaultLabelFontSize
-			index := summary.MinIndex
-			value := summary.Min
+			var index int
+			var value float64
 			switch markPointData.Type {
 			case SeriesMarkTypeMax:
 				index = summary.MaxIndex
 				value = summary.Max
+			case SeriesMarkTypeAverage:
+				index = summary.AverageIndex
+				value = summary.Average
+			case SeriesMarkTypeMedian:
+				index = summary.MedianIndex
+				value = summary.Median
+			default: // SeriesMarkTypeMin
+				index = summary.MinIndex
+				value = summary.Min
 			}
 			if index < 0 || index >= len(opt.points) {
 				continue // no valid data or index beyond rendered points

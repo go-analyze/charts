@@ -70,6 +70,26 @@ func TestMarkPoint(t *testing.T) {
 				return p.Bytes()
 			},
 		},
+		{ // average and median render at the closest data point with the statistic value
+			render: func(p *Painter) ([]byte, error) {
+				markPoint := newMarkPointPainter(p)
+				markPoint.add(markPointRenderOption{
+					fillColor:    ColorBlack,
+					seriesValues: []float64{1, 2, 6, 4},
+					markpoints:   NewSeriesMarkList(SeriesMarkTypeAverage, SeriesMarkTypeMedian),
+					points: []Point{
+						{X: 10, Y: 100},
+						{X: 100, Y: 80},
+						{X: 200, Y: 40},
+						{X: 300, Y: 60},
+					},
+				})
+				if _, err := markPoint.Render(); err != nil {
+					return nil, err
+				}
+				return p.Bytes()
+			},
+		},
 	}
 
 	for i, tt := range tests {
