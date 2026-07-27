@@ -20,4 +20,6 @@ func TestRangeTranslate(t *testing.T) {
 	assert.Equal(t, 0, r.Translate(1.0))
 	assert.Equal(t, 1000, r.Translate(8.0))
 	assert.Equal(t, 572, r.Translate(5.0))
+
+	assert.Equal(t, 0, (&ContinuousRange{Min: 5, Max: 5, Domain: 100}).Translate(5))
 }
