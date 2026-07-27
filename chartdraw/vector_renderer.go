@@ -16,6 +16,9 @@ import (
 	"github.com/go-analyze/charts/chartdraw/drawing"
 )
 
+// escapes XML-special chars in SVG text content
+var svgTextEscaper = strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;")
+
 // SVG returns a new png/raster renderer.
 func SVG(width, height int) Renderer {
 	buffer := bytes.NewBuffer([]byte{})
@@ -440,7 +443,7 @@ func (c *canvas) Text(x, y int, body string, style Style) {
 		_, _ = fmt.Fprintf(bb, ` transform="rotate(%0.2f,%d,%d)"`, RadiansToDegrees(*c.textTheta), x, y)
 	}
 	bb.WriteRune('>')
-	bb.WriteString(body)
+	_, _ = svgTextEscaper.WriteString(bb, body)
 	bb.WriteString("</text>")
 
 	_, _ = c.w.Write(bb.Bytes())

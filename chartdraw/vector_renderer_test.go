@@ -2,7 +2,10 @@ package chartdraw
 
 import (
 	"bytes"
+	"encoding/xml"
+	"errors"
 	"fmt"
+	"io"
 	"math"
 	"strings"
 	"testing"
@@ -165,6 +168,39 @@ func TestCanvasBasicElements(t *testing.T) {
 	assert.Contains(t, out, "<text")
 	assert.Contains(t, out, "<circle")
 	assert.True(t, strings.HasSuffix(out, "</svg>"))
+}
+
+func TestCanvasTextEscaping(t *testing.T) {
+	t.Parallel()
+
+	t.Run("escapes_special_chars", func(t *testing.T) {
+		b := strings.Builder{}
+		c := &canvas{w: &b, bb: bytes.NewBuffer(make([]byte, 0, 80))}
+		c.Text(5, 5, `a<b & c"'`, Style{FontStyle: FontStyle{Font: GetDefaultFont(), FontSize: 10}})
+
+		out := b.String()
+		assert.Contains(t, out, `a&lt;b &amp; c"'`)
+		assert.NotContains(t, out, "a<b & c")
+	})
+
+	t.Run("valid_xml", func(t *testing.T) {
+		vr := SVG(100, 100).(*vectorRenderer)
+		vr.SetFont(GetDefaultFont())
+		vr.SetFontSize(10)
+		vr.Text("P&G x<10 A>B", 5, 5)
+
+		buf := bytes.Buffer{}
+		require.NoError(t, vr.Save(&buf))
+
+		dec := xml.NewDecoder(&buf)
+		for {
+			_, err := dec.Token()
+			if errors.Is(err, io.EOF) {
+				break
+			}
+			require.NoError(t, err)
+		}
+	})
 }
 
 func TestFormatFloatMinimized(t *testing.T) {
