@@ -25,7 +25,20 @@ func TestSeqMap(t *testing.T) {
 		assert.InDelta(t, float64(i), v-1, 0)
 		return v * 2
 	})
+	assert.Equal(t, []float64{2, 4, 6, 8}, mapped.Values())
 	assert.Equal(t, 4, mapped.Len())
+
+	t.Run("empty", func(t *testing.T) {
+		t.Parallel()
+		empty := Seq{}.Map(func(i int, v float64) float64 { return v * 2 })
+		assert.Empty(t, empty.Values())
+	})
+
+	t.Run("single_value", func(t *testing.T) {
+		t.Parallel()
+		mapped := ValueSequence(7).Map(func(i int, v float64) float64 { return v + 3 })
+		assert.Equal(t, []float64{10}, mapped.Values())
+	})
 }
 
 func TestSeqFoldLeft(t *testing.T) {
@@ -147,4 +160,33 @@ func TestSeqPercentileOutOfRange(t *testing.T) {
 	assert.InDelta(t, 4.0, values.Percentile(1.5), 0)
 	assert.InDelta(t, 4.0, values.Percentile(math.Inf(1)), 0)
 	assert.InDelta(t, 0.0, values.Percentile(math.NaN()), 0)
+}
+
+func TestSeqMedian(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		values []float64
+		want   float64
+	}{
+		{"empty", nil, 0},
+		{"single_value", []float64{5}, 5},
+		{"two_values", []float64{1, 2}, 1.5},
+		{"odd_length", []float64{3, 1, 2}, 2},
+		{"even_length", []float64{1, 2, 3, 4}, 2.5},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.InDelta(t, tt.want, ValueSequence(tt.values...).Median(), 0)
+		})
+	}
+
+	t.Run("nil_interface", func(t *testing.T) {
+		t.Parallel()
+		// Seq{} has a truly nil embedded interface; must not panic
+		var s Seq
+		assert.InDelta(t, 0.0, s.Median(), 0)
+	})
 }

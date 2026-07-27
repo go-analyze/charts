@@ -167,7 +167,7 @@ func (s Style) String() string {
 	if s.Font != nil {
 		output = append(output, "\"font\": \""+s.Font.Name(truetype.NameIDFontFamily)+"\"")
 	} else {
-		output = append(output, "\"font_color\": null")
+		output = append(output, "\"font\": null")
 	}
 
 	return "{" + strings.Join(output, ", ") + "}"

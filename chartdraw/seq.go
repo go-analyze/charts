@@ -44,9 +44,12 @@ func (s Seq) Each(mapfn func(int, float64)) {
 // Map applies the `mapfn` to all values in the value provider,
 // returning a new seq.
 func (s Seq) Map(mapfn func(i int, v float64) float64) Seq {
+	if s.Sequence == nil || s.Len() == 0 {
+		return Seq{make(Array, 0)}
+	}
 	output := make([]float64, s.Len())
 	for i := 0; i < s.Len(); i++ {
-		mapfn(i, s.GetValue(i))
+		output[i] = mapfn(i, s.GetValue(i))
 	}
 	return Seq{Array(output)}
 }
@@ -171,18 +174,18 @@ func (s Seq) Reverse() Seq {
 
 // Median returns the median or middle value in the sorted seq.
 func (s Seq) Median() (median float64) {
-	l := s.Len()
-	if l == 0 {
+	if s.Sequence == nil || s.Len() == 0 {
 		return
 	}
 
+	l := s.Len()
 	sorted := s.Sort()
 	if l%2 == 0 {
 		v0 := sorted.GetValue(l/2 - 1)
-		v1 := sorted.GetValue(l/2 + 1)
+		v1 := sorted.GetValue(l / 2)
 		median = (v0 + v1) / 2
 	} else {
-		median = sorted.GetValue(l << 1)
+		median = sorted.GetValue(l >> 1)
 	}
 
 	return
