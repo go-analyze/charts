@@ -16,6 +16,9 @@ func Jet(v, vmin, vmax float64) drawing.Color {
 		v = vmax
 	}
 	dv = vmax - vmin
+	if dv == 0 {
+		return c // degenerate range, return base color
+	}
 
 	if v < (vmin + 0.25*dv) {
 		c.R = 0
