@@ -370,3 +370,131 @@ func TestNewRasterGraphicContextWithPainter(t *testing.T) {
 		t.Fatalf("painter not set")
 	}
 }
+
+func TestIsRectanglePath(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		build    func(p *Path)
+		expected bool
+	}{
+		{
+			name: "closed_rectangle",
+			build: func(p *Path) {
+				p.MoveTo(0, 0)
+				p.LineTo(10, 0)
+				p.LineTo(10, 10)
+				p.LineTo(0, 10)
+				p.Close()
+			},
+			expected: true,
+		},
+		{
+			name: "five_lineto_rectangle",
+			build: func(p *Path) {
+				p.MoveTo(0, 0)
+				p.LineTo(10, 0)
+				p.LineTo(10, 10)
+				p.LineTo(0, 10)
+				p.LineTo(0, 0)
+			},
+			expected: true,
+		},
+		{
+			name: "open_zigzag",
+			build: func(p *Path) {
+				p.MoveTo(0, 0)
+				p.LineTo(10, 0)
+				p.LineTo(10, 10)
+				p.LineTo(0, 10)
+				p.LineTo(35, 35)
+			},
+			expected: false,
+		},
+		{
+			name: "contains_curve",
+			build: func(p *Path) {
+				p.MoveTo(0, 0)
+				p.LineTo(10, 0)
+				p.LineTo(10, 10)
+				p.QuadCurveTo(0, 10, 35, 35)
+				p.LineTo(0, 0)
+			},
+			expected: false,
+		},
+		{
+			name: "unclosed_five_lineto",
+			build: func(p *Path) {
+				p.MoveTo(0, 0)
+				p.LineTo(10, 0)
+				p.LineTo(10, 10)
+				p.LineTo(0, 10)
+				p.LineTo(0, 5)
+			},
+			expected: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &Path{}
+			tt.build(p)
+			assert.Equal(t, tt.expected, isRectanglePath(p))
+		})
+	}
+}
+
+func TestFill(t *testing.T) {
+	t.Parallel()
+
+	t.Run("rect_translated", func(t *testing.T) {
+		img := image.NewRGBA(image.Rect(0, 0, 40, 40))
+		rgc := NewRasterGraphicContext(img)
+		rgc.SetFillColor(color.RGBA{R: 255, A: 255})
+		rgc.Translate(10, 10)
+		rgc.MoveTo(0, 0)
+		rgc.LineTo(5, 0)
+		rgc.LineTo(5, 5)
+		rgc.LineTo(0, 5)
+		rgc.Close()
+		rgc.Fill()
+
+		assert.NotZero(t, img.RGBAAt(12, 12).A) // filled at translated position
+		assert.Zero(t, img.RGBAAt(2, 2).A)      // not filled at raw coordinates
+	})
+
+	t.Run("open_zigzag_not_dropped", func(t *testing.T) {
+		img := image.NewRGBA(image.Rect(0, 0, 40, 40))
+		rgc := NewRasterGraphicContext(img)
+		rgc.SetFillColor(color.RGBA{R: 255, A: 255})
+		rgc.MoveTo(0, 0)
+		rgc.LineTo(10, 0)
+		rgc.LineTo(10, 10)
+		rgc.LineTo(0, 10)
+		rgc.LineTo(35, 35)
+		rgc.Fill()
+
+		assert.NotZero(t, img.RGBAAt(15, 20).A) // dropped diagonal region outside the 10x10 rect
+	})
+}
+
+func TestFillStroke(t *testing.T) {
+	t.Parallel()
+
+	t.Run("rect_translated", func(t *testing.T) {
+		img := image.NewRGBA(image.Rect(0, 0, 40, 40))
+		rgc := NewRasterGraphicContext(img)
+		rgc.SetFillColor(color.RGBA{R: 255, A: 255})
+		rgc.SetStrokeColor(color.RGBA{R: 255, A: 255})
+		rgc.Translate(10, 10)
+		rgc.MoveTo(0, 0)
+		rgc.LineTo(5, 0)
+		rgc.LineTo(5, 5)
+		rgc.LineTo(0, 5)
+		rgc.Close()
+		rgc.FillStroke()
+
+		assert.NotZero(t, img.RGBAAt(12, 12).A) // filled at translated position
+		assert.Zero(t, img.RGBAAt(2, 2).A)      // not filled at raw coordinates
+	})
+}

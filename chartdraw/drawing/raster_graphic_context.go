@@ -270,7 +270,7 @@ func isRectanglePath(path *Path) bool {
 	} else if path.Components[0] != MoveToComponent {
 		return false
 	}
-	for i := 1; i < 3; i++ {
+	for i := 1; i < 4; i++ {
 		if path.Components[i] != LineToComponent {
 			return false
 		}
@@ -278,13 +278,13 @@ func isRectanglePath(path *Path) bool {
 	x1, y1 := path.Points[0], path.Points[1]
 	x2, y2 := path.Points[2], path.Points[3]
 	x3, y3 := path.Points[4], path.Points[5]
-	var x4, y4 float64
+	x4, y4 := path.Points[6], path.Points[7]
 	switch path.Components[4] {
 	case LineToComponent:
-		x4, y4 = path.Points[6], path.Points[7]
+		if path.Points[8] != x1 || path.Points[9] != y1 {
+			return false // fifth segment must return to the start
+		}
 	case CloseComponent:
-		x4 = x1
-		y4 = y1
 	default:
 		return false
 	}
@@ -311,7 +311,7 @@ func (rgc *RasterGraphicContext) Fill(paths ...*Path) {
 	pathCount := len(paths)
 	if pathCount == 0 {
 		return
-	} else if pathCount == 1 && isRectanglePath(paths[0]) {
+	} else if pathCount == 1 && rgc.current.Tr.IsIdentity() && isRectanglePath(paths[0]) {
 		// we can draw rectangles of a uniform color using a more efficient method
 		x1, y1, x2, y2 := getRectangleBounds(paths[0])
 		rgc.FillRect(x1, y1, x2, y2)
@@ -335,7 +335,7 @@ func (rgc *RasterGraphicContext) FillStroke(paths ...*Path) {
 	pathCount := len(paths)
 	if pathCount == 0 {
 		return
-	} else if pathCount == 1 && isRectanglePath(paths[0]) {
+	} else if pathCount == 1 && rgc.current.Tr.IsIdentity() && isRectanglePath(paths[0]) {
 		// we can draw rectangles of a uniform color using a more efficient method, then stroke the line after
 		x1, y1, x2, y2 := getRectangleBounds(paths[0])
 		rgc.FillRect(x1, y1, x2, y2)
