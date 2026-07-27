@@ -160,6 +160,8 @@ func TestColorHelperMethods(t *testing.T) {
 
 	avg := ColorRed.AverageWith(ColorBlue)
 	assert.Equal(t, Color{R: 127, G: 0, B: 127, A: 255}, avg)
+	assert.Equal(t, ColorWhite, ColorWhite.AverageWith(ColorWhite))
+	assert.Equal(t, uint8(150), Color{R: 200}.AverageWith(Color{R: 100}).R)
 
 	assert.Equal(t, "rgb(10,20,30)", c.StringRGB())
 	assert.Equal(t, "rgba(10,20,30,0.5)", c.WithAlpha(128).StringRGBA())

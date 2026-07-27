@@ -417,10 +417,11 @@ func (c Color) Equals(other Color) bool {
 
 // AverageWith averages two colors.
 func (c Color) AverageWith(other Color) Color {
+	// per-channel floor mean without uint8 overflow
 	return Color{
-		R: (c.R + other.R) >> 1,
-		G: (c.G + other.G) >> 1,
-		B: (c.B + other.B) >> 1,
+		R: (c.R & other.R) + ((c.R ^ other.R) >> 1),
+		G: (c.G & other.G) + ((c.G ^ other.G) >> 1),
+		B: (c.B & other.B) + ((c.B ^ other.B) >> 1),
 		A: c.A,
 	}
 }
