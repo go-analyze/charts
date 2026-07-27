@@ -249,13 +249,8 @@ func (b Box) Fit(other Box) Box {
 	bw, bh := float64(b.Width()), float64(b.Height())
 	bw2 := int(bw) >> 1
 	bh2 := int(bh) >> 1
-	if oa > ba { // ex. 16:9 vs. 4:3
-		var noh2 int
-		if oa > 1.0 {
-			noh2 = int(bw/oa) >> 1
-		} else {
-			noh2 = int(bh*oa) >> 1
-		}
+	if oa > ba { // constrained by width
+		noh2 := int(bw/oa) >> 1
 		return Box{
 			Top:    (b.Top + bh2) - noh2,
 			Left:   b.Left,
@@ -264,12 +259,8 @@ func (b Box) Fit(other Box) Box {
 			IsSet:  true,
 		}
 	}
-	var now2 int
-	if oa > 1.0 {
-		now2 = int(bh/oa) >> 1
-	} else {
-		now2 = int(bw*oa) >> 1
-	}
+	// constrained by height
+	now2 := int(bh*oa) >> 1
 	return Box{
 		Top:    b.Top,
 		Left:   (b.Left + bw2) - now2,

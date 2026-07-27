@@ -196,6 +196,27 @@ func TestBoxFit(t *testing.T) {
 	assert.Equal(t, a.Top, fac.Top)
 	assert.Equal(t, a.Bottom, fac.Bottom)
 	assert.Less(t, math.Abs(c.Aspect()-fac.Aspect()), 0.02)
+
+	// square target into a landscape box
+	squareIntoLandscape := NewBox(0, 0, 200, 100).Fit(NewBox(0, 0, 100, 100))
+	assert.Equal(t, 50, squareIntoLandscape.Left)
+	assert.Equal(t, 150, squareIntoLandscape.Right)
+	assert.Equal(t, 0, squareIntoLandscape.Top)
+	assert.Equal(t, 100, squareIntoLandscape.Bottom)
+	assert.InDelta(t, 1.0, squareIntoLandscape.Aspect(), 0.02)
+
+	// landscape target into a wider box
+	landscapeIntoWider := NewBox(0, 0, 300, 100).Fit(NewBox(0, 0, 200, 100))
+	assert.Equal(t, 0, landscapeIntoWider.Top)
+	assert.Equal(t, 100, landscapeIntoWider.Bottom)
+	assert.InDelta(t, 2.0, landscapeIntoWider.Aspect(), 0.02)
+
+	// portrait target into a landscape box
+	portrait := NewBox(0, 0, 100, 200)
+	portraitIntoLandscape := NewBox(0, 0, 200, 100).Fit(portrait)
+	assert.Equal(t, 0, portraitIntoLandscape.Top)
+	assert.Equal(t, 100, portraitIntoLandscape.Bottom)
+	assert.InDelta(t, portrait.Aspect(), portraitIntoLandscape.Aspect(), 0.02)
 }
 
 func TestBoxConstrain(t *testing.T) {
