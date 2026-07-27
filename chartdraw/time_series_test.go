@@ -69,4 +69,17 @@ func TestTimeSeriesValidate(t *testing.T) {
 		},
 	}
 	require.Error(t, cs.Validate())
+
+	cs = TimeSeries{
+		Name: "Test Series",
+		XValues: []time.Time{
+			now.AddDate(0, 0, -3),
+			now.AddDate(0, 0, -2),
+			now.AddDate(0, 0, -1),
+		},
+		YValues: []float64{
+			1.0, 2.0,
+		},
+	}
+	require.Error(t, cs.Validate())
 }

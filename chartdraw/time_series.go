@@ -82,10 +82,10 @@ func (ts TimeSeries) Render(r Renderer, canvasBox Box, xrange, yrange Range, def
 func (ts TimeSeries) Validate() error {
 	if len(ts.XValues) == 0 {
 		return errors.New("time series must have xvalues set")
-	}
-
-	if len(ts.YValues) == 0 {
+	} else if len(ts.YValues) == 0 {
 		return errors.New("time series must have yvalues set")
+	} else if len(ts.XValues) != len(ts.YValues) {
+		return errors.New("time series must have same length xvalues as yvalues")
 	}
 	return nil
 }
