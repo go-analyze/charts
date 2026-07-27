@@ -530,10 +530,24 @@ func TestMatrixInverse(t *testing.T) {
 	inv, err := m.Inverse()
 	require.NoError(t, err)
 
+	rows, cols := inv.Size()
+	assert.Equal(t, 2, rows)
+	assert.Equal(t, 2, cols)
+
 	expected := [][]float64{{5, -2}, {-2, 1}}
 	for r := 0; r < 2; r++ {
 		for c := 0; c < 2; c++ {
 			assert.InDelta(t, expected[r][c], inv.Get(r, c), 1e-9)
+			assert.InDelta(t, expected[r][c], inv.Arrays()[r][c], 1e-9)
+		}
+	}
+
+	prod, err := m.Times(inv)
+	require.NoError(t, err)
+	id := Identity(2)
+	for r := 0; r < 2; r++ {
+		for c := 0; c < 2; c++ {
+			assert.InDelta(t, id.Get(r, c), prod.Get(r, c), 1e-9)
 		}
 	}
 }

@@ -575,5 +575,11 @@ func (m *Matrix) Inverse() (*Matrix, error) {
 			aug.scaleAddRow(k, i, -aug.Get(k, i))
 		}
 	}
-	return aug.SubMatrix(0, cols, rows, cols), nil
+	inv := New(rows, cols)
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			inv.Set(i, j, aug.Get(i, cols+j))
+		}
+	}
+	return inv, nil
 }
