@@ -1,11 +1,21 @@
 package drawing
 
-import "math"
+import (
+	"math"
+	"slices"
+)
 
 const (
 	// CurveRecursionLimit represents the maximum recursion that is really necessary to subsivide a curve into straight lines
 	CurveRecursionLimit = 32
 )
+
+// hasNonFinite reports whether any value is NaN or infinite.
+func hasNonFinite(vals []float64) bool {
+	return slices.ContainsFunc(vals, func(v float64) bool {
+		return math.IsNaN(v) || math.IsInf(v, 0)
+	})
+}
 
 // Cubic
 //	x1, y1, cpx1, cpy1, cpx2, cpy2, x2, y2 float64
@@ -41,9 +51,15 @@ func SubdivideCubic(c, c1, c2 []float64) {
 	c2[0], c2[1] = c1[6], c1[7]
 }
 
-// TraceCubic generate lines subdividing the cubic curve using a Liner
-// flattening_threshold helps determines the flattening expectation of the curve
+// TraceCubic subdivides the cubic curve into line segments emitted through t.
+// flatteningThreshold sets the flatness tolerance; non-finite control points produce no output.
 func TraceCubic(t Liner, cubic []float64, flatteningThreshold float64) {
+	// skip non-finite control points to avoid unbounded subdivision
+	if hasNonFinite(cubic[:8]) {
+		return
+	}
+	const lastIteration = CurveRecursionLimit - 1
+
 	// Allocation curves
 	var curves [CurveRecursionLimit * 8]float64
 	copy(curves[0:8], cubic[0:8])
@@ -58,7 +74,7 @@ func TraceCubic(t Liner, cubic []float64, flatteningThreshold float64) {
 		d3 := math.Abs((c[4]-c[6])*dy - (c[5]-c[7])*dx)
 
 		// if it's flat then trace a line
-		if (d2+d3)*(d2+d3) < flatteningThreshold*(dx*dx+dy*dy) || i == len(curves)-1 {
+		if (d2+d3)*(d2+d3) < flatteningThreshold*(dx*dx+dy*dy) || i == lastIteration {
 			t.LineTo(c[6], c[7])
 			i--
 		} else {
@@ -112,9 +128,13 @@ func traceGetWindow(curves []float64, i int) []float64 {
 	return curves[startAt:endAt]
 }
 
-// TraceQuad generate lines subdividing the curve using a Liner
-// flattening_threshold helps determines the flattening expectation of the curve
+// TraceQuad subdivides the quadratic curve into line segments emitted through t.
+// flatteningThreshold sets the flatness tolerance; non-finite control points produce no output.
 func TraceQuad(t Liner, quad []float64, flatteningThreshold float64) {
+	// skip non-finite control points to avoid unbounded subdivision
+	if hasNonFinite(quad[:6]) {
+		return
+	}
 	const curveLen = CurveRecursionLimit * 6
 	const lastIteration = CurveRecursionLimit - 1
 

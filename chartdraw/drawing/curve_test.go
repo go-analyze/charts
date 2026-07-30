@@ -27,13 +27,32 @@ func (ml *mockLine) Len() int {
 func TestTraceQuad(t *testing.T) {
 	t.Parallel()
 
-	// Quad
-	// x1, y1, cpx1, cpy2, x2, y2 float64
-	// do the 9->12 circle segment
-	quad := []float64{10, 20, 20, 20, 20, 10}
-	liner := &mockLine{}
-	TraceQuad(liner, quad, 0.5)
-	assert.NotZero(t, liner.Len())
+	t.Run("basic", func(t *testing.T) {
+		// Quad
+		// x1, y1, cpx1, cpy2, x2, y2 float64
+		// do the 9->12 circle segment
+		quad := []float64{10, 20, 20, 20, 20, 10}
+		liner := &mockLine{}
+		TraceQuad(liner, quad, 0.5)
+		assert.NotZero(t, liner.Len())
+	})
+
+	t.Run("non_finite", func(t *testing.T) {
+		tests := []struct {
+			name string
+			quad []float64
+		}{
+			{"nan_control_points", []float64{0, 0, math.NaN(), math.NaN(), 2, 0}},
+			{"inf_control_points", []float64{0, 0, math.Inf(1), 0, 2, 0}},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				liner := &mockLine{}
+				TraceQuad(liner, tt.quad, 0.5)
+				assert.Zero(t, liner.Len())
+			})
+		}
+	})
 }
 
 func TestSubdivideCubic(t *testing.T) {
@@ -53,18 +72,39 @@ func TestSubdivideCubic(t *testing.T) {
 func TestTraceCubicAndArc(t *testing.T) {
 	t.Parallel()
 
-	cubic := []float64{0, 0, 0, 1, 1, 1, 1, 0}
-	liner := &mockLine{}
-	TraceCubic(liner, cubic, 0.1)
-	last := liner.inner[len(liner.inner)-1]
-	assert.InDelta(t, 1.0, last.X, 0.0001)
-	assert.InDelta(t, 0.0, last.Y, 0.0001)
+	t.Run("cubic", func(t *testing.T) {
+		cubic := []float64{0, 0, 0, 1, 1, 1, 1, 0}
+		liner := &mockLine{}
+		TraceCubic(liner, cubic, 0.1)
+		last := liner.inner[len(liner.inner)-1]
+		assert.InDelta(t, 1.0, last.X, 0.0001)
+		assert.InDelta(t, 0.0, last.Y, 0.0001)
+	})
 
-	liner = &mockLine{}
-	lx, ly := TraceArc(liner, 0, 0, 1, 1, 0, math.Pi/2, 1)
-	assert.InDelta(t, 0.0, lx, 0.0001)
-	assert.InDelta(t, 1.0, ly, 0.0001)
-	assert.NotZero(t, liner.Len())
+	t.Run("cubic_non_finite", func(t *testing.T) {
+		tests := []struct {
+			name  string
+			cubic []float64
+		}{
+			{"nan_control_points", []float64{0, 0, math.NaN(), math.NaN(), 1, 1, 2, 0}},
+			{"inf_control_points", []float64{0, 0, math.Inf(1), 0, 1, 1, 2, 0}},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				liner := &mockLine{}
+				TraceCubic(liner, tt.cubic, 0.5)
+				assert.Zero(t, liner.Len())
+			})
+		}
+	})
+
+	t.Run("arc", func(t *testing.T) {
+		liner := &mockLine{}
+		lx, ly := TraceArc(liner, 0, 0, 1, 1, 0, math.Pi/2, 1)
+		assert.InDelta(t, 0.0, lx, 0.0001)
+		assert.InDelta(t, 1.0, ly, 0.0001)
+		assert.NotZero(t, liner.Len())
+	})
 }
 
 func TestSubdivideQuadAndHelpers(t *testing.T) {
