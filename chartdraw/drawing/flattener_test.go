@@ -54,6 +54,25 @@ func TestFlattenMixed(t *testing.T) {
 	assert.InDeltaSlice(t, expectY, rec.ys, 0.0001)
 }
 
+func TestFlattenQuadAfterArc(t *testing.T) {
+	t.Parallel()
+
+	p := &Path{}
+	p.MoveTo(10, 0)
+	p.ArcTo(10, 10, 5, 5, -math.Pi/2, math.Pi/2) // arc ends at (15, 10)
+	p.QuadCurveTo(20, 10, 20, 20)
+
+	rec := &recordFloat{}
+	Flatten(p, rec, 1.0)
+
+	// quad must trace from the arc end (15,10), not the arc's stored angles
+	for _, x := range rec.xs {
+		assert.GreaterOrEqual(t, x, 9.0) // buggy start dips to x ~ -1.57
+	}
+	assert.InDelta(t, 20.0, rec.xs[len(rec.xs)-1], 0.0001)
+	assert.InDelta(t, 20.0, rec.ys[len(rec.ys)-1], 0.0001)
+}
+
 func TestFlattenMultiMove(t *testing.T) {
 	t.Parallel()
 

@@ -36,13 +36,17 @@ func Flatten(path *Path, flattener Flattener, scale float64) {
 			flattener.LineTo(x, y)
 			i += 2
 		case QuadCurveToComponent:
-			// we include the previous point for the start of the curve
-			TraceQuad(flattener, path.Points[i-2:], 0.5)
+			// prepend current point as the curve start
+			quad := [6]float64{x, y}
+			copy(quad[2:], path.Points[i:i+4])
+			TraceQuad(flattener, quad[:], 0.5)
 			x, y = path.Points[i+2], path.Points[i+3]
 			flattener.LineTo(x, y)
 			i += 4
 		case CubicCurveToComponent:
-			TraceCubic(flattener, path.Points[i-2:], 0.5)
+			cubic := [8]float64{x, y}
+			copy(cubic[2:], path.Points[i:i+6])
+			TraceCubic(flattener, cubic[:], 0.5)
 			x, y = path.Points[i+4], path.Points[i+5]
 			flattener.LineTo(x, y)
 			i += 6
