@@ -32,17 +32,17 @@ jobs:
       if: ${{ matrix.language == 'go' }}
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
+      uses: github/codeql-action/init@v4.37.4
       with:
         languages: ${{ matrix.language }}
       timeout-minutes: 10
 
     - name: Autobuild (${{ matrix.language }})
-      uses: github/codeql-action/autobuild@v4
+      uses: github/codeql-action/autobuild@v4.37.4
       timeout-minutes: 10
 
     - name: Perform CodeQL Analysis (${{ matrix.language }})
-      uses: github/codeql-action/analyze@v4
+      uses: github/codeql-action/analyze@v4.37.4
       with:
         category: "/language:${{matrix.language}}"
       timeout-minutes: 10
