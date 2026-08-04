@@ -58,6 +58,7 @@ func Flatten(path *Path, flattener Flattener, scale float64) {
 			if x != startX || y != startY {
 				flattener.LineTo(startX, startY)
 			}
+			x, y = startX, startY // pen is at the subpath start
 		}
 	}
 	flattener.End()

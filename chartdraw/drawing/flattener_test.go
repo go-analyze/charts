@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type recordFloat struct {
@@ -72,6 +73,51 @@ func TestFlattenQuadAfterArc(t *testing.T) {
 	}
 	assert.InDelta(t, 20.0, rec.xs[len(rec.xs)-1], 0.0001)
 	assert.InDelta(t, 20.0, rec.ys[len(rec.ys)-1], 0.0001)
+}
+
+func TestFlattenAfterClose(t *testing.T) {
+	t.Parallel()
+
+	t.Run("curve_after_close", func(t *testing.T) {
+		p := &Path{}
+		p.MoveTo(0, 0)
+		p.LineTo(10, 0)
+		p.LineTo(10, 10)
+		p.Close()
+		p.QuadCurveTo(0, 10, 5, 15)
+
+		rec := &recordFloat{}
+		Flatten(p, rec, 1.0)
+
+		// M, L, L, then the closing L back to (0,0)
+		require.Greater(t, len(rec.xs), 4)
+		assert.InDelta(t, 0.0, rec.xs[3], 0.0001)
+		assert.InDelta(t, 0.0, rec.ys[3], 0.0001)
+
+		// quad must trace from the close point (0,0), not the pre-close point (10,10)
+		for _, x := range rec.xs[4:] {
+			assert.LessOrEqual(t, x, 5.0) // buggy start jumps back out to x = 10
+		}
+	})
+
+	t.Run("double_close_no_repeat", func(t *testing.T) {
+		p := &Path{}
+		p.MoveTo(0, 0)
+		p.LineTo(10, 0)
+		p.Close()
+		p.Close()
+
+		rec := &recordFloat{}
+		Flatten(p, rec, 1.0)
+
+		expectOps := []string{"M", "L", "L"}
+		expectX := []float64{0, 10, 0}
+		expectY := []float64{0, 0, 0}
+
+		require.Equal(t, expectOps, rec.ops)
+		assert.InDeltaSlice(t, expectX, rec.xs, 0.0001)
+		assert.InDeltaSlice(t, expectY, rec.ys, 0.0001)
+	})
 }
 
 func TestFlattenMultiMove(t *testing.T) {
