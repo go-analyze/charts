@@ -44,9 +44,10 @@ func TestFlattenMixed(t *testing.T) {
 	rec := &recordFloat{}
 	Flatten(p, rec, 1.0)
 
-	expectOps := []string{"M", "L", "L", "L", "L", "L", "L", "L", "L"}
-	expectX := []float64{0, 1, 2, 3, 3, 5, 4.580247, 4, 0}
-	expectY := []float64{0, 0, 0, 0, 0, 0, 0.814441, 1, 0}
+	// quad and cubic each emit their endpoint, then Flatten re-emits it (duplicate join point)
+	expectOps := []string{"M", "L", "L", "L", "L", "L", "L", "L", "L", "L"}
+	expectX := []float64{0, 1, 2, 2, 3, 3, 5, 4.580247, 4, 0}
+	expectY := []float64{0, 0, 0, 0, 0, 0, 0, 0.814441, 1, 0}
 
 	assert.Equal(t, 1, rec.ends)
 	assert.Equal(t, expectOps, rec.ops)

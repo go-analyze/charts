@@ -73,8 +73,11 @@ func TraceCubic(t Liner, cubic []float64, flatteningThreshold float64) {
 		d2 := math.Abs((c[2]-c[6])*dy - (c[3]-c[7])*dx)
 		d3 := math.Abs((c[4]-c[6])*dy - (c[5]-c[7])*dx)
 
+		// degenerate point can't flatten; emit and pop
+		isPoint := dx == 0 && dy == 0 && c[2] == c[0] && c[3] == c[1] && c[4] == c[0] && c[5] == c[1]
+
 		// if it's flat then trace a line
-		if (d2+d3)*(d2+d3) < flatteningThreshold*(dx*dx+dy*dy) || i == lastIteration {
+		if (d2+d3)*(d2+d3) < flatteningThreshold*(dx*dx+dy*dy) || isPoint || i == lastIteration {
 			t.LineTo(c[6], c[7])
 			i--
 		} else {
@@ -152,13 +155,11 @@ func TraceQuad(t Liner, quad []float64, flatteningThreshold float64) {
 		c = traceGetWindow(curves, i)
 		dx, dy, d = traceCalcDeltas(c)
 
-		// bail early if the distance is 0
-		if d == 0 {
-			return
-		}
+		// degenerate point can't flatten; emit and pop
+		isPoint := dx == 0 && dy == 0 && c[2] == c[0] && c[3] == c[1]
 
 		// if it's flat then trace a line
-		if traceIsFlat(dx, dy, d, flatteningThreshold) || i == lastIteration {
+		if traceIsFlat(dx, dy, d, flatteningThreshold) || isPoint || i == lastIteration {
 			t.LineTo(c[4], c[5])
 			i--
 		} else {

@@ -2,6 +2,7 @@ package drawing
 
 import (
 	"math"
+	"slices"
 	"strconv"
 	"testing"
 
@@ -53,6 +54,31 @@ func TestTraceQuad(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("degenerate_loop", func(t *testing.T) {
+		// p0 == p2 with off-chord control traces an outward spike
+		liner := &mockLine{}
+		TraceQuad(liner, []float64{0, 0, 100, 0, 0, 0}, 0.5)
+		assert.NotZero(t, liner.Len())
+		assert.True(t, slices.ContainsFunc(liner.inner, func(p point) bool {
+			return p.X > 25
+		}))
+	})
+
+	t.Run("collinear_control", func(t *testing.T) {
+		liner := &mockLine{}
+		TraceQuad(liner, []float64{0, 0, 5, 0, 10, 0}, 0.5)
+		last := liner.inner[len(liner.inner)-1]
+		assert.InDelta(t, 10.0, last.X, 0.0001)
+		assert.InDelta(t, 0.0, last.Y, 0.0001)
+	})
+
+	t.Run("all_points_identical", func(t *testing.T) {
+		// must terminate rather than subdivide forever
+		liner := &mockLine{}
+		TraceQuad(liner, []float64{3, 3, 3, 3, 3, 3}, 0.5)
+		assert.NotZero(t, liner.Len())
+	})
 }
 
 func TestSubdivideCubic(t *testing.T) {
@@ -79,6 +105,23 @@ func TestTraceCubicAndArc(t *testing.T) {
 		last := liner.inner[len(liner.inner)-1]
 		assert.InDelta(t, 1.0, last.X, 0.0001)
 		assert.InDelta(t, 0.0, last.Y, 0.0001)
+	})
+
+	t.Run("cubic_degenerate_loop", func(t *testing.T) {
+		// p0 == p3 with off-chord controls traces an outward spike
+		liner := &mockLine{}
+		TraceCubic(liner, []float64{0, 0, 100, 0, 100, 0, 0, 0}, 0.5)
+		assert.NotZero(t, liner.Len())
+		assert.True(t, slices.ContainsFunc(liner.inner, func(p point) bool {
+			return p.X > 25
+		}))
+	})
+
+	t.Run("cubic_all_points_identical", func(t *testing.T) {
+		// must terminate rather than subdivide forever
+		liner := &mockLine{}
+		TraceCubic(liner, []float64{3, 3, 3, 3, 3, 3, 3, 3}, 0.5)
+		assert.NotZero(t, liner.Len())
 	})
 
 	t.Run("cubic_non_finite", func(t *testing.T) {
