@@ -68,8 +68,8 @@ func (p *Path) LastPoint() (x, y float64) {
 
 // MoveTo starts a new path at (x, y) position.
 func (p *Path) MoveTo(x, y float64) {
-	if len(p.Components) > 0 && p.x == x && p.y == y {
-		return // no-op, already at point
+	if n := len(p.Components); n > 0 && p.Components[n-1] == MoveToComponent && p.x == x && p.y == y {
+		return // duplicate MoveTo
 	}
 	p.appendToPath(MoveToComponent, x, y)
 	p.x = x

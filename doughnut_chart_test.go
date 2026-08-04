@@ -73,13 +73,13 @@ func TestDoughnutChart(t *testing.T) {
 				opt.Legend.Vertical = nil
 				return opt
 			},
-			pngCRC: 0xc2978e0c,
+			pngCRC: 0x84807187,
 		},
 		{
 			name:        "basic_themed",
 			themed:      true,
 			makeOptions: makeBasicDoughnutChartOption,
-			pngCRC:      0xeed84398,
+			pngCRC:      0xe601afe9,
 		},
 		{
 			name: "custom_fonts",
@@ -91,7 +91,7 @@ func TestDoughnutChart(t *testing.T) {
 				opt.Title.FontStyle = customFont
 				return opt
 			},
-			pngCRC: 0x3baaad19,
+			pngCRC: 0x665a2277,
 		},
 		{
 			name: "variable_series_radius",
@@ -114,7 +114,7 @@ func TestDoughnutChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0x7c33df8b,
+			pngCRC: 0xc46376c4,
 		},
 		{
 			name: "center_radius_large",
@@ -127,7 +127,7 @@ func TestDoughnutChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0x88346256,
+			pngCRC: 0xced7cdf6,
 		},
 		{
 			name: "segment_gap",
@@ -233,7 +233,7 @@ func TestDoughnutChart(t *testing.T) {
 					},
 				}
 			},
-			pngCRC: 0x84f67102,
+			pngCRC: 0x11af6a88,
 		},
 		{
 			name: "empty_series",

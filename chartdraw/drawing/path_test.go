@@ -154,6 +154,34 @@ func TestPathLastPointAndArc(t *testing.T) {
 	}
 }
 
+func TestPathMoveToSubpathFusion(t *testing.T) {
+	t.Parallel()
+
+	t.Run("moveto_after_lineto_kept", func(t *testing.T) {
+		p := &Path{}
+		p.MoveTo(0, 0)
+		p.LineTo(5, 5)
+		p.MoveTo(5, 5) // starts a new subpath where the previous ended
+		p.LineTo(10, 0)
+
+		expected := []PathComponent{
+			MoveToComponent,
+			LineToComponent,
+			MoveToComponent,
+			LineToComponent,
+		}
+		assert.Equal(t, expected, p.Components)
+	})
+
+	t.Run("duplicate_moveto_skipped", func(t *testing.T) {
+		p := &Path{}
+		p.MoveTo(1, 1)
+		p.MoveTo(1, 1)
+
+		assert.Equal(t, []PathComponent{MoveToComponent}, p.Components)
+	})
+}
+
 func TestRectangleHelpers(t *testing.T) {
 	t.Parallel()
 
