@@ -7,7 +7,7 @@ require (
 	github.com/go-analyze/bulk v0.1.4
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/image v0.43.0
+	golang.org/x/image v0.44.0
 )
 
 require (
