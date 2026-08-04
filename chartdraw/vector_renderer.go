@@ -402,7 +402,7 @@ func (c *canvas) Path(parts []string, style Style) {
 	defer c.bb.Reset()
 
 	bb.WriteString(`<path`)
-	if len(style.StrokeDashArray) > 0 {
+	if drawing.ValidDash(style.StrokeDashArray) {
 		bb.WriteString(" stroke-dasharray=\"")
 		for i, v := range style.StrokeDashArray {
 			if i > 0 {

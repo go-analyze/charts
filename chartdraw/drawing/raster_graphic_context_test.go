@@ -478,6 +478,41 @@ func TestIsRectanglePath(t *testing.T) {
 	}
 }
 
+func TestStroke(t *testing.T) {
+	t.Parallel()
+
+	strokeDashed := func(dash []float64, dashOffset float64) *image.RGBA {
+		img := image.NewRGBA(image.Rect(0, 0, 40, 40))
+		rgc := NewRasterGraphicContext(img)
+		rgc.SetStrokeColor(color.RGBA{R: 255, A: 255})
+		rgc.SetLineWidth(2)
+		rgc.SetLineDash(dash, dashOffset)
+		rgc.MoveTo(2, 20)
+		rgc.LineTo(38, 20)
+		rgc.Stroke()
+		return img
+	}
+	solid := strokeDashed(nil, 0)
+
+	t.Run("valid_dash", func(t *testing.T) {
+		img := strokeDashed([]float64{4, 4}, 0)
+
+		assert.NotZero(t, img.RGBAAt(3, 20).A) // within first dash
+		assert.Zero(t, img.RGBAAt(8, 20).A)    // within first gap
+	})
+
+	t.Run("degenerate_dash_solid", func(t *testing.T) {
+		for _, dash := range [][]float64{{0, 0}, {-5, 5}, {5, -5}, {math.NaN(), 5}, {math.Inf(1), 5}} {
+			assert.Equal(t, solid.Pix, strokeDashed(dash, 0).Pix, dash)
+		}
+	})
+
+	t.Run("non_finite_offset_solid", func(t *testing.T) {
+		assert.Equal(t, solid.Pix, strokeDashed([]float64{5, 5}, math.Inf(1)).Pix)
+		assert.Equal(t, solid.Pix, strokeDashed([]float64{5, 5}, math.NaN()).Pix)
+	})
+}
+
 func TestFill(t *testing.T) {
 	t.Parallel()
 
@@ -530,5 +565,28 @@ func TestFillStroke(t *testing.T) {
 
 		assert.NotZero(t, img.RGBAAt(12, 12).A) // filled at translated position
 		assert.Zero(t, img.RGBAAt(2, 2).A)      // not filled at raw coordinates
+	})
+
+	t.Run("degenerate_dash_solid", func(t *testing.T) {
+		// triangle avoids the rectangle fast path, exercising the FillStroke dasher
+		fillStrokeDashed := func(dash []float64) *image.RGBA {
+			img := image.NewRGBA(image.Rect(0, 0, 40, 40))
+			rgc := NewRasterGraphicContext(img)
+			rgc.SetFillColor(color.RGBA{G: 255, A: 255})
+			rgc.SetStrokeColor(color.RGBA{R: 255, A: 255})
+			rgc.SetLineWidth(2)
+			rgc.SetLineDash(dash, 0)
+			rgc.MoveTo(5, 5)
+			rgc.LineTo(35, 10)
+			rgc.LineTo(20, 35)
+			rgc.Close()
+			rgc.FillStroke()
+			return img
+		}
+		solid := fillStrokeDashed(nil)
+
+		for _, dash := range [][]float64{{0, 0}, {-5, 5}, {5, -5}} {
+			assert.Equal(t, solid.Pix, fillStrokeDashed(dash).Pix, dash)
+		}
 	})
 }

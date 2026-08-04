@@ -170,6 +170,27 @@ func TestCanvasBasicElements(t *testing.T) {
 	assert.True(t, strings.HasSuffix(out, "</svg>"))
 }
 
+func TestCanvasPathDashArray(t *testing.T) {
+	t.Parallel()
+
+	pathDash := func(dash []float64) string {
+		b := strings.Builder{}
+		c := &canvas{w: &b, bb: bytes.NewBuffer(make([]byte, 0, 80))}
+		c.Path([]string{"M 0 0", "L 10 10"}, Style{StrokeDashArray: dash, StrokeWidth: 2, StrokeColor: drawing.ColorBlack})
+		return b.String()
+	}
+
+	t.Run("valid_dash", func(t *testing.T) {
+		assert.Contains(t, pathDash([]float64{1, 2}), "stroke-dasharray=\"1.0, 2.0\"")
+	})
+
+	t.Run("degenerate_dash_omitted", func(t *testing.T) {
+		for _, dash := range [][]float64{{0, 0}, {-5, 5}, {5, -5}} {
+			assert.NotContains(t, pathDash(dash), "stroke-dasharray", dash)
+		}
+	})
+}
+
 func TestCanvasTextEscaping(t *testing.T) {
 	t.Parallel()
 

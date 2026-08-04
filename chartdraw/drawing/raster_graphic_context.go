@@ -250,7 +250,7 @@ func (rgc *RasterGraphicContext) Stroke(paths ...*Path) {
 	stroker.HalfLineWidth = rgc.current.LineWidth / 2
 
 	var liner Flattener
-	if len(rgc.current.Dash) > 0 {
+	if dashable(rgc.current.Dash, rgc.current.DashOffset) {
 		liner = NewDashVertexConverter(rgc.current.Dash, rgc.current.DashOffset, stroker)
 	} else {
 		liner = stroker
@@ -350,7 +350,7 @@ func (rgc *RasterGraphicContext) FillStroke(paths ...*Path) {
 	stroker.HalfLineWidth = rgc.current.LineWidth / 2
 
 	var liner Flattener
-	if len(rgc.current.Dash) > 0 {
+	if dashable(rgc.current.Dash, rgc.current.DashOffset) {
 		liner = NewDashVertexConverter(rgc.current.Dash, rgc.current.DashOffset, stroker)
 	} else {
 		liner = stroker

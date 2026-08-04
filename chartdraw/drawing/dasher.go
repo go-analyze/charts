@@ -1,5 +1,28 @@
 package drawing
 
+import "math"
+
+// ValidDash reports whether the dash pattern can be rendered, invalid patterns should be
+// rendered as a solid line.
+func ValidDash(dash []float64) bool {
+	if len(dash) == 0 || hasNonFinite(dash) {
+		return false
+	}
+	var sum float64
+	for _, d := range dash {
+		if d < 0 {
+			return false
+		}
+		sum += d
+	}
+	return sum > 0
+}
+
+// dashable reports whether the dash state can be walked without stalling the dasher.
+func dashable(dash []float64, dashOffset float64) bool {
+	return ValidDash(dash) && !math.IsNaN(dashOffset) && !math.IsInf(dashOffset, 0)
+}
+
 // NewDashVertexConverter creates a new dash converter.
 func NewDashVertexConverter(dash []float64, dashOffset float64, flattener Flattener) *DashVertexConverter {
 	var dasher DashVertexConverter
