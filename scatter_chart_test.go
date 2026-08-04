@@ -477,7 +477,7 @@ func TestScatterChart(t *testing.T) {
 				}
 				return opt
 			},
-			pngCRC: 0xe3214041,
+			pngCRC: 0x14a64221,
 		},
 		{
 			name: "with_conditional_labels",

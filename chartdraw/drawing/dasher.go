@@ -62,7 +62,7 @@ func (dasher *DashVertexConverter) lineTo(x, y float64) {
 		dasher.currentDash = (dasher.currentDash + 1) % len(dasher.dash)
 		rest = dasher.dash[dasher.currentDash]
 	}
-	dasher.distance = d
+	dasher.distance = dasher.dash[dasher.currentDash] - rest + d
 	if dasher.currentDash%2 == 0 {
 		dasher.next.LineTo(x, y)
 	} else {

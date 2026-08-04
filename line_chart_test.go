@@ -1040,7 +1040,7 @@ func TestLineChart(t *testing.T) {
 				})
 				return opt
 			},
-			pngCRC: 0xdfa24892,
+			pngCRC: 0x8eca06b8,
 		},
 		{
 			name: "bollinger",

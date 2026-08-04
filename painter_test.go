@@ -1145,7 +1145,7 @@ func TestSmoothDashedLineStroke(t *testing.T) {
 					{X: 50, Y: 40},
 				}, 0.5, ColorBlack, 1, []float64{4, 2})
 			},
-			pngCRC: 0x13085dce,
+			pngCRC: 0x32128171,
 		},
 		{
 			name: "smooth_dashed_high_tension",
@@ -1158,7 +1158,7 @@ func TestSmoothDashedLineStroke(t *testing.T) {
 					{X: 250, Y: 80},
 				}, 0.8, ColorRed, 2, []float64{8, 4})
 			},
-			pngCRC: 0x31c46648,
+			pngCRC: 0x16e612e9,
 		},
 		{
 			name: "smooth_dashed_low_tension",
@@ -1171,7 +1171,7 @@ func TestSmoothDashedLineStroke(t *testing.T) {
 					{X: 250, Y: 160},
 				}, 0.2, ColorBlue, 1.5, []float64{6, 3})
 			},
-			pngCRC: 0xb7a95b2c,
+			pngCRC: 0xd0f9842d,
 		},
 		{
 			name: "smooth_dashed_complex",
@@ -1188,7 +1188,7 @@ func TestSmoothDashedLineStroke(t *testing.T) {
 				}
 				p.SmoothDashedLineStroke(points, 0.6, ColorFromHex("#9932CC"), 2, []float64{10, 5})
 			},
-			pngCRC: 0x50be7e30,
+			pngCRC: 0xbc4f7165,
 		},
 		{
 			name: "smooth_dashed_dotted",
@@ -1201,7 +1201,7 @@ func TestSmoothDashedLineStroke(t *testing.T) {
 					{X: 380, Y: 60},
 				}, 0.7, ColorGreen, 3, []float64{1, 3})
 			},
-			pngCRC: 0xd1b5c8bf,
+			pngCRC: 0x79be85b5,
 		},
 	}
 
