@@ -58,11 +58,9 @@ func (rgc *RasterGraphicContext) GetDPI() float64 {
 	return rgc.dpi
 }
 
-// Clear fills the current canvas with a default transparent color.
+// Clear fills the canvas with a transparent color.
 func (rgc *RasterGraphicContext) Clear() {
-	width, height := rgc.img.Bounds().Dx(), rgc.img.Bounds().Dy()
-	rgc.current.FillColor = color.Transparent
-	rgc.FillRect(0, 0, width, height)
+	draw.Draw(rgc.img, rgc.img.Bounds(), image.Transparent, image.Point{}, draw.Src)
 }
 
 // FillRect draws a filled rectangle with the provided coordinates and the current set FillColor.

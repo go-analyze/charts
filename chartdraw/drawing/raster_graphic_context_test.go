@@ -167,7 +167,41 @@ func TestRasterGraphicContext(t *testing.T) {
 
 		rgc.Clear()
 		_, _, _, a = img.At(1, 1).RGBA()
+		assert.Equal(t, uint32(0), a)
+	})
+
+	t.Run("clear_offset_bounds", func(t *testing.T) {
+		t.Parallel()
+
+		img := image.NewRGBA(image.Rect(10, 10, 12, 12))
+		rgc := NewRasterGraphicContext(img)
+		rgc.SetFillColor(color.RGBA{255, 0, 0, 255})
+		rgc.FillRect(10, 10, 12, 12)
+		_, _, _, a := img.At(11, 11).RGBA()
 		assert.Equal(t, uint32(0xffff), a)
+
+		rgc.Clear()
+		_, _, _, a = img.At(11, 11).RGBA()
+		assert.Equal(t, uint32(0), a)
+	})
+
+	t.Run("fill_after_clear", func(t *testing.T) {
+		t.Parallel()
+
+		img := image.NewRGBA(image.Rect(0, 0, 3, 3))
+		rgc := NewRasterGraphicContext(img)
+		rgc.SetFillColor(color.RGBA{0, 0, 255, 255})
+		rgc.Clear()
+
+		p := &Path{}
+		p.MoveTo(0, 0)
+		p.LineTo(2, 0)
+		p.LineTo(2, 2)
+		p.LineTo(0, 2)
+		p.LineTo(0, 0)
+		rgc.Fill(p)
+
+		assert.Equal(t, color.RGBA{0, 0, 255, 255}, img.At(1, 1))
 	})
 
 	t.Run("fill_rectangle", func(t *testing.T) {
