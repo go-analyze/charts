@@ -148,6 +148,70 @@ func TestTraceCubicAndArc(t *testing.T) {
 		assert.InDelta(t, 1.0, ly, 0.0001)
 		assert.NotZero(t, liner.Len())
 	})
+
+	t.Run("arc_segment_count", func(t *testing.T) {
+		// the step floor must not coarsen ordinary output
+		liner := &mockLine{}
+		TraceArc(liner, 0, 0, 5, 5, 0, 2*math.Pi, 1)
+		assert.Equal(t, 13, liner.Len())
+	})
+
+	t.Run("arc_extreme_scale", func(t *testing.T) {
+		// da underflows to zero at this scale
+		liner := &mockLine{}
+		lx, ly := TraceArc(liner, 10, 20, 5, 3, 0, 2*math.Pi, 1e15)
+		assert.InDelta(t, 15.0, lx, 0.0001)
+		assert.InDelta(t, 20.0, ly, 0.0001)
+		assert.LessOrEqual(t, liner.Len(), maxArcSegments)
+	})
+
+	t.Run("arc_negative_scale", func(t *testing.T) {
+		// negative scale drives Acos out of domain, producing a NaN da
+		liner := &mockLine{}
+		lx, ly := TraceArc(liner, 10, 20, 5, 3, 0, -2*math.Pi, -1)
+		assert.InDelta(t, 15.0, lx, 0.0001)
+		assert.InDelta(t, 20.0, ly, 0.0001)
+		assert.LessOrEqual(t, liner.Len(), maxArcSegments)
+	})
+
+	t.Run("arc_angle_stall", func(t *testing.T) {
+		// da below the ULP of angle stalls the accumulator, onset may be mid sweep
+		tests := []struct {
+			name        string
+			start       float64
+			expectCount int
+		}{
+			{"immediate", 1e17, 1},
+			{"mid_sweep", math.Ldexp(1, 52) - 50, 100},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				liner := &mockLine{}
+				lx, ly := TraceArc(liner, 0, 0, 5, 3, tt.start, 100, 1)
+				assert.False(t, math.IsNaN(lx) || math.IsInf(lx, 0))
+				assert.False(t, math.IsNaN(ly) || math.IsInf(ly, 0))
+				assert.Equal(t, tt.expectCount, liner.Len())
+			})
+		}
+	})
+
+	t.Run("arc_non_finite", func(t *testing.T) {
+		tests := []struct {
+			name                              string
+			x, y, rx, ry, start, angle, scale float64
+		}{
+			{"nan_scale", 0, 0, 5, 3, 0, 2 * math.Pi, math.NaN()},
+			{"nan_start", 0, 0, 5, 3, math.NaN(), 2 * math.Pi, 1},
+			{"inf_radius", 0, 0, math.Inf(1), 3, 0, 2 * math.Pi, 1},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				liner := &mockLine{}
+				TraceArc(liner, tt.x, tt.y, tt.rx, tt.ry, tt.start, tt.angle, tt.scale)
+				assert.Zero(t, liner.Len())
+			})
+		}
+	})
 }
 
 func TestSubdivideQuadAndHelpers(t *testing.T) {

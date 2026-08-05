@@ -8,6 +8,8 @@ import (
 const (
 	// CurveRecursionLimit represents the maximum recursion that is really necessary to subsivide a curve into straight lines
 	CurveRecursionLimit = 32
+	// maxArcSegments bounds the segments an arc may be tessellated into
+	maxArcSegments = 1 << 14
 )
 
 // hasNonFinite reports whether any value is NaN or infinite.
@@ -169,28 +171,42 @@ func TraceQuad(t Liner, quad []float64, flatteningThreshold float64) {
 	}
 }
 
-// TraceArc trace an arc using a Liner
+// TraceArc traces an elliptical arc into line segments emitted through t, returning the arc end
+// point. Non-finite parameters produce no segments, the end point is still returned.
 func TraceArc(t Liner, x, y, rx, ry, start, angle, scale float64) (lastX, lastY float64) {
 	end := start + angle
+	endX, endY := x+math.Cos(end)*rx, y+math.Sin(end)*ry
+	params := [7]float64{x, y, rx, ry, start, angle, scale}
+	if hasNonFinite(params[:]) {
+		return endX, endY
+	}
 	clockWise := angle >= 0
 	ra := (math.Abs(rx) + math.Abs(ry)) / 2
 	da := math.Acos(ra/(ra+0.125/scale)) * 2
+	// floor the step so an underflowed or NaN da still sweeps the arc within the segment bound
+	if minDA := math.Abs(angle) / maxArcSegments; !(da > minDA) {
+		da = minDA
+	}
 	//normalize
 	if !clockWise {
 		da = -da
 	}
 	angle = start + da
 	var curX, curY float64
-	for {
+	// bounded as a backstop, a floored da always exits on the condition below first
+	for i := 0; i < maxArcSegments; i++ {
 		if (angle < end-da/4) != clockWise {
-			curX = x + math.Cos(end)*rx
-			curY = y + math.Sin(end)*ry
-			return curX, curY
+			break
 		}
 		curX = x + math.Cos(angle)*rx
 		curY = y + math.Sin(angle)*ry
 
+		prevAngle := angle
 		angle += da
 		t.LineTo(curX, curY)
+		if angle == prevAngle {
+			break // da below the ULP of angle, the step can never advance again
+		}
 	}
+	return endX, endY
 }
