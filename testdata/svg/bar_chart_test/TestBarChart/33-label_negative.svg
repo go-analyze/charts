@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="24" y="26" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">12</text><text x="33" y="63" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">9</text><text x="33" y="100" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">6</text><text x="33" y="137" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">3</text><text x="33" y="174" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">0</text><text x="28" y="211" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">-3</text><text x="28" y="248" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">-6</text><text x="28" y="285" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">-9</text><text x="19" y="322" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">-12</text><text x="19" y="359" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">-15</text><path d="M 48 20
+L 580 20" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 57
+L 580 57" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 94
+L 580 94" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 131
+L 580 131" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 168
+L 580 168" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 206
+L 580 206" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 243
+L 580 243" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 280
+L 580 280" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 48 317
+L 580 317" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 52 355
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 52 360
+L 52 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 140 360
+L 140 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 228 360
+L 228 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 316 360
+L 316 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 404 360
+L 404 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 492 360
+L 492 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 360
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="91" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">A</text><text x="179" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">B</text><text x="267" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">C</text><text x="355" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">D</text><text x="444" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">E</text><text x="532" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:15.3px;font-family:'Roboto Medium',sans-serif">F</text><path d="M 62 107
+L 93 107
+L 93 168
+L 62 168
+L 62 107" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 150 45
+L 181 45
+L 181 168
+L 150 168
+L 150 45" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 238 107
+L 269 107
+L 269 168
+L 238 168
+L 238 107" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 326 170
+L 357 170
+L 357 231
+L 326 231
+L 326 170" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 414 170
+L 445 170
+L 445 293
+L 414 293
+L 414 170" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 502 170
+L 533 170
+L 533 231
+L 502 231
+L 502 170" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 98 170
+L 129 170
+L 129 293
+L 98 293
+L 98 170" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 186 170
+L 217 170
+L 217 231
+L 186 231
+L 186 170" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 274 107
+L 305 107
+L 305 168
+L 274 168
+L 274 107" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 362 45
+L 393 45
+L 393 168
+L 362 168
+L 362 45" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 450 107
+L 481 107
+L 481 168
+L 450 168
+L 450 107" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 538 170
+L 569 170
+L 569 231
+L 538 231
+L 538 170" style="stroke:none;fill:rgb(145,204,117)"/><text x="73" y="102" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">5</text><text x="158" y="40" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">10</text><text x="249" y="102" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">5</text><text x="335" y="249" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">-5</text><text x="420" y="311" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">-10</text><text x="511" y="249" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">-5</text><text x="104" y="311" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">-10</text><text x="195" y="249" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">-5</text><text x="285" y="102" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">5</text><text x="370" y="40" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">10</text><text x="461" y="102" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">5</text><text x="547" y="249" style="stroke:none;fill:rgb(70,70,70);font-size:12.8px;font-family:'Roboto Medium',sans-serif">-5</text></svg>

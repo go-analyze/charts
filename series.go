@@ -168,6 +168,14 @@ func (g GenericSeriesList) markPointSize() int {
 	return size
 }
 
+func (g GenericSeriesList) labelFontSize() float64 {
+	var size float64
+	for _, s := range g {
+		size = visibleLabelFontSize(s.Label, size)
+	}
+	return size
+}
+
 func (g GenericSeriesList) setSeriesName(index int, name string) {
 	g[index].Name = name
 }
@@ -271,6 +279,14 @@ func (l LineSeriesList) markPointSize() int {
 	var size int
 	for _, s := range l {
 		size = max(size, s.MarkPoint.effectiveSymbolSize())
+	}
+	return size
+}
+
+func (l LineSeriesList) labelFontSize() float64 {
+	var size float64
+	for _, s := range l {
+		size = visibleLabelFontSize(s.Label, size)
 	}
 	return size
 }
@@ -413,6 +429,14 @@ func (s ScatterSeriesList) markPointSize() int {
 	return 0
 }
 
+func (s ScatterSeriesList) labelFontSize() float64 {
+	var size float64
+	for _, series := range s {
+		size = visibleLabelFontSize(series.Label, size)
+	}
+	return size
+}
+
 func (s ScatterSeriesList) setSeriesName(index int, name string) {
 	s[index].Name = name
 }
@@ -536,6 +560,14 @@ func (b BarSeriesList) markPointSize() int {
 	return size
 }
 
+func (b BarSeriesList) labelFontSize() float64 {
+	var size float64
+	for _, s := range b {
+		size = visibleLabelFontSize(s.Label, size)
+	}
+	return size
+}
+
 func (b BarSeriesList) setSeriesName(index int, name string) {
 	b[index].Name = name
 }
@@ -624,6 +656,10 @@ func (f FunnelSeriesList) getSeriesSymbol(_ int) SymbolShape {
 
 func (f FunnelSeriesList) markPointSize() int {
 	return 0 // not supported on this chart type
+}
+
+func (f FunnelSeriesList) labelFontSize() float64 {
+	return 0 // no value axis on this chart type
 }
 
 func (f FunnelSeriesList) setSeriesName(index int, name string) {
@@ -732,6 +768,10 @@ func (p PieSeriesList) getSeriesSymbol(_ int) SymbolShape {
 
 func (p PieSeriesList) markPointSize() int {
 	return 0 // not supported on this chart type
+}
+
+func (p PieSeriesList) labelFontSize() float64 {
+	return 0 // no value axis on this chart type
 }
 
 func (p PieSeriesList) setSeriesName(index int, name string) {
@@ -843,6 +883,10 @@ func (d DoughnutSeriesList) markPointSize() int {
 	return 0 // not supported on this chart type
 }
 
+func (d DoughnutSeriesList) labelFontSize() float64 {
+	return 0 // no value axis on this chart type
+}
+
 func (d DoughnutSeriesList) setSeriesName(index int, name string) {
 	d[index].Name = name
 }
@@ -939,6 +983,10 @@ func (r RadarSeriesList) markPointSize() int {
 	return 0 // not supported on this chart type
 }
 
+func (r RadarSeriesList) labelFontSize() float64 {
+	return 0 // no value axis on this chart type
+}
+
 func (r RadarSeriesList) setSeriesName(index int, name string) {
 	r[index].Name = name
 }
@@ -978,11 +1026,24 @@ type seriesList interface {
 	getSeriesValues(index int) []float64
 	getSeriesLen(i int) int
 	names() []string
-	markPointSize() int // largest mark point pin width across series, 0 when none
+	markPointSize() int     // largest mark point pin width across series, 0 when none
+	labelFontSize() float64 // largest font size across series with labels shown, 0 when none
 	setSeriesName(index int, name string)
 	sortByNameIndex(dict map[string]int)
 	getSeriesSymbol(index int) SymbolShape
 	//SetSeriesLabels(label SeriesLabel) // informally included in interface (not used internally in interface)
+}
+
+// visibleLabelFontSize accumulates the largest configured font size among shown labels.
+func visibleLabelFontSize(label SeriesLabel, current float64) float64 {
+	if !flagIs(true, label.Show) {
+		return current
+	}
+	fontSize := label.FontStyle.FontSize
+	if fontSize == 0 {
+		fontSize = defaultLabelFontSize
+	}
+	return max(current, fontSize)
 }
 
 // series interface is used to provide the raw series struct to callers of seriesList, allowing direct type checks.
@@ -1293,15 +1354,19 @@ func nextStackedSeriesIndex(sl seriesList, index int) int {
 	return -1
 }
 
-// getSeriesMinMaxSumMax returns the min, max, and maximum sum of the series for a given y-axis index (either 0 or 1).
-// This is a higher performance option for internal use. calcSum provides an optimization to
-// only calculate the sumMax if it will be used.
-func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64, float64, float64) {
+// getSeriesMinMaxSumMax returns the min, max, and min/max diverging stack sums of the series for
+// a given y-axis index (either 0 or 1). Positive and negative values sum separately per index,
+// matching diverging stack rendering. calcSum provides an optimization to only calculate the sum
+// extents if they will be used.
+func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64, float64, float64, float64) {
 	minValue := math.MaxFloat64
 	maxValue := -math.MaxFloat64
-	var sums []float64
+	sumMin := math.MaxFloat64
+	sumMax := -math.MaxFloat64
+	var posSums, negSums []float64
 	if calcSum {
-		sums = make([]float64, getSeriesMaxDataCount(sl))
+		posSums = make([]float64, getSeriesMaxDataCount(sl))
+		negSums = make([]float64, len(posSums))
 	}
 	for i := 0; i < sl.len(); i++ {
 		series := sl.getSeries(i)
@@ -1320,28 +1385,37 @@ func getSeriesMinMaxSumMax(sl seriesList, yaxisIndex int, calcSum bool) (float64
 				minValue = item
 			}
 			if calcSum {
-				if valueIndex >= len(sums) {
-					sums = append(sums, make([]float64, valueIndex-len(sums)+1)...)
+				if valueIndex >= len(posSums) {
+					posSums = append(posSums, make([]float64, valueIndex-len(posSums)+1)...)
+					negSums = append(negSums, make([]float64, valueIndex-len(negSums)+1)...)
 				}
-				sums[valueIndex] += item
+				if item >= 0 {
+					posSums[valueIndex] += item
+					if posSums[valueIndex] > sumMax {
+						sumMax = posSums[valueIndex]
+					}
+				} else {
+					negSums[valueIndex] += item
+					if negSums[valueIndex] < sumMin {
+						sumMin = negSums[valueIndex]
+					}
+				}
 			}
 		}
 	}
-	maxSum := maxValue
-	if calcSum {
-		for _, val := range sums {
-			if val > maxSum {
-				maxSum = val
-			}
-		}
+	if maxValue > sumMax {
+		sumMax = maxValue
+	}
+	if sumMin == math.MaxFloat64 {
+		sumMin = minValue // no negative values to stack below zero
 	}
 	// If min was not updated then there were no valid data points. Return
 	// zeros to avoid propagating sentinel values like math.MaxFloat64 which
 	// can corrupt downstream range calculations.
 	if minValue == math.MaxFloat64 && maxValue == -math.MaxFloat64 {
-		return 0, 0, 0
+		return 0, 0, 0, 0
 	}
-	return minValue, maxValue, maxSum
+	return minValue, maxValue, sumMin, sumMax
 }
 
 // NewSeriesListGeneric returns a Generic series list for the given values and chart type (used in ChartOption).
@@ -1747,6 +1821,14 @@ func (k CandlestickSeriesList) getSeriesSymbol(_ int) SymbolShape {
 	return "" // no need to set symbol here, configured globally in candlestick_chart.go before defaultRender
 }
 
+func (k CandlestickSeriesList) labelFontSize() float64 {
+	var size float64
+	for _, s := range k {
+		size = visibleLabelFontSize(s.Label, size)
+	}
+	return size
+}
+
 func (k CandlestickSeriesList) markPointSize() int {
 	var size int
 	for _, s := range k {
@@ -2087,6 +2169,10 @@ func (vl ViolinSeriesList) getSeriesSymbol(_ int) SymbolShape {
 
 func (vl ViolinSeriesList) markPointSize() int {
 	return 0
+}
+
+func (vl ViolinSeriesList) labelFontSize() float64 {
+	return 0 // series labels are not supported on this chart type
 }
 
 func (vl ViolinSeriesList) setSeriesName(index int, name string) {

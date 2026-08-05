@@ -37,8 +37,9 @@ func TestSeriesLists(t *testing.T) {
 				require.Fail(t, "Need to implement chart type test")
 			}
 
-			min, max, maxSum := getSeriesMinMaxSumMax(seriesList, 0, true)
-			assert.InDelta(t, float64(12), maxSum, 0)
+			min, max, sumMin, sumMax := getSeriesMinMaxSumMax(seriesList, 0, true)
+			assert.InDelta(t, float64(12), sumMax, 0)
+			assert.InDelta(t, float64(1), sumMin, 0)
 			assert.InDelta(t, float64(10), max, 0)
 			assert.InDelta(t, float64(1), min, 0)
 		})
@@ -225,10 +226,11 @@ func TestGetSeriesMinMaxSumMaxViolin(t *testing.T) {
 		{{0.3, 0.4}},
 	})
 
-	min, max, maxSum := getSeriesMinMaxSumMax(seriesList, 0, true)
+	min, max, sumMin, sumMax := getSeriesMinMaxSumMax(seriesList, 0, true)
 	assert.InDelta(t, -0.8, min, 0.0)
 	assert.InDelta(t, 0.8, max, 0.0)
-	assert.InDelta(t, 0.8, maxSum, 0.0)
+	assert.InDelta(t, -0.8, sumMin, 0.0)
+	assert.InDelta(t, 0.8, sumMax, 0.0)
 }
 
 func TestGetSeriesMinMaxSumMaxViolinGeneric(t *testing.T) {
@@ -239,10 +241,11 @@ func TestGetSeriesMinMaxSumMaxViolinGeneric(t *testing.T) {
 		{{0.3, 0.4}},
 	}).ToGenericSeriesList()
 
-	min, max, maxSum := getSeriesMinMaxSumMax(generic, 0, true)
+	min, max, sumMin, sumMax := getSeriesMinMaxSumMax(generic, 0, true)
 	assert.InDelta(t, -0.8, min, 0.0)
 	assert.InDelta(t, 0.8, max, 0.0)
-	assert.InDelta(t, 0.8, maxSum, 0.0)
+	assert.InDelta(t, -0.8, sumMin, 0.0)
+	assert.InDelta(t, 0.8, sumMax, 0.0)
 }
 
 func TestNewSeriesListViolin(t *testing.T) {
@@ -268,16 +271,47 @@ func TestGetSeriesMinMaxSumMaxEmpty(t *testing.T) {
 	t.Parallel()
 
 	empty := NewSeriesListLine([][]float64{{}})
-	min, max, sum := getSeriesMinMaxSumMax(empty, 0, true)
+	min, max, sumMin, sumMax := getSeriesMinMaxSumMax(empty, 0, true)
 	assert.InDelta(t, 0.0, min, 0)
 	assert.InDelta(t, 0.0, max, 0)
-	assert.InDelta(t, 0.0, sum, 0)
+	assert.InDelta(t, 0.0, sumMin, 0)
+	assert.InDelta(t, 0.0, sumMax, 0)
 
 	nullVals := NewSeriesListLine([][]float64{{GetNullValue(), GetNullValue()}})
-	min, max, sum = getSeriesMinMaxSumMax(nullVals, 0, true)
+	min, max, sumMin, sumMax = getSeriesMinMaxSumMax(nullVals, 0, true)
 	assert.InDelta(t, 0.0, min, 0)
 	assert.InDelta(t, 0.0, max, 0)
-	assert.InDelta(t, 0.0, sum, 0)
+	assert.InDelta(t, 0.0, sumMin, 0)
+	assert.InDelta(t, 0.0, sumMax, 0)
+}
+
+func TestGetSeriesMinMaxSumMaxNegative(t *testing.T) {
+	t.Parallel()
+
+	t.Run("mixed_sign", func(t *testing.T) {
+		seriesList := NewSeriesListBar([][]float64{
+			{3, -3},
+			{3, -3},
+			{-4, -3},
+		})
+		min, max, sumMin, sumMax := getSeriesMinMaxSumMax(seriesList, 0, true)
+		assert.InDelta(t, -4.0, min, 0)
+		assert.InDelta(t, 3.0, max, 0)
+		assert.InDelta(t, -9.0, sumMin, 0)
+		assert.InDelta(t, 6.0, sumMax, 0) // positive stack extent, above the net sum of 2
+	})
+
+	t.Run("null_interleaved", func(t *testing.T) {
+		seriesList := NewSeriesListBar([][]float64{
+			{5, GetNullValue()},
+			{-3, -6},
+		})
+		min, max, sumMin, sumMax := getSeriesMinMaxSumMax(seriesList, 0, true)
+		assert.InDelta(t, -6.0, min, 0)
+		assert.InDelta(t, 5.0, max, 0)
+		assert.InDelta(t, -6.0, sumMin, 0)
+		assert.InDelta(t, 5.0, sumMax, 0)
+	})
 }
 
 func TestExpandSingleValueScatterSeries(t *testing.T) {
@@ -770,7 +804,7 @@ func BenchmarkGetSeriesMinMaxSumMax(b *testing.B) { // benchmark used to evaluat
 	}
 
 	for i := 0; i < b.N; i++ {
-		_, _, _ = getSeriesMinMaxSumMax(seriesList, 0, true)
+		_, _, _, _ = getSeriesMinMaxSumMax(seriesList, 0, true)
 	}
 }
 

@@ -90,6 +90,10 @@ func (tsl testSeriesList) markPointSize() int {
 	return 0
 }
 
+func (tsl testSeriesList) labelFontSize() float64 {
+	return 0
+}
+
 func (tsl testSeriesList) setSeriesName(_ int, _ string) {
 	panic("not implemented")
 }
@@ -374,6 +378,23 @@ func TestCalculateValueAxisRange(t *testing.T) {
 		assert.InDelta(t, 19.0, ar.min, 0.0)
 		assert.InDelta(t, 49, ar.max, 0.0)
 		assert.Equal(t, []string{"19", "49"}, ar.labels)
+	})
+
+	t.Run("stacked_negative_sum_min", func(t *testing.T) {
+		p := NewPainter(PainterOptions{Width: 800, Height: 600})
+
+		tsl := testSeriesList{
+			{values: []float64{5, -3}},
+			{values: []float64{-3, -3}},
+		}
+
+		ar := calculateValueAxisRange(p, true, 800, nil, nil, nil,
+			nil, 0, 0, 0,
+			tsl, 0, true, defaultValueFormatter, 0, fs, nil)
+
+		// axis must cover the negative stack extent (-6) and the positive stack extent (5)
+		assert.LessOrEqual(t, ar.min, -6.0)
+		assert.GreaterOrEqual(t, ar.max, 5.0)
 	})
 }
 
@@ -1240,8 +1261,8 @@ func TestAxisLabelQuality(t *testing.T) {
 		assert.Equal(t, len(axisQualitySizes)*axisQualitySampleCount, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
 		assert.Equal(t, 30, s.goodLabelCount)
-		assert.Equal(t, 3894, s.topClose)
-		assert.Equal(t, 3008, s.bottomClose)
+		assert.Equal(t, 3910, s.topClose)
+		assert.Equal(t, 2958, s.bottomClose)
 		assert.Equal(t, 78, s.friendlyInterval)
 	})
 
@@ -1259,9 +1280,9 @@ func TestAxisLabelQuality(t *testing.T) {
 		assert.Equal(t, 12800, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
 		assert.Equal(t, 3024, s.goodLabelCount)
-		assert.Equal(t, 3906, s.topClose)
-		assert.Equal(t, 9266, s.bottomClose)
-		assert.Equal(t, 7804, s.friendlyInterval)
+		assert.Equal(t, 5040, s.topClose)
+		assert.Equal(t, 6970, s.bottomClose)
+		assert.Equal(t, 7624, s.friendlyInterval)
 	})
 
 	t.Run("asymmetric_offset_width", func(t *testing.T) {
@@ -1297,8 +1318,8 @@ func TestAxisLabelQuality(t *testing.T) {
 		assert.Equal(t, 840, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
 		assert.Equal(t, 238, s.goodLabelCount)
-		assert.Equal(t, 318, s.topClose)
-		assert.Equal(t, 566, s.bottomClose)
+		assert.Equal(t, 328, s.topClose)
+		assert.Equal(t, 554, s.bottomClose)
 		assert.Equal(t, 588, s.friendlyInterval)
 	})
 
@@ -1338,8 +1359,8 @@ func TestAxisLabelQuality(t *testing.T) {
 		assert.Equal(t, 4200, s.total)
 		assert.Equal(t, 0, s.coverageMiss)
 		assert.Equal(t, 4164, s.goodLabelCount)
-		assert.Equal(t, 630, s.topClose)
-		assert.Equal(t, 2458, s.bottomClose)
+		assert.Equal(t, 876, s.topClose)
+		assert.Equal(t, 2014, s.bottomClose)
 		assert.Equal(t, 0, s.friendlyInterval)
 	})
 }
