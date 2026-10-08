@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><text x="20" y="36" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Violin</text><path d="M 270 29
+L 300 29" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="285" cy="29" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><text x="302" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Dist</text><text x="19" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">10</text><text x="159" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">5</text><text x="299" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">0</text><text x="439" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">5</text><text x="561" y="375" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">10</text><path d="M 160 56
+L 160 352" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 300 56
+L 300 352" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 440 56
+L 440 352" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 580 56
+L 580 352" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 244 66
+L 524 66
+L 524 122
+L 244 122
+L 244 66" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 272 122
+L 468 122
+L 468 178
+L 272 178
+L 272 122" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 160 178
+L 440 178
+L 440 234
+L 160 234
+L 160 178" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 188 290
+L 552 290
+L 552 346
+L 188 346
+L 188 290" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 300 66
+L 300 346" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/></svg>

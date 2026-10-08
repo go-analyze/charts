@@ -561,6 +561,95 @@ func TestEChartsSeriesStack(t *testing.T) {
 	})
 }
 
+func TestEChartsCandlestickMultiValue(t *testing.T) {
+	t.Parallel()
+
+	t.Run("reorders_to_ohlc", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "candlestick", "data": [[100, 110, 95, 105], [102, 115, 98, 108]]}]}`)
+		reconstructed := filterSeriesList[CandlestickSeriesList](chartOpt.SeriesList, ChartTypeCandlestick)
+		require.Len(t, reconstructed, 1)
+		assert.Equal(t, []OHLCData{
+			{Open: 100, High: 105, Low: 95, Close: 110},
+			{Open: 102, High: 108, Low: 98, Close: 115},
+		}, reconstructed[0].Data)
+	})
+
+	t.Run("single_values_flat_candles", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "candlestick", "data": [100, 102]}]}`)
+		reconstructed := filterSeriesList[CandlestickSeriesList](chartOpt.SeriesList, ChartTypeCandlestick)
+		require.Len(t, reconstructed, 1)
+		assert.Equal(t, []OHLCData{
+			{Open: 100, High: 100, Low: 100, Close: 100},
+			{Open: 102, High: 102, Low: 102, Close: 102},
+		}, reconstructed[0].Data)
+	})
+
+	t.Run("null_item_null_candle", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "candlestick", "data": [[100, 110, 95, 105], null]}]}`)
+		reconstructed := filterSeriesList[CandlestickSeriesList](chartOpt.SeriesList, ChartTypeCandlestick)
+		require.Len(t, reconstructed, 1)
+		null := GetNullValue()
+		assert.Equal(t, []OHLCData{
+			{Open: 100, High: 105, Low: 95, Close: 110},
+			{Open: null, High: null, Low: null, Close: null},
+		}, reconstructed[0].Data)
+	})
+
+	t.Run("yaxis_and_marks_flow", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t, `{"series": [{
+			"type": "candlestick", "yAxisIndex": 1,
+			"markPoint": {"data": [{"type": "max"}]},
+			"markLine": {"data": [{"type": "min"}]},
+			"data": [[100, 110, 95, 105]]}]}`)
+		reconstructed := filterSeriesList[CandlestickSeriesList](chartOpt.SeriesList, ChartTypeCandlestick)
+		require.Len(t, reconstructed, 1)
+		assert.Equal(t, 1, reconstructed[0].YAxisIndex)
+		assert.Equal(t, SeriesMarkList{{Type: "max"}}, reconstructed[0].CloseMarkPoint.Points)
+		assert.Equal(t, SeriesMarkList{{Type: "min"}}, reconstructed[0].CloseMarkLine.Lines)
+	})
+}
+
+func TestEChartsViolinMultiValue(t *testing.T) {
+	t.Parallel()
+
+	t.Run("flattens_extent_pairs", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "violin", "data": [[1.2, 3.4], [5.6, 7.8]]}]}`)
+		reconstructed := filterSeriesList[ViolinSeriesList](chartOpt.SeriesList, ChartTypeViolin)
+		require.Len(t, reconstructed, 1)
+		assert.Equal(t, [][2]float64{{1.2, 3.4}, {5.6, 7.8}}, reconstructed[0].Data)
+	})
+
+	t.Run("flat_scalars_degenerate", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "violin", "data": [1.2, 3.4, 5.6, 7.8]}]}`)
+		reconstructed := filterSeriesList[ViolinSeriesList](chartOpt.SeriesList, ChartTypeViolin)
+		require.Len(t, reconstructed, 1)
+		// each scalar is its own category, so each becomes a degenerate extent
+		assert.Equal(t, [][2]float64{{1.2, 1.2}, {3.4, 3.4}, {5.6, 5.6}, {7.8, 7.8}}, reconstructed[0].Data)
+	})
+
+	t.Run("single_value_degenerate", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "violin", "data": [[1, 2], [3]]}]}`)
+		reconstructed := filterSeriesList[ViolinSeriesList](chartOpt.SeriesList, ChartTypeViolin)
+		require.Len(t, reconstructed, 1)
+		assert.Equal(t, [][2]float64{{1, 2}, {3, 3}}, reconstructed[0].Data)
+	})
+
+	t.Run("null_item_null_extent", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "violin", "data": [[1, 2], null, [3, 4]]}]}`)
+		reconstructed := filterSeriesList[ViolinSeriesList](chartOpt.SeriesList, ChartTypeViolin)
+		require.Len(t, reconstructed, 1)
+		null := GetNullValue()
+		assert.Equal(t, [][2]float64{{1, 2}, {null, null}, {3, 4}}, reconstructed[0].Data)
+	})
+}
+
 func TestEChartsSeriesSymbols(t *testing.T) {
 	t.Parallel()
 
@@ -1165,6 +1254,40 @@ func TestRenderEChartsToSVG(t *testing.T) {
 					"name": "Sales", "type": "bar",
 					"label": { "show": true, "position": "bottom", "distance": 8 },
 					"data": [10, 25, 15]
+				}]
+			}`,
+		},
+		{
+			name: "candlestick",
+			jsonData: `{
+				"title": { "text": "KLine" },
+				"xAxis": { "type": "category", "data": ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8"] },
+				"series": [{
+					"name": "K",
+					"type": "candlestick",
+					"markPoint": { "data": [{ "type": "max" }] },
+					"data": [
+						[20, 34, 18, 38],
+						[38, 28, 25, 42],
+						[28, 22, 15, 30],
+						null,
+						[22, 35, 20, 37],
+						[35, 48, 33, 52],
+						[48, 40, 36, 50],
+						[40, 55, 38, 58]
+					]
+				}]
+			}`,
+		},
+		{
+			name: "violin",
+			jsonData: `{
+				"title": { "text": "Violin" },
+				"xAxis": { "type": "category", "data": ["A", "B", "C", "D", "E"] },
+				"series": [{
+					"name": "Dist",
+					"type": "violin",
+					"data": [[2, 8], [1, 6], [5], null, [4, 9]]
 				}]
 			}`,
 		},

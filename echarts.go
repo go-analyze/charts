@@ -591,6 +591,51 @@ func (esList EChartsSeriesList) ToSeriesList() (GenericSeriesList, error) {
 					Label:  item.Label.makeLabel(item.Name, nil),
 				})
 			}
+		case ChartTypeCandlestick:
+			// flatten full tuples, reordering from ECharts [open, close, lowest, highest]
+			// into the library's internal OHLC order [Open, High, Low, Close].
+			var values []float64
+			for _, dataItem := range item.Data {
+				v := dataItem.Value.values
+				if len(v) >= 4 {
+					values = append(values, v[0], v[3], v[2], v[1])
+				} else {
+					// single value or null: flat candle O=H=L=C
+					first := dataItem.Value.First()
+					values = append(values, first, first, first, first)
+				}
+			}
+			seriesList = append(seriesList, GenericSeries{
+				Type:       item.Type,
+				Values:     values,
+				YAxisIndex: item.YAxisIndex,
+				Label:      item.Label.makeLabel(item.Name, nil),
+				Name:       item.Name,
+				MarkPoint:  item.MarkPoint.ToSeriesMarkPoint(),
+				MarkLine:   item.MarkLine.ToSeriesMarkLine(),
+			})
+		case ChartTypeViolin:
+			// flatten extent pairs; downstream decodes pairwise [A0,B0,A1,B1,...]
+			var values []float64
+			for _, dataItem := range item.Data {
+				v := dataItem.Value.values
+				if len(v) >= 2 {
+					values = append(values, v[0], v[1])
+				} else {
+					// single value or null: degenerate extent A=B
+					first := dataItem.Value.First()
+					values = append(values, first, first)
+				}
+			}
+			seriesList = append(seriesList, GenericSeries{
+				Type:       item.Type,
+				Values:     values,
+				YAxisIndex: item.YAxisIndex,
+				Label:      item.Label.makeLabel(item.Name, nil),
+				Name:       item.Name,
+				MarkPoint:  item.MarkPoint.ToSeriesMarkPoint(),
+				MarkLine:   item.MarkLine.ToSeriesMarkLine(),
+			})
 		default:
 			values := mapSlice(item.Data, func(dataItem EChartsSeriesData) float64 {
 				return dataItem.Value.First()
