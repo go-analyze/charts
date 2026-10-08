@@ -40,6 +40,10 @@ type ChartOption struct {
 	Symbol Symbol
 	// LineStrokeWidth is the stroke width for line charts.
 	LineStrokeWidth float64
+	// StrokeSmoothingTension controls line smoothing (0-1). 0 renders straight lines,
+	// 1 creates heavily smoothed curves. Smoothing auto-disables point symbols and is
+	// ignored when stacking. See LineChartOption for details.
+	StrokeSmoothingTension float64
 	// FillArea when set to *true fills the area under the line in line charts.
 	FillArea *bool
 	// FillOpacity is the opacity or alpha channel (0-255) of the area fill in line charts.
@@ -55,6 +59,9 @@ type ChartOption struct {
 
 	// Radius is the target radius for pie and radar charts. Default is "40%".
 	Radius string
+	// RadiusCenter is the doughnut center-hole radius, for example "60%". Must be
+	// smaller than Radius.
+	RadiusCenter string
 	// Children are child charts to render together.
 	Children []ChartOption
 	parent   *Painter

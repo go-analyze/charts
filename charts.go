@@ -866,14 +866,15 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(lineSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newLineChart(p, LineChartOption{
-				Theme:           opt.Theme,
-				XAxis:           opt.XAxis,
-				SeriesList:      lineSeriesList,
-				StackSeries:     opt.StackSeries,
-				Symbol:          opt.Symbol,
-				LineStrokeWidth: opt.LineStrokeWidth,
-				FillArea:        opt.FillArea,
-				FillOpacity:     opt.FillOpacity,
+				Theme:                  opt.Theme,
+				XAxis:                  opt.XAxis,
+				SeriesList:             lineSeriesList,
+				StackSeries:            opt.StackSeries,
+				Symbol:                 opt.Symbol,
+				LineStrokeWidth:        opt.LineStrokeWidth,
+				StrokeSmoothingTension: opt.StrokeSmoothingTension,
+				FillArea:               opt.FillArea,
+				FillOpacity:            opt.FillOpacity,
 			}).renderChart(renderResult)
 			return err
 		})
@@ -908,9 +909,10 @@ func Render(opt ChartOption, opts ...OptionFunc) (*Painter, error) {
 	if len(doughnutSeriesList) != 0 {
 		handler.Add(func() error {
 			_, err := newDoughnutChart(p, DoughnutChartOption{
-				Theme:      opt.Theme,
-				RadiusRing: opt.Radius,
-				SeriesList: doughnutSeriesList,
+				Theme:        opt.Theme,
+				RadiusRing:   opt.Radius,
+				RadiusCenter: opt.RadiusCenter,
+				SeriesList:   doughnutSeriesList,
 			}).renderChart(renderResult)
 			return err
 		})

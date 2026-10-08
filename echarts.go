@@ -3,7 +3,9 @@ package charts
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
@@ -116,12 +118,14 @@ func (es *EChartsSeriesData) UnmarshalJSON(data []byte) error {
 
 // EChartsXAxisData holds x-axis configuration extracted from ECharts JSON.
 type EChartsXAxisData struct {
-	BoundaryGap *bool            `json:"boundaryGap,omitempty"`
-	SplitNumber int              `json:"splitNumber,omitempty"`
-	AxisLabel   EChartsAxisLabel `json:"axisLabel,omitempty"`
-	AxisLine    EChartsAxisLine  `json:"axisLine,omitempty"`
-	Data        []string         `json:"data"`
-	Type        string           `json:"type"`
+	BoundaryGap   *bool                `json:"boundaryGap,omitempty"`
+	SplitNumber   int                  `json:"splitNumber,omitempty"`
+	Name          string               `json:"name,omitempty"`
+	NameTextStyle EChartsNameTextStyle `json:"nameTextStyle,omitempty"`
+	AxisLabel     EChartsAxisLabel     `json:"axisLabel,omitempty"`
+	AxisLine      EChartsAxisLine      `json:"axisLine,omitempty"`
+	Data          []string             `json:"data"`
+	Type          string               `json:"type"`
 }
 
 // EChartsAxisLine describes the line styling for an axis.
@@ -150,10 +154,13 @@ func (ex *EChartsXAxis) UnmarshalJSON(data []byte) error {
 
 // EChartsAxisLabel configures axis label display for ECharts.
 type EChartsAxisLabel struct {
-	Formatter string `json:"formatter,omitempty"`
-	Show      *bool  `json:"show,omitempty"`
-	Color     string `json:"color,omitempty"`
-	FontSize  *int   `json:"fontSize,omitempty"`
+	Formatter string   `json:"formatter,omitempty"`
+	Show      *bool    `json:"show,omitempty"`
+	Color     string   `json:"color,omitempty"`
+	FontSize  *int     `json:"fontSize,omitempty"`
+	Rotate    *float64 `json:"rotate,omitempty"`
+	Interval  *int     `json:"interval,omitempty"`
+	Margin    *int     `json:"margin,omitempty"`
 }
 
 func (al EChartsAxisLabel) makeFontStyle() FontStyle {
@@ -169,13 +176,124 @@ func (al EChartsAxisLabel) makeFontStyle() FontStyle {
 	return axisFont
 }
 
+// EChartsNameTextStyle styles an axis name (title).
+type EChartsNameTextStyle struct {
+	Color    string `json:"color,omitempty"`
+	FontSize *int   `json:"fontSize,omitempty"`
+}
+
+// makeFontStyle builds the axis title style, unset fields fall back to axis defaults.
+func (nt EChartsNameTextStyle) makeFontStyle() FontStyle {
+	var titleFont FontStyle
+	if nt.FontSize != nil {
+		titleFont.FontSize = float64(*nt.FontSize)
+	}
+	if titleColor := ParseColor(nt.Color); !titleColor.IsZero() {
+		titleFont.FontColor = titleColor
+	}
+	return titleFont
+}
+
+// EChartsSplitLine controls axis split line visibility.
+type EChartsSplitLine struct {
+	Show *bool `json:"show,omitempty"`
+}
+
+// EChartsAreaStyle describes the area fill styling for line series.
+type EChartsAreaStyle struct {
+	Opacity *float64 `json:"opacity,omitempty"`
+	Color   string   `json:"color,omitempty"` // TODO - add support
+}
+
+// echartsSmoothDefaultTension selects the line tension when smooth is set to true.
+const echartsSmoothDefaultTension = 0.5
+
+// EChartsSmooth holds line smoothing as a boolean or a 0-1 tension value.
+type EChartsSmooth struct {
+	value float64
+	set   bool
+}
+
+// UnmarshalJSON decodes smoothing provided as a boolean or numeric tension.
+func (s *EChartsSmooth) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	switch string(data) {
+	case "", "null":
+		return nil
+	case "true":
+		s.value = echartsSmoothDefaultTension
+		s.set = true
+		return nil
+	case "false":
+		s.set = true
+		return nil
+	}
+	if err := json.Unmarshal(data, &s.value); err != nil {
+		return err
+	}
+	s.set = true
+	return nil
+}
+
+// tension returns the smoothing tension clamped to 0-1, 0 when unset or disabled.
+func (s EChartsSmooth) tension() float64 {
+	if !s.set || s.value <= 0 {
+		return 0
+	}
+	return min(s.value, 1)
+}
+
+// EChartsRadius holds a circular chart radius: a single value or an [inner, outer] pair.
+type EChartsRadius struct {
+	// Inner is the center-hole radius used by doughnuts.
+	Inner string
+	// Outer is the ring (or pie) radius.
+	Outer string
+	// IsSet is true when a radius was present in the source JSON.
+	IsSet bool
+}
+
+// UnmarshalJSON decodes a radius provided as a number, percent string, or [inner, outer] pair.
+func (r *EChartsRadius) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if len(data) == 0 || string(data) == "null" {
+		return nil
+	}
+	if data[0] == '[' {
+		var pair []EChartsPosition
+		if err := json.Unmarshal(data, &pair); err != nil {
+			return err
+		}
+		if len(pair) > 0 {
+			r.Inner = string(pair[0])
+		}
+		if len(pair) > 1 {
+			r.Outer = string(pair[1])
+		}
+		r.IsSet = true
+		return nil
+	}
+	var single EChartsPosition
+	if err := json.Unmarshal(data, &single); err != nil {
+		return err
+	}
+	r.Outer = string(single)
+	r.IsSet = true
+	return nil
+}
+
 // EChartsYAxisData holds a single y-axis configuration block.
 type EChartsYAxisData struct {
-	Min       *float64         `json:"min,omitempty"`
-	Max       *float64         `json:"max,omitempty"`
-	AxisLabel EChartsAxisLabel `json:"axisLabel,omitempty"`
-	AxisLine  EChartsAxisLine  `json:"axisLine,omitempty"`
-	Data      []string         `json:"data"`
+	Min           *float64             `json:"min,omitempty"`
+	Max           *float64             `json:"max,omitempty"`
+	SplitNumber   int                  `json:"splitNumber,omitempty"`
+	Name          string               `json:"name,omitempty"`
+	NameTextStyle EChartsNameTextStyle `json:"nameTextStyle,omitempty"`
+	Position      string               `json:"position,omitempty"`
+	SplitLine     EChartsSplitLine     `json:"splitLine,omitempty"`
+	AxisLabel     EChartsAxisLabel     `json:"axisLabel,omitempty"`
+	AxisLine      EChartsAxisLine      `json:"axisLine,omitempty"`
+	Data          []string             `json:"data"`
 }
 
 // EChartsYAxis represents a list of y-axis definitions.
@@ -249,9 +367,84 @@ func (eb EChartsBox) ToBox() Box {
 
 // EChartsLabelOption configures data labels.
 type EChartsLabelOption struct {
-	Show     bool   `json:"show"`
-	Distance int    `json:"distance"`
-	Color    string `json:"color"`
+	Show      bool                  `json:"show"`
+	Distance  int                   `json:"distance"`
+	Color     string                `json:"color"`
+	Formatter EChartsLabelFormatter `json:"formatter,omitempty"`
+	Position  string                `json:"position,omitempty"`
+}
+
+const defaultLabelDistance = 5
+
+// EChartsLabelFormatter holds a label formatter template string. Functions and
+// rich-text objects are not expressible in JSON and are silently ignored.
+type EChartsLabelFormatter struct {
+	Template string
+}
+
+// UnmarshalJSON decodes a formatter when provided as a string, ignoring other forms.
+func (f *EChartsLabelFormatter) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if len(data) == 0 || data[0] != '"' {
+		return nil
+	}
+	return json.Unmarshal(data, &f.Template)
+}
+
+// makeLabel builds the native label configuration, resolving the template
+// formatter and approximating the position through a label offset.
+func (el EChartsLabelOption) makeLabel(seriesName string, values []float64) SeriesLabel {
+	label := SeriesLabel{
+		Show: Ptr(el.Show),
+		FontStyle: FontStyle{
+			FontColor: ParseColor(el.Color),
+		},
+		Distance: el.Distance,
+	}
+	switch el.Position {
+	case "bottom", "inside", "insideBottom":
+		// the native label paints above the anchor by Distance, shift fully below
+		label.Offset.Top = 2 * max(el.Distance, defaultLabelDistance)
+	}
+	if el.Formatter.Template != "" {
+		label.LabelFormatter = makeTemplateFormatter(el.Formatter.Template, seriesName, values)
+	}
+	return label
+}
+
+// makeTemplateFormatter resolves ECharts label template tokens:
+// {a} series name, {b} data name, {c} value, {d} percent of the series total.
+// The library retains a single name per series, so {b} resolves to that name.
+func makeTemplateFormatter(template, seriesName string, values []float64) SeriesLabelFormatter {
+	var total float64
+	for _, v := range values {
+		if isValidExtent(v) {
+			total += v
+		}
+	}
+	return func(index int, name string, val float64) (string, *LabelStyle) {
+		if !isValidExtent(val) {
+			return "", nil
+		}
+		if name == "" {
+			name = seriesName
+		}
+		label := strings.NewReplacer(
+			"{a}", name,
+			"{b}", name,
+			"{c}", FormatValueHumanize(val, 2, false),
+			"{d}", FormatValueHumanize(valuePercent(val, total), 2, false),
+		).Replace(template)
+		return strings.TrimSpace(label), nil
+	}
+}
+
+// valuePercent returns the value share of the total in percent, 0 without a usable total.
+func valuePercent(val, total float64) float64 {
+	if total <= 0 {
+		return 0
+	}
+	return val / total * 100
 }
 
 // EChartsLegend holds legend configuration from ECharts JSON.
@@ -331,9 +524,20 @@ type EChartsSeries struct {
 	Data       []EChartsSeriesData `json:"data"`
 	Name       string              `json:"name"`
 	Type       string              `json:"type"`
-	Radius     string              `json:"radius"`
-	YAxisIndex int                 `json:"yAxisIndex"`
-	ItemStyle  EChartStyle         `json:"itemStyle,omitempty"` // TODO - add support
+	Radius     EChartsRadius       `json:"radius"`
+	Stack      string              `json:"stack,omitempty"`
+	Symbol     string              `json:"symbol,omitempty"`
+	SymbolSize *float64            `json:"symbolSize,omitempty"`
+	LineStyle  struct {
+		Width *float64 `json:"width,omitempty"`
+	} `json:"lineStyle,omitempty"`
+	AreaStyle      *EChartsAreaStyle `json:"areaStyle,omitempty"`
+	BarWidth       string            `json:"barWidth,omitempty"`
+	BarGap         string            `json:"barGap,omitempty"`
+	BarCategoryGap string            `json:"barCategoryGap,omitempty"` // ignored, no library counterpart
+	Smooth         EChartsSmooth     `json:"smooth,omitempty"`
+	YAxisIndex     int               `json:"yAxisIndex"`
+	ItemStyle      EChartStyle       `json:"itemStyle,omitempty"` // TODO - add support
 	// label configuration
 	Label     EChartsLabelOption `json:"label"`
 	MarkPoint EChartsMarkPoint   `json:"markPoint"`
@@ -345,61 +549,79 @@ type EChartsSeries struct {
 // EChartsSeriesList is a list of EChartsSeries values.
 type EChartsSeriesList []EChartsSeries
 
-func (esList EChartsSeriesList) ToSeriesList() GenericSeriesList {
+// ToSeriesList converts the ECharts series into native series, erroring when the
+// configuration cannot be represented (notably mixed stacked and unstacked series).
+func (esList EChartsSeriesList) ToSeriesList() (GenericSeriesList, error) {
 	seriesList := make([]GenericSeries, 0, len(esList))
+	var stackGroups []string
+	var stackCount, unstackedCount int
 	for _, item := range esList {
-		// if pie, each sub-recommendation generates a series
-		if item.Type == ChartTypePie {
+		if item.Stack != "" {
+			if !slices.Contains(stackGroups, item.Stack) {
+				stackGroups = append(stackGroups, item.Stack)
+			}
+			stackCount++
+		} else if isStackableType(item.Type) {
+			unstackedCount++
+		}
+		switch item.Type {
+		case ChartTypePie, ChartTypeDoughnut:
+			// each data item becomes its own series
+			values := mapSlice(item.Data, func(dataItem EChartsSeriesData) float64 {
+				return dataItem.Value.First()
+			})
 			for _, dataItem := range item.Data {
+				label := item.Label.makeLabel(dataItem.Name, values)
+				label.Show = Ptr(true) // circular chart labels are forced on
 				seriesList = append(seriesList, GenericSeries{
-					Type: item.Type,
-					Name: dataItem.Name,
-					Label: SeriesLabel{
-						Show: Ptr(true),
-					},
-					Radius: item.Radius,
+					Type:   item.Type,
+					Name:   dataItem.Name,
+					Label:  label,
+					Radius: item.Radius.Outer,
 					Values: []float64{dataItem.Value.First()},
 				})
 			}
-			continue
-		}
-		if item.Type == ChartTypeRadar ||
-			item.Type == ChartTypeFunnel {
+		case ChartTypeRadar, ChartTypeFunnel:
+			// each data item becomes its own series
 			for _, dataItem := range item.Data {
 				seriesList = append(seriesList, GenericSeries{
 					Name:   dataItem.Name,
 					Type:   item.Type,
 					Values: dataItem.Value.values,
-					Label: SeriesLabel{
-						FontStyle: FontStyle{
-							FontColor: ParseColor(item.Label.Color),
-						},
-						Show:     Ptr(item.Label.Show),
-						Distance: item.Label.Distance,
-					},
+					Label:  item.Label.makeLabel(item.Name, nil),
 				})
 			}
-			continue
-		}
-		seriesList = append(seriesList, GenericSeries{
-			Type: item.Type,
-			Values: mapSlice(item.Data, func(dataItem EChartsSeriesData) float64 {
+		default:
+			values := mapSlice(item.Data, func(dataItem EChartsSeriesData) float64 {
 				return dataItem.Value.First()
-			}),
-			YAxisIndex: item.YAxisIndex,
-			Label: SeriesLabel{
-				FontStyle: FontStyle{
-					FontColor: ParseColor(item.Label.Color),
-				},
-				Show:     Ptr(item.Label.Show),
-				Distance: item.Label.Distance,
-			},
-			Name:      item.Name,
-			MarkPoint: item.MarkPoint.ToSeriesMarkPoint(),
-			MarkLine:  item.MarkLine.ToSeriesMarkLine(),
-		})
+			})
+			seriesList = append(seriesList, GenericSeries{
+				Type:       item.Type,
+				Values:     values,
+				YAxisIndex: item.YAxisIndex,
+				Label:      item.Label.makeLabel(item.Name, values),
+				Name:       item.Name,
+				MarkPoint:  item.MarkPoint.ToSeriesMarkPoint(),
+				MarkLine:   item.MarkLine.ToSeriesMarkLine(),
+			})
+		}
 	}
-	return seriesList
+	if stackCount > 0 && unstackedCount > 0 {
+		return nil, errors.New("stack must be defined on all series when any series uses a stack group")
+	}
+	if len(stackGroups) > 1 {
+		return nil, errors.New("only a single stack group is supported, found: " + strings.Join(stackGroups, ", "))
+	}
+	return seriesList, nil
+}
+
+// isStackableType reports whether the chart type participates in stack series rendering.
+func isStackableType(chartType string) bool {
+	switch chartType {
+	case ChartTypeLine, ChartTypeBar, ChartTypeHorizontalBar, ChartTypeScatter:
+		return true
+	}
+	return false
 }
 
 // EChartsRadarIndicator maps radar indicator options from ECharts.
@@ -468,8 +690,9 @@ type EChartsOption struct {
 	Children        []EChartsOption   `json:"children"`
 }
 
-// ToOption converts the ECharts options into a ChartOption.
-func (eo *EChartsOption) ToOption() ChartOption {
+// ToOption converts the ECharts options into a ChartOption, erroring when the
+// configuration cannot be represented by the library.
+func (eo *EChartsOption) ToOption() (ChartOption, error) {
 	fontFamily := eo.FontFamily
 	if len(fontFamily) == 0 {
 		fontFamily = eo.Title.TextStyle.FontFamily
@@ -509,6 +732,10 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			legendTextStyle.Font = fallbackFont
 		}
 	}
+	seriesList, err := eo.Series.ToSeriesList()
+	if err != nil {
+		return ChartOption{}, err
+	}
 	o := ChartOption{
 		OutputFormat: eo.Type,
 		Theme:        theme,
@@ -542,8 +769,9 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		Height:          eo.Height,
 		Padding:         eo.Padding.Box,
 		Box:             eo.Box.ToBox(),
-		SeriesList:      eo.Series.ToSeriesList(),
+		SeriesList:      seriesList,
 	}
+	eo.Series.applyChartFields(&o)
 	if fallbackFont != nil {
 		for i := range o.SeriesList {
 			if o.SeriesList[i].Label.FontStyle.Font == nil {
@@ -585,6 +813,14 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			Labels:         xAxisData.Data,
 			LabelCount:     xAxisData.SplitNumber,
 			LabelFontStyle: xLabelFontStyle,
+			Title:          xAxisData.Name,
+			TitleFontStyle: xAxisData.NameTextStyle.makeFontStyle(),
+		}
+		if xAxisData.AxisLabel.Rotate != nil {
+			o.XAxis.LabelRotation = DegreesToRadians(*xAxisData.AxisLabel.Rotate)
+		}
+		if xAxisData.AxisLabel.Margin != nil {
+			o.XAxis.LabelOffset = OffsetInt{Top: *xAxisData.AxisLabel.Margin}
 		}
 		if o.XAxis.BoundaryGap == nil {
 			// Ensure default ECharts behavior of centering labels and sets a "BoundaryGap"
@@ -612,6 +848,32 @@ func (eo *EChartsOption) ToOption() ChartOption {
 		if fallbackFont != nil && yLabelFontStyle.Font == nil {
 			yLabelFontStyle.Font = fallbackFont
 		}
+		// ECharts shows split lines by default, the library hides them unless enabled
+		splitLineShow := Ptr(true)
+		if item.SplitLine.Show != nil {
+			splitLineShow = item.SplitLine.Show
+		}
+		var axisPosition string
+		if item.Position == PositionLeft || item.Position == PositionRight {
+			axisPosition = item.Position
+		}
+		var labelOffset OffsetInt
+		if item.AxisLabel.Margin != nil {
+			// labels sit left of a left-positioned axis, right of a right-positioned one
+			if axisPosition == PositionRight {
+				labelOffset.Left = *item.AxisLabel.Margin
+			} else {
+				labelOffset.Left = -*item.AxisLabel.Margin
+			}
+		}
+		var labelRotation float64
+		if item.AxisLabel.Rotate != nil {
+			labelRotation = DegreesToRadians(*item.AxisLabel.Rotate)
+		}
+		var labelSkipCount int
+		if item.AxisLabel.Interval != nil {
+			labelSkipCount = *item.AxisLabel.Interval
+		}
 		yAxisOptions[index] = YAxisOption{
 			Min:            item.Min,
 			Max:            item.Max,
@@ -620,13 +882,103 @@ func (eo *EChartsOption) ToOption() ChartOption {
 			Labels:         item.Data,
 			LabelFontStyle: yLabelFontStyle,
 			SpineLineShow:  item.AxisLine.Show,
+			Title:          item.Name,
+			TitleFontStyle: item.NameTextStyle.makeFontStyle(),
+			Position:       axisPosition,
+			LabelCount:     item.SplitNumber,
+			LabelRotation:  labelRotation,
+			LabelOffset:    labelOffset,
+			LabelSkipCount: labelSkipCount,
+			SplitLineShow:  splitLineShow,
 		}
 	}
 	o.YAxis = yAxisOptions
-	o.Children = mapSlice(eo.Children, func(child EChartsOption) ChartOption {
-		return child.ToOption()
-	})
-	return o
+	for _, child := range eo.Children {
+		childOption, err := child.ToOption()
+		if err != nil {
+			return ChartOption{}, err
+		}
+		o.Children = append(o.Children, childOption)
+	}
+	return o, nil
+}
+
+// applyChartFields maps per-series fields onto the chart-level options;
+// the first series defining each field wins.
+func (esList EChartsSeriesList) applyChartFields(o *ChartOption) {
+	var smoothSet bool
+	for _, item := range esList {
+		if symbolShape := makeSymbolShape(item.Symbol); symbolShape != "" && o.Symbol.Shape == "" {
+			o.Symbol.Shape = symbolShape
+		}
+		if item.SymbolSize != nil && o.Symbol.Size == 0 {
+			o.Symbol.Size = *item.SymbolSize
+		}
+		if item.LineStyle.Width != nil && *item.LineStyle.Width > 0 && o.LineStrokeWidth == 0 {
+			o.LineStrokeWidth = *item.LineStyle.Width
+		}
+		if item.AreaStyle != nil && o.FillArea == nil {
+			o.FillArea = Ptr(true)
+			if item.AreaStyle.Opacity != nil {
+				o.FillOpacity = drawing.ColorChannelFromFloat(*item.AreaStyle.Opacity)
+			}
+		}
+		if ratio, ok := parsePercentRatio(item.BarWidth); ok && o.BarSize == 0 {
+			o.BarSize = ratio
+		}
+		if ratio, ok := parsePercentRatio(item.BarGap); ok && o.BarMargin == nil {
+			o.BarMargin = Ptr(ratio)
+		}
+		if item.Smooth.set && !smoothSet {
+			o.StrokeSmoothingTension = item.Smooth.tension()
+			smoothSet = true
+		}
+	}
+	if slices.ContainsFunc(esList, func(item EChartsSeries) bool {
+		return item.Stack != ""
+	}) {
+		o.StackSeries = Ptr(true) // ToSeriesList errors unless all series stack
+	}
+	for _, item := range esList {
+		if item.Type == ChartTypeDoughnut && item.Radius.IsSet {
+			o.Radius = item.Radius.Outer
+			o.RadiusCenter = item.Radius.Inner
+			break
+		}
+	}
+}
+
+// makeSymbolShape maps an ECharts symbol name to a library shape;
+// unsupported shapes fall back to square.
+func makeSymbolShape(symbol string) SymbolShape {
+	switch symbol {
+	case "":
+		return ""
+	case "circle":
+		return SymbolCircle
+	case "rect", "roundRect":
+		return SymbolSquare
+	case "diamond":
+		return SymbolDiamond
+	case "none":
+		return SymbolNone
+	default: // "triangle", "pin", "arrow" and unknown names
+		return SymbolSquare
+	}
+}
+
+// parsePercentRatio parses a percent string like "35%" into a 0-1 ratio.
+// Non-percent values are rejected; absolute sizes have no slot-ratio equivalent.
+func parsePercentRatio(value string) (float64, bool) {
+	percentStr, ok := strings.CutSuffix(value, "%")
+	if !ok {
+		return 0, false
+	}
+	percent, err := strconv.ParseFloat(percentStr, 64)
+	if err != nil {
+		return 0, false
+	}
+	return percent / 100.0, true
 }
 
 func renderEcharts(options, outputType string) ([]byte, error) {
@@ -634,7 +986,10 @@ func renderEcharts(options, outputType string) ([]byte, error) {
 	if err := json.Unmarshal([]byte(options), &o); err != nil {
 		return nil, err
 	}
-	opt := o.ToOption()
+	opt, err := o.ToOption()
+	if err != nil {
+		return nil, err
+	}
 	opt.OutputFormat = outputType
 	if p, err := Render(opt); err != nil {
 		return nil, err

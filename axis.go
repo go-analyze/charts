@@ -98,6 +98,8 @@ type ValueAxisOption struct {
 	Position string
 	// LabelFontStyle specifies the font configuration for each label.
 	LabelFontStyle FontStyle
+	// LabelOffset is the position offset for each label.
+	LabelOffset OffsetInt
 	// LabelRotation is the rotation angle in radians for labels. Use DegreesToRadians(float64) to convert from degrees.
 	LabelRotation float64
 	// Unit suggests the axis step size (recommendation only). Larger values result in fewer labels.
@@ -141,6 +143,7 @@ func (opt *ValueAxisOption) toAxisOption(yAxisRange axisRange) axisOption {
 		title:          opt.Title,
 		titleFontStyle: opt.TitleFontStyle,
 		position:       opt.Position,
+		labelOffset:    opt.LabelOffset,
 		splitLineShow:  opt.SplitLineShow,
 		spineLineShow:  opt.SpineLineShow,
 		isCategoryAxis: opt.isCategoryAxis,

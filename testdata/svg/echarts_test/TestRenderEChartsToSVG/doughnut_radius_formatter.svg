@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 400"><path d="M 0 0
+L 600 0
+L 600 400
+L 0 400
+L 0 0" style="stroke:none;fill:white"/><path d="M 167 29
+L 197 29" style="stroke-width:3;stroke:rgb(84,112,198);fill:none"/><circle cx="182" cy="29" r="5" style="stroke-width:3;stroke:rgb(84,112,198);fill:rgb(84,112,198)"/><text x="199" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Alpha</text><path d="M 261 29
+L 291 29" style="stroke-width:3;stroke:rgb(145,204,117);fill:none"/><circle cx="276" cy="29" r="5" style="stroke-width:3;stroke:rgb(145,204,117);fill:rgb(145,204,117)"/><text x="293" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Beta</text><path d="M 346 29
+L 376 29" style="stroke-width:3;stroke:rgb(250,200,88);fill:none"/><circle cx="361" cy="29" r="5" style="stroke-width:3;stroke:rgb(250,200,88);fill:rgb(250,200,88)"/><text x="378" y="35" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Gamma</text><path d="M 300 218
+L 300 -8.8
+A 226.8 226.8 0 0 1 433.31 401.49
+L 300 218
+Z" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 515 148
+L 529 144
+M 529 144
+L 544 144" style="stroke-width:1;stroke:rgb(84,112,198);fill:none"/><text x="547" y="150" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Alpha: 40%</text><path d="M 300 218
+L 433.31 401.49
+A 226.8 226.8 0 0 1 84.3 288.09
+L 300 218
+Z" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 230 433
+L 226 447
+M 226 447
+L 211 447" style="stroke-width:1;stroke:rgb(145,204,117);fill:none"/><text x="149" y="453" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Beta: 30%</text><path d="M 300 218
+L 84.3 288.09
+A 226.8 226.8 0 0 1 300 -8.8
+L 300 218
+Z" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 117 85
+L 105 76
+M 105 76
+L 90 76" style="stroke-width:1;stroke:rgb(250,200,88);fill:none"/><text x="8" y="82" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Gamma: 30%</text><circle cx="300" cy="218" r="129.6" style="stroke:none;fill:white"/></svg>
