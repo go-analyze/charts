@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/go-analyze/charts/chartdraw/drawing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -805,6 +806,86 @@ func TestEChartsSeriesSmooth(t *testing.T) {
 			assert.InDelta(t, tt.expectedTension, chartOpt.StrokeSmoothingTension, 0)
 		})
 	}
+}
+
+func TestApplySeriesItemStyles(t *testing.T) {
+	t.Parallel()
+
+	theme := GetDefaultTheme()
+
+	t.Run("unset_keeps_theme", func(t *testing.T) {
+		palette := EChartsSeriesList{
+			{Type: ChartTypeBar, Data: []EChartsSeriesData{{}}},
+		}.applySeriesItemStyles(theme)
+		assert.Equal(t, theme.GetSeriesColor(0), palette.GetSeriesColor(0))
+	})
+
+	t.Run("color_overrides_slot", func(t *testing.T) {
+		palette := EChartsSeriesList{
+			{Type: ChartTypeBar, ItemStyle: EChartStyle{Color: "#ff0000"}},
+		}.applySeriesItemStyles(theme)
+		assert.Equal(t, ParseColor("#ff0000"), palette.GetSeriesColor(0))
+	})
+
+	t.Run("opacity_scales_alpha", func(t *testing.T) {
+		palette := EChartsSeriesList{
+			{Type: ChartTypeBar, ItemStyle: EChartStyle{Opacity: Ptr(0.5)}},
+		}.applySeriesItemStyles(theme)
+		assert.Equal(t,
+			theme.GetSeriesColor(0).WithAlpha(drawing.ColorChannelFromFloat(0.5)),
+			palette.GetSeriesColor(0))
+	})
+
+	t.Run("invalid_color_falls_back", func(t *testing.T) {
+		palette := EChartsSeriesList{
+			{Type: ChartTypeBar, ItemStyle: EChartStyle{Color: "#zz"}},
+		}.applySeriesItemStyles(theme)
+		assert.Equal(t, theme.GetSeriesColor(0), palette.GetSeriesColor(0))
+	})
+
+	t.Run("expanding_types_align_slots", func(t *testing.T) {
+		palette := EChartsSeriesList{
+			{Type: ChartTypePie, ItemStyle: EChartStyle{Color: "#ff0000"}, Data: []EChartsSeriesData{{}, {}}},
+			{Type: ChartTypeBar, ItemStyle: EChartStyle{Color: "#00ff00"}},
+		}.applySeriesItemStyles(theme)
+		assert.Equal(t, theme.GetSeriesColor(0), palette.GetSeriesColor(0))
+		assert.Equal(t, theme.GetSeriesColor(1), palette.GetSeriesColor(1))
+		assert.Equal(t, ParseColor("#00ff00"), palette.GetSeriesColor(2))
+	})
+}
+
+func TestEChartsSeriesItemStyle(t *testing.T) {
+	t.Parallel()
+
+	baseTheme := GetDefaultTheme()
+
+	t.Run("color_opacity_and_fallback", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t, `{"series": [
+			{"type": "bar", "data": [1, 2], "itemStyle": {"color": "#ff0000"}},
+			{"type": "line", "data": [3, 4], "itemStyle": {"opacity": 0.5}},
+			{"type": "bar", "data": [5, 6]}
+		]}`)
+		assert.Equal(t, ParseColor("#ff0000"), chartOpt.Theme.GetSeriesColor(0))
+		assert.Equal(t,
+			baseTheme.GetSeriesColor(1).WithAlpha(drawing.ColorChannelFromFloat(0.5)),
+			chartOpt.Theme.GetSeriesColor(1))
+		assert.Equal(t, baseTheme.GetSeriesColor(2), chartOpt.Theme.GetSeriesColor(2))
+	})
+
+	t.Run("no_item_style_keeps_theme", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "bar", "data": [1, 2]}]}`)
+		assert.Equal(t, baseTheme.GetSeriesColor(0), chartOpt.Theme.GetSeriesColor(0))
+	})
+
+	t.Run("pie_item_style_not_preserved", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t, `{"series": [
+			{"type": "pie", "itemStyle": {"color": "#ff0000"},
+				"data": [{"value": 1, "name": "a"}, {"value": 2, "name": "b"}]}
+		]}`)
+		require.Len(t, chartOpt.SeriesList, 2)
+		assert.Equal(t, baseTheme.GetSeriesColor(0), chartOpt.Theme.GetSeriesColor(0))
+	})
 }
 
 func TestEChartsSeriesDoughnut(t *testing.T) {

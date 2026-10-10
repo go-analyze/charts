@@ -537,7 +537,7 @@ type EChartsSeries struct {
 	BarCategoryGap string            `json:"barCategoryGap,omitempty"` // ignored, no library counterpart
 	Smooth         EChartsSmooth     `json:"smooth,omitempty"`
 	YAxisIndex     int               `json:"yAxisIndex"`
-	ItemStyle      EChartStyle       `json:"itemStyle,omitempty"` // TODO - add support
+	ItemStyle      EChartStyle       `json:"itemStyle,omitempty"`
 	// label configuration
 	Label     EChartsLabelOption `json:"label"`
 	MarkPoint EChartsMarkPoint   `json:"markPoint"`
@@ -781,6 +781,7 @@ func (eo *EChartsOption) ToOption() (ChartOption, error) {
 	if err != nil {
 		return ChartOption{}, err
 	}
+	theme = eo.Series.applySeriesItemStyles(theme)
 	o := ChartOption{
 		OutputFormat: eo.Type,
 		Theme:        theme,
@@ -946,6 +947,39 @@ func (eo *EChartsOption) ToOption() (ChartOption, error) {
 		o.Children = append(o.Children, childOption)
 	}
 	return o, nil
+}
+
+// applySeriesItemStyles returns a palette with explicit series itemStyle colors and
+// opacities applied; unstyled series keep their themed color.
+func (esList EChartsSeriesList) applySeriesItemStyles(theme ColorPalette) ColorPalette {
+	styles := make([]EChartStyle, 0, len(esList))
+	for _, item := range esList {
+		switch item.Type {
+		case ChartTypePie, ChartTypeDoughnut, ChartTypeRadar, ChartTypeFunnel:
+			// one output series per data item; series-level itemStyle is not preserved
+			styles = append(styles, make([]EChartStyle, len(item.Data))...)
+		default:
+			styles = append(styles, item.ItemStyle)
+		}
+	}
+	colors := make([]Color, len(styles))
+	var styled bool
+	for i, style := range styles {
+		color := theme.GetSeriesColor(i)
+		if parsed := ParseColor(style.Color); !parsed.IsZero() {
+			color = parsed
+			styled = true
+		}
+		if style.Opacity != nil {
+			color = color.WithAlpha(drawing.ColorChannelFromFloat(*style.Opacity))
+			styled = true
+		}
+		colors[i] = color
+	}
+	if !styled {
+		return theme
+	}
+	return theme.WithSeriesColors(colors)
 }
 
 // applyChartFields maps per-series fields onto the chart-level options;
