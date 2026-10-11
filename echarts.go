@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -297,6 +298,7 @@ type EChartsYAxisData struct {
 	AxisLabel     EChartsAxisLabel     `json:"axisLabel,omitempty"`
 	AxisLine      EChartsAxisLine      `json:"axisLine,omitempty"`
 	Data          []string             `json:"data"`
+	Type          string               `json:"type,omitempty"`
 }
 
 // EChartsYAxis represents a list of y-axis definitions.
@@ -842,9 +844,10 @@ func (eo *EChartsOption) ToOption() (ChartOption, error) {
 			}
 		}
 	}
-	isHorizontalChart := slices.ContainsFunc(eo.XAxis.Data, func(item EChartsXAxisData) bool {
-		return item.Type == "value"
-	})
+	isHorizontalChart, err := eo.isHorizontalOrientation()
+	if err != nil {
+		return ChartOption{}, err
+	}
 	if isHorizontalChart {
 		for index := range o.SeriesList {
 			switch o.SeriesList[index].Type {
@@ -964,6 +967,53 @@ func (eo *EChartsOption) ToOption() (ChartOption, error) {
 		o.Children = append(o.Children, childOption)
 	}
 	return o, nil
+}
+
+// Axis types from the ECharts spec; time and log render like categories since the
+// library has no continuous category axis.
+const (
+	echartsAxisCategory = "category"
+	echartsAxisValue    = "value"
+	echartsAxisTime     = "time"
+	echartsAxisLog      = "log"
+)
+
+// echartsAxisClass reduces a declared ECharts axis type to its orientation class:
+// "value", "category" (covers category, time, and log), or "" when unset or unrecognized.
+func echartsAxisClass(axisType string) string {
+	switch axisType {
+	case echartsAxisValue:
+		return echartsAxisValue
+	case echartsAxisCategory, echartsAxisTime, echartsAxisLog:
+		return echartsAxisCategory
+	default:
+		return ""
+	}
+}
+
+// isHorizontalOrientation reports whether bar/violin series render horizontally, true when
+// the category axis lands on y: a value-typed first x-axis or category-typed first y-axis.
+// Errors when the first x- and y-axis entries declare matching type classes, leaving no
+// category/value axis pair.
+func (eo *EChartsOption) isHorizontalOrientation() (bool, error) {
+	var xAxisType, yAxisType string
+	if len(eo.XAxis.Data) > 0 {
+		xAxisType = eo.XAxis.Data[0].Type
+	}
+	if len(eo.YAxis.Data) > 0 {
+		yAxisType = eo.YAxis.Data[0].Type
+	}
+	hasOrientable := slices.ContainsFunc(eo.Series, func(item EChartsSeries) bool {
+		return item.Type == ChartTypeBar || item.Type == ChartTypeViolin
+	})
+	xClass, yClass := echartsAxisClass(xAxisType), echartsAxisClass(yAxisType)
+	if hasOrientable && xClass != "" && xClass == yClass {
+		return false, fmt.Errorf(
+			"conflicting axis types for bar/violin series: xAxis.type %q with yAxis.type %q",
+			xAxisType, yAxisType)
+	}
+	// missing types keep the ECharts positional default of a category x-axis (vertical)
+	return xClass == echartsAxisValue || yClass == echartsAxisCategory, nil
 }
 
 // applySeriesItemStyles returns a palette with explicit series itemStyle colors and

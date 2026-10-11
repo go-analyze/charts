@@ -125,6 +125,22 @@ func TestEChartsXAxis(t *testing.T) {
 	}, ex)
 }
 
+func TestEChartsYAxis(t *testing.T) {
+	t.Parallel()
+
+	ey := EChartsYAxis{}
+	require.NoError(t, ey.UnmarshalJSON([]byte(`{"type": "category", "data": ["a", "b"]}`)))
+
+	assert.Equal(t, EChartsYAxis{
+		Data: []EChartsYAxisData{
+			{
+				Type: "category",
+				Data: []string{"a", "b"},
+			},
+		},
+	}, ey)
+}
+
 func TestEChartsPadding(t *testing.T) {
 	t.Parallel()
 
@@ -507,6 +523,117 @@ func TestEChartsOption(t *testing.T) {
 				assert.NotEmpty(t, opt.XAxis.Data[0].Data)
 				assert.NotEmpty(t, opt.XAxis.Data[0].Type)
 			}
+		})
+	}
+}
+
+func TestEChartsAxisOrientation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name          string
+		option        string
+		expectedType  string // resulting type of the first series when no error is expected
+		errorContains string // expected message substring when an error is expected
+	}{
+		{
+			name: "canonical_horizontal",
+			option: `{"xAxis": {"type": "value"}, "yAxis": {"type": "category", "data": ["A"]},
+					"series": [{"type": "bar", "data": [10]}]}`,
+			expectedType: ChartTypeHorizontalBar,
+		},
+		{
+			name:         "violin_flips_horizontal",
+			option:       `{"xAxis": {"type": "value"}, "yAxis": {"type": "category", "data": ["A"]}, "series": [{"type": "violin", "data": [[1, 3]]}]}`,
+			expectedType: ChartTypeHorizontalViolin,
+		},
+		{
+			name:         "types_omitted_vertical",
+			option:       `{"xAxis": {"data": ["Mon", "Tue"]}, "series": [{"type": "bar", "data": [1, 2]}]}`,
+			expectedType: ChartTypeBar,
+		},
+		{
+			name:         "explicit_vertical",
+			option:       `{"xAxis": {"type": "category", "data": ["Mon"]}, "yAxis": {"type": "value"}, "series": [{"type": "bar", "data": [1]}]}`,
+			expectedType: ChartTypeBar,
+		},
+		{
+			name:         "only_x_value_typed",
+			option:       `{"xAxis": {"type": "value"}, "series": [{"type": "bar", "data": [1, 2]}]}`,
+			expectedType: ChartTypeHorizontalBar,
+		},
+		{
+			name:         "only_y_category_typed",
+			option:       `{"yAxis": {"type": "category", "data": ["A"]}, "series": [{"type": "bar", "data": [1]}]}`,
+			expectedType: ChartTypeHorizontalBar,
+		},
+		{
+			name:         "y_category_wins_over_untyped_x",
+			option:       `{"xAxis": {"data": ["Mon"]}, "yAxis": {"type": "category", "data": ["A"]}, "series": [{"type": "bar", "data": [1]}]}`,
+			expectedType: ChartTypeHorizontalBar,
+		},
+		{
+			name: "dual_value_yaxis_stays_vertical",
+			option: `{"xAxis": {"type": "category", "data": ["Jan", "Feb"]},
+				"yAxis": [{"type": "value"}, {"type": "value"}],
+				"series": [{"type": "bar", "yAxisIndex": 0, "data": [1, 2]}, {"type": "line", "yAxisIndex": 1, "data": [3, 4]}]}`,
+			expectedType: ChartTypeBar,
+		},
+		{
+			name:         "time_axis_category_like",
+			option:       `{"xAxis": {"type": "time"}, "yAxis": {"type": "value"}, "series": [{"type": "bar", "data": [1]}]}`,
+			expectedType: ChartTypeBar,
+		},
+		{
+			name:         "log_axis_category_like",
+			option:       `{"xAxis": {"type": "log"}, "yAxis": {"type": "value"}, "series": [{"type": "bar", "data": [1]}]}`,
+			expectedType: ChartTypeBar,
+		},
+		{
+			name:         "secondary_x_axis_ignored",
+			option:       `{"xAxis": [{"type": "category", "data": ["Mon"]}, {"type": "value"}], "series": [{"type": "bar", "data": [1]}]}`,
+			expectedType: ChartTypeBar,
+		},
+		{
+			name:          "both_category_typed",
+			option:        `{"xAxis": {"type": "category"}, "yAxis": {"type": "category", "data": ["A"]}, "series": [{"type": "bar", "data": [1]}]}`,
+			errorContains: `xAxis.type "category" with yAxis.type "category"`,
+		},
+		{
+			name:          "both_value_typed",
+			option:        `{"xAxis": {"type": "value"}, "yAxis": {"type": "value"}, "series": [{"type": "bar", "data": [1]}]}`,
+			errorContains: `xAxis.type "value" with yAxis.type "value"`,
+		},
+		{
+			name:          "time_conflicts_with_category",
+			option:        `{"xAxis": {"type": "time"}, "yAxis": {"type": "category", "data": ["A"]}, "series": [{"type": "violin", "data": [[1, 2]]}]}`,
+			errorContains: `xAxis.type "time" with yAxis.type "category"`,
+		},
+		{
+			name:         "line_unvalidated",
+			option:       `{"xAxis": {"type": "value"}, "yAxis": {"type": "value"}, "series": [{"type": "line", "data": [[1, 2], [3, 4]]}]}`,
+			expectedType: ChartTypeLine,
+		},
+		{
+			name:         "dialect_type_wins",
+			option:       `{"xAxis": {"type": "value"}, "yAxis": {"type": "value"}, "series": [{"type": "horizontalBar", "data": [1]}]}`,
+			expectedType: ChartTypeHorizontalBar,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			eChartsOpt := EChartsOption{}
+			require.NoError(t, json.Unmarshal([]byte(tt.option), &eChartsOpt))
+			chartOpt, err := eChartsOpt.ToOption()
+			if tt.errorContains != "" {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), tt.errorContains)
+				return
+			}
+			require.NoError(t, err)
+			require.NotEmpty(t, chartOpt.SeriesList)
+			assert.Equal(t, tt.expectedType, chartOpt.SeriesList[0].Type)
 		})
 	}
 }
