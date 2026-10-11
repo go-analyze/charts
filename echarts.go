@@ -24,6 +24,9 @@ func convertToArray(data []byte) []byte {
 	return data
 }
 
+// jsonNull is the JSON null literal produced by the decoder.
+const jsonNull = "null"
+
 // EChartsPosition represents a CSS-like position value that can be either a string (like "center", "left") or a numeric value.
 type EChartsPosition string
 
@@ -73,7 +76,7 @@ func (value *EChartsSeriesDataValue) UnmarshalJSON(data []byte) error {
 // parseSeriesValue returns the number for a JSON value, with null or "-" returning GetNullValue.
 func parseSeriesValue(data []byte) (float64, error) {
 	switch string(bytes.TrimSpace(data)) {
-	case "", "null", `"-"`:
+	case "", jsonNull, `"-"`:
 		return GetNullValue(), nil
 	}
 	var f float64
@@ -218,7 +221,7 @@ type EChartsSmooth struct {
 func (s *EChartsSmooth) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimSpace(data)
 	switch string(data) {
-	case "", "null":
+	case "", jsonNull:
 		return nil
 	case "true":
 		s.value = echartsSmoothDefaultTension
@@ -256,7 +259,7 @@ type EChartsRadius struct {
 // UnmarshalJSON decodes a radius provided as a number, percent string, or [inner, outer] pair.
 func (r *EChartsRadius) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimSpace(data)
-	if len(data) == 0 || string(data) == "null" {
+	if len(data) == 0 || string(data) == jsonNull {
 		return nil
 	}
 	if data[0] == '[' {
@@ -548,6 +551,20 @@ type EChartsSeries struct {
 
 // EChartsSeriesList is a list of EChartsSeries values.
 type EChartsSeriesList []EChartsSeries
+
+// UnmarshalJSON decodes series provided as a single object or an array.
+func (esList *EChartsSeriesList) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if len(data) == 0 || string(data) == jsonNull {
+		return nil
+	}
+	var list []EChartsSeries
+	if err := json.Unmarshal(convertToArray(data), &list); err != nil {
+		return err
+	}
+	*esList = list
+	return nil
+}
 
 // ToSeriesList converts the ECharts series into native series, erroring when the
 // configuration cannot be represented (notably mixed stacked and unstacked series).

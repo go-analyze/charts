@@ -511,6 +511,70 @@ func TestEChartsOption(t *testing.T) {
 	}
 }
 
+func TestEChartsSeriesList(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name             string
+		option           string
+		equivalentOption string // same option with series as an array, asserted equal when set
+		expectedCount    int
+	}{
+		{
+			name:             "single_object",
+			option:           `{"series": {"type": "bar", "name": "S1", "data": [1, 2]}}`,
+			equivalentOption: `{"series": [{"type": "bar", "name": "S1", "data": [1, 2]}]}`,
+			expectedCount:    1,
+		},
+		{
+			name:             "array_of_objects",
+			option:           `{"series": [{"type": "bar", "name": "S1", "data": [1]}, {"type": "line", "name": "S2", "data": [2]}]}`,
+			equivalentOption: `{"series": [{"type": "bar", "name": "S1", "data": [1]}, {"type": "line", "name": "S2", "data": [2]}]}`,
+			expectedCount:    2,
+		},
+		{
+			name:             "empty_array",
+			option:           `{"series": []}`,
+			equivalentOption: `{"series": []}`,
+			expectedCount:    0,
+		},
+		{
+			name:          "null_ignored",
+			option:        `{"series": null}`,
+			expectedCount: 0,
+		},
+		{
+			name: "single_object_with_children",
+			option: `{
+				"series": {"type": "bar", "name": "S1", "data": [1, 2]},
+				"children": [
+					{"series": [{"type": "line", "name": "C1", "data": [3]}]},
+					{"series": {"type": "pie", "name": "C2", "data": [{"value": 5, "name": "a"}]}}
+				]
+			}`,
+			expectedCount: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			opt := EChartsOption{}
+			require.NoError(t, json.Unmarshal([]byte(tt.option), &opt))
+			assert.Len(t, opt.Series, tt.expectedCount)
+			for _, child := range opt.Children {
+				assert.Len(t, child.Series, 1)
+			}
+			if tt.equivalentOption != "" {
+				equivalent := EChartsOption{}
+				require.NoError(t, json.Unmarshal([]byte(tt.equivalentOption), &equivalent))
+				assert.Equal(t, equivalent.Series, opt.Series)
+			}
+			_, err := opt.ToOption()
+			require.NoError(t, err)
+		})
+	}
+}
+
 // mustParseEChartsOption unmarshals the option JSON and converts it, failing the test on error.
 func mustParseEChartsOption(t *testing.T, option string) (EChartsOption, ChartOption) {
 	t.Helper()
