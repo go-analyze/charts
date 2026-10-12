@@ -162,6 +162,9 @@ func (l *lineChart) renderChart(result *defaultRenderResult) (Box, error) {
 		}
 		seriesColor := opt.Theme.GetSeriesColor(seriesThemeIndex)
 		yRange := result.valueAxisRanges[series.YAxisIndex]
+		if len(series.Values) == 0 {
+			continue // nothing to draw, and area fills require at least one point
+		}
 		points := make([]Point, len(series.Values))
 		var labelPainter *seriesLabelPainter
 		if flagIs(true, series.Label.Show) {

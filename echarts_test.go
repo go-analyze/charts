@@ -1587,3 +1587,56 @@ func TestRenderEChartsToSVG(t *testing.T) {
 		})
 	}
 }
+
+func TestEChartsEmptySeriesWithAreaStyle(t *testing.T) {
+	t.Parallel()
+
+	// a series with area styling but no data points must render as an empty
+	// chart, not panic on the area-fill path (index out of range [-1])
+	for _, tt := range []struct{ name, option string }{
+		{
+			"string_color",
+			`{"series":[{"areaStyle":{"color":"#3af"},"type":"line"}],
+				"xAxis":{"data":["a","b"],"type":"category"},"yAxis":{}}`,
+		},
+		{
+			"gradient_object",
+			`{"series":[{"areaStyle":{"color":{"colorStops":[{"offset":0,"color":"red"}]}},"type":"line"}],
+				"xAxis":{"data":["a","b"]},"yAxis":{}}`,
+		},
+		{
+			"empty_object",
+			`{"series":[{"areaStyle":{},"type":"line"}],"xAxis":{"data":["a","b"]},"yAxis":{}}`,
+		},
+		{
+			"no_type",
+			`{"series":[{"areaStyle":{"color":"#3af"}}],
+				"xAxis":{"data":["a","b"],"type":"category"},"yAxis":{}}`,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			data, err := RenderEChartsToSVG(tt.option)
+			require.NoError(t, err)
+			assert.NotEmpty(t, data)
+		})
+	}
+}
+
+func TestLineChartEmptySeriesStackedWithAreaStyle(t *testing.T) {
+	t.Parallel()
+
+	// stacked empty series take the accumulated-line area path; both must not panic
+	data, err := RenderEChartsToSVG(`{"series":[
+		{"areaStyle":{},"type":"line","stack":"s"},
+		{"data":[1,2],"type":"line","stack":"s"}],
+		"xAxis":{"data":["a","b"]},"yAxis":{}}`)
+	require.NoError(t, err)
+	assert.NotEmpty(t, data)
+
+	data, err = RenderEChartsToSVG(`{"series":[
+		{"areaStyle":{},"type":"line","stack":"s"},
+		{"areaStyle":{},"type":"line","stack":"s"}],
+		"xAxis":{"data":["a","b"]},"yAxis":{}}`)
+	require.NoError(t, err)
+	assert.NotEmpty(t, data)
+}
