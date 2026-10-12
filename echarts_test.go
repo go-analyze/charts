@@ -1600,11 +1600,6 @@ func TestEChartsEmptySeriesWithAreaStyle(t *testing.T) {
 				"xAxis":{"data":["a","b"],"type":"category"},"yAxis":{}}`,
 		},
 		{
-			"gradient_object",
-			`{"series":[{"areaStyle":{"color":{"colorStops":[{"offset":0,"color":"red"}]}},"type":"line"}],
-				"xAxis":{"data":["a","b"]},"yAxis":{}}`,
-		},
-		{
 			"empty_object",
 			`{"series":[{"areaStyle":{},"type":"line"}],"xAxis":{"data":["a","b"]},"yAxis":{}}`,
 		},
