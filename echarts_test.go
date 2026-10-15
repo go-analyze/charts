@@ -62,7 +62,11 @@ func TestEChartsSeriesDataValue(t *testing.T) {
 		values: []float64{1, GetNullValue(), GetNullValue(), 2},
 	}, es)
 
-	require.Error(t, es.UnmarshalJSON([]byte(`"foo"`)))
+	require.NoError(t, es.UnmarshalJSON([]byte(`"foo"`)))
+	assert.Empty(t, es.values) // bare labels have no numeric slot
+
+	require.NoError(t, es.UnmarshalJSON([]byte(`["Mon", 120]`)))
+	assert.Equal(t, EChartsSeriesDataValue{values: []float64{120}}, es)
 
 	var empty EChartsSeriesDataValue
 	assert.InDelta(t, GetNullValue(), empty.First(), 0)
@@ -179,6 +183,12 @@ func TestEChartsPadding(t *testing.T) {
 
 func TestEChartsMarkPoint(t *testing.T) {
 	t.Parallel()
+
+	// positional mark axes arrive as strings or numbers; both must decode since
+	// the fields are parsed but not yet rendered
+	_, chartOpt := mustParseEChartsOption(t,
+		`{"series": [{"type": "line", "data": [1, 2], "markPoint": {"data": [{"xAxis": "Wed", "yAxis": 2}]}}]}`)
+	require.Len(t, chartOpt.SeriesList, 1)
 
 	emp := EChartsMarkPoint{
 		SymbolSize: 30,
@@ -712,6 +722,19 @@ func mustParseEChartsOption(t *testing.T, option string) (EChartsOption, ChartOp
 	return eChartsOpt, chartOpt
 }
 
+func TestEChartsLabeledDataTuples(t *testing.T) {
+	t.Parallel()
+
+	// [label, value] tuples carry category names with no numeric slot; they
+	// must decode with the label skipped instead of failing the whole option
+	_, chartOpt := mustParseEChartsOption(t,
+		`{"series": [{"type": "line", "data": [["Mon", 120], ["Tue", 200], ["Wed", 150]]}]}`)
+	require.Len(t, chartOpt.SeriesList, 1)
+	require.Len(t, chartOpt.SeriesList[0].Values, 3)
+	assert.InDelta(t, 120.0, chartOpt.SeriesList[0].Values[0], 0)
+	assert.InDelta(t, 200.0, chartOpt.SeriesList[0].Values[1], 0)
+}
+
 func TestEChartsSeriesStack(t *testing.T) {
 	t.Parallel()
 
@@ -946,6 +969,13 @@ func TestEChartsSeriesBarSizing(t *testing.T) {
 	t.Run("absolute_sizes_ignored", func(t *testing.T) {
 		_, chartOpt := mustParseEChartsOption(t,
 			`{"series": [{"type": "bar", "data": [1, 2], "barWidth": "30", "barGap": "8", "barCategoryGap": "20%"}]}`)
+		assert.Zero(t, chartOpt.BarSize)
+		assert.Nil(t, chartOpt.BarMargin)
+	})
+
+	t.Run("numeric_sizes_decode_and_ignore", func(t *testing.T) {
+		_, chartOpt := mustParseEChartsOption(t,
+			`{"series": [{"type": "bar", "data": [1, 2], "barWidth": 40, "barGap": 8}]}`)
 		assert.Zero(t, chartOpt.BarSize)
 		assert.Nil(t, chartOpt.BarMargin)
 	})

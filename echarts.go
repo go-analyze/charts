@@ -33,6 +33,21 @@ type EChartsPosition string
 
 // UnmarshalJSON decodes a position JSON value that may be a string or number.
 func (p *EChartsPosition) UnmarshalJSON(data []byte) error {
+	return unmarshalStringOrNumber((*string)(p), data)
+}
+
+// EChartsFlexString is a string-typed field that also accepts JSON numbers,
+// decoding them into their string form (e.g. barWidth: 40 becomes "40").
+type EChartsFlexString string
+
+// UnmarshalJSON decodes a string or number JSON value into its string form.
+func (s *EChartsFlexString) UnmarshalJSON(data []byte) error {
+	return unmarshalStringOrNumber((*string)(s), data)
+}
+
+// unmarshalStringOrNumber decodes a string or bare number into target; unit-less
+// numbers carry no percent suffix, so downstream percent parsing ignores them.
+func unmarshalStringOrNumber(target *string, data []byte) error {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
 		return nil
@@ -40,8 +55,7 @@ func (p *EChartsPosition) UnmarshalJSON(data []byte) error {
 	if c := data[0]; c == '-' || c == '+' || c == '.' || (c >= '0' && c <= '9') {
 		data = append(append([]byte{'"'}, data...), '"')
 	}
-	s := (*string)(p)
-	return json.Unmarshal(data, s)
+	return json.Unmarshal(data, target)
 }
 
 // EChartStyle describes color and opacity for ECharts elements.
@@ -56,22 +70,33 @@ type EChartsSeriesDataValue struct {
 }
 
 // UnmarshalJSON decodes a series data value that may be a single number or array.
+// String elements other than the "-" gap sentinel are category labels with no
+// numeric slot (the ["Mon", 120] shape) and are skipped rather than rejected.
 func (value *EChartsSeriesDataValue) UnmarshalJSON(data []byte) error {
 	data = convertToArray(data)
 	var raw []json.RawMessage
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
 	}
-	values := make([]float64, len(raw))
-	for i, r := range raw {
+	values := make([]float64, 0, len(raw))
+	for _, r := range raw {
 		v, err := parseSeriesValue(r)
 		if err != nil {
+			if isJSONString(r) {
+				continue
+			}
 			return err
 		}
-		values[i] = v
+		values = append(values, v)
 	}
 	value.values = values
 	return nil
+}
+
+// isJSONString reports whether data is a quoted JSON string.
+func isJSONString(data []byte) bool {
+	trimmed := bytes.TrimSpace(data)
+	return len(trimmed) >= 2 && trimmed[0] == '"' && trimmed[len(trimmed)-1] == '"'
 }
 
 // parseSeriesValue returns the number for a JSON value, with null or "-" returning GetNullValue.
@@ -470,8 +495,8 @@ type EChartsLegend struct {
 type EChartsMarkData struct {
 	Type string `json:"type"`
 	// TODO - support position values below
-	XAxis float64 `json:"xAxis,omitempty"`
-	YAxis float64 `json:"yAxis,omitempty"`
+	XAxis EChartsFlexString `json:"xAxis,omitempty"`
+	YAxis EChartsFlexString `json:"yAxis,omitempty"`
 }
 type _EChartsMarkData EChartsMarkData
 
@@ -537,9 +562,9 @@ type EChartsSeries struct {
 		Width *float64 `json:"width,omitempty"`
 	} `json:"lineStyle,omitempty"`
 	AreaStyle      *EChartsAreaStyle `json:"areaStyle,omitempty"`
-	BarWidth       string            `json:"barWidth,omitempty"`
-	BarGap         string            `json:"barGap,omitempty"`
-	BarCategoryGap string            `json:"barCategoryGap,omitempty"` // ignored, no library counterpart
+	BarWidth       EChartsFlexString `json:"barWidth,omitempty"`
+	BarGap         EChartsFlexString `json:"barGap,omitempty"`
+	BarCategoryGap EChartsFlexString `json:"barCategoryGap,omitempty"` // ignored, no library counterpart
 	Smooth         EChartsSmooth     `json:"smooth,omitempty"`
 	YAxisIndex     int               `json:"yAxisIndex"`
 	ItemStyle      EChartStyle       `json:"itemStyle,omitempty"`
@@ -1069,10 +1094,10 @@ func (esList EChartsSeriesList) applyChartFields(o *ChartOption) {
 				o.FillOpacity = drawing.ColorChannelFromFloat(*item.AreaStyle.Opacity)
 			}
 		}
-		if ratio, ok := parsePercentRatio(item.BarWidth); ok && o.BarSize == 0 {
+		if ratio, ok := parsePercentRatio(string(item.BarWidth)); ok && o.BarSize == 0 {
 			o.BarSize = ratio
 		}
-		if ratio, ok := parsePercentRatio(item.BarGap); ok && o.BarMargin == nil {
+		if ratio, ok := parsePercentRatio(string(item.BarGap)); ok && o.BarMargin == nil {
 			o.BarMargin = Ptr(ratio)
 		}
 		if item.Smooth.set && !smoothSet {

@@ -1,8 +1,8 @@
 # ECharts Option Spec Reference
 
-Reference for the **ECharts-compatible option format this library is built against**.
+This document attempts to be a faithful definition of the **official Apache ECharts option format**, not a record of what this project supports.
 
-This is not the Apache ECharts option schema itself. The library accepts a restricted subset of ECharts-style JSON plus several library-specific fields and transformations. Fields not listed below are ignored or have no rendering effect.
+The two do not coincide. Features defined below may be unsupported by the library, and conversely the adapter may in cases be more flexible and accept broader inputs than the official format permits. Where support differs, a field's behavior notes state how the adapter treats it.
 
 The Apache ECharts reference is:
 
@@ -10,11 +10,11 @@ https://echarts.apache.org/en/option.html
 
 ## Compatibility model
 
-The accepted JSON is best understood as:
+The adapter's accepted JSON is best understood as:
 
 **ECharts-style syntax + library-specific extensions + implementation-specific transformations.**
 
-It is not safe to assume that an option documented by Apache ECharts will render identically, or even parse successfully, through this adapter.
+It is not safe to assume that an option documented here will render identically, or even parse successfully, through this adapter. Fields not listed below are ignored or have no rendering effect.
 
 In particular, current Apache ECharts supports substantially more axis types, components, data encodings, styling, and series options than this adapter.
 
@@ -323,9 +323,9 @@ The indicators are converted into the library's native radar indicator objects.
 | `symbolSize`           | number         | Point symbol size, chart-level (first series that defines it wins). Plain numbers only.                        |
 | `lineStyle.width`      | int            | Line stroke width, chart-level (first series wins). Series-line `lineStyle.type` (`dashed`/`dotted`) is not part of the spec. |
 | `areaStyle`            | object         | Presence enables area fill. `opacity` (0-1) scales into the 0-255 alpha channel. `color` follows per-series color support. |
-| `barWidth`             | string         | Bar thickness as a percent of the category slot; absolute pixel widths are ignored. Also sets candlestick candle width. |
-| `barGap`               | string         | Spacing between grouped bars (ECharts default 30%), mapped to the library's bar margin ratio. Percent only; other forms are ignored. |
-| `barCategoryGap`       | string         | No library counterpart; accepted but ignored. Bar width wins when both width and gap are present.              |
+| `barWidth`             | string \| number | Bar thickness as a percent of the category slot; absolute pixel widths are ignored. Also sets candlestick candle width. |
+| `barGap`               | string \| number | Spacing between grouped bars (ECharts default 30%), mapped to the library's bar margin ratio. Percent only; other forms are ignored. |
+| `barCategoryGap`       | string \| number | No library counterpart; accepted but ignored. Bar width wins when both width and gap are present.              |
 | `smooth`               | bool \| number | Line smoothing. Boolean true selects the default tension (0.5), numeric 0-1 maps directly and clamps at 1. Stacked lines ignore smoothing. |
 | `trendLine`            | array<object>  | Dialect field (Apache ECharts has no native trend lines). `{type, period, ...style}` entries supporting `linear`, `cubic`, `sma`, `ema`, `bollinger_upper`, `bollinger_lower`, `rsi` for line, scatter, and candlestick. Applies to close price for candlestick. |
 
