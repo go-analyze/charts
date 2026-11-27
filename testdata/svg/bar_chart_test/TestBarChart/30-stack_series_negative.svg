@@ -23,11 +23,7 @@ L 316 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 
 L 382 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 448 360
 L 448 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 514 360
 L 514 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 360
-L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="80" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">A</text><text x="146" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">B</text><text x="212" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">C</text><text x="278" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">D</text><text x="344" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">E</text><text x="411" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">F</text><text x="476" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">G</text><text x="541" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">H</text><path d="M 63 173
-L 108 173
-L 108 173
-L 63 173
-L 63 173" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 128 102
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="80" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">A</text><text x="146" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">B</text><text x="212" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">C</text><text x="278" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">D</text><text x="344" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">E</text><text x="411" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">F</text><text x="476" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">G</text><text x="541" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">H</text><path d="M 128 102
 L 173 102
 L 173 173
 L 128 173
@@ -39,11 +35,7 @@ L 194 72" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 260 102
 L 305 102
 L 305 173
 L 260 173
-L 260 102" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 326 173
-L 371 173
-L 371 173
-L 326 173
-L 326 173" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 392 173
+L 260 102" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 392 173
 L 437 173
 L 437 244
 L 392 244
@@ -67,11 +59,7 @@ L 128 173" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 194 173
 L 239 173
 L 239 244
 L 194 244
-L 194 173" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 260 102
-L 305 102
-L 305 102
-L 260 102
-L 260 102" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 326 102
+L 194 173" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 326 102
 L 371 102
 L 371 173
 L 326 173
@@ -83,11 +71,7 @@ L 392 72" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 458 102
 L 503 102
 L 503 173
 L 458 173
-L 458 102" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 524 173
-L 569 173
-L 569 173
-L 524 173
-L 524 173" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 63 143
+L 458 102" style="stroke:none;fill:rgb(145,204,117)"/><path d="M 63 143
 L 108 143
 L 108 173
 L 63 173
@@ -99,11 +83,7 @@ L 128 52" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 194 42
 L 239 42
 L 239 72
 L 194 72
-L 194 42" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 260 102
-L 305 102
-L 305 102
-L 260 102
-L 260 102" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 326 173
+L 194 42" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 326 173
 L 371 173
 L 371 203
 L 326 203
@@ -115,8 +95,4 @@ L 392 244" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 458 274
 L 503 274
 L 503 304
 L 458 304
-L 458 274" style="stroke:none;fill:rgb(250,200,88)"/><path d="M 524 173
-L 569 173
-L 569 173
-L 524 173
-L 524 173" style="stroke:none;fill:rgb(250,200,88)"/></svg>
+L 458 274" style="stroke:none;fill:rgb(250,200,88)"/></svg>

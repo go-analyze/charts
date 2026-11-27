@@ -448,7 +448,7 @@ func TestBarChart(t *testing.T) {
 				opt.CategoryAxis.Labels = []string{"A", "B", "C", "D", "E", "F", "G", "H"}
 				return opt
 			},
-			pngCRC: 0xa2a60c6,
+			pngCRC: 0xfa8d8497,
 		},
 		{
 			name: "mixed_sign",
@@ -460,7 +460,7 @@ func TestBarChart(t *testing.T) {
 				opt.CategoryAxis.Labels = []string{"A", "B", "C", "D", "E", "F", "G", "H"}
 				return opt
 			},
-			pngCRC: 0xfa99550a,
+			pngCRC: 0x66a23407,
 		},
 		{
 			name: "stack_series_negative",
@@ -501,7 +501,7 @@ func TestBarChart(t *testing.T) {
 				opt.CategoryAxis.Labels = []string{"A", "B", "C", "D", "E", "F"}
 				return opt
 			},
-			pngCRC: 0x1c2729cb,
+			pngCRC: 0x8e5bd82,
 		},
 		{
 			name: "label_negative",
@@ -516,7 +516,7 @@ func TestBarChart(t *testing.T) {
 				opt.CategoryAxis.Labels = []string{"A", "B", "C", "D", "E", "F"}
 				return opt
 			},
-			pngCRC: 0xbb9ade6a,
+			pngCRC: 0x715cc9d8,
 		},
 		{
 			name: "mark_point_negative",
@@ -528,7 +528,7 @@ func TestBarChart(t *testing.T) {
 				opt.CategoryAxis.Labels = []string{"A", "B", "C", "D", "E", "F"}
 				return opt
 			},
-			pngCRC: 0x3d326750,
+			pngCRC: 0x8b32f238,
 		},
 	}
 
@@ -583,6 +583,38 @@ func validateBarChartRender(t *testing.T, svgP, pngP *Painter, opt BarChartOptio
 	rdata, err := pngP.Bytes()
 	require.NoError(t, err)
 	assertEqualPNGCRC(t, expectedCRC, rdata)
+}
+
+func TestEnsureBarSpan(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name           string
+		lo, hi         int
+		baseLow        bool
+		gap, limit     int
+		wantLo, wantHi int
+	}{
+		{name: "non_empty_high_base", lo: 10, hi: 20, limit: 100, wantLo: 10, wantHi: 20},
+		{name: "non_empty_low_base", lo: 10, hi: 20, baseLow: true, limit: 100, wantLo: 10, wantHi: 20},
+		{name: "empty_high_base", lo: 50, hi: 50, limit: 100, wantLo: 49, wantHi: 50},
+		{name: "empty_low_base", lo: 50, hi: 50, baseLow: true, limit: 100, wantLo: 50, wantHi: 51},
+		{name: "empty_high_base_gap", lo: 49, hi: 50, gap: 1, limit: 100, wantLo: 49, wantHi: 50},
+		{name: "empty_low_base_gap", lo: 50, hi: 51, baseLow: true, gap: 1, limit: 100, wantLo: 50, wantHi: 51},
+		{name: "inverted_high_base", lo: 51, hi: 49, limit: 100, wantLo: 48, wantHi: 49},
+		{name: "inverted_low_base", lo: 50, hi: 49, baseLow: true, limit: 100, wantLo: 50, wantHi: 51},
+		// no pixel fits on the baseline side, so the span stays empty
+		{name: "high_base_at_origin", lo: 1, hi: 0, limit: 100, wantLo: 0, wantHi: 0},
+		{name: "low_base_at_limit", lo: 100, hi: 100, baseLow: true, limit: 100, wantLo: 100, wantHi: 100},
+		{name: "low_base_beyond_limit", lo: 101, hi: 100, baseLow: true, limit: 100, wantLo: 101, wantHi: 100},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lo, hi := ensureBarSpan(tt.lo, tt.hi, tt.baseLow, tt.gap, tt.limit)
+			assert.Equal(t, tt.wantLo, lo)
+			assert.Equal(t, tt.wantHi, hi)
+		})
+	}
 }
 
 func TestStackedBarLanes(t *testing.T) {

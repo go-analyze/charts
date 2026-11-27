@@ -30,11 +30,11 @@ L 580 324" style="stroke-width:1;stroke:rgb(224,230,242);fill:none"/><path d="M 
 L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 49 360
 L 49 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 314 360
 L 314 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 360
-L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="176" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">1</text><text x="442" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">2</text><path d="M 59 355
-L 304 355
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="176" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">1</text><text x="442" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">2</text><path d="M 59 354
 L 304 354
-L 59 354
-L 59 355" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 324 51
+L 304 355
+L 59 355
+L 59 354" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 324 51
 L 569 51
 L 569 354
 L 324 354
