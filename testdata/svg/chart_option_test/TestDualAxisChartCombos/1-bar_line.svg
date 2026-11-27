@@ -21,11 +21,11 @@ L 263 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 
 L 332 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 401 360
 L 401 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 470 360
 L 470 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 539 360
-L 539 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="75" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Mon</text><text x="145" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Tue</text><text x="212" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Wed</text><text x="283" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Thu</text><text x="357" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Fri</text><text x="423" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Sat</text><text x="490" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Sun</text><path d="M 67 355
-L 115 355
+L 539 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="75" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Mon</text><text x="145" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Tue</text><text x="212" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Wed</text><text x="283" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Thu</text><text x="357" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Fri</text><text x="423" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Sat</text><text x="490" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">Sun</text><path d="M 67 354
 L 115 354
-L 67 354
-L 67 355" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 135 281
+L 115 355
+L 67 355
+L 67 354" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 135 281
 L 183 281
 L 183 354
 L 135 354

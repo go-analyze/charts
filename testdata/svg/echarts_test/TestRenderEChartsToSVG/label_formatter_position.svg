@@ -16,11 +16,11 @@ L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 
 L 48 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 225 360
 L 225 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 402 360
 L 402 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><path d="M 580 360
-L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="131" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">A</text><text x="308" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">B</text><text x="486" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">C</text><path d="M 58 355
-L 215 355
+L 580 355" style="stroke-width:1;stroke:rgb(110,112,121);fill:none"/><text x="131" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">A</text><text x="308" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">B</text><text x="486" y="378" style="stroke:none;fill:rgb(70,70,70);font-size:16px;font-family:'Roboto Medium',sans-serif">C</text><path d="M 58 354
 L 215 354
-L 58 354
-L 58 355" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 235 75
+L 215 355
+L 58 355
+L 58 354" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 235 75
 L 392 75
 L 392 354
 L 235 354
@@ -28,4 +28,4 @@ L 235 75" style="stroke:none;fill:rgb(84,112,198)"/><path d="M 412 262
 L 569 262
 L 569 354
 L 412 354
-L 412 262" style="stroke:none;fill:rgb(84,112,198)"/><text x="109" y="350" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Sales: 10</text><text x="286" y="70" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Sales: 25</text><text x="463" y="257" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Sales: 15</text></svg>
+L 412 262" style="stroke:none;fill:rgb(84,112,198)"/><text x="109" y="349" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Sales: 10</text><text x="286" y="70" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Sales: 25</text><text x="463" y="257" style="stroke:none;fill:rgb(70,70,70);font-size:13.3px;font-family:'Roboto Medium',sans-serif">Sales: 15</text></svg>

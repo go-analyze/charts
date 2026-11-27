@@ -163,6 +163,19 @@ func resolveBarMarginPixels(barMargin *float64, space int) *float64 {
 	return &px
 }
 
+// ensureBarSpan returns a [lo, hi) span that is at least one pixel wide, grown from the baseline side
+// (lo when baseLow is true, hi otherwise) and clamped to [0, limit]. A positive gap shifts the
+// baseline-side pixel onto the baseline stroke instead. The span stays empty when no pixel fits.
+func ensureBarSpan(lo, hi int, baseLow bool, gap, limit int) (int, int) {
+	if hi > lo {
+		return lo, hi
+	}
+	if baseLow {
+		return lo - gap, min(lo-gap+1, limit)
+	}
+	return max(hi+gap-1, 0), hi + gap
+}
+
 // stackedBarLanes returns the bar lane for each series and the total lane count,
 // reserving lane zero for the primary-axis stack only when one exists.
 func stackedBarLanes(sl BarSeriesList) ([]int, int) {
@@ -242,6 +255,11 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 		yRange := result.valueAxisRanges[series.YAxisIndex]
 		baselineValue := max(min(0.0, yRange.max), yRange.min) // bars extend from zero, clamped to the axis range
 		basePx := yRange.getRestHeight(baselineValue)
+		// a baseline resting on the x-axis line (range minimum) needs bars to stop one row short of it
+		baseGap := 0
+		if baselineValue == yRange.min {
+			baseGap = 1
+		}
 		seriesThemeIndex := index
 		if series.absThemeIndex != nil {
 			seriesThemeIndex = *series.absThemeIndex
@@ -288,23 +306,30 @@ func (b *barChart) renderVerticalBars(result *defaultRenderResult) (Box, error) 
 				tipY := yRange.getRestHeight(item)
 				negativeBar = item < baselineValue
 				if negativeBar {
-					top, bottom = basePx+1, tipY
+					top, bottom = basePx+baseGap, tipY
 				} else {
-					top, bottom = tipY, basePx-1
+					top, bottom = tipY, basePx-baseGap
+				}
+				// non-zero values always show at least one row
+				if item != 0 {
+					top, bottom = ensureBarSpan(top, bottom, negativeBar, baseGap, yRange.size)
 				}
 			}
 
-			// In stacked mode, only round caps on the last stacked series
-			if flagIs(true, opt.RoundedBarCaps) && (!stackSeries || index == lastStackedIndex) {
-				corners := roundTopLeft | roundTopRight
-				if negativeBar {
-					corners = roundBottomLeft | roundBottomRight
+			// zero values (and values clamped outside the plot) have no rect to draw
+			if bottom > top {
+				// In stacked mode, only round caps on the last stacked series
+				if flagIs(true, opt.RoundedBarCaps) && (!stackSeries || index == lastStackedIndex) {
+					corners := roundTopLeft | roundTopRight
+					if negativeBar {
+						corners = roundBottomLeft | roundBottomRight
+					}
+					seriesPainter.roundedRect(
+						Box{Top: top, Left: x, Right: x + barWidth, Bottom: bottom, IsSet: true},
+						barWidth, corners, seriesColor, seriesColor, 0.0)
+				} else {
+					seriesPainter.FilledRect(x, top, x+barWidth, bottom, seriesColor, seriesColor, 0.0)
 				}
-				seriesPainter.roundedRect(
-					Box{Top: top, Left: x, Right: x + barWidth, Bottom: bottom, IsSet: true},
-					barWidth, corners, seriesColor, seriesColor, 0.0)
-			} else {
-				seriesPainter.FilledRect(x, top, x+barWidth, bottom, seriesColor, seriesColor, 0.0)
 			}
 
 			tip := top
@@ -600,6 +625,10 @@ func (b *barChart) renderHorizontalBars(result *defaultRenderResult) (Box, error
 			left, right := stackBase, tipX
 			if left > right {
 				left, right = right, left
+			}
+			// non-zero values always show at least one column against the baseline
+			if !stackedSeries && item != 0 {
+				left, right = ensureBarSpan(left, right, negativeBar == reversed, 0, xRange.size)
 			}
 
 			// In stacked mode, only round caps on the last series
